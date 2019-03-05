@@ -1,0 +1,32 @@
+.sidebar-toggle-btn{
+    border-radius: 100%;
+    border: 1px solid #fff;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    content: "";
+}
+
+.fixed-sidebar-wrapper.open .sidebar-toggle-btn{
+    display: inline-block;
+}
+.fixed-sidebar-wrapper .sidebar-toggle-btn{
+    display: none;
+}
+
+.sidebar-toggle-btn:focus{
+    outline: none;
+}
+
+.logo-img{
+    width: 58px;
+    height: auto;
+}
+
+.sidebar-header{
+    height: 68px;
+    overflow: hidden;
+    /*padding: 15px;*/
+}
