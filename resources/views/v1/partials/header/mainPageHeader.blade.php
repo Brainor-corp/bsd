@@ -1,7 +1,10 @@
 <header class="main-header main-page-header">
+    <video autoplay loop muted class="bgvideo" id="bgvideo">
+        <source src="/video/PexelsVideos3566.mp4" type="video/mp4"></source>
+    </video>
     <div class="container relative">
         <div class="row header__top">
-            <div class="d-flex flex-wrap flex-xl-row col-xl-12 justify-content-between">
+            <div class="d-flex flex-wrap flex-xl-row col-xl-12">
                 <div class="col-12 d-flex col-xl flex-column flex-sm-row flex-md-column flex-xl-row justify-content-sm-between align-items-xl-center">
                     <div class="col-sm-6 col-md-12 logo_main text-center text-sm-left">
                         <a href="##"><img src="/images/img/logo.png" alt="Доставка грузов"></a>
@@ -27,7 +30,8 @@
                                     data-toggle="collapse"
                                     data-target="#main_nav"
                                     aria-controls="main_nav">
-                                <span class="fa fa-bars"></span>
+                                <span class="fa fa-bars margin-item"></span>
+                                <span class="margin-item">Меню</span>
                             </button>
                             <div id="main_nav" class="collapse navbar-collapse">
                                 <ul class="nav navbar-nav d-flex nav_top m-0">
