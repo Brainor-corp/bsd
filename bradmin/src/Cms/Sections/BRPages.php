@@ -42,16 +42,12 @@ class BRPages extends Section
         $filter = [
           FilterType::text('id', '#'),
           FilterType::text('title', 'Заголовок'),
-          null,
-          FilterType::select('tags.title')->setOptions(
-              BRTerm::where('type', 'tag')->pluck('title', 'id')->toArray()
-          ),
-        FilterType::select('categories.title')->setOptions(
-            BRTerm::where('type', 'category')->pluck('title', 'id')->toArray()
-        ),
-          null,
-          null,
-          null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
         ];
 
         $display->setFilter($filter);
