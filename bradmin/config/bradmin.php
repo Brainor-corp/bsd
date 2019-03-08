@@ -60,7 +60,7 @@ return [
 
 
 //    'logo'      => '/images/user-logo.jpg',
-    'logo'      => '/bradmin/images/logo.jpg',
+    'logo'      => '/bradmin/images/logo.png',
 
 //    'logo_mini' => '',
 

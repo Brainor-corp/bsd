@@ -23,4 +23,6 @@
 
     @include('v1.partials.footer.script')
 
+    @include('v1.partials.footer.modalSelectionCity')
+
 </html>
