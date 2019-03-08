@@ -17,7 +17,7 @@ Route::get('/', 'MainPageController@index')->name('index');
 Route::get('/terminals-addresses', 'TerminalsController@showAddresses')->name('terminals-addresses-show');
 Route::get('/promotion-list', 'PromotionsController@showList')->name('promotion-list-show');
 Route::get('/news-list', 'NewsController@showList')->name('news-list-show');
-Route::get('/profile', 'ProfileController@profileData')->name('news-list-show');
+Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
 Route::get('/calculator-show', 'CalculatorController@calculatorShow')->name('calculator-show');
 
 Route::get('/home', 'HomeController@index')->name('home');
