@@ -1,7 +1,7 @@
 <?php
 /**
  * class: BRPageTemplate
- * title: Шаблон устраницы-услуги
+ * title: Шаблон устраницы-услуги-одна
  */
 ?>
 
@@ -29,7 +29,7 @@
             <div class="row">
                 <div class="col-12">
                     <header class="wrapper__header">
-                        <h1>Страхование</h1>
+                        <h1>{{ $page->title }}</h1>
                     </header>
                     <div class="row">
                         <div class="col-8">

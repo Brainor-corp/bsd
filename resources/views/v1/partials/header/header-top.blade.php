@@ -44,7 +44,15 @@
                                 </div>
                             </li>
                             <li class="dropdown">
-                                <a class="dropdown-toggle" href="#">Клиентам</a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Клиентам</a>
+                                <div role="menu" class="dropdown-menu">
+                                    <a class="dropdown-item" href="{{ url('/klientam/dopolnitelnye-uslugi') }}">Дополнительные услуги</a>
+                                    <a class="dropdown-item" href="{{ url('/klientam/faq') }}">FAQ</a>
+                                    <a class="dropdown-item" href="{{ url('/lenta-sobytiy') }}">Лента событий</a>
+                                    <a class="dropdown-item" href="{{ url('/klientam/napravleniya') }}">Направления</a>
+                                    <a class="dropdown-item" href="{{ url('/klientam/otchety') }}">Отчеты</a>
+                                    <a class="dropdown-item" href="{{ url('/klientam/otzyvy') }}">Отзывы</a>
+                                </div>
                             </li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">О компании</a>
@@ -55,7 +63,7 @@
                                     <a class="dropdown-item" href="{{ url('/o-kompanii/reklamodatelyam') }}">Рекламодателям</a>
                                     <a class="dropdown-item" href="{{ route('terminals-addresses-show') }}">Адреса терминалов</a>
                                     <a class="dropdown-item" href="{{ url('/o-kompanii/dokumenty-i-sertifikaty') }}">Документы и сертификаты</a>
-                                    <a class="dropdown-item" href="#">Партнеры</a>
+                                    <a class="dropdown-item" href="{{ url('/partnery') }}">Партнеры</a>
                                     <a class="dropdown-item" href="#">Сотрудники</a>
                                 </div>
                             </li>

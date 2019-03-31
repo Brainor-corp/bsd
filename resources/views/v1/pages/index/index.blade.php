@@ -1,5 +1,13 @@
 @extends('v1.layouts.mainPageLayout')
 
+@section('headerStyles')
+    <link rel="stylesheet" href="{{ asset('packages/selectize/selectize.bootstrap4.css') }}@include('v1.partials.versions.cssVersion')"/>
+@endsection
+
+@section('footerScripts')
+    <script src="{{ asset('packages/selectize/selectize.min.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script src="{{ asset('v1/js/calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>
+@endsection
 
 @section('content')
 <section class="service">

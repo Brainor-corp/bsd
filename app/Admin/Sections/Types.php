@@ -2,11 +2,7 @@
 
 namespace App\Admin\Sections;
 
-use App\Contact;
-use App\Equipment;
-use App\Role;
 use App\Type;
-use App\User;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
 use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -27,7 +23,9 @@ class Types extends Section
 
     public static function onDisplay(Request $request){
         $display = Display::table([
+            Column::text('id', '#'),
             Column::text('name', 'Название'),
+            Column::text('class', 'Класс'),
             Column::text('description', 'Описание'),
         ])->setPagination(10);
 
@@ -51,17 +49,14 @@ class Types extends Section
             'select2' => asset('packages/select2/css/select2.min.css')
         ]);
 
-        $type = Type::where('id', $id)->with('equipment')->first();
+        $type = Type::where('id', $id)->first();
 
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('name', 'Название')->setRequired(true),
                 FormField::input('class', 'Класс')->setRequired(true),
                 FormField::textarea('description', 'Описание'),
-                FormField::select('optional', 'Выводить при загрузке КП')
-                    ->setOptions(['optional'=>'Нет', 'default'=>'Да'])
-                    ->setRequired(true),
-                FormField::custom(View::make('admin.equipmentAjaxMultiselect')->with(compact('type')))
+                FormField::input('optional', 'Произвольное значение')
             ])
         ])->setMeta($meta);
 
@@ -76,16 +71,16 @@ class Types extends Section
 
     public function beforeSave(Request $request, $model = null)
     {
-        if(!$request->has('equipment')) {
-            $model->equipment()->sync(null);
-        }
+//        if(!$request->has('equipment')) {
+//            $model->equipment()->sync(null);
+//        }
     }
 
     public function beforeDelete(Request $request, $id = null)
     {
-        $type = Type::where('id', $id)->first();
-        $type->equipment()->detach();
-        $type->work()->detach();
+//        $type = Type::where('id', $id)->first();
+//        $type->equipment()->detach();
+//        $type->work()->detach();
     }
 
 }
