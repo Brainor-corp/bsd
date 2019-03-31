@@ -19,33 +19,51 @@
         </ul>
     </div>
     <div class="col-xl-5 col-lg-12">
-        <div class="calc__block mr-auto mr-md-0 ml-auto">
-            <div class="calc__block_title">Быстрый расчет стоимости</div>
-            <div class="input-group calc__block_inpg">
-                <input type="text" class="form-control" placeholder="Москва">
-                <a href="#" class="group-input__icon"><i class="fa fa-refresh" aria-hidden="true"></i></a>
-                <input type="text" class="form-control" placeholder="Санкт-Петербург">
-            </div>
-            <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg">
-                <label class="calc__label_max">Габариты (м)</label>
-                <div class="input-group">
-                    <input type="number" step="any" class="form-control text-center" placeholder="Д">
-                    <input type="number" step="any" class="form-control text-center" placeholder="Ш">
-                    <input type="number" step="any" class="form-control text-center" placeholder="В">
+        <form class="calculator-form" action="/calculator-show" method="post">
+            <div class="calc__block mr-auto mr-md-0 ml-auto">
+                <div class="calc__block_title">Быстрый расчет стоимости</div>
+                <div class="input-group calc__block_inpg">
+                    {{--<input type="text" id="ship_city" class="form-control" placeholder="Москва">--}}
+                    <select id="ship_city" class="form-control" name="ship_city" placeholder="Москва">
+                        <option value=""></option>
+                        @if($shipCities->count() > 0)
+                            @foreach($shipCities as $shipCity)
+                                <option value="{{ $shipCity->id }}">{{ $shipCity->name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                    <a href="#" class="group-input__icon"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                    {{--<input type="text" id="dest_city" class="form-control" placeholder="Санкт-Петербург">--}}
+                    <select id="dest_city" class="form-control"  name="dest_city" placeholder="Москва">
+                        <option value=""></option>
+                    </select>
                 </div>
-            </div>
-            <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg">
-                <label class="calc__label_max">Вес груза (кг)</label>
-                <input type="number" step="any" class="form-control text-center" placeholder="">
-            </div>
-            <div class="form-inline calc__block_itog">
-                <div class="form-item justify-content-between w-100">
-                    Стоимость перевозки
-                    <span>319 <span class="rouble">p</span></span>
+                <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg">
+                    <label class="calc__label_max">Габариты (м)</label>
+                    <div class="input-group">
+                        <input type="number" step="any" name="packages[0][length]" class="form-control text-center package-params" placeholder="Д">
+                        <input type="number" step="any" name="packages[0][width]" class="form-control text-center package-params" placeholder="Ш">
+                        <input type="number" step="any" name="packages[0][height]" class="form-control text-center package-params" placeholder="В">
+                    </div>
                 </div>
+                <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg">
+                    <label class="calc__label_max">Вес груза (кг)</label>
+                    <input type="number" step="any" name="packages[0][weight]" class="form-control text-center package-params" placeholder="Вес в кг.">
+                </div>
+                <div class="form-inline calc__block_itog" >
+                    <div class="form-item justify-content-between w-100">
+                        Срок доставки
+                        <span><span id="delivery-time">0</span><span class="rouble"> дней</span></span>
+                    </div>
+                    <div class="form-item justify-content-between w-100">
+                        Стоимость перевозки
+                        <span><span id="base-price">0</span><span class="rouble">p</span></span>
+                    </div>
+                </div>
+                <button class="btn btn-block btn-danger">Перейти к оформлению заказа</button>
             </div>
-            <button class="btn btn-block btn-danger">Перейти к оформлению заказа</button>
-        </div>
+            @csrf
+        </form>
     </div>
 </div>
 <div class="row event-feed__list">

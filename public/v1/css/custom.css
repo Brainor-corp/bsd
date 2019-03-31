@@ -1,0 +1,25 @@
+.selectize-control .selectize-input{
+    border-radius: 7px!important;
+}
+.selectize-control .selectize-input:focus {
+    color: #36393b;
+    background-color: #fff;
+    border-color: #ef402f;
+    outline: 0;
+    box-shadow: none;
+}
+
+.selectize-control:not(:last-child) .selectize-input{
+    border-top-right-radius: 0!important;
+    border-bottom-right-radius: 0!important;
+}
+.selectize-control:last-child .selectize-input{
+    border-top-left-radius: 0!important;
+    border-bottom-left-radius: 0!important;
+}
+
+/*Доп.усулги*/
+.complementary-services a{
+    color: #5a666e;
+}
+/*КОНЕЦ --- Доп.усулги*/

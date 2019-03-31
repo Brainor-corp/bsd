@@ -1,5 +1,14 @@
 @extends('v1.layouts.innerPageLayout')
 
+@section('headerStyles')
+    <link rel="stylesheet" href="{{ asset('packages/selectize/selectize.bootstrap4.css') }}@include('v1.partials.versions.cssVersion')"/>
+@endsection
+
+@section('footerScripts')
+    <script src="{{ asset('packages/selectize/selectize.min.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script src="{{ asset('v1/js/calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script src="{{ asset('v1/js/calculator-page.js') }}@include('v1.partials.versions.jsVersion')"></script>
+@endsection
 
 @section('content')
     <div class="breadcrumb__list d-flex">
@@ -18,54 +27,112 @@
                     </header>
                     <div class="row">
                         <div class="col-md-6">
-                            <form>
+                            <form class="calculator-form" action="/calculator-show" method="post">
                                 <div class="calc__title">Груз</div>
-                                <div class="form-item row align-items-center">
-                                    <label class="col-auto calc__label">Наименование груза*</label>
-                                    <div class="col"><input type="text" class="form-control" placeholder="email@example.com"></div>
-                                </div>
-                                <div class="form-item row align-items-center">
-                                    <label class="col-auto calc__label">Тип груза*</label>
-                                    <div class="col">
-                                        <div class="relative">
-                                            <i class="dropdown-toggle fa-icon"></i>
-                                            <select class="custom-select">
-                                                <option disabled selected>Выберите из списка</option>
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                                <option>4</option>
-                                                <option>5</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-8">
-                                        <div class="form-item row align-items-center">
-                                            <label class="col-auto calc__label">Габариты (м)*</label>
-                                            <div class="col calc__inpgrp relative row__inf">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control text-center" placeholder="Д" />
-                                                    <input type="text" class="form-control text-center" placeholder="Ш" />
-                                                    <input type="text" class="form-control text-center" placeholder="В" />
+                                @if(count($packages)>0)
+                                    @foreach($packages as $key=>$package)
+                                        <div id="package-{{ $key }}" class="package-item" data-package-id="{{ $key }}">
+                                            <div class="form-item row align-items-center">
+                                                <label class="col-auto calc__label">Наименование груза*</label>
+                                                <div class="col">
+                                                    <input type="text" class="form-control" placeholder="Шкаф" name="packages[{{ $key }}][name]" @if(isset($package['name'])) value="{{ $package['name'] }}" @endif>
+                                                </div>
+                                            </div>
+                                            <div class="form-item row align-items-center">
+                                                <label class="col-auto calc__label">Тип груза*</label>
+                                                <div class="col">
+                                                    <div class="relative">
+                                                        <i class="dropdown-toggle fa-icon"></i>
+                                                        <select class="custom-select package-params" name="packages[{{ $key }}][type]">
+                                                            <option disabled selected>Выберите из списка</option>
+                                                            <option>1</option>
+                                                            <option>2</option>
+                                                            <option>3</option>
+                                                            <option>4</option>
+                                                            <option>5</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <div class="form-item row align-items-center">
+                                                        <label class="col-auto calc__label">Габариты (м)*</label>
+                                                        <div class="col calc__inpgrp relative row__inf">
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control text-center package-params" name="packages[{{ $key }}][length]" placeholder="Д" @if(isset($package['length'])) value="{{ $package['length'] }}" @endif/>
+                                                                <input type="text" class="form-control text-center package-params" name="packages[{{ $key }}][width]" placeholder="Ш" @if(isset($package['width'])) value="{{ $package['width'] }}" @endif/>
+                                                                <input type="text" class="form-control text-center package-params" name="packages[{{ $key }}][height]" placeholder="В" @if(isset($package['height'])) value="{{ $package['height'] }}" @endif/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-item row align-items-center">
+                                                        <label class="col-auto calc__label">Вес груза (кг)*</label>
+                                                        <div class="col calc__inpgrp">
+                                                            <input type="text" class="form-control package-params" name="packages[{{ $key }}][weight]" @if(isset($package['weight'])) value="{{ $package['weight'] }}" @endif/></div>
+                                                    </div>
+                                                    <div class="form-item row align-items-center">
+                                                        <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
+                                                        <div class="col calc__inpgrp">
+                                                            <input type="text" class="form-control package-params" name="packages[{{ $key }}][volume]" @if(isset($package['volume'])) value="{{ $package['volume'] }}" @endif/></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>
                                                 </div>
                                             </div>
                                         </div>
+                                    @endforeach
+                                @else
+                                    <div id="package-1" class="package" data-package-id="1">
                                         <div class="form-item row align-items-center">
-                                            <label class="col-auto calc__label">Вес груза (кг)*</label>
-                                            <div class="col calc__inpgrp"><input type="text" class="form-control" /></div>
+                                            <label class="col-auto calc__label">Наименование груза*</label>
+                                            <div class="col"><input type="text" class="form-control" placeholder="email@example.com"></div>
                                         </div>
                                         <div class="form-item row align-items-center">
-                                            <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
-                                            <div class="col calc__inpgrp"><input type="text" class="form-control" /></div>
+                                            <label class="col-auto calc__label">Тип груза*</label>
+                                            <div class="col">
+                                                <div class="relative">
+                                                    <i class="dropdown-toggle fa-icon"></i>
+                                                    <select class="custom-select package-params">
+                                                        <option disabled selected>Выберите из списка</option>
+                                                        <option>1</option>
+                                                        <option>2</option>
+                                                        <option>3</option>
+                                                        <option>4</option>
+                                                        <option>5</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <div class="form-item row align-items-center">
+                                                    <label class="col-auto calc__label">Габариты (м)*</label>
+                                                    <div class="col calc__inpgrp relative row__inf">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control text-center package-params" placeholder="Д" />
+                                                            <input type="text" class="form-control text-center package-params" placeholder="Ш" />
+                                                            <input type="text" class="form-control text-center package-params" placeholder="В" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-item row align-items-center">
+                                                    <label class="col-auto calc__label">Вес груза (кг)*</label>
+                                                    <div class="col calc__inpgrp"><input type="text" class="form-control package-params" /></div>
+                                                </div>
+                                                <div class="form-item row align-items-center">
+                                                    <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
+                                                    <div class="col calc__inpgrp"><input type="text" class="form-control package-params" /></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
-                                        <p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>
-                                    </div>
-                                </div>
-                                <a href="##" class="add_anotherplace">
+                                @endif
+                                <a href="#" id="add-package-btn" class="add_anotherplace">
                                     <span class="badge calc_badge">
                                         <i class="fa fa-plus"></i>
                                     </span>
@@ -75,7 +142,15 @@
                                     <label class="col-auto calc__label big">Откуда</label>
                                     <div class="col">
                                         <div class="form-item">
-                                            <input type="text" class="form-control" placeholder="email@example.com">
+                                            {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
+                                            <select id="ship_city" class="form-control" name="ship_city" placeholder="Москва">
+                                                <option value=""></option>
+                                                @if($shipCities->count() > 0)
+                                                    @foreach($shipCities as $shipCity)
+                                                        <option value="{{ $shipCity->id }}" @if($selectedShipCity == $shipCity->id) selected @endif>{{ $shipCity->name }}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
                                         </div>
                                         <div class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" id="bring-your-own" name="from" required>
@@ -105,7 +180,15 @@
                                     <label class="col-auto calc__label big">Куда</label>
                                     <div class="col">
                                         <div class="form-item">
-                                            <input type="text" class="form-control" placeholder="email@example.com">
+                                            {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
+                                            <select id="dest_city" class="form-control" name="dest_city" placeholder="Москва">
+                                                <option value=""></option>
+                                                @if(isset($destinationCities))
+                                                    @foreach($destinationCities as $destinationCity)
+                                                        <option value="{{ $destinationCity->id }}" @if($selectedDestCity == $destinationCity->id) selected @endif>{{ $destinationCity->name }}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
                                         </div>
                                         <div class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" id="you-can-pick" name="where" required>
@@ -132,24 +215,50 @@
                                     </div>
                                 </div>
                                 <div class="calc__title">Дополнительные услуги</div>
+                                {{--<div class="form-item form-group-additional">--}}
+                                    {{--<div class="relative">--}}
+                                        {{--<i class="dropdown-toggle fa-icon"></i>--}}
+                                        {{--<select class="custom-select">--}}
+                                            {{--<option disabled selected>Упаковка</option>--}}
+                                            {{--<option>1</option>--}}
+                                            {{--<option>2</option>--}}
+                                            {{--<option>3</option>--}}
+                                            {{--<option>4</option>--}}
+                                            {{--<option>5</option>--}}
+                                        {{--</select>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
                                 <div class="form-item form-group-additional">
-                                    <div class="relative">
-                                        <i class="dropdown-toggle fa-icon"></i>
-                                        <select class="custom-select">
-                                            <option disabled selected>Упаковка</option>
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </select>
-                                    </div>
+                                    @foreach($services as $service)
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input custom-service-checkbox" name="service[]" id="{{ $service->slug }}" value="{{ $service->id }}">
+                                            <label class="custom-control-label" for="{{ $service->slug }}">{{ $service->description }}</label>
+                                        </div>
+                                    @endforeach
                                 </div>
                                 <div class="form-item form-group-additional">
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" id="insurance">
                                         <label class="custom-control-label" for="insurance">Страхование</label>
                                     </div>
+                                    <div id="insurance-amount-wrapper" style="display: none">
+                                        <br>
+                                        <label class="custom-control-label" for="insurance-amount">Сумма страховки</label>
+                                        <input type="text" class="form-control" id="insurance-amount" name="insurance_amount" placeholder="1000">
+                                        <br>
+                                    </div>
+                                    <div class="relative">
+                                        <i class="dropdown-toggle fa-icon"></i>
+                                        <select class="custom-select" id="discount" name="discount">
+                                            <option disabled selected>У меня есть скидка</option>
+                                            <option value="3">3%</option>
+                                            <option value="5">5%</option>
+                                            <option value="10">10%</option>
+                                            <option value="15">15%</option>
+                                            <option value="20">20%</option>
+                                        </select>
+                                    </div>
+
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" id="loading-and-unloading">
                                         <label class="custom-control-label" for="loading-and-unloading">Погрузо-разгрузочные работы</label>
@@ -309,6 +418,7 @@
                                     <button class="btn margin-item btn-danger">Оформить заказ</button>
                                     <button class="btn margin-item btn-default">Сохранить черновик</button>
                                 </div>
+                                @csrf
                             </form>
                         </div>
                         <div class="col-md-4 offset-md-2">
@@ -359,8 +469,10 @@
                                     <footer class="block__itogo_footer d-flex">
                                         <span>Стоимость перевозки*</span>
                                         <span class="block__itogo_price d-flex flex-nowrap">
-                                            <span class="block__itogo_amount">12 850</span>
+                                            <span class="block__itogo_amount"><span id="total-price"> {{ $tariff->total_data->total ?? 0}}</span></span>
                                             <span class="rouble">p</span>
+                                            <span id="base-price" data-base-price="{{ $tariff->total_data->total ?? 0}}" style="display: none"></span>
+                                            <span id="total-volume" data-total-volume="{{ $tariff->total_volume ?? 0.01}}" style="display: none"></span>
                                         </span>
                                     </footer>
                                 </div>
