@@ -92,32 +92,19 @@ class CalculatorController extends Controller
     }
 
     public function oversize_ratio($oversize_id, $package) {
-        $query = OversizeMarkup::where('oversize_id',1);
-        $query->where(function($q) use ($package) {
-            $q->when($package['weight'],function($q2) use ($package){
-                return $q2->where('rate_id',1)
-                    ->where('threshold','<=',$package['weight']);
-            })
-                ->when($package['volume'],function($q3) use ($package){
-                    return $q3->where('rate_id',2)
-                        ->orWhere('threshold','<=',$package['volume']);
-                })
-                ->when($package['length'],function($q4) use ($package){
-                    return $q4->where('rate_id',3)
-                        ->orWhere('threshold','<=',$package['length']);
-                })
-                ->when($package['width'],function($q5) use ($package){
-                    return $q5->where('rate_id',3)
-                        ->orWhere('threshold','<=',$package['width']);
-                })
-                ->when($package['height'],function($q6) use ($package){
-                    return $q6->where('rate_id',3)
-                        ->orWhere('threshold','<=',$package['height']);
-                });
-
+        $query = new  OversizeMarkup;
+        $query = $query->where('oversize_id',1);
+        $query = $query->where(function($q) use ($package) {
+            $q->orWhere([['rate_id',26],['threshold','<=',$package['weight']]]);
+            $q->orWhere([['rate_id',27],['threshold','<=',$package['volume']]]);
+            $q->orWhere([['rate_id',28],['threshold','<=',$package['length']]]);
+            $q->orWhere([['rate_id',28],['threshold','<=',$package['width']]]);
+            $q->orWhere([['rate_id',28],['threshold','<=',$package['height']]]);
         });
-        $query->orderBy('markup','DESC');
-        $query->first();
+        $query = $query->orderBy('markup','DESC');
+        $query = $query->first();
+
+//        dd($query);
         return $query->markup / 100;
     }
 
@@ -206,9 +193,11 @@ class CalculatorController extends Controller
                         $query->where('rate_id', 26);
                         $query->where('value', '>=', $weight);
                     })
-                    ->first()->price;
+                    ->first();
                 if (!$tariff->weight) {
                     $basePrice = 'договорная';
+                }else{
+                    $tariff->weight = $tariff->weight->price;
                 }
             } else
                 $tariff->weight = 0;
@@ -220,9 +209,12 @@ class CalculatorController extends Controller
                             $query->where('rate_id', 27);
                             $query->where('value', '>=', $volume);
                         })
-                        ->first()->price;
+                        ->first();
                     if (!$tariff->volume) {
                         $basePrice = 'договорная';
+                    }
+                    else{
+                        $tariff->volume = $tariff->volume->price;
                     }
                 } else
                     $tariff->volume = 0;
