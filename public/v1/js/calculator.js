@@ -108,12 +108,6 @@ var getTotalPrice = function () {
         basePrice = $("#base-price").data('basePrice'),
         totalVolume = $("#total-volume").data('totalVolume'),
         formData  = $('.calculator-form').serialize();
-
-    console.log(shipCityID);
-    console.log(destCityID);
-    console.log(basePrice);
-    console.log(totalVolume);
-    console.log(formData);
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
