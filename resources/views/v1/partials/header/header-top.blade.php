@@ -57,7 +57,7 @@
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">О компании</a>
                                 <div role="menu" class="dropdown-menu">
-                                    {{--<a class="dropdown-item" href="{{ url('/o-kompanii/o-nas') }}">О нас</a>--}}
+                                    <a class="dropdown-item" href="{{ url('/o-kompanii') }}">О компании</a>
                                     <a class="dropdown-item" href="{{ route('news-list-show') }}">Новости</a>
                                     <a class="dropdown-item" href="{{ route('promotion-list-show') }}">Акции</a>
                                     <a class="dropdown-item" href="{{ url('/o-kompanii/reklamodatelyam') }}">Рекламодателям</a>
