@@ -14,7 +14,7 @@
     <div class="container">
         <div class="title-inline d-flex align-items-center">
             <div class="margin-item"><h3>Услуги</h3></div>
-            <a href="##" class="link-with-dotted margin-item">Все услуги</a>
+            <a href="{{ url('/uslugi') }}" class="link-with-dotted margin-item">Все услуги</a>
         </div>
         <div class="row row-item justify-content-md-center">
             <div class="col-sm-12 col-md-9 col-lg-6 service__item">
@@ -61,7 +61,7 @@
             <div class="col-sm-12 col-md-7">
                 <div class="title-inline d-flex align-items-center">
                     <div class="whiteTxtColor margin-item"><h3>О компании</h3></div>
-                    <a class="margin-item darkTxtColor link-with-dotted" href="##">Подробнее</a>
+                    <a class="margin-item darkTxtColor link-with-dotted" href="{{ url('/o-kompanii') }}">Подробнее</a>
                 </div>
                 <p class="darkTxtColor font-medium mw-95 mb-10">ООО «Балтийская Служба Доставки» заслужила репутацию честного и выгодного партнера на Российском рынке грузоперевозок, что важно для любой компании. Одна из основных задач, которые мы перед собой ставим - минимизация времени, необходимого для оформления груза перед отправкой.</p>
                 <div class="clearfix mb-10">
@@ -106,7 +106,7 @@
                     <div class="calc__title">Груз</div>
                     <div class="form-item row align-items-center">
                         <label class="col-auto calc__label">Наименование груза*</label>
-                        <div class="col"><input type="text" class="form-control" placeholder="email@example.com"></div>
+                        <div class="col"><input type="text" class="form-control" placeholder="Введите наименование груза"></div>
                     </div>
                     <div class="form-item row align-items-center">
                         <label class="col-auto calc__label">Тип груза*</label>
