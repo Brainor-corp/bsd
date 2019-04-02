@@ -37,10 +37,10 @@
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Услуги</a>
                                 <div role="menu" class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Меж-терминальная перевозка</a>
-                                    <a class="dropdown-item" href="#">Авиаперевозка</a>
-                                    <a class="dropdown-item" href="#">Доставка документов</a>
-                                    <a class="dropdown-item" href="#">Доставка в гипермаркеты</a>
+                                    <a class="dropdown-item" href="{{ url('/uslugi/mezh-terminalnaya-perevozka') }}">Меж-терминальная перевозка</a>
+                                    <a class="dropdown-item" href="{{ url('/uslugi/aviaperevozka') }}">Авиаперевозка</a>
+                                    <a class="dropdown-item" href="{{ url('/uslugi/dostavka-dokumentov') }}">Доставка документов</a>
+                                    <a class="dropdown-item" href="{{ url('/uslugi/dostavka-v-gipermarkety') }}">Доставка в гипермаркеты</a>
                                 </div>
                             </li>
                             <li class="dropdown">
