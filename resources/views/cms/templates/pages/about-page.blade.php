@@ -328,7 +328,7 @@
             <div class="container">
                 <header class="title-inline d-flex align-items-center">
                     <div class="margin-item"><h3>Услуги</h3></div>
-                    <a href="##" class="link-with-dotted margin-item">Все услуги</a>
+                    <a href="{{ url('/uslugi') }}" class="link-with-dotted margin-item">Все услуги</a>
                 </header>
                 <div class="row row-item">
                     <div class="col-12 col-sm-6">
