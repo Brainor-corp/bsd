@@ -8,8 +8,6 @@
 @extends('v1.layouts.innerPageLayout')
 
 @section('headerStyles')
-    <link rel="stylesheet" href="{{ asset('v1/css/jquery.bxslider.min.css') }}@include('v1.partials.versions.cssVersion')"/>
-    <link rel="stylesheet" href="{{ asset('v1/css/lightbox.css') }}@include('v1.partials.versions.cssVersion')"/>
     <link href="https://use.fontawesome.com/899e2bf82b.css" media="all" rel="stylesheet">
 @endsection
 
