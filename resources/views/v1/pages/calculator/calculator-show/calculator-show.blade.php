@@ -60,21 +60,21 @@
                                                         <label class="col-auto calc__label">Габариты (м)*</label>
                                                         <div class="col calc__inpgrp relative row__inf">
                                                             <div class="input-group">
-                                                                <input type="text" class="form-control text-center package-params" name="packages[{{ $key }}][length]" placeholder="Д" @if(isset($package['length'])) value="{{ $package['length'] }}" @endif/>
-                                                                <input type="text" class="form-control text-center package-params" name="packages[{{ $key }}][width]" placeholder="Ш" @if(isset($package['width'])) value="{{ $package['width'] }}" @endif/>
-                                                                <input type="text" class="form-control text-center package-params" name="packages[{{ $key }}][height]" placeholder="В" @if(isset($package['height'])) value="{{ $package['height'] }}" @endif/>
+                                                                <input type="text" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="packages[{{ $key }}][length]" data-package-id="{{ $key }}" placeholder="Д" @if(isset($package['length'])) value="{{ $package['length'] }}" @endif/>
+                                                                <input type="text" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="packages[{{ $key }}][width]" data-package-id="{{ $key }}" placeholder="Ш" @if(isset($package['width'])) value="{{ $package['width'] }}" @endif/>
+                                                                <input type="text" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="packages[{{ $key }}][height]" data-package-id="{{ $key }}" placeholder="В" @if(isset($package['height'])) value="{{ $package['height'] }}" @endif/>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-item row align-items-center">
                                                         <label class="col-auto calc__label">Вес груза (кг)*</label>
                                                         <div class="col calc__inpgrp">
-                                                            <input type="text" class="form-control package-params" name="packages[{{ $key }}][weight]" @if(isset($package['weight'])) value="{{ $package['weight'] }}" @endif/></div>
+                                                            <input type="text" class="form-control package-params package-weight" name="packages[{{ $key }}][weight]" data-package-id="{{ $key }}" @if(isset($package['weight'])) value="{{ $package['weight'] }}" @endif/></div>
                                                     </div>
                                                     <div class="form-item row align-items-center">
                                                         <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
                                                         <div class="col calc__inpgrp">
-                                                            <input type="text" class="form-control package-params" name="packages[{{ $key }}][volume]" @if(isset($package['volume'])) value="{{ $package['volume'] }}" @endif/></div>
+                                                            <input type="text" id="packages_{{ $key }}_volume" class="form-control package-params package-volume" name="packages[{{ $key }}][volume]" data-package-id="{{ $key }}" @if(isset($package['volume'])) value="{{ $package['volume'] }}" @endif/></div>
                                                     </div>
                                                 </div>
                                                 <div class="col-4">
@@ -111,19 +111,19 @@
                                                     <label class="col-auto calc__label">Габариты (м)*</label>
                                                     <div class="col calc__inpgrp relative row__inf">
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control text-center package-params" placeholder="Д" />
-                                                            <input type="text" class="form-control text-center package-params" placeholder="Ш" />
-                                                            <input type="text" class="form-control text-center package-params" placeholder="В" />
+                                                            <input type="text" id="packages_1_length" class="form-control text-center package-params package-dimensions" name="packages[1][length]" data-package-id="1" placeholder="Д" />
+                                                            <input type="text" id="packages_1_width" class="form-control text-center package-params package-dimensions" name="packages[1][width]" data-package-id="1" placeholder="Ш" />
+                                                            <input type="text" id="packages_1_height" class="form-control text-center package-params package-dimensions" name="packages[1][height]" data-package-id="1" placeholder="В" />
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-item row align-items-center">
                                                     <label class="col-auto calc__label">Вес груза (кг)*</label>
-                                                    <div class="col calc__inpgrp"><input type="text" class="form-control package-params" /></div>
+                                                    <div class="col calc__inpgrp"><input type="text" id="packages_1_weight" class="form-control package-params package-weight" name="packages[1][weight]" data-package-id="1"/></div>
                                                 </div>
                                                 <div class="form-item row align-items-center">
                                                     <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
-                                                    <div class="col calc__inpgrp"><input type="text" class="form-control package-params" /></div>
+                                                    <div class="col calc__inpgrp"><input type="text" id="packages_1_volume" class="form-control package-params package-volume" name="packages[1][volume]" data-package-id="1"/></div>
                                                 </div>
                                             </div>
                                             <div class="col-4">
