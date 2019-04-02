@@ -8,8 +8,8 @@
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/uslugi/aviaperevozka') }}">Авиаперевозка</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/uslugi/dostavka-dokumentov') }}">Доставка документов</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/uslugi/dostavka-v-gipermarkety') }}">Доставка в гипермаркеты</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Контейнерные перевозки</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Прямая машина</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/uslugi/konteynernye-perevozki') }}">Контейнерные перевозки</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/uslugi/pryamaya-mashina') }}">Прямая машина</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/dopolnitelnye-uslugi') }}">Дополнительные услуги</a></li>
                 </ul>
             </div>
@@ -20,9 +20,9 @@
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/otzyvy') }}">Отзывы</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/dokumenty-i-sertifikaty') }}">Документы</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/dopolnitelnye-uslugi') }}">Дополнительные услуги</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Прайс лист</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Гарантия</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Направлени</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/prays-list') }}">Прайс лист</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/garantiya') }}">Гарантия</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/napravleniya') }}">Направления</a></li>
                 </ul>
             </div>
             <div class="col-12 col-sm-6 col-lg-3 col-xl footer-item">
@@ -35,7 +35,7 @@
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ route('terminals-addresses-show') }}">Адреса терминалов</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/dokumenty-i-sertifikaty') }}">Документы и сертификаты</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/partnery') }}">Партнеры</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Сотрудники</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/sotrudniki') }}">Сотрудники</a></li>
                 </ul>
             </div>
             <div class="col-12 col-sm-6 col-lg-3 col-xl footer-item">
@@ -70,7 +70,7 @@
         </div>
         <div class="row darkTxtColor justify-content-between footer-info">
             <div class="col-12 col-xl footer-item">© 2010-2019  Балтийская Служба Доставки</div>
-            <div class="col-12 col-xl footer-item"><a class="ftr_link" href="#">Политика конфиденциальности</a></div>
+            <div class="col-12 col-xl footer-item"><a class="ftr_link" href="{{ url('/politika-konfidencialnosti') }}">Политика конфиденциальности</a></div>
             <div class="col-12 col-xl footer-item d-flex justify-content-xl-end">
                 <span class="">Сайт разработала студия</span>
                 <div class="newclients"></div>
