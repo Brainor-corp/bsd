@@ -41,7 +41,11 @@
             <div class="col-12 col-sm-6 col-lg-3 col-xl footer-item">
                 <div class="footer_title">Личный кабинет</div>
                 <ul class="m-0">
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Выйти</a></li>
+                    @if(\Illuminate\Support\Facades\Auth::check())
+                        <li class="ftr_list-item"><a class="ftr_link" href="{{ route('logout') }}">Выйти</a></li>
+                    @else
+                        <li class="ftr_list-item"><a class="ftr_link" href="{{ route('login') }}">Войти</a></li>
+                    @endif
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/lenta-sobytiy') }}">Лента событий</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Мои заказы</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/otchety') }}">Отчеты</a></li>

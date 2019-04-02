@@ -158,27 +158,39 @@
                             <a href="##" class="link-style">Вход</a>
                         </div>
                     </div> -->
-                    <div class="dropdown-menu dropdown-menu__personal-account">
-                        <div class="row dropdown-menu__row justify-content-center">
-                            <span class="dropdown-menu__title">Подтверждение регистрации</span>
+                    @if(\Illuminate\Support\Facades\Auth::check())
+                        <div class="dropdown-menu dropdown-menu__personal-account">
+                            <div class="row dropdown-menu__row justify-content-center">
+                                <span class="dropdown-menu__title">Подтверждение регистрации</span>
+                            </div>
+                            <div class="d-flex dropdown-menu__row">
+                                <input type="text" class="form-control" placeholder="Код подтверждения">
+                            </div>
+                            <div class="row dropdown-menu__row justify-content-center">
+                                <span class="annotation-text">Код отправлен на номер +7 (000) 000-00-00</span>
+                            </div>
+                            <div class="d-flex">
+                                <a href="##" class="link-style">Запросить код еще раз</a>
+                            </div>
+                            <div class="d-flex dropdown-menu__row">
+                                <button class="btn btn-block btn-danger">Подтвердить регистрацию</button>
+                            </div>
+                            <div class="separator-hr"></div>
+                            <div class="d-flex dropdown-menu__row justify-content-center">
+                                <a href="##" class="link-style">Вернуться</a>
+                            </div>
                         </div>
-                        <div class="d-flex dropdown-menu__row">
-                            <input type="text" class="form-control" placeholder="Код подтверждения">
+                    @else
+                        <div class="dropdown-menu dropdown-menu__personal-account">
+                            <div class="d-flex dropdown-menu__row justify-content-center">
+                                <a href="{{ route('login') }}" class="link-style">Войти</a>
+                            </div>
+                            {{--<div class="separator-hr"></div>--}}
+                            <div class="d-flex dropdown-menu__row justify-content-center">
+                                <a href="{{ route('register') }}" class="link-style">Зарегистрироваться</a>
+                            </div>
                         </div>
-                        <div class="row dropdown-menu__row justify-content-center">
-                            <span class="annotation-text">Код отправлен на номер +7 (000) 000-00-00</span>
-                        </div>
-                        <div class="d-flex">
-                            <a href="##" class="link-style">Запросить код еще раз</a>
-                        </div>
-                        <div class="d-flex dropdown-menu__row">
-                            <button class="btn btn-block btn-danger">Подтвердить регистрацию</button>
-                        </div>
-                        <div class="separator-hr"></div>
-                        <div class="d-flex dropdown-menu__row justify-content-center">
-                            <a href="##" class="link-style">Вернуться</a>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
 

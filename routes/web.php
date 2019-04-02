@@ -12,7 +12,7 @@
 */
 
 Auth::routes();
-Route::get('/logout', 'Auth\LoginController@logout');
+Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('/', 'MainPageController@index')->name('index');
 Route::get('/terminals-addresses', 'TerminalsController@showAddresses')->name('terminals-addresses-show');
