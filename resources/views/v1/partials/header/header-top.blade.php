@@ -68,7 +68,10 @@
                                 </div>
                             </li>
                             <li class="dropdown">
-                                <a class="dropdown-toggle" href="#">Контакты</a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Контакты</a>
+                                <div role="menu" class="dropdown-menu">
+                                    <a class="dropdown-item" href="{{ url('/adres-terminalov') }}">Адрес терминалов</a>
+                                </div>
                             </li>
                         </ul>
                     </div>
