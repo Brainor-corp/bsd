@@ -150,3 +150,55 @@ $(document).on('change', '#insurance-amount', function (e) {
     e.preventDefault();
     getTotalPrice();
 });
+
+$(document).on('change', '.package-dimensions', function (e) {
+    e.preventDefault();
+
+    let id = $(this).data('packageId'),
+        length = $('#packages_'+ id +'_length').val(),
+        width = $('#packages_'+ id +'_width').val(),
+        height = $('#packages_'+ id +'_height').val(),
+        volume = 1
+    ;
+    if(length === ''){
+        length = 0.1;
+        $('#packages_'+ id +'_length').attr('value', length).val(length);
+    }else{length = parseFloat(length.replace(',', '.'))}
+    if(width === ''){
+        width = 0.1;
+        $('#packages_'+ id +'_width').attr('value', width).val(width);
+    }else{width = parseFloat(width.replace(',', '.'))}
+    if(height === ''){
+        height = 0.1;
+        $('#packages_'+ id +'_height').attr('value', height).val(height);
+    }else{height = parseFloat(height.replace(',', '.'))}
+
+    volume = parseFloat((length * width * height).toFixed(2));
+
+    $('#packages_'+ id +'_volume').attr('value', volume).val(volume);
+});
+
+$(document).on('change', '.package-weight', function (e) {
+    e.preventDefault();
+});
+
+$(document).on('change', '.package-volume', function (e) {
+    e.preventDefault();
+
+    let id = $(this).data('packageId'),
+        length = $('#packages_'+ id +'_length').val(),
+        width = $('#packages_'+ id +'_width').val(),
+        height = $('#packages_'+ id +'_height').val(),
+        volume = $('#packages_'+ id +'_volume').val()
+    ;
+    if(volume !== ''){
+        if(length !== '' && width !== '' && height !== ''){
+            height = volume/(length*width);
+            $('#packages_'+ id +'_height').attr('value', height).val(height);
+        }
+        if(length !== '' && width !== '' && height === ''){
+            width = volume/length;
+            $('#packages_'+ id +'_width').attr('value', width).val(width);
+        }
+    }
+});
