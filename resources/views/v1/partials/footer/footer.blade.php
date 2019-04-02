@@ -4,22 +4,22 @@
             <div class="col-12 col-sm-6 col-lg-3 col-xl footer-item">
                 <div class="footer_title">Услуги</div>
                 <ul class="m-0">
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Меж-терминальная перевозка</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Авиаперевозка</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Доставка документов</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Доставка в гипермаркеты</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/uslugi/mezh-terminalnaya-perevozka') }}">Меж-терминальная перевозка</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/uslugi/aviaperevozka') }}">Авиаперевозка</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/uslugi/dostavka-dokumentov') }}">Доставка документов</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/uslugi/dostavka-v-gipermarkety') }}">Доставка в гипермаркеты</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Контейнерные перевозки</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Прямая машина</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Дополнительные услуги</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/dopolnitelnye-uslugi') }}">Дополнительные услуги</a></li>
                 </ul>
             </div>
             <div class="col-12 col-sm-6 col-lg-3 col-xl footer-item">
                 <div class="footer_title">Клиентам</div>
                 <ul class="m-0">
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">FAQ</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Отзывы</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Документы</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Дополнительные услуги</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/faq') }}">FAQ</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/otzyvy') }}">Отзывы</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/dokumenty-i-sertifikaty') }}">Документы</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/dopolnitelnye-uslugi') }}">Дополнительные услуги</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Прайс лист</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Гарантия</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Направлени</a></li>
@@ -28,13 +28,13 @@
             <div class="col-12 col-sm-6 col-lg-3 col-xl footer-item">
                 <div class="footer_title">О компании</div>
                 <ul class="m-0">
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">О нас</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Новости</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Акции</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Рекламодателям</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Адреса терминалов</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Документы и сертификаты</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Партнеры</a></li>
+                    {{--<li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/o-nas') }}">О нас</a></li>--}}
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ route('news-list-show') }}">Новости</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ route('promotion-list-show') }}">Акции</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/reklamodatelyam') }}">Рекламодателям</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ route('terminals-addresses-show') }}">Адреса терминалов</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/dokumenty-i-sertifikaty') }}">Документы и сертификаты</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/partnery') }}">Партнеры</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Сотрудники</a></li>
                 </ul>
             </div>
@@ -42,9 +42,9 @@
                 <div class="footer_title">Личный кабинет</div>
                 <ul class="m-0">
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Выйти</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Лента событий</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/lenta-sobytiy') }}">Лента событий</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Мои заказы</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="#">Отчеты</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/otchety') }}">Отчеты</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Переписка с менеджером</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Претензии</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Для физических лиц</a></li>

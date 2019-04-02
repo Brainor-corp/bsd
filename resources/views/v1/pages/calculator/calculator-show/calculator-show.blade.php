@@ -35,7 +35,7 @@
                                             <div class="form-item row align-items-center">
                                                 <label class="col-auto calc__label">Наименование груза*</label>
                                                 <div class="col">
-                                                    <input type="text" class="form-control" placeholder="Шкаф" name="packages[{{ $key }}][name]" @if(isset($package['name'])) value="{{ $package['name'] }}" @endif>
+                                                    <input type="text" class="form-control" placeholder="Введите наименование груза" name="packages[{{ $key }}][name]" @if(isset($package['name'])) value="{{ $package['name'] }}" @endif>
                                                 </div>
                                             </div>
                                             <div class="form-item row align-items-center">
