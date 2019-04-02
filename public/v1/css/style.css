@@ -114,6 +114,14 @@ a:hover {
 	width: 100%;
 	height: 100%;
 }
+.map-b .container{
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	margin:auto;
+}
 .map__contacts{
 	width:300px;
 	background: white;
@@ -484,6 +492,10 @@ font-weight:900;
 	font-weight: 400;
 	color:#818f98;
 }
+.explanation-b{
+	font-size:15px;
+	color:#353c41;
+}
 .notification-el{
 	width:20px;
 	height:20px;
@@ -512,6 +524,16 @@ font-weight:900;
 	top: 50%;
 	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
+	z-index:1;
+}
+.video-inner{
+	position: absolute;
+	background: rgba(0, 0, 0, 0.6);
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	z-index:2;
 }
 .main-header {
 	height:115px;
@@ -523,6 +545,10 @@ font-weight:900;
 	height:810px;
 	position: relative;
 	overflow:hidden;
+}
+.main-page-header .container{
+	position:relative;
+	z-index:3;
 }
 .main-header a.city_choice,
 .main-header .phones a,
@@ -773,6 +799,56 @@ section{
 	margin-bottom:30px;
 }
 /* /partners */
+
+/* status-shipment */
+/* /status-shipment */
+
+/* chat */
+.messages__list{
+	margin-bottom:50px;
+}
+.user__foto{
+	flex:0 0 42px;
+	height:42px;
+	overflow:hidden;
+	border-radius: 50%;
+	margin-right:30px;
+}
+.user__name{
+	font-weight: 900;
+	color:#353c41;
+	line-height:18px;
+}
+.user__position{
+	color:#a5afb5;
+}
+.messages__text{
+	color:#353c41;
+	line-height:18px;
+}
+.messages__date{
+	color:#818f98;
+	line-height:27px;
+}
+.messages__form button{
+	margin-top:15px;
+}
+/* /chat */
+
+/* price-list */
+.price-list .price-list__cities-input{
+	position: relative;
+}
+.price-list__cities .btn{
+	margin-top:20px;
+}
+.price-list__cities{
+	margin-bottom:40px;
+}
+.price-list__table{
+	margin-top:40px;
+}
+/* /price-list */
 
 /* o-nas */
 .about__title{
@@ -1749,6 +1825,12 @@ ul.icons_list li:after {
 	border-radius:50%;
 	background:#485259;
 }
+.social-link:hover{
+	background:#ef402f;
+}
+.social-link:hover .fa{
+	color: white;
+}
 .link-style {
 	color:#5a666e;
 	border-bottom: 2px dotted #5a666e;
@@ -2163,6 +2245,13 @@ label.calc__label_max {
 	}
 }
 @media (min-width: 576px) and (max-width: 768px) {
+	.status-shipment__header .btn{
+		margin-top:10px;
+	}
+	.price-list .ml-auto{
+		margin-top:10px;
+		margin-left:0!important;
+	}
 	.control-group select {
 		width: 190px;
 	}
@@ -2272,6 +2361,16 @@ label.calc__label_max {
 	}
 }
 @media (max-width: 576px) {
+	.status-shipment__header .btn{
+		margin-top:10px;
+	}
+	.price-list .ml-auto{
+		margin-top:10px;
+		margin-left:0!important;
+	}
+	.price-list .group-input__icon{
+		display:none;
+	}
 	.reports__header-label{
 		width:100%;
 	}
