@@ -441,7 +441,7 @@
                                             <span class="block__itogo_value">{{ $tariff->route->name ?? ''}}</span>
                                         </div>
                                         <span class="block__itogo_price d-flex flex-nowrap">
-                                            <span class="block__itogo_amount">{{ $tariff->base_price }}</span>
+                                            <span class="block__itogo_amount" id="base-price" data-base-price="{{ $tariff->base_price ?? 0}}">{{ $tariff->base_price ?? 0}}</span>
                                             <span class="rouble">p</span>
                                         </span>
                                     </div>
@@ -471,7 +471,6 @@
                                         <span class="block__itogo_price d-flex flex-nowrap">
                                             <span class="block__itogo_amount"><span id="total-price"> {{ $tariff->total_data->total ?? 0}}</span></span>
                                             <span class="rouble">p</span>
-                                            <span id="base-price" data-base-price="{{ $tariff->total_data->total ?? 0}}" style="display: none"></span>
                                             <span id="total-volume" data-total-volume="{{ $tariff->total_volume ?? 0.01}}" style="display: none"></span>
                                         </span>
                                     </footer>
