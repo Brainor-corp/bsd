@@ -106,13 +106,15 @@ var getTotalPrice = function () {
     let shipCityID = $("#ship_city").val(),
         destCityID = $("#dest_city").val(),
         basePrice = $("#base-price").data('basePrice'),
-        totalVolume = $("#total-volume").data('totalVolume'),
+        totalVolume = $("#total-volume").attr('data-total-volume'),
         formData  = $('.calculator-form').serialize();
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+    console.log(totalVolume);
+    console.log(basePrice);
     console.log(formData);
     $.ajax({
         type: 'post',
@@ -239,10 +241,16 @@ $(document).on('change', '.package-dimensions', function (e) {
     volume = parseFloat((length * width * height).toFixed(2));
 
     $('#packages_'+ id +'_volume').attr('value', volume).val(volume);
+
+    totalVolumeRecount();
+
+    getTotalPrice();
 });
 
 $(document).on('change', '.package-weight', function (e) {
     e.preventDefault();
+
+    getTotalPrice();
 });
 
 $(document).on('change', '.package-volume', function (e) {
@@ -264,7 +272,21 @@ $(document).on('change', '.package-volume', function (e) {
             $('#packages_'+ id +'_width').attr('value', width).val(width);
         }
     }
+
+    totalVolumeRecount();
+
+    getTotalPrice();
 });
+
+var totalVolumeRecount = function () {
+
+    let totalVolume = 0;
+    $.each($(".package-volume"), function(index, item) {
+        totalVolume = totalVolume + parseFloat($(item).val().replace(',', '.'));
+    });
+
+    $("#total-volume").attr('data-total-volume', totalVolume);
+};
 
 $(document).on('change', '.suggest_address', function (e) {
     e.preventDefault();
