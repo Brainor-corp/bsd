@@ -188,6 +188,9 @@ var getTotalPrice = function () {
                 });
             }
 
+            $('#base-price').html(data.total);
+            $('#base-price').attr('data-base-price', data.total);
+
             $('#total-price').html(data.total);
             $('#total-price').attr('data-total-price', data.total);
         }
@@ -244,13 +247,13 @@ $(document).on('change', '.package-dimensions', function (e) {
 
     totalVolumeRecount();
 
-    getTotalPrice();
+    getBaseTariff();
 });
 
 $(document).on('change', '.package-weight', function (e) {
     e.preventDefault();
 
-    getTotalPrice();
+    getBaseTariff();
 });
 
 $(document).on('change', '.package-volume', function (e) {
@@ -275,7 +278,7 @@ $(document).on('change', '.package-volume', function (e) {
 
     totalVolumeRecount();
 
-    getTotalPrice();
+    getBaseTariff();
 });
 
 var totalVolumeRecount = function () {
