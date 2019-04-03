@@ -43,20 +43,21 @@
                         @endif
                     </select>
                 </div>
-                <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg">
+                <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg" style="display: none!important;">
                     <label class="calc__label_max">Габариты (м)</label>
                     <div class="input-group">
-                        <input type="number" step="any" name="packages[0][length]" class="form-control text-center package-params" placeholder="Д" value="0.1">
-                        <input type="number" step="any" name="packages[0][width]" class="form-control text-center package-params" placeholder="Ш" value="0.1">
-                        <input type="number" step="any" name="packages[0][height]" class="form-control text-center package-params" placeholder="В" value="0.1">
+                        <input type="number" step="any" name="packages[0][length]" class="form-control text-center package-params"  data-package-id="0" placeholder="Д" value="0.1">
+                        <input type="number" step="any" name="packages[0][width]" class="form-control text-center package-params"  data-package-id="0" placeholder="Ш" value="0.1">
+                        <input type="number" step="any" name="packages[0][height]" class="form-control text-center package-params"  data-package-id="0" placeholder="В" value="0.1">
                     </div>
                 </div>
                 <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg">
-                    <label class="calc__label_max">Вес груза (кг)</label>
-                    <input type="number" step="any" name="packages[0][weight]" class="form-control text-center package-params" placeholder="Вес в кг." value="1">
+                    <label class="calc__label_max">Объем груза (м<sup>3</sup>)</label>
+                    {{--<input type="number" step="any" name="packages[0][weight]" class="form-control text-center package-params" placeholder="Вес в кг." value="1">--}}
+                    <input type="text" id="packages_0_volume" class="form-control package-params package-volume" name="packages[0][volume]" data-package-id="0" value="0.1"/>
                 </div>
                 <div class="form-inline calc__block_itog" >
-                    <div class="form-item justify-content-between w-100">
+                    <div class="form-item justify-content-between w-100"  style="display: none">
                         Срок доставки
                         <span><span id="delivery-time">1</span><span class="rouble"> дней</span></span>
                     </div>
