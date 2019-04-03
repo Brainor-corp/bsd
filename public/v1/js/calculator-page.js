@@ -11,22 +11,22 @@
                         '<input type="text" class="form-control" placeholder="Шкаф" name="packages['+ nextId +'][name]">'+
                 '</div>'+
                     '</div>'+
-                    '<div class="form-item row align-items-center">'+
-                        '<label class="col-auto calc__label">Тип груза*</label>'+
-                    '<div class="col">'+
-                        '<div class="relative">'+
-                        '<i class="dropdown-toggle fa-icon"></i>'+
-                        '<select class="custom-select package-params" name="packages['+ nextId +'][type]">'+
-                        '<option disabled selected>Выберите из списка</option>'+
-                    '<option>1</option>'+
-                    '<option>2</option>'+
-                    '<option>3</option>'+
-                    '<option>4</option>'+
-                    '<option>5</option>'+
-                    '</select>'+
-                   '</div>'+
-                    '</div>'+
-                    '</div>'+
+                    // '<div class="form-item row align-items-center">'+
+                    //     '<label class="col-auto calc__label">Тип груза*</label>'+
+                    //     '<div class="col">'+
+                    //         '<div class="relative">'+
+                    //             '<i class="dropdown-toggle fa-icon"></i>'+
+                    //             '<select class="custom-select package-params" name="packages['+ nextId +'][type]">'+
+                    //                 '<option disabled selected>Выберите из списка</option>'+
+                    //                 '<option>1</option>'+
+                    //                 '<option>2</option>'+
+                    //                 '<option>3</option>'+
+                    //                 '<option>4</option>'+
+                    //                 '<option>5</option>'+
+                    //             '</select>'+
+                    //         '</div>'+
+                    //     '</div>'+
+                    // '</div>'+
                     '<div class="row">'+
                         '<div class="col-8">'+
                         '<div class="form-item row align-items-center">'+
