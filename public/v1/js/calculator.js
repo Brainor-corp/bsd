@@ -113,6 +113,7 @@ var getTotalPrice = function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+    console.log(formData);
     $.ajax({
         type: 'post',
         url: '/api/calculator/get-total-price',
@@ -122,7 +123,69 @@ var getTotalPrice = function () {
 
         },
         success: function(data){
+            $('#custom-services-total-wrapper').css({
+                'display': 'none',
+            });
+            let services = '';
+
             console.log(data);
+
+            if(typeof data.services !== 'undefined') {
+                if (Object.keys(data.services).length > 0) {
+
+                    $.each(data.services, function(index, item) {
+                        services = services +
+                            '<div class="custom-service-total-item">'+
+                                '<div class="block__itogo_item d-flex">'+
+                                    '<div class="d-flex flex-wrap" id="services-total-names">'+
+                                        '<span class="block__itogo_value">' + item.name + '</span>'+
+                                    '</div>'+
+                                    '<span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">'+
+                                        '<span class="block__itogo_amount">' + item.total + '</span>'+
+                                        '<span class="rouble">p</span>'+
+                                    '</span>'+
+                                '</div>'+
+                            '</div>';
+                    });
+                }
+            }
+            if(typeof data.insurance !== 'undefined') {
+                services = services +
+                    '<div class="custom-service-total-item">'+
+                    '<div class="block__itogo_item d-flex">'+
+                    '<div class="d-flex flex-wrap" id="services-total-names">'+
+                    '<span class="block__itogo_value">Страхование</span>'+
+                    '</div>'+
+                    '<span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">'+
+                    '<span class="block__itogo_amount">' + data.insurance + '</span>'+
+                    '<span class="rouble">p</span>'+
+                    '</span>'+
+                    '</div>'+
+                    '</div>';
+            }
+            if(typeof data.discount !== 'undefined') {
+                services = services +
+                    '<div class="custom-service-total-item">'+
+                    '<div class="block__itogo_item d-flex">'+
+                    '<div class="d-flex flex-wrap" id="services-total-names">'+
+                    '<span class="block__itogo_value">Скидка</span>'+
+                    '</div>'+
+                    '<span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">'+
+                    '<span class="block__itogo_amount">' + data.discount + '</span>'+
+                    '<span class="rouble">p</span>'+
+                    '</span>'+
+                    '</div>'+
+                    '</div>';
+            }
+
+            if(services !== ''){
+                $('#custom-services-total-list').html(services);
+
+                $('#custom-services-total-wrapper').css({
+                    'display': 'block',
+                });
+            }
+
             $('#total-price').html(data.total);
             $('#total-price').attr('data-total-price', data.total);
         }
@@ -201,4 +264,62 @@ $(document).on('change', '.package-volume', function (e) {
             $('#packages_'+ id +'_width').attr('value', width).val(width);
         }
     }
+});
+
+$(document).on('change', '.suggest_address', function (e) {
+    e.preventDefault();
+
+    let point = $(this);
+    $(this).kladr({
+        type: $.kladr.type.city,
+        source: function (query, callback) {
+            var suggestList = point.data('suggestList');
+            var matching = [];
+            if (suggestList) {
+                suggestList.filter(function (value) {
+                    return value.name.toLowerCase() == query.toLowerCase();
+                });
+            }
+            if (matching.length > 0)
+                callback(matching);
+            else
+                ymaps.suggest(query, {boundedBy: point.data('seachRect'), results: 10}).then(function (items) {
+                    for (var index in suggestList) {
+                        var suggestItem = suggestList[index];
+                        if (suggestItem.name.toLowerCase().indexOf(query) == 0) {
+                            var indexExisting = items.indexOf(suggestItem.displayName);
+                            if (indexExisting > -1)
+                                items.splice(indexExisting, 1);
+                            items.unshift(suggestItem)
+                        }
+                    }
+
+                    callback(items);
+                });
+        },
+        labelFormat: function (obj, query) {
+            return obj.displayName;
+        },
+        valueFormat: function (obj, query) {
+            return obj.value.replace('Россия, ', '');
+        },
+        select: function (obj) {
+            var fullName = obj.value;
+            var nameArray = fullName.split(', ');
+            point.data('name', nameArray[nameArray.length - 1]);
+            point.data('fullName', fullName);
+            point.siblings('span').children('input.full_address').val(fullName);
+            point.data('region', nameArray[1]);
+            if (obj.id !== undefined)
+                point.data('id', obj.id);
+            else
+                point.data('id', 0);
+
+            if (obj.distance !== undefined) {
+                point.siblings('input.distance').val(obj.distance);
+                calculateToPoint(point);
+            } else
+                getDistance(point);
+        }
+    });
 });

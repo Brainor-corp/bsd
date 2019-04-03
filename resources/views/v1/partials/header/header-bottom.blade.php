@@ -28,7 +28,7 @@
                         <option value=""></option>
                         @if($shipCities->count() > 0)
                             @foreach($shipCities as $shipCity)
-                                <option value="{{ $shipCity->id }}">{{ $shipCity->name }}</option>
+                                <option value="{{ $shipCity->id }}" @if($shipCity->id == 53) selected @endif>{{ $shipCity->name }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -36,28 +36,33 @@
                     {{--<input type="text" id="dest_city" class="form-control" placeholder="Санкт-Петербург">--}}
                     <select id="dest_city" class="form-control"  name="dest_city" placeholder="Москва">
                         <option value=""></option>
+                        @if($destinationCities->count() > 0)
+                            @foreach($destinationCities as $destinationCity)
+                                <option value="{{ $destinationCity->id }}" @if($destinationCity->id == 78) selected @endif>{{ $destinationCity->name }}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
                 <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg">
                     <label class="calc__label_max">Габариты (м)</label>
                     <div class="input-group">
-                        <input type="number" step="any" name="packages[0][length]" class="form-control text-center package-params" placeholder="Д">
-                        <input type="number" step="any" name="packages[0][width]" class="form-control text-center package-params" placeholder="Ш">
-                        <input type="number" step="any" name="packages[0][height]" class="form-control text-center package-params" placeholder="В">
+                        <input type="number" step="any" name="packages[0][length]" class="form-control text-center package-params" placeholder="Д" value="0.1">
+                        <input type="number" step="any" name="packages[0][width]" class="form-control text-center package-params" placeholder="Ш" value="0.1">
+                        <input type="number" step="any" name="packages[0][height]" class="form-control text-center package-params" placeholder="В" value="0.1">
                     </div>
                 </div>
                 <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg">
                     <label class="calc__label_max">Вес груза (кг)</label>
-                    <input type="number" step="any" name="packages[0][weight]" class="form-control text-center package-params" placeholder="Вес в кг.">
+                    <input type="number" step="any" name="packages[0][weight]" class="form-control text-center package-params" placeholder="Вес в кг." value="1">
                 </div>
                 <div class="form-inline calc__block_itog" >
                     <div class="form-item justify-content-between w-100">
                         Срок доставки
-                        <span><span id="delivery-time">0</span><span class="rouble"> дней</span></span>
+                        <span><span id="delivery-time">1</span><span class="rouble"> дней</span></span>
                     </div>
                     <div class="form-item justify-content-between w-100">
                         Стоимость перевозки
-                        <span><span id="base-price">0</span><span class="rouble">p</span></span>
+                        <span><span id="base-price">150</span><span class="rouble">p</span></span>
                     </div>
                 </div>
                 <button class="btn btn-block btn-danger">Перейти к оформлению заказа</button>
