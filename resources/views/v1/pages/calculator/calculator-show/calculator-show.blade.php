@@ -153,28 +153,28 @@
                                                 @endif
                                             </select>
                                         </div>
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="need-to-take" name="need-to-take">
+                                        {{--<div class="custom-control custom-checkbox">--}}
+                                            {{--<input type="checkbox" class="custom-control-input" id="need-to-take" name="need-to-take">--}}
                                             {{--<label class="custom-control-label" for="bring-your-own">Самостоятельно привезти груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
-                                            <label class="custom-control-label" for="bring-your-own">Нужно забрать груз из:</label>
-                                        </div>
+                                            {{--<label class="custom-control-label" for="bring-your-own">Нужно забрать груз из:</label>--}}
+                                        {{--</div>--}}
 
-                                        <div class="form-item ininner">
-                                            <div class="relative">
+                                        {{--<div class="form-item ininner">--}}
+                                            {{--<div class="relative">--}}
                                                 {{--<i class="dropdown-toggle fa-icon"></i>--}}
-                                                <input class="form-control suggest_address" id="need-to-take-adress" name="need-to-take-adress" placeholder="Название населенного пункта или адрес">
-                                            </div>
+                                                {{--<input class="form-control suggest_address" id="need-to-take-adress" name="need-to-take-adress" placeholder="Название населенного пункта или адрес">--}}
+                                            {{--</div>--}}
                                             {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
-                                        </div>
+                                        {{--</div>--}}
                                         {{--<div class="custom-control custom-radio">--}}
                                             {{--<input type="radio" class="custom-control-input" id="pick-up-cargo" name="from" required>--}}
                                             {{--<label class="custom-control-label" for="pick-up-cargo">Забрать груз от адреса отправителя (1 050 <span class="rouble">p</span>)</label>--}}
                                         {{--</div>--}}
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="ship-from-point" name="ship-from-point">
+                                        {{--<div class="custom-control custom-checkbox">--}}
+                                            {{--<input type="checkbox" class="custom-control-input" id="ship-from-point" name="ship-from-point">--}}
                                             {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
-                                            <label class="custom-control-label" for="ship-from-point">Доставку груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
-                                        </div>
+                                            {{--<label class="custom-control-label" for="ship-from-point">Доставку груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>--}}
+                                        {{--</div>--}}
                                     </div>
                                 </div>
                                 <div class="form-item row">
@@ -191,27 +191,27 @@
                                                 @endif
                                             </select>
                                         </div>
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="need-to-bring" name="need-to-bring" required>
+                                        {{--<div class="custom-control custom-checkbox">--}}
+                                            {{--<input type="checkbox" class="custom-control-input" id="need-to-bring" name="need-to-bring" required>--}}
                                             {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
-                                            <label class="custom-control-label" for="need-to-bring">Нужно доставить груз в:</label>
-                                        </div>
-                                        <div class="form-item ininner">
-                                            <div class="relative">
+                                            {{--<label class="custom-control-label" for="need-to-bring">Нужно доставить груз в:</label>--}}
+                                        {{--</div>--}}
+                                        {{--<div class="form-item ininner">--}}
+                                            {{--<div class="relative">--}}
                                                 {{--<i class="dropdown-toggle fa-icon"></i>--}}
-                                                <input class="form-control suggest_address"  id="need-to-bring-address" name="need-to-bring-address" placeholder="Название населенного пункта или адрес">
-                                            </div>
+                                                {{--<input class="form-control suggest_address"  id="need-to-bring-address" name="need-to-bring-address" placeholder="Название населенного пункта или адрес">--}}
+                                            {{--</div>--}}
                                             {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
-                                        </div>
+                                        {{--</div>--}}
                                         {{--<div class="custom-control custom-radio">--}}
                                             {{--<input type="radio" class="custom-control-input" id="deliver-cargo" name="where" required>--}}
                                             {{--<label class="custom-control-label" for="deliver-cargo">Доставить груз до адреса получателя (1 050 <span class="rouble">p</span>)</label>--}}
                                         {{--</div>--}}
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="bring-to-point" name="bring-to-point" required>
+                                        {{--<div class="custom-control custom-checkbox">--}}
+                                            {{--<input type="checkbox" class="custom-control-input" id="bring-to-point" name="bring-to-point" required>--}}
                                             {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
-                                            <label class="custom-control-label" for="bring-to-point">Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
-                                        </div>
+                                            {{--<label class="custom-control-label" for="bring-to-point">Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>--}}
+                                        {{--</div>--}}
                                     </div>
                                 </div>
                                 <div class="calc__title">Дополнительные услуги</div>
