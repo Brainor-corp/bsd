@@ -23,3 +23,7 @@
     color: #5a666e;
 }
 /*КОНЕЦ --- Доп.усулги*/
+
+.custom-checkbox .custom-control-input:disabled:checked~.custom-control-label::before{
+    background-color: transparent;
+}

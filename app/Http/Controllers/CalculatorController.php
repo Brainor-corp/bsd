@@ -327,7 +327,7 @@ class CalculatorController extends Controller
         }
         if(isset($insuranceAmount)){
             if(intval($insuranceAmount)>0){
-                $insurancePrice = max(($insuranceAmount * 0.1499999999999999944488848768742172978818416595458984375)/100, 50);
+                $insurancePrice = max(($insuranceAmount * 0.1000000000000000055511151231257827021181583404541015625)/100, 50);
 
                 $totalPrice += $insurancePrice;
 
