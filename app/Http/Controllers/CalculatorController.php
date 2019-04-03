@@ -301,11 +301,19 @@ class CalculatorController extends Controller
             $servicesData = Service::get();
 
             $usedServices = [];
+//            dd(is_int($totalPrice));
             foreach ($services as $serviceId){
 
                 $currentService = $servicesData->where('id', $serviceId)->first();
                 $currentServicePrice = max($currentService->price * $totalVolume, 200);
-                $totalPrice += $currentServicePrice;
+
+                if($totalPrice !== 'договорная'){
+                    $totalPrice += $currentServicePrice;
+                }else{
+                    $currentServicePrice = 'договорная';
+                    $totalPrice = 'договорная';
+                }
+
 
                 $usedServices[$serviceId]=[
                     'name'          =>          $currentService->name,
