@@ -238,12 +238,12 @@
                                 </div>
                                 <div class="form-item form-group-additional">
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="insurance" checked disabled>
+                                        <input type="checkbox" class="custom-control-input" id="insurance" disabled checked>
                                         <label class="custom-control-label" for="insurance">Страхование</label>
                                     </div>
                                     <div id="insurance-amount-wrapper">
                                         <br>
-                                        <label class="custom-control-label" for="insurance-amount">Сумма страховки</label>
+                                        <label class="" for="insurance-amount">Сумма страховки</label>
                                         <input type="text" class="form-control" id="insurance-amount" name="insurance_amount" placeholder="Введите сумму страховки" value="50000">
                                         <br>
                                     </div>
