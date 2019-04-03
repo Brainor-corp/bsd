@@ -6,6 +6,7 @@
 
 @section('footerScripts')
     <script src="{{ asset('packages/selectize/selectize.min.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script src="{{ asset('v1/js/jquery.kladr.js') }}@include('v1.partials.versions.jsVersion')"></script>
     <script src="{{ asset('v1/js/calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>
     <script src="{{ asset('v1/js/calculator-page.js') }}@include('v1.partials.versions.jsVersion')"></script>
 @endsection
@@ -38,22 +39,22 @@
                                                     <input type="text" class="form-control" placeholder="Введите наименование груза" name="packages[{{ $key }}][name]" @if(isset($package['name'])) value="{{ $package['name'] }}" @endif>
                                                 </div>
                                             </div>
-                                            <div class="form-item row align-items-center">
-                                                <label class="col-auto calc__label">Тип груза*</label>
-                                                <div class="col">
-                                                    <div class="relative">
-                                                        <i class="dropdown-toggle fa-icon"></i>
-                                                        <select class="custom-select package-params" name="packages[{{ $key }}][type]">
-                                                            <option disabled selected>Выберите из списка</option>
-                                                            <option>1</option>
-                                                            <option>2</option>
-                                                            <option>3</option>
-                                                            <option>4</option>
-                                                            <option>5</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            {{--<div class="form-item row align-items-center">--}}
+                                                {{--<label class="col-auto calc__label">Тип груза*</label>--}}
+                                                {{--<div class="col">--}}
+                                                    {{--<div class="relative">--}}
+                                                        {{--<i class="dropdown-toggle fa-icon"></i>--}}
+                                                        {{--<select class="custom-select package-params" name="packages[{{ $key }}][type]">--}}
+                                                            {{--<option disabled selected>Выберите из списка</option>--}}
+                                                            {{--<option>1</option>--}}
+                                                            {{--<option>2</option>--}}
+                                                            {{--<option>3</option>--}}
+                                                            {{--<option>4</option>--}}
+                                                            {{--<option>5</option>--}}
+                                                        {{--</select>--}}
+                                                    {{--</div>--}}
+                                                {{--</div>--}}
+                                            {{--</div>--}}
                                             <div class="row">
                                                 <div class="col-8">
                                                     <div class="form-item row align-items-center">
@@ -152,27 +153,27 @@
                                                 @endif
                                             </select>
                                         </div>
-                                        <div class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" id="bring-your-own" name="from" required>
-                                            <label class="custom-control-label" for="bring-your-own">Самостоятельно привезти груз  на терминал (100 <span class="rouble">p</span>)</label>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="need-to-take" name="need-to-take">
+                                            {{--<label class="custom-control-label" for="bring-your-own">Самостоятельно привезти груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
+                                            <label class="custom-control-label" for="bring-your-own">Нужно забрать груз из:</label>
                                         </div>
+
                                         <div class="form-item ininner">
                                             <div class="relative">
-                                                <i class="dropdown-toggle fa-icon"></i>
-                                                <select class="custom-select">
-                                                    <option disabled selected>Выберите из списка</option>
-                                                    <option>1</option>
-                                                    <option>2</option>
-                                                    <option>3</option>
-                                                    <option>4</option>
-                                                    <option>5</option>
-                                                </select>
+                                                {{--<i class="dropdown-toggle fa-icon"></i>--}}
+                                                <input class="form-control suggest_address" id="need-to-take-adress" name="need-to-take-adress" placeholder="Название населенного пункта или адрес">
                                             </div>
-                                            <div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>
+                                            {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
                                         </div>
-                                        <div class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" id="pick-up-cargo" name="from" required>
-                                            <label class="custom-control-label" for="pick-up-cargo">Забрать груз от адреса отправителя (1 050 <span class="rouble">p</span>)</label>
+                                        {{--<div class="custom-control custom-radio">--}}
+                                            {{--<input type="radio" class="custom-control-input" id="pick-up-cargo" name="from" required>--}}
+                                            {{--<label class="custom-control-label" for="pick-up-cargo">Забрать груз от адреса отправителя (1 050 <span class="rouble">p</span>)</label>--}}
+                                        {{--</div>--}}
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="ship-from-point" name="ship-from-point">
+                                            {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
+                                            <label class="custom-control-label" for="ship-from-point">Доставку груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
                                         </div>
                                     </div>
                                 </div>
@@ -190,27 +191,26 @@
                                                 @endif
                                             </select>
                                         </div>
-                                        <div class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" id="you-can-pick" name="where" required>
-                                            <label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="need-to-bring" name="need-to-bring" required>
+                                            {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
+                                            <label class="custom-control-label" for="need-to-bring">Нужно доставить груз в:</label>
                                         </div>
                                         <div class="form-item ininner">
                                             <div class="relative">
-                                                <i class="dropdown-toggle fa-icon"></i>
-                                                <select class="custom-select">
-                                                    <option disabled selected>Выберите из списка</option>
-                                                    <option>1</option>
-                                                    <option>2</option>
-                                                    <option>3</option>
-                                                    <option>4</option>
-                                                    <option>5</option>
-                                                </select>
+                                                {{--<i class="dropdown-toggle fa-icon"></i>--}}
+                                                <input class="form-control suggest_address"  id="need-to-bring-address" name="need-to-bring-address" placeholder="Название населенного пункта или адрес">
                                             </div>
-                                            <div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>
+                                            {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
                                         </div>
-                                        <div class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" id="deliver-cargo" name="where" required>
-                                            <label class="custom-control-label" for="deliver-cargo">Доставить груз до адреса получателя (1 050 <span class="rouble">p</span>)</label>
+                                        {{--<div class="custom-control custom-radio">--}}
+                                            {{--<input type="radio" class="custom-control-input" id="deliver-cargo" name="where" required>--}}
+                                            {{--<label class="custom-control-label" for="deliver-cargo">Доставить груз до адреса получателя (1 050 <span class="rouble">p</span>)</label>--}}
+                                        {{--</div>--}}
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="bring-to-point" name="bring-to-point" required>
+                                            {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
+                                            <label class="custom-control-label" for="bring-to-point">Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
                                         </div>
                                     </div>
                                 </div>
@@ -244,7 +244,7 @@
                                     <div id="insurance-amount-wrapper" style="display: none">
                                         <br>
                                         <label class="custom-control-label" for="insurance-amount">Сумма страховки</label>
-                                        <input type="text" class="form-control" id="insurance-amount" name="insurance_amount" placeholder="1000">
+                                        <input type="text" class="form-control" id="insurance-amount" name="insurance_amount" placeholder="Введите сумму страховки">
                                         <br>
                                     </div>
                                     <div class="relative">
@@ -259,40 +259,40 @@
                                         </select>
                                     </div>
 
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="loading-and-unloading">
-                                        <label class="custom-control-label" for="loading-and-unloading">Погрузо-разгрузочные работы</label>
-                                    </div>
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="exact-time">
-                                        <label class="custom-control-label" for="exact-time">Доставка к точному времен</label>
-                                    </div>
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="date-execution">
-                                        <label class="custom-control-label" for="date-execution">Дата исполнение заказа</label>
-                                    </div>
+                                    {{--<div class="custom-control custom-checkbox">--}}
+                                        {{--<input type="checkbox" class="custom-control-input" id="loading-and-unloading">--}}
+                                        {{--<label class="custom-control-label" for="loading-and-unloading">Погрузо-разгрузочные работы</label>--}}
+                                    {{--</div>--}}
+                                    {{--<div class="custom-control custom-checkbox">--}}
+                                        {{--<input type="checkbox" class="custom-control-input" id="exact-time">--}}
+                                        {{--<label class="custom-control-label" for="exact-time">Доставка к точному времен</label>--}}
+                                    {{--</div>--}}
+                                    {{--<div class="custom-control custom-checkbox">--}}
+                                        {{--<input type="checkbox" class="custom-control-input" id="date-execution">--}}
+                                        {{--<label class="custom-control-label" for="date-execution">Дата исполнение заказа</label>--}}
+                                    {{--</div>--}}
                                 </div>
-                                <div class="form-item ininner">
-                                    <div class="row align-items-center">
-                                        <div class="col-4">
-                                            <div class="relative">
-                                                <i class="fa-icon fa fa-calendar"></i>
-                                                <input type="text" class="form-control" placeholder="12.01.2019">
-                                            </div>
-                                        </div>
-                                        <span class="annotation-text">дата приезда машины к отправителю</span>
-                                    </div>
-                                </div>
-                                <div class="form-item ininner">
-                                    <div class="row align-items-center">
-                                        <div class="input-group col-4">
-                                            <input type="text" class="form-control text-center" placeholder="09:00" />
-                                            <i class="group-input__icon fa fa-minus"></i>
-                                            <input type="text" class="form-control text-center" placeholder="17:00" />
-                                        </div>
-                                        <span class="annotation-text">время забора</span>
-                                    </div>
-                                </div>
+                                {{--<div class="form-item ininner">--}}
+                                    {{--<div class="row align-items-center">--}}
+                                        {{--<div class="col-4">--}}
+                                            {{--<div class="relative">--}}
+                                                {{--<i class="fa-icon fa fa-calendar"></i>--}}
+                                                {{--<input type="text" class="form-control" placeholder="12.01.2019">--}}
+                                            {{--</div>--}}
+                                        {{--</div>--}}
+                                        {{--<span class="annotation-text">дата приезда машины к отправителю</span>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
+                                {{--<div class="form-item ininner">--}}
+                                    {{--<div class="row align-items-center">--}}
+                                        {{--<div class="input-group col-4">--}}
+                                            {{--<input type="text" class="form-control text-center" placeholder="09:00" />--}}
+                                            {{--<i class="group-input__icon fa fa-minus"></i>--}}
+                                            {{--<input type="text" class="form-control text-center" placeholder="17:00" />--}}
+                                        {{--</div>--}}
+                                        {{--<span class="annotation-text">время забора</span>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
                                 <div class="calc__title">Отправитель</div>
                                 <div class="custom-control custom-radio">
                                     <input type="radio" class="custom-control-input" id="sender-legally" name="sender" required />
@@ -425,45 +425,45 @@
                             <section class="block__itogo">
                                 <div class="block__itogo-inner">
                                     <header class="block__itogo_title">Перевозка груза включает</header>
-                                    <div class="block__itogo_item d-flex">
-                                        <div class="d-flex flex-wrap">
-                                            <span class="block__itogo_label">Забор груза:</span>
-                                            <span class="block__itogo_value">Терминал</span>
-                                        </div>
-                                        <span class="block__itogo_price d-flex flex-nowrap">
-                                            <span class="block__itogo_amount">155</span>
-                                            <span class="rouble">p</span>
-                                        </span>
-                                    </div>
+                                    {{--<div class="block__itogo_item d-flex">--}}
+                                        {{--<div class="d-flex flex-wrap">--}}
+                                            {{--<span class="block__itogo_label">Забор груза:</span>--}}
+                                            {{--<span class="block__itogo_value">Терминал</span>--}}
+                                        {{--</div>--}}
+                                        {{--<span class="block__itogo_price d-flex flex-nowrap">--}}
+                                            {{--<span class="block__itogo_amount">155</span>--}}
+                                            {{--<span class="rouble">p</span>--}}
+                                        {{--</span>--}}
+                                    {{--</div>--}}
                                     <div class="block__itogo_item d-flex">
                                         <div class="d-flex flex-wrap">
                                             <span class="block__itogo_label">Межтерминальная перевозка:</span>
-                                            <span class="block__itogo_value">Москва – Екатеринбург</span>
+                                            <span class="block__itogo_value">{{ $tariff->route->name ?? ''}}</span>
                                         </div>
                                         <span class="block__itogo_price d-flex flex-nowrap">
-                                            <span class="block__itogo_amount">155</span>
+                                            <span class="block__itogo_amount">{{ $tariff->base_price }}</span>
                                             <span class="rouble">p</span>
                                         </span>
                                     </div>
-                                    <div class="block__itogo_item d-flex">
-                                        <div class="d-flex flex-wrap">
-                                            <span class="block__itogo_label">Доставка груза:</span>
-                                            <span class="block__itogo_value">Терминал</span>
+                                    {{--<div class="block__itogo_item d-flex">--}}
+                                        {{--<div class="d-flex flex-wrap">--}}
+                                            {{--<span class="block__itogo_label">Доставка груза:</span>--}}
+                                            {{--<span class="block__itogo_value">Терминал</span>--}}
+                                        {{--</div>--}}
+                                        {{--<span class="block__itogo_price d-flex flex-nowrap">--}}
+                                            {{--<span class="block__itogo_amount">155</span>--}}
+                                            {{--<span class="rouble">p</span>--}}
+                                        {{--</span>--}}
+                                    {{--</div>--}}
+                                    <div id="custom-services-total-wrapper" style="display: none">
+                                        <div class="block__itogo_item d-flex">
+                                            <div class="d-flex flex-wrap">
+                                                <span class="block__itogo_label">Дополнительные услуги:</span>
+                                            </div>
                                         </div>
-                                        <span class="block__itogo_price d-flex flex-nowrap">
-                                            <span class="block__itogo_amount">155</span>
-                                            <span class="rouble">p</span>
-                                        </span>
-                                    </div>
-                                    <div class="block__itogo_item d-flex">
-                                        <div class="d-flex flex-wrap">
-                                            <span class="block__itogo_label">Дополнительные услуги:</span>
-                                            <span class="block__itogo_value">Погрузочно-разгрузочные работы</span>
+                                        <div id="custom-services-total-list">
+
                                         </div>
-                                        <span class="block__itogo_price d-flex flex-nowrap">
-                                            <span class="block__itogo_amount">155</span>
-                                            <span class="rouble">p</span>
-                                        </span>
                                     </div>
                                     <div class="separator-hr"></div>
                                     <footer class="block__itogo_footer d-flex">
