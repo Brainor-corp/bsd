@@ -161,13 +161,27 @@ $(document).on('change', '#insurance-amount', function (e) {
 
 $(document).on('change', '.package-dimensions', function (e) {
     e.preventDefault();
-
+    console.log(parameters);
     let id = $(this).data('packageId'),
         length = $('#packages_'+ id +'_length').val(),
         width = $('#packages_'+ id +'_width').val(),
         height = $('#packages_'+ id +'_height').val(),
+        dimensionType = 'max_'+$(this).data('dimensionType'),
+        dimensionMax = 0,
         volume = 1
     ;
+
+    dimensionMax = parameters[dimensionType];
+    if($(this).val() >dimensionMax){
+        $(this).css({
+            'background': 'rgba(255, 177, 177, 0.25)',
+        });
+    }else {
+        $(this).css({
+            'background': 'transparent',
+        });
+    }
+
     if(length === ''){
         length = 0.1;
         $('#packages_'+ id +'_length').attr('value', length).val(length);
@@ -193,6 +207,26 @@ $(document).on('change', '.package-dimensions', function (e) {
 $(document).on('change', '.package-weight', function (e) {
     e.preventDefault();
 
+    let id = $(this).data('packageId'),
+        length = $('#packages_'+ id +'_length').val(),
+        width = $('#packages_'+ id +'_width').val(),
+        height = $('#packages_'+ id +'_height').val(),
+        volume = $('#packages_'+ id +'_volume').val(),
+        dimensionType = 'max_'+$(this).data('dimensionType'),
+        dimensionMax = 0
+    ;
+
+    dimensionMax = parameters[dimensionType];
+    if($(this).val() >dimensionMax){
+        $(this).css({
+            'background': 'rgba(255, 177, 177, 0.25)',
+        });
+    }else {
+        $(this).css({
+            'background': 'transparent',
+        });
+    }
+
     getBaseTariff();
 });
 
@@ -203,19 +237,51 @@ $(document).on('change', '.package-volume', function (e) {
         length = $('#packages_'+ id +'_length').val(),
         width = $('#packages_'+ id +'_width').val(),
         height = $('#packages_'+ id +'_height').val(),
-        volume = $('#packages_'+ id +'_volume').val()
+        volume = $('#packages_'+ id +'_volume').val(),
+        dimensionType = 'max_'+$(this).data('dimensionType'),
+        dimensionMax = 0
     ;
+
+
+    dimensionMax = parameters[dimensionType];
+    if($(this).val() > dimensionMax){
+        $(this).css({
+            'background': 'rgba(255, 177, 177, 0.25)',
+        });
+    }else {
+        $(this).css({
+            'background': 'transparent',
+        });
+    }
+
     if(volume !== ''){
         if(length !== '' && width !== '' && height !== ''){
             height = volume/(length*width);
             $('#packages_'+ id +'_height').attr('value', height).val(height);
+            if(height > parameters['max_height']){
+                $('#packages_'+ id +'_height').css({
+                    'background': 'rgba(255, 177, 177, 0.25)',
+                });
+            }else {
+                $('#packages_'+ id +'_height').css({
+                    'background': 'transparent',
+                });
+            }
         }
         if(length !== '' && width !== '' && height === ''){
             width = volume/length;
             $('#packages_'+ id +'_width').attr('value', width).val(width);
+            if(width >parameters['max_width']){
+                $('#packages_'+ id +'_width').css({
+                    'background': 'rgba(255, 177, 177, 0.25)',
+                });
+            }else {
+                $('#packages_'+ id +'_width').css({
+                    'background': 'transparent',
+                });
+            }
         }
     }
-
     totalVolumeRecount();
 
     getBaseTariff();
