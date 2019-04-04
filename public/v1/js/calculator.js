@@ -415,10 +415,10 @@ $(document).on('change', '.suggest_address', function (e) {
             else
                 point.data('id', 0);
 
-            if (obj.distance !== undefined) {
-                point.siblings('input.distance').val(obj.distance);
-                calculateToPoint(point);
-            } else
+            // if (obj.distance !== undefined) {
+            //     point.siblings('input.distance').val(obj.distance);
+            //     calculateToPoint(point);
+            // } else
                 getDistance(point);
         }
     });
