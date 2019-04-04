@@ -33,19 +33,19 @@
                         '<label class="col-auto calc__label">Габариты (м)*</label>'+
                         '<div class="col calc__inpgrp relative row__inf">'+
                         '<div class="input-group">'+
-                        '<input type="text" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="packages['+ nextId +'][length]" data-package-id="'+ nextId +'" placeholder="Д"/>'+
-                '<input type="text" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="packages['+ nextId +'][width]" data-package-id="'+ nextId +'" placeholder="Ш">'+
-                '<input type="text" id="packages_'+ nextId +'_height" class="form-control text-center package-params package-dimensions" name="packages['+ nextId +'][height]" data-package-id="'+ nextId +'" placeholder="В"/>'+
+                        '<input type="text" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="packages['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Д"/>'+
+                '<input type="text" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="packages['+ nextId +'][width]" data-package-id="'+ nextId +'" data-dimension-type="width" placeholder="Ш">'+
+                '<input type="text" id="packages_'+ nextId +'_height" class="form-control text-center package-params package-dimensions" name="packages['+ nextId +'][height]" data-package-id="'+ nextId +'" data-dimension-type="height" placeholder="В"/>'+
                 '</div>'+
                     '</div>'+
                     '</div>'+
                     '<div class="form-item row align-items-center">'+
                         '<label class="col-auto calc__label">Вес груза (кг)*</label>'+
-                    '<div class="col calc__inpgrp"><input type="text" id="packages_'+ nextId +'_weight" class="form-control package-params package-weight" name="packages['+ nextId +'][weight]" data-package-id="'+ nextId +'"/></div>'+
+                    '<div class="col calc__inpgrp"><input type="text" id="packages_'+ nextId +'_weight" class="form-control package-params package-weight" name="packages['+ nextId +'][weight]" data-package-id="'+ nextId +'" data-dimension-type="weight"/></div>'+
                     '</div>'+
                     '<div class="form-item row align-items-center">'+
                         '<label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>'+
-                    '<div class="col calc__inpgrp"><input type="text" id="packages_'+ nextId +'_volume" class="form-control package-params package-volume" name="packages['+ nextId +'][volume]" data-package-id="'+ nextId +'"/></div>'+
+                    '<div class="col calc__inpgrp"><input type="text" id="packages_'+ nextId +'_volume" class="form-control package-params package-volume" name="packages['+ nextId +'][volume]" data-package-id="'+ nextId +'" data-dimension-type="volume"/></div>'+
                     '</div>'+
                     '</div>'+
                     '<div class="col-4">'+

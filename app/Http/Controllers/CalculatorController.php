@@ -183,9 +183,13 @@ class CalculatorController extends Controller
 
 
         if ($weight <= 2 && $volume <= 0.01) {
-            if ($route->wrapper_tariff > 0)
+            if ($route->wrapper_tariff > 0){
                 $tariff->wrapper = $route->wrapper_tariff;
                 $basePrice =  $tariff->wrapper;
+                if($basePrice < $route->min_cost){
+                    $basePrice =  $route->min_cost;
+                }
+            }
         }
         if( !isset($basePrice)) {
             if ($route->fixed_tariffs) {
