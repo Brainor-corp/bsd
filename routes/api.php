@@ -27,3 +27,9 @@ Route::get('/upload-xml-cities', 'UploadXmlController@uploadCities')->name('uplo
 Route::get('/upload-xml-thresholds', 'UploadXmlController@uploadThresholds')->name('uploadXmlThresholds');
 Route::get('/upload-xml-routes', 'UploadXmlController@uploadRoutes')->name('uploadXmlRoutes');
 Route::get('/upload-xml-route-tariff', 'UploadXmlController@uploadRouteTariffs')->name('uploadXmlRouteTariffs');
+Route::get('/upload-xml-forward-thresholds', 'UploadXmlController@uploadForwardThresholds')->name('uploadForwardThresholds');
+Route::get('/upload-xml-per-km-tariffs', 'UploadXmlController@uploadPerKmTariffs')->name('uploadPerKmTariffs');
+Route::get('/upload-xml-inside-forwarding', 'UploadXmlController@uploadInsideForwarding')->name('uploadInsideForwarding');
+Route::get('/upload-xml-outside-forwarding', 'UploadXmlController@uploadOutsideForwarding')->name('uploadOutsideForwarding');
+Route::get('/upload-xml-regions', 'UploadXmlController@uploadRegions')->name('uploadRegions');
+Route::get('/upload-xml-points', 'UploadXmlController@uploadPoints')->name('uploadPoints');
