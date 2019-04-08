@@ -20,5 +20,6 @@ Route::get('/promotion-list', 'PromotionsController@showList')->name('promotion-
 Route::get('/news-list', 'NewsController@showList')->name('news-list-show');
 Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
 Route::any('/calculator-show', 'CalculatorController@calculatorShow')->name('calculator-show');
+Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
 
 Route::get('/home', 'HomeController@index')->name('home');

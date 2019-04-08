@@ -15,7 +15,7 @@
         };
     </script>
     <script src="{{ asset('packages/selectize/selectize.min.js') }}@include('v1.partials.versions.jsVersion')"></script>
-    <script src="{{ asset('v1/js/jquery.kladr.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    {{--<script src="{{ asset('v1/js/jquery.kladr.js') }}@include('v1.partials.versions.jsVersion')"></script>--}}
     <script src="{{ asset('v1/js/calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>
     <script src="{{ asset('v1/js/calculator-page.js') }}@include('v1.partials.versions.jsVersion')"></script>
 
@@ -149,12 +149,12 @@
                                     </span>
                                     Добавить еще одно место
                                 </a>
-                                <div class="form-item row">
+                                <div class="form-item row block-for-distance">
                                     <label class="col-auto calc__label big">Откуда</label>
                                     <div class="col">
                                         <div class="form-item">
                                             {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
-                                            <select id="ship_city" class="form-control" name="ship_city" placeholder="Москва">
+                                            <select id="ship_city" class="form-control point-select" name="ship_city" placeholder="Москва">
                                                 <option value=""></option>
                                                 @if($shipCities->count() > 0)
                                                     @foreach($shipCities as $shipCity)
@@ -172,7 +172,7 @@
                                         <div class="form-item ininner">
                                             <div class="relative">
                                                 <i class="dropdown-toggle fa-icon"></i>
-                                                <input class="form-control suggest_address" id="need-to-take-adress" name="need-to-take-adress" placeholder="Название населенного пункта или адрес">
+                                                <input class="form-control suggest_address" id="ship_point" maxlength="256" name="ship_point" size="63" type="text" data-end="dest" placeholder="Название населенного пункта или адрес">
                                             </div>
                                             {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
                                         </div>
@@ -187,12 +187,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-item row">
+                                <div class="form-item row block-for-distance">
                                     <label class="col-auto calc__label big">Куда</label>
                                     <div class="col">
                                         <div class="form-item">
                                             {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
-                                            <select id="dest_city" class="form-control" name="dest_city" placeholder="Москва">
+                                            <select id="dest_city" class="form-control point-select" name="dest_city" placeholder="Москва">
                                                 <option value=""></option>
                                                 @if(isset($destinationCities))
                                                     @foreach($destinationCities as $destinationCity)
@@ -209,7 +209,7 @@
                                         <div class="form-item ininner">
                                             <div class="relative">
                                                 <i class="dropdown-toggle fa-icon"></i>
-                                                <input class="form-control suggest_address"  id="need-to-bring-address" name="need-to-bring-address" placeholder="Название населенного пункта или адрес">
+                                                <input class="form-control suggest_address"  id="dest_point" name="dest_point" placeholder="Название населенного пункта или адрес">
                                             </div>
                                             {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
                                         </div>
