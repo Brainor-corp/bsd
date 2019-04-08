@@ -4,5 +4,6 @@
 <link rel="stylesheet" href="{{ asset('v1/css/lightbox.css') }}@include('v1.partials.versions.cssVersion')"/>
 <link rel="stylesheet" href="{{ asset('v1/css/style.css') }}@include('v1.partials.versions.cssVersion')"/>
 <link rel="stylesheet" href="{{ asset('v1/css/custom.css') }}@include('v1.partials.versions.cssVersion')"/>
+<link rel="stylesheet" href="{{ asset('/packages/kladrapi-js/jquery.kladr.min.css') }}"/>
 
 @yield('headerStyles')

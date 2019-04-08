@@ -362,4 +362,40 @@ class CalculatorController extends Controller
             return $result;
         }
     }
+
+    public function calcAjax(Request $request) {
+        return ['per_km_tariff' => null];
+//        $db = JFactory::getDbo();
+//        $query = $db->getQuery(true);
+//        if ($point_id) {
+//            $query->select('tariff')
+//                ->from('outside_forwarding f')
+//                ->innerJoin("forward_thresholds tsh ON f.threshold=tsh.id")
+//                ->innerJoin('points p ON p.id=f.point')
+//                ->innerJoin('regions r on r.code=p.region_code AND tsh.threshold_group_id=r.threshold_group_id')
+//                ->where("p.id='$point_id' AND r.code=$regionCode AND tsh.weight >= $weight AND tsh.volume >= $volume AND tsh.units >= $units")
+//                ->order('weight,volume,units ASC');
+//            $db->setQuery($query, 0, 1);
+//            $fixed_tariff = (int) $db->loadResult();
+//            //throw new Exception(json_encode([(string)$query, $fixed_tariff]));
+//        } else {
+//            $fixed_tariff = 0;
+//        }
+//        if ($fixed_tariff) {
+//            return ['fixed_tariff' => $fixed_tariff]; //, 'query'=> (string)$query];
+//        } else {
+//            $query = $db->getQuery(true);
+//            $query->select('tariff')
+//                ->from('per_km_tariffs t')
+//                ->innerJoin("forward_thresholds tsh ON t.threshold=tsh.id")
+//                ->innerJoin('regions r on r.tariff_zone_id=t.zone_id AND tsh.threshold_group_id=r.threshold_group_id')
+//                ->where("r.code=$regionCode AND tsh.weight >= $weight AND tsh.volume >= $volume AND tsh.units >= $units")
+//                ->order('weight,volume,units ASC');
+//            $db->setQuery($query, 0, 1);
+//            $per_km_tariff = (int) $db->loadResult();
+//            $this->addDebugMessage((string) $query, "$regionCode per_km_tariffs query");
+//            $this->addDebugMessage($per_km_tariff, "$regionCode per_km_tariff");
+//            return ['per_km_tariff' => $per_km_tariff]; //, 'query'=> (string)$query];
+//        }
+    }
 }

@@ -27,12 +27,18 @@
                 getRoute();
             }
         });
+
+        // Вызываем тригер изменения пункта самовывоза, чтобы пересчитать дистанцию
+        $('#ship_point').trigger('change');
     }
 });
 
 $('#dest_city').selectize({
     onChange: function(value) {// при изменении города назначения
         getRoute();
+
+        // Вызываем тригер изменения пункта самовывоза, чтобы пересчитать дистанцию
+        $('#dest_point').trigger('change');
     }
 });
 
@@ -409,11 +415,152 @@ $(document).on('change', '.suggest_address', function (e) {
             else
                 point.data('id', 0);
 
-            if (obj.distance !== undefined) {
-                point.siblings('input.distance').val(obj.distance);
-                calculateToPoint(point);
-            } else
+            // if (obj.distance !== undefined) {
+            //     point.siblings('input.distance').val(obj.distance);
+            //     calculateToPoint(point);
+            // } else
                 getDistance(point);
+        }
+    });
+});
+
+// Просчет дистанций ////////////////////////
+
+var getRealDistance = function (point) {
+    // из Яндекс.Карт
+    var fullName = point.data('fullName');
+    if (!fullName)
+        return;
+    // var city_code = point.findMate('city').val();
+    // if (city_code == regionCities.moscow.id || city_code == regionCities.spb.id)
+    //     distanceToRR(city_code, point, fullName, setDistance);
+    // else {
+
+    // var terminal = point.findMate('terminal').text() || point.findMate('city').find('option:selected').text();
+    var terminal = point.closest('.block-for-distance').find('.point-select option:selected').text();
+    // var terminal = $('#ship_city option:selected').text();
+    var isShip = point.data('end') == 'ship';
+
+    if (terminal)
+        ymaps.route(isShip ? [fullName, terminal] : [terminal, fullName], {mapStateAutoApply: true})
+            .then(function (route) {
+                console.log('----- Distance here! -----');
+                console.log(Math.ceil(route.getLength() / 1000));
+            });
+    // else
+    // point.siblings('input.distance').val(0);
+    // }
+};
+
+//получение расстояния
+var getDistance = function (point) {
+    // var city = point.findMate('city');
+    // if (point.val() == city.find('option:selected').text() || point.val().length == 0)
+    //     return point.parents('td').children('input[type=radio]:checked').nextAll('span:first').children('input.distance').val(0);
+
+    // var addressArr = point.val().split(', ');
+
+    // ajaxQuery({
+    //     cmd: Get.PointDistance,
+    //     arguments: addressArr,
+    //     //arguments: [point.data('name'), point.data('region')],
+    //     //aim: $('#ww'),
+    //     success: function (data) {
+    //         var result = (data);
+    //
+    //         // из таблицы расстояний
+    //         var distance = point.parents('td').children('input[type=radio]:checked').nextAll('span:first').children('input.distance');
+    //         if (result) {
+    //             point_id = result.id;
+    //             if (result.city_id == city.val())
+    //                 distance.val(result.distance);
+    //             else {
+    //                 distance.val(result.distance, false);
+    //                 city.val(result.city_id);
+    //             }
+    //         } else
+    //             distance.val(0);
+    //         getRealDistance(point);
+    //     }
+    // })
+
+    getRealDistance(point);
+};
+
+$('input.suggest_address').on('change', function () {
+    // var td = $(this).parent();
+    var address = this.value;
+    // if (address != $(this).data('name')) {
+    //     $(this).next().empty();
+    //     $(this).parents('tr').find('input.frwd.outside').val(0);
+    //     $(this).siblings('input.distance').val(0);
+    //     point_id = 0;
+    // }
+    if (address && address.length > 3) {
+        $(this).data('fullName', this.value);
+        // $(this).siblings('input.full_address').val(address);
+        // td.children('input[type=radio]:checked').nextAll('span:first').children('input.distance').val(0);
+        // if ($('input#dest_point options:selected').val() == regionCities.moscow.id)
+        // findAddress($(this).parents('tr').data('end'), address);
+        // else
+        getDistance($(this));
+    }
+}).each(function () {
+    var point = $(this);
+    $(this).kladr({
+        type: $.kladr.type.city,
+        // source: function (query, callback) {
+        //     var suggestList = point.data('suggestList');
+        //     var matching = [];
+        //     if (suggestList) {
+        //         suggestList.filter(function (value) {
+        //             return value.name.toLowerCase() == query.toLowerCase();
+        //         });
+        //     }
+        //     if (matching.length > 0)
+        //         callback(matching);
+        //     else
+        //         ymaps.suggest(query, {boundedBy: point.data('seachRect'), results: 10}).then(function (items) {
+        //             for (var index in suggestList) {
+        //                 var suggestItem = suggestList[index];
+        //                 if (suggestItem.name.toLowerCase().indexOf(query) == 0) {
+        //                     var indexExisting = items.indexOf(suggestItem.displayName);
+        //                     if (indexExisting > -1)
+        //                         items.splice(indexExisting, 1);
+        //                     items.unshift(suggestItem)
+        //                 }
+        //             }
+        //
+        //             callback(items);
+        //         });
+        // },
+        // labelFormat: function (obj, query) {
+        //     return obj.displayName;
+        // },
+        // valueFormat: function (obj, query) {
+        //     return obj.value.replace('Россия, ', '');
+        // },
+        select: function (obj) {
+            console.log(obj);
+            // var fullName = obj.value;
+            var fullName = obj.name;
+            var nameArray = fullName.split(', ');
+            point.data('name', nameArray[nameArray.length - 1]);
+            point.data('fullName', fullName);
+            // point.siblings('span').children('input.full_address').val(fullName);
+            point.data('region', nameArray[1]);
+            if (obj.id !== undefined)
+                point.data('id', obj.id);
+            else
+                point.data('id', 0);
+
+            // if (obj.distance !== undefined) {
+            //     // point.siblings('input.distance').val(obj.distance);
+            //     calculateToPoint(point);
+            // } else
+            //     getDistance(point);
+
+            getDistance(point);
         }
     });
 });
