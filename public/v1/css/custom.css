@@ -27,3 +27,9 @@
 .custom-checkbox .custom-control-input:disabled:checked~.custom-control-label::before{
     background-color: transparent;
 }
+
+/*Калькулятор*/
+.calc__inpgrp {
+     max-width: 100% !important;
+}
+/* КОНЕЦ --- Калькулятор*/
