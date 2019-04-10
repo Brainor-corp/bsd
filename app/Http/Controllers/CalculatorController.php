@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\ForwardThreshold;
+use App\OutsideForwarding;
 use App\Oversize;
 use App\OversizeMarkup;
+use App\PerKmTariff;
+use App\Point;
+use App\Region;
 use App\Route;
 use App\RouteTariff;
 use App\Service;
@@ -23,7 +28,8 @@ class CalculatorController extends Controller
                   'width' => '0.1',
                   'height' => '0.1',
                   'weight' => '1',
-                  'volume' => '0.1'
+                  'volume' => '0.1',
+                  'quantity' => '1'
               ]
             ];
         }
@@ -133,11 +139,11 @@ class CalculatorController extends Controller
 
         if($packages == null){
             if(is_array($request->packages)){
-                $packages = $request->packages;
+                $packages = $request->cargo['packages'];
             }else{
                 $packages = array();
                 parse_str($request->formData, $packages);
-                $packages = $packages['packages'];
+                $packages = $packages['cargo']['packages'];
             }
         }
 
@@ -155,17 +161,17 @@ class CalculatorController extends Controller
             if (!isset($package['height'])){$package['height'] = 0.01;}
             if (!isset($package['volume'])){$package['volume'] = 0.01;}
             if (!isset($package['weight'])){$package['weight'] = 1;}
-            if (!isset($package['amount'])){$package['amount'] = 1;}
+            if (!isset($package['quantity'])){$package['quantity'] = 1;}
 
             if (intval($package['length']) == 0){$package['length'] = 1;}
             if (intval($package['width']) == 0){$package['width'] = 1;}
             if (intval($package['height']) == 0){$package['height'] = 0.01;}
             if (intval($package['volume']) == 0){$package['volume'] = 0.01;}
             if (intval($package['weight']) == 0){$package['weight'] = 1;}
-            if (intval($package['amount']) == 0){$package['amount'] = 1;}
+            if (intval($package['quantity']) == 0){$package['quantity'] = 1;}
 
-            $weight += $package['weight'] * $package['amount'];
-            $volume += $package['volume'] * $package['amount'];
+            $weight += $package['weight'] * $package['quantity'];
+            $volume += $package['volume'] * $package['quantity'];
 
 
             if($package['length'] > $oversize['length']){$oversizes[$key]=$package;}
@@ -244,7 +250,7 @@ class CalculatorController extends Controller
                             } else {
                                 $tariff = $tariff->$key;
                                 foreach ($packages as $package) {
-                                    $total += $package[$key] * ($packages['amount'] ?? 1) * $tariff *
+                                    $total += $package[$key] * ($packages['quantity'] ?? 1) * $tariff *
                                         (1 + $this->oversize_ratio($route->oversizes_id, $package) ?? 1);
                                 }
                             }
@@ -333,7 +339,12 @@ class CalculatorController extends Controller
             if(intval($insuranceAmount)>0){
                 $insurancePrice = max(($insuranceAmount * 0.1000000000000000055511151231257827021181583404541015625)/100, 50);
 
-                $totalPrice += $insurancePrice;
+                if($totalPrice !== 'договорная'){
+                    $totalPrice += $insurancePrice;
+                }else{
+                    $insurancePrice = 'договорная';
+                    $totalPrice = 'договорная';
+                }
 
                 $result['insurance'] = $insurancePrice;
             }
@@ -363,39 +374,61 @@ class CalculatorController extends Controller
         }
     }
 
-    public function calcAjax(Request $request) {
-        return ['per_km_tariff' => null];
-//        $db = JFactory::getDbo();
-//        $query = $db->getQuery(true);
-//        if ($point_id) {
-//            $query->select('tariff')
-//                ->from('outside_forwarding f')
-//                ->innerJoin("forward_thresholds tsh ON f.threshold=tsh.id")
-//                ->innerJoin('points p ON p.id=f.point')
-//                ->innerJoin('regions r on r.code=p.region_code AND tsh.threshold_group_id=r.threshold_group_id')
-//                ->where("p.id='$point_id' AND r.code=$regionCode AND tsh.weight >= $weight AND tsh.volume >= $volume AND tsh.units >= $units")
-//                ->order('weight,volume,units ASC');
-//            $db->setQuery($query, 0, 1);
-//            $fixed_tariff = (int) $db->loadResult();
-//            //throw new Exception(json_encode([(string)$query, $fixed_tariff]));
-//        } else {
-//            $fixed_tariff = 0;
-//        }
-//        if ($fixed_tariff) {
-//            return ['fixed_tariff' => $fixed_tariff]; //, 'query'=> (string)$query];
-//        } else {
-//            $query = $db->getQuery(true);
-//            $query->select('tariff')
-//                ->from('per_km_tariffs t')
-//                ->innerJoin("forward_thresholds tsh ON t.threshold=tsh.id")
-//                ->innerJoin('regions r on r.tariff_zone_id=t.zone_id AND tsh.threshold_group_id=r.threshold_group_id')
-//                ->where("r.code=$regionCode AND tsh.weight >= $weight AND tsh.volume >= $volume AND tsh.units >= $units")
-//                ->order('weight,volume,units ASC');
-//            $db->setQuery($query, 0, 1);
-//            $per_km_tariff = (int) $db->loadResult();
-//            $this->addDebugMessage((string) $query, "$regionCode per_km_tariffs query");
-//            $this->addDebugMessage($per_km_tariff, "$regionCode per_km_tariff");
-//            return ['per_km_tariff' => $per_km_tariff]; //, 'query'=> (string)$query];
-//        }
+    function getPoint($pointName) {
+
+        $point = Point::where('name',$pointName)->first();
+
+        return $point;
+    }
+
+    public function getOutsideForwarding(Request $request) {
+        if (is_string($request->point)) {
+            $point = $this->getPoint($request->point);
+            if($point)
+                $point_id = $point->id;
+            else
+                $point_id = false;
+        } else if (is_numeric($request->point)) {
+            $point_id = $request->point;
+        } else {
+            $point_id = false;
+        }
+
+        if ($point_id) {
+            $fixed_tariff = OutsideForwarding::
+            whereHas('point', function ($query) use ( $point_id ){
+                $query->where('id', $point_id);
+            })
+                ->whereHas('forwardThreshold', function ($query) use ( $request ){
+                    $query->where('weight', $request->weight);
+                    $query->where('volume', $request->volume);
+                    $query->where('units', $request->units);
+                })
+                ->first();
+            $fixed_tariff = $fixed_tariff->tariff;
+        } else {
+            $fixed_tariff = 0;
+        }
+        if ($fixed_tariff) {
+            return ['fixed_tariff' => $fixed_tariff];
+        } else {
+            $per_km_tariff = PerKmTariff::
+                whereHas('forwardThreshold', function ($query) use ( $request ){
+                    $query->where('weight', $request->weight);
+                    $query->where('volume', $request->volume);
+                    $query->where('units', $request->units);
+                })
+                ->join('regions', function ($join) {
+                    $join->on('regions.tariff_zone_id', '=', 'per_km_tariffs.zone_id')
+                        ->on('forwardThreshold.threshold_group_id', '=', 'regions.threshold_group_id');
+                })
+                ->where('regions.code', $request->regionCode)
+                ->first();
+            $per_km_tariff = $per_km_tariff->tariff;
+            if ($request->distance != 0)
+                return ['fixed_tariff' => $per_km_tariff * $request->distance * 2];
+            else
+                return ['per_km_tariff' => $per_km_tariff];
+        }
     }
 }
