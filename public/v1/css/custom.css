@@ -32,4 +32,7 @@
 .calc__inpgrp {
      max-width: 100% !important;
 }
+.add_anotherplace{
+    margin: 10px 0 10px 20px;
+}
 /* КОНЕЦ --- Калькулятор*/
