@@ -5,6 +5,16 @@
 @endsection
 
 @section('footerScripts')
+    <script>
+        var parameters={
+            max_length:10,
+            max_width:10,
+            max_height:10,
+            max_weight:10,
+            max_volume:10,
+        };
+    </script>
+
     <script src="{{ asset('packages/selectize/selectize.min.js') }}@include('v1.partials.versions.jsVersion')"></script>
     <script src="{{ asset('v1/js/jquery.kladr.js') }}@include('v1.partials.versions.jsVersion')"></script>
     <script src="{{ asset('v1/js/calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>
@@ -107,128 +117,73 @@
             <div class="col-md-6">
                 <form class="calculator-form" action="/calculator-show" method="post">
                     <div class="calc__title">Груз</div>
-                    @if(isset($packages))
-                        @foreach($packages as $key=>$package)
-                            <div id="package-{{ $key }}" class="package-item" data-package-id="{{ $key }}">
-                                <div class="form-item row align-items-center">
-                                    <label class="col-auto calc__label">Наименование груза*</label>
-                                    <div class="col">
-                                        <input type="text" class="form-control" placeholder="Введите наименование груза" name="packages[{{ $key }}][name]" @if(isset($package['name'])) value="{{ $package['name'] }}" @endif>
-                                    </div>
-                                </div>
-                                {{--<div class="form-item row align-items-center">--}}
-                                {{--<label class="col-auto calc__label">Тип груза*</label>--}}
-                                {{--<div class="col">--}}
-                                {{--<div class="relative">--}}
-                                {{--<i class="dropdown-toggle fa-icon"></i>--}}
-                                {{--<select class="custom-select package-params" name="packages[{{ $key }}][type]">--}}
-                                {{--<option disabled selected>Выберите из списка</option>--}}
-                                {{--<option>1</option>--}}
-                                {{--<option>2</option>--}}
-                                {{--<option>3</option>--}}
-                                {{--<option>4</option>--}}
-                                {{--<option>5</option>--}}
-                                {{--</select>--}}
-                                {{--</div>--}}
-                                {{--</div>--}}
-                                {{--</div>--}}
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="row">
-                                            <div class="col-12 form-item row align-items-center" style="padding-right: 0;">
-                                                <label class="col-auto calc__label">Габариты (м)*</label>
-                                                <div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">
-                                                    <div class="input-group">
-                                                        <input type="text" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="packages[{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" @if(isset($package['length'])) value="{{ $package['length'] }}" @endif/>
-                                                        <input type="text" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="packages[{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" @if(isset($package['width'])) value="{{ $package['width'] }}" @endif/>
-                                                        <input type="text" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="packages[{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" @if(isset($package['height'])) value="{{ $package['height'] }}" @endif/>
-                                                        <input type="text" id="packages_{{ $key }}_weight" class="form-control text-center package-params package-weight" name="packages[{{ $key }}][weight]" data-package-id="{{ $key }}"  data-dimension-type="weight" placeholder="Вес" @if(isset($package['weight'])) value="{{ $package['weight'] }}" @endif/>
-                                                        <input type="text" id="packages_{{ $key }}_quantity" class="form-control text-center package-params package-quantity" name="packages[{{ $key }}][quantity]" data-package-id="{{ $key }}"  data-dimension-type="quantity" placeholder="Места" @if(isset($package['quantity'])) value="{{ $package['quantity'] }}" @endif/>
-
-                                                    </div>
-                                                    <input type="text" hidden="hidden" id="packages_{{ $key }}_quantity" class="form-control text-center package-params package-volume" name="packages[{{ $key }}][volume]" data-package-id="{{ $key }}"  data-dimension-type="volume" @if(isset($package['volume'])) value="{{ $package['volume'] }}" @endif/>
-                                                </div>
-                                                <a href="#" id="add-package-btn" class="add_anotherplace">
-                                                    <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
-                                                </a>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-6 form-item row align-items-center">
-                                                <label class="col-auto calc__label">Вес груза (кг)*</label>
-                                                <div class="col calc__inpgrp">
-                                                    <input type="text" class="form-control package-params package-weight" name="packages[{{ $key }}][weight]" data-package-id="{{ $key }}"  data-dimension-type="weight" @if(isset($package['weight'])) value="{{ $package['weight'] }}" @endif/></div>
-                                            </div>
-                                            <div class="col-6 form-item row align-items-center text-right">
-                                                <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
-                                                <div class="col calc__inpgrp">
-                                                    <input type="text" id="packages_{{ $key }}_volume" class="form-control package-params package-volume" name="packages[{{ $key }}][volume]" data-package-id="{{ $key }}"  data-dimension-type="volume" @if(isset($package['volume'])) value="{{ $package['volume'] }}" @endif/></div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="col-12">
-                                        <p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    @else
-                        <div id="package-1" class="package" data-package-id="1">
-                            <div class="form-item row align-items-center">
-                                <label class="col-auto calc__label">Наименование груза*</label>
-                                <div class="col"><input type="text" class="form-control" placeholder="email@example.com"></div>
-                            </div>
-                            <div class="form-item row align-items-center">
-                                <label class="col-auto calc__label">Тип груза*</label>
-                                <div class="col">
-                                    <div class="relative">
-                                        <i class="dropdown-toggle fa-icon"></i>
-                                        <select class="custom-select package-params">
-                                            <option disabled selected>Выберите из списка</option>
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="row">
-                                        <div class="col-12 form-item row align-items-center">
-                                            <label class="col-auto calc__label">Габариты (м)*</label>
-                                            <div class="col calc__inpgrp relative row__inf">
-                                                <div class="input-group">
-                                                    <input type="text" id="packages_1_length" class="form-control text-center package-params package-dimensions" name="packages[1][length]" data-package-id="1" data-dimension-type="length" placeholder="Длина" />
-                                                    <input type="text" id="packages_1_width" class="form-control text-center package-params package-dimensions" name="packages[1][width]" data-package-id="1" data-dimension-type="width" placeholder="Ширина" />
-                                                    <input type="text" id="packages_1_height" class="form-control text-center package-params package-dimensions" name="packages[1][height]" data-package-id="1" data-dimension-type="height" placeholder="Высота" />
-                                                    <input type="text" id="packages_1_height" class="form-control text-center package-params package-dimensions" name="packages[1][height]" data-package-id="1" data-dimension-type="height" placeholder="Вес" />
-                                                    <input type="text" id="packages_1_height" class="form-control text-center package-params package-dimensions" name="packages[1][height]" data-package-id="1" data-dimension-type="height" placeholder="Места" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6 form-item row align-items-center">
-                                            <label class="col-auto calc__label">Вес груза (кг)*</label>
-                                            <div class="col calc__inpgrp"><input type="text" id="packages_1_weight" class="form-control package-params package-weight" name="packages[1][weight]" data-package-id="1" data-dimension-type="weight"/></div>
-                                        </div>
-                                        <div class="col-6 form-item row align-items-center">
-                                            <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
-                                            <div class="col calc__inpgrp"><input type="text" id="packages_1_volume" class="form-control package-params package-volume" name="packages[1][volume]" data-package-id="1" data-dimension-type="volume"/></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>
-                                </div>
-                            </div>
+                    <div class="form-item row align-items-center">
+                        <label class="col-auto calc__label">Наименование груза*</label>
+                        <div class="col">
+                            <input type="text" class="form-control" placeholder="Введите наименование груза" name="cargo[name]" @if(isset($package['name'])) value="{{ $package['name'] }}" @endif>
                         </div>
-                    @endif
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                @if(isset($packages))
+                                    @foreach($packages as $key=>$package)
+                                        <div class="col-11 form-item row align-items-center package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
+                                            <label class="col-auto calc__label">Габариты (м)*</label>
+                                            <div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">
+                                                <div class="input-group">
+                                                    <input type="text" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" @if(isset($package['length'])) value="{{ $package['length'] }}" @endif/>
+                                                    <input type="text" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" @if(isset($package['width'])) value="{{ $package['width'] }}" @endif/>
+                                                    <input type="text" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" @if(isset($package['height'])) value="{{ $package['height'] }}" @endif/>
+                                                    <input type="text" id="packages_{{ $key }}_weight" class="form-control text-center package-params package-weight" name="cargo[packages][{{ $key }}][weight]" data-package-id="{{ $key }}"  data-dimension-type="weight" placeholder="Вес" @if(isset($package['weight'])) value="{{ $package['weight'] }}" @endif/>
+                                                    <input type="text" id="packages_{{ $key }}_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages][{{ $key }}][quantity]" data-package-id="{{ $key }}"  data-dimension-type="quantity" placeholder="Места" @if(isset($package['quantity'])) value="{{ $package['quantity'] }}" @endif/>
+                                                </div>
+                                                <input type="text" hidden="hidden" id="packages_{{ $key }}_volume" class="form-control text-center package-params package-volume" name="cargo[packages][{{ $key }}][volume]" data-package-id="{{ $key }}"  data-dimension-type="volume" @if(isset($package['volume'])) value="{{ $package['volume'] }}" @endif/>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="col-11 form-item row align-items-center package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
+                                        <label class="col-auto calc__label">Габариты (м)*</label>
+                                        <div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">
+                                            <div class="input-group">
+                                                <input type="text" id="packages_1_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][1][length]" data-package-id="1" data-dimension-type="length" placeholder="Длина" value="0.1"/>
+                                                <input type="text" id="packages_1_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][1][width]" data-package-id="1"  data-dimension-type="width" placeholder="Ширина" value="0.1"/>
+                                                <input type="text" id="packages_1_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][1][height]" data-package-id="1"  data-dimension-type="height" placeholder="Высота" value="0.1"/>
+                                                <input type="text" id="packages_1_weight" class="form-control text-center package-params package-weight" name="cargo[packages][1][weight]" data-package-id="1"  data-dimension-type="weight" placeholder="Вес" value="1"/>
+                                                <input type="text" id="packages_1_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages][1][quantity]" data-package-id="1"  data-dimension-type="quantity" placeholder="Места" value="1"/>
+                                            </div>
+                                            <input type="text" hidden="hidden" id="packages_1_volume" class="form-control text-center package-params package-volume" name="cargo[packages][1][volume]" data-package-id="1"  data-dimension-type="volume" value="0.01"/>
+                                        </div>
+                                    </div>
+                                @endif
+                                <a href="#" id="add-package-btn" class=" col-1 add_anotherplace">
+                                    <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
+                                </a>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6 form-item row align-items-center">
+                                    <label class="col-auto calc__label">Вес груза (кг)*</label>
+                                    <div class="col calc__inpgrp">
+                                        <input type="text" id="total-weight-hidden" hidden="hidden" style="display: none" name="cargo[total_weight]" data-total-volume="1" value="1"/>
+                                        <input type="text" id="total-weight" class="form-control" value="1"/>
+                                    </div>
+                                </div>
+                                <div class="col-6 form-item row align-items-center text-right">
+                                    <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
+                                    <div class="col calc__inpgrp">
+                                        <input type="text" id="total-volume-hidden" hidden="hidden" name="cargo[total_volume]" data-total-volume="0.01" value="0.01" />
+                                        <input type="text" id="total-volume" class="form-control" value="0.01" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-12">
+                            <p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>
+                        </div>
+                    </div>
 
                     <div class="form-item row">
                         <label class="col-auto calc__label big">Откуда</label>

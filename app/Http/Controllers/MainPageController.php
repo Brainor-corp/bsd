@@ -22,7 +22,8 @@ class MainPageController extends Controller
                     'width' => '0.1',
                     'height' => '0.1',
                     'weight' => '1',
-                    'volume' => '0.1'
+                    'volume' => '0.01',
+                    'quantity' => '1'
                 ]
             ];
         }
