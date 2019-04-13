@@ -375,60 +375,78 @@ class CalculatorController extends Controller
     }
 
     function getPoint($pointName) {
-
-        $point = Point::where('name',$pointName)->first();
+        $point = Point::where('name',$pointName)->first() ?? false;
 
         return $point;
     }
 
+    /**
+     * @param Request $request:
+     *
+     * $request->point -- id или название города
+     * $request->weight
+     * $request->volume
+     * $request->units
+     * $request->region
+     * $request->distance
+     *
+     * @return array
+     */
     public function getOutsideForwarding(Request $request) {
-        if (is_string($request->point)) {
-            $point = $this->getPoint($request->point);
-            if($point)
-                $point_id = $point->id;
-            else
-                $point_id = false;
-        } else if (is_numeric($request->point)) {
-            $point_id = $request->point;
-        } else {
-            $point_id = false;
+        return $request->all();
+
+        $point_id = false;
+
+        if (is_string($request->get('point'))) {
+            $point = $this->getPoint($request->get('point'));
+            $point_id = !$point ?? $point->id;
+        } else if (is_numeric($request->get('point'))) {
+            $point_id = $request->get('point');
         }
 
+        $fixed_tariff = 0;
         if ($point_id) {
             $fixed_tariff = OutsideForwarding::
-            whereHas('point', function ($query) use ( $point_id ){
-                $query->where('id', $point_id);
-            })
-                ->whereHas('forwardThreshold', function ($query) use ( $request ){
-                    $query->where('weight', $request->weight);
-                    $query->where('volume', $request->volume);
-                    $query->where('units', $request->units);
-                })
-                ->first();
-            $fixed_tariff = $fixed_tariff->tariff;
-        } else {
-            $fixed_tariff = 0;
+            whereHas(
+                'point',
+                function ($query) use ($point_id) {
+                    $query->where('id', $point_id);
+                }
+            )->whereHas('forwardThreshold', function ($query) use ( $request ){
+                    $query->where('weight', $request->get('weight'));
+                    $query->where('volume', $request->get('volume'));
+                    $query->where('units', $request->get('units'));
+            })->first();
+
+            $fixed_tariff = $fixed_tariff->tariff ?? 0;
         }
+
         if ($fixed_tariff) {
             return ['fixed_tariff' => $fixed_tariff];
+        }
+
+        $per_km_tariff = PerKmTariff::
+        whereHas(
+            'forwardThreshold',
+            function ($query) use ($request) {
+                $query->where('weight', $request->weight);
+                $query->where('volume', $request->volume);
+                $query->where('units', $request->units);
+            }
+        )->join(
+            'regions',
+            function ($join) {
+                $join->on('regions.tariff_zone_id', '=', 'per_km_tariffs.zone_id')
+                    ->on('forwardThreshold.threshold_group_id', '=', 'regions.threshold_group_id');
+            }
+        )->where('regions.name', $request->get('region'))->first();
+
+        $per_km_tariff = $per_km_tariff->tariff;
+
+        if ($request->get('distance')) {
+            return ['fixed_tariff' => $per_km_tariff * $request->get('distance') * 2];
         } else {
-            $per_km_tariff = PerKmTariff::
-                whereHas('forwardThreshold', function ($query) use ( $request ){
-                    $query->where('weight', $request->weight);
-                    $query->where('volume', $request->volume);
-                    $query->where('units', $request->units);
-                })
-                ->join('regions', function ($join) {
-                    $join->on('regions.tariff_zone_id', '=', 'per_km_tariffs.zone_id')
-                        ->on('forwardThreshold.threshold_group_id', '=', 'regions.threshold_group_id');
-                })
-                ->where('regions.code', $request->regionCode)
-                ->first();
-            $per_km_tariff = $per_km_tariff->tariff;
-            if ($request->distance != 0)
-                return ['fixed_tariff' => $per_km_tariff * $request->distance * 2];
-            else
-                return ['per_km_tariff' => $per_km_tariff];
+            return ['per_km_tariff' => $per_km_tariff];
         }
     }
 }
