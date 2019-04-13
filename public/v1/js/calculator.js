@@ -460,24 +460,10 @@ var servicesRender = function (data) {
     }
 };
 
-// Просчет суммы "Забрать груз из" и "Доставить груз" ////////////////////////
+//// Просчет суммы "Забрать груз из" ////////////////////////
 
-function calcPickUpPrice(cityFrom, point) {
-    console.log('calc');
-    getTariffs(cityFrom, point);
-}
-
-function getTariffs(cityFrom, point) {
-    let isWithinTheCity = true;
-    let distance = 0;
-
-    console.log(point.data('fullName'));
-
-    if(cityFrom !== point.data('fullName')) {
-        isWithinTheCity = false;
-        distance = getDistance(point);
-    }
-
+// Вспомогательная функция для отправки ajax на сервер для получения цены для "Забрать из"
+function getPickUpPriceAjax(point, isWithinTheCity, distance = null) {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -485,15 +471,16 @@ function getTariffs(cityFrom, point) {
     });
     $.ajax({
         type: 'post',
-        url: '/api/calculator/get-outside-forwarding',
+        url: '/api/calculator/get-pick-up-price',
         data: {
-            point: point.data('fullName'),
+            point: point.data('name'), // Название города
             weight: $('#total-weight').val(),
             volume: $('#total-volume').val(),
             units: $('.package-item').length,
-            region: point.data('region'),
-            distance: distance,
-            isWithinTheCity: isWithinTheCity
+            // region: point.data('region'),
+            distance: distance, // Километраж
+            isWithinTheCity: isWithinTheCity, // Флаг работы в пределах города
+            x2: $('#ship-from-point').is(":checked") // Умножим цену на 2, если нужна точная доставка
         },
         cache: false,
         beforeSend: function() {
@@ -508,47 +495,58 @@ function getTariffs(cityFrom, point) {
     });
 }
 
-//получение расстояния
-var getDistance = function (point) {
-    // из Яндекс.Карт
-    var fullName = point.data('fullName');
-    if (!fullName)
-        return;
+// Базовая функция просчета цены для "Забрать из"
+function calcPickUpPrice(cityFrom, point) {
+    if(cityFrom === point.data('fullName')) { // Если названия городов совпадают, то работаем в пределах города
+        getPickUpPriceAjax(point, true);
+    } else { // Противном случае просчитываем километраж с помощью Яндекс api
+        let fullName = point.data('fullName');
+        if (!fullName)
+            return;
 
-    var terminal = point.closest('.block-for-distance').find('.point-select option:selected').text();
-    var isShip = point.data('end') == 'ship';
+        // Находим ближайший селектор города и берем его значение
+        let terminal = point.closest('.block-for-distance').find('.point-select option:selected').text();
 
-    if (terminal) {
-        ymaps.route(isShip ? [fullName, terminal] : [terminal, fullName], {mapStateAutoApply: true})
-            .then(function (route) {
-                console.log('----- Distance here! -----');
-                return Math.ceil(route.getLength() / 1000);
-            });
+        if (terminal) {
+            ymaps.route([terminal, fullName], {mapStateAutoApply: true})
+                .then(function (route) {
+                    getPickUpPriceAjax(point, false, Math.ceil(route.getLength() / 1000));
+                });
+        }
     }
-};
+}
 
+// Первично инициализируем селекты с кладром
 $('input.suggest_address').on('change', function () {
     var point = $(this);
-    calcPickUpPrice($('#ship_city option:selected').text(), point);
-}).each(function () {
+
+    if(point.attr('id') === "ship_point") { // при изменении селекта вызываем просчет цены
+        calcPickUpPrice($('#ship_city option:selected').text(), point); // для "Забрать из"
+    } else {
+        // todo для "Доставить в"
+    }
+}).each(function () { // Инициализация кладра для каждого из селектора
     var point = $(this);
     $(this).kladr({
-        type: $.kladr.type.city,
-        oneString: true,
+        type: $.kladr.type.city, // берем город
+        // oneString: true, // Если включить эту штуку, то будет возвращаться полный адрес
         select: function (obj) {
-            console.log(obj);
             var fullName = obj.name;
             var nameArray = fullName.split(', ');
-            point.data('name', nameArray[nameArray.length - 1]);
-            point.data('fullName', fullName);
-            point.data('region', nameArray[1]);
+            point.data('name', nameArray[nameArray.length - 1]); // Это имя отправляем к нам на сервер
+            point.data('fullName', fullName); // Это имя отправляем яндексу для просчета дистанции
+            // point.data('region', nameArray[1]);
 
             if (obj.id !== undefined)
                 point.data('id', obj.id);
             else
                 point.data('id', 0);
 
-            calcPickUpPrice($('#ship_city option:selected').text(), point);
+            if(point.attr('id') === "ship_point") {
+                calcPickUpPrice($('#ship_city option:selected').text(), point); // вызываем просчет для "Забрать из"
+            } else {
+                // todo просчет для "Доставить в"
+            }
         }
     });
 });

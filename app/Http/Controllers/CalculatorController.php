@@ -374,79 +374,96 @@ class CalculatorController extends Controller
         }
     }
 
+    /**
+     * @param $pointName -- сейчас это название города, а не пункта
+     *
+     * todo Этот метод нужно переработать.
+     * В интерфейсе выбирается не название пункта,
+     * а название города. К одному городу может быть привязано много пунктов.
+     * Каким-то немыслимым способом нужно сделать так,
+     * чтобы этот метод принимал название города, и возвращал один
+     * единственный пункт из этого города, выбранный, видимо, рукой бога.
+     *
+     * @return bool
+     */
     function getPoint($pointName) {
-        $point = Point::where('name',$pointName)->first() ?? false;
-
-        return $point;
+        return Point::where('name', $pointName)
+                ->with('city')
+                ->first() ?? false;
     }
 
     /**
      * @param Request $request:
      *
-     * $request->point -- id или название города
+     * $request->point // id или название города
      * $request->weight
      * $request->volume
      * $request->units
-     * $request->region
      * $request->distance
+     * $request->x2 // Умножим цену на 2, если нужна точная доставка
      *
      * @return array
      */
-    public function getOutsideForwarding(Request $request) {
-        return $request->all();
-
-        $point_id = false;
-
-        if (is_string($request->get('point'))) {
-            $point = $this->getPoint($request->get('point'));
-            $point_id = !$point ?? $point->id;
-        } else if (is_numeric($request->get('point'))) {
-            $point_id = $request->get('point');
+    public function getPickUpPrice(Request $request) {
+        $point = $this->getPoint($request->get('point'));
+        if(!$point) {
+            return abort(500, "Point '{$request->get('point')}' not found"); // todo Что делать, если не нашли пункт?
         }
 
-        $fixed_tariff = 0;
-        if ($point_id) {
-            $fixed_tariff = OutsideForwarding::
-            whereHas(
-                'point',
-                function ($query) use ($point_id) {
-                    $query->where('id', $point_id);
-                }
-            )->whereHas('forwardThreshold', function ($query) use ( $request ){
-                    $query->where('weight', $request->get('weight'));
-                    $query->where('volume', $request->get('volume'));
-                    $query->where('units', $request->get('units'));
-            })->first();
+        // Найдем тариф внутри города
+        $fixed_tariff = OutsideForwarding::
+        whereHas(
+            'point',
+            function ($query) use ($point) {
+                $query->where('id', $point->id);
+            }
+        )->whereHas('forwardThreshold', function ($query) use ( $request ){
+            $query->where('weight', floatval($request->get('weight')));
+            $query->where('volume', floatval($request->get('volume')));
+            $query->where('units', floatval($request->get('units')));
+        })->first();
 
-            $fixed_tariff = $fixed_tariff->tariff ?? 0;
+        $fixed_tariff = $fixed_tariff->tariff ?? false;
+        if(!$fixed_tariff) {
+            return abort(500, 'Tariff not found'); // todo Фиксированный тариф нужен в обоих формулах. Как быть, если он не найден?
         }
 
-        if ($fixed_tariff) {
-            return ['fixed_tariff' => $fixed_tariff];
+        // Если в пределах города, то возвращаем тариф согласно пределам города
+        if($request->get('isWithinTheCity') == 'true') {
+            return [
+                'price' => $request->get('x2') === 'true' ? $fixed_tariff * 2 : $fixed_tariff
+            ];
         }
 
+        // Если за пределами города, то ищем покилометровый тариф с учетом тарифной зоны города
         $per_km_tariff = PerKmTariff::
         whereHas(
             'forwardThreshold',
             function ($query) use ($request) {
-                $query->where('weight', $request->weight);
-                $query->where('volume', $request->volume);
-                $query->where('units', $request->units);
+                $query->where('weight', floatval($request->get('weight')));
+                $query->where('volume', floatval($request->get('volume')));
+                $query->where('units', floatval($request->get('units')));
             }
-        )->join(
-            'regions',
-            function ($join) {
-                $join->on('regions.tariff_zone_id', '=', 'per_km_tariffs.zone_id')
-                    ->on('forwardThreshold.threshold_group_id', '=', 'regions.threshold_group_id');
-            }
-        )->where('regions.name', $request->get('region'))->first();
+        )
+            ->with(['forwardThreshold' => function ($query) use ($request)  {
+                $query->where('weight', floatval($request->get('weight')));
+                $query->where('volume', floatval($request->get('volume')));
+                $query->where('units', floatval($request->get('units')));
+            }])
+            ->where('tariff_zone_id', $point->city->tariff_zone_id)
+            ->first();
 
-        $per_km_tariff = $per_km_tariff->tariff;
+        $per_km_tariff = $per_km_tariff->tariff ?? 0;
 
-        if ($request->get('distance')) {
-            return ['fixed_tariff' => $per_km_tariff * $request->get('distance') * 2];
-        } else {
-            return ['per_km_tariff' => $per_km_tariff];
+        // Стоимость доставки по городу + кол-во километров * 2 * стоимость из таблицы Тарифной зоны
+        $price = $fixed_tariff + intval($request->get('distance')) * 2 * $per_km_tariff;
+        if($request->get('x2') === 'true') { // Умножим цену на 2, если нужна точная доставка
+            $price *= 2;
         }
+
+        return [
+            'distance' => intval($request->get('distance')),
+            'price' => $price
+        ];
     }
 }

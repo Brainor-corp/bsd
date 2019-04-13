@@ -10,7 +10,7 @@ class PerKmTariff extends Model
 
     public function forwardThreshold()
     {
-        return $this->hasOne(ForwardThreshold::class, 'id','forward_threshold_id');
+        return $this->belongsTo(ForwardThreshold::class, 'forward_threshold_id','id');
     }
 
     public function tariffZone()
