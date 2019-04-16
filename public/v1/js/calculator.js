@@ -473,7 +473,7 @@ function getPickUpPriceAjax(point, isWithinTheCity, distance = null) {
         type: 'post',
         url: '/api/calculator/get-pick-up-price',
         data: {
-            point: point.data('name'), // Название города
+            city: point.data('name'), // Название города
             weight: $('#total-weight').val(),
             volume: $('#total-volume').val(),
             units: $('.package-item').length,
@@ -497,9 +497,10 @@ function getPickUpPriceAjax(point, isWithinTheCity, distance = null) {
 
 // Базовая функция просчета цены для "Забрать из"
 function calcPickUpPrice(cityFrom, point) {
+    console.log('Pick up calc..');
     if(cityFrom === point.data('fullName')) { // Если названия городов совпадают, то работаем в пределах города
         getPickUpPriceAjax(point, true);
-    } else { // Противном случае просчитываем километраж с помощью Яндекс api
+    } else { // В противном случае просчитываем километраж с помощью Яндекс api
         let fullName = point.data('fullName');
         if (!fullName)
             return;
@@ -514,6 +515,61 @@ function calcPickUpPrice(cityFrom, point) {
                 });
         }
     }
+}
+
+// Базовая функция просчета цены для "Доставить"
+function calcDeliveryPrice(cityTo, point) {
+    console.log('Delivery calc..');
+    if(cityTo === point.data('fullName')) { // Если названия городов совпадают, то работаем в пределах города
+        getDeliveryPriceAjax(point, true);
+    } else { // В противном случае просчитываем километраж с помощью Яндекс api
+        let fullName = point.data('fullName');
+        if (!fullName)
+            return;
+
+        // Находим ближайший селектор города и берем его значение
+        let terminal = point.closest('.block-for-distance').find('.point-select option:selected').text();
+
+        if (terminal) {
+            ymaps.route([terminal, fullName], {mapStateAutoApply: true})
+                .then(function (route) {
+                    getDeliveryPriceAjax(point, false, Math.ceil(route.getLength() / 1000));
+                });
+        }
+    }
+}
+
+// Вспомогательная функция для отправки ajax на сервер для получения цены для "Забрать из"
+function getDeliveryPriceAjax(point, isWithinTheCity, distance = null) {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'post',
+        url: '/api/calculator/get-delivery-price',
+        data: {
+            city: point.data('name'), // Название города
+            weight: $('#total-weight').val(),
+            volume: $('#total-volume').val(),
+            units: $('.package-item').length,
+            // region: point.data('region'),
+            distance: distance, // Километраж
+            isWithinTheCity: isWithinTheCity, // Флаг работы в пределах города
+            x2: $('#bring-to-point').is(":checked") // Умножим цену на 2, если нужна точная доставка
+        },
+        cache: false,
+        beforeSend: function() {
+
+        },
+        success: function(data){
+            console.log(data);
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
 }
 
 // Первично инициализируем селекты с кладром
@@ -545,8 +601,16 @@ $('input.suggest_address').on('change', function () {
             if(point.attr('id') === "ship_point") {
                 calcPickUpPrice($('#ship_city option:selected').text(), point); // вызываем просчет для "Забрать из"
             } else {
-                // todo просчет для "Доставить в"
+                calcDeliveryPrice($('#dest_city option:selected').text(), point); // вызываем просчет для "Доставить"
             }
         }
     });
+});
+
+$(document).on('change', '#ship-from-point', function () {
+    calcPickUpPrice($('#ship_city option:selected').text(), $('#ship_point')); // вызываем просчет для "Забрать из"
+});
+
+$(document).on('change', '#bring-to-point', function () {
+    calcDeliveryPrice($('#dest_city option:selected').text(), $('#dest_point')); // вызываем просчет для "Забрать из"
 });
