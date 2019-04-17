@@ -122,7 +122,7 @@
                                             </select>
                                         </div>
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="need-to-take" name="need-to-take">
+                                            <input type="checkbox" class="custom-control-input delivery-checkbox" id="need-to-take" name="need-to-take">
                                             {{--<label class="custom-control-label" for="bring-your-own">Самостоятельно привезти груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
                                             <label class="custom-control-label" for="need-to-take">Нужно забрать груз из:</label>
                                         </div>
@@ -160,7 +160,7 @@
                                             </select>
                                         </div>
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="need-to-bring" name="need-to-bring" required>
+                                            <input type="checkbox" class="custom-control-input delivery-checkbox" id="need-to-bring" name="need-to-bring" required>
                                             {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
                                             <label class="custom-control-label" for="need-to-bring">Нужно доставить груз в:</label>
                                         </div>
@@ -423,6 +423,16 @@
                                             {{--<span class="rouble">p</span>--}}
                                         {{--</span>--}}
                                     {{--</div>--}}
+                                    <div id="delivery-total-wrapper" style="display: none"
+                                    >
+                                        <div class="block__itogo_item d-flex">
+                                            <div class="d-flex flex-wrap">
+                                                <span class="block__itogo_label">Доставка:</span>
+                                            </div>
+                                        </div>
+                                        <div id="delivery-total-list">
+                                        </div>
+                                    </div>
                                     <div id="custom-services-total-wrapper"
                                          @if(
                                          !isset($tariff->total_data->services) &&

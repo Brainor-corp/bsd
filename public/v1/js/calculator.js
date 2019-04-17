@@ -144,6 +144,7 @@ var getRoute = function () {
 };
 
 var getBaseTariff = function () {
+    console.log('getBaseTariff');
     let shipCityID = $("#ship_city").val(),
         destCityID = $("#dest_city").val(),
         formData  = $('.calculator-form').serialize();
@@ -177,11 +178,78 @@ var getBaseTariff = function () {
 
 };
 
+function renderDelivery() {
+    let needToTakeCheck = $('#need-to-take'),
+        needToBringCheck = $('#need-to-bring'),
+        deliveryPoints = '',
+        render = false;
+
+    $('#delivery-total-wrapper').css({
+        'display': 'none',
+    });
+
+    if(needToTakeCheck.is(':checked') && typeof needToTakeCheck.data('point') !== "undefined") {
+        deliveryPoints +=
+            '<div class="custom-service-total-item">'+
+            '<div class="block__itogo_item d-flex">'+
+            '<div class="d-flex flex-wrap" id="services-total-names">'+
+            '<span class="block__itogo_value">' +
+            'Забор груза: ' + needToTakeCheck.data('point')
+            +
+            (typeof needToTakeCheck.data('distance') !== "undefined" ? ('<small> (' + needToTakeCheck.data('distance') + ' км) </small>') : '')
+            +
+            '</span>'+
+            '</div>'+
+            '<span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">'+
+            '<span class="block__itogo_amount takePrice">' + needToTakeCheck.data('price') + '</span>'+
+            '<span class="rouble">p</span>'+
+            '</span>'+
+            '</div>'+
+            '</div>';
+
+        render = true;
+    }
+
+    if(needToBringCheck.is(':checked') && typeof needToBringCheck.data('point') !== "undefined") {
+        deliveryPoints +=
+            '<div class="custom-service-total-item">'+
+            '<div class="block__itogo_item d-flex">'+
+            '<div class="d-flex flex-wrap" id="services-total-names">'+
+            '<span class="block__itogo_value">' +
+            'Доставка груза: ' + needToBringCheck.data('point')
+            +
+            (typeof needToBringCheck.data('distance') !== "undefined" ? ('<small> (' + needToBringCheck.data('distance') + ' км) </small>') : '')
+            +
+            '</span>'+
+            '</div>'+
+            '<span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">'+
+            '<span class="block__itogo_amount bringPrice">' + needToBringCheck.data('price') + '</span>'+
+            '<span class="rouble">p</span>'+
+            '</span>'+
+            '</div>'+
+            '</div>';
+
+        render = true;
+    }
+
+    $('#delivery-total-list').html(deliveryPoints);
+
+    if(render) {
+        $('#delivery-total-wrapper').css({
+            'display': 'block',
+        });
+    }
+
+    console.log('asdf');
+}
+
 var getTotalPrice = function () {
     let shipCityID = $("#ship_city").val(),
         destCityID = $("#dest_city").val(),
         basePrice = $("#base-price").data('basePrice'),
         totalVolume = $("#total-volume").attr('data-total-volume'),
+        takePrice = $.isNumeric($(".takePrice").text()) ? parseFloat($(".takePrice").text()) : 0,
+        bringPrice = $.isNumeric($(".bringPrice").text()) ? parseFloat($(".bringPrice").text()) : 0,
         formData  = $('.calculator-form').serialize();
     $.ajaxSetup({
         headers: {
@@ -191,17 +259,24 @@ var getTotalPrice = function () {
     $.ajax({
         type: 'post',
         url: '/api/calculator/get-total-price',
-        data: {ship_city:shipCityID, dest_city:destCityID, base_price:basePrice, total_volume:totalVolume, formData},
-        cache: false,
-        beforeSend: function() {
-
+        data: {
+            ship_city: shipCityID,
+            dest_city: destCityID,
+            base_price: basePrice,
+            total_volume: totalVolume,
+            take_price: takePrice,
+            bring_price: bringPrice,
+            formData: formData
         },
+        cache: false,
         success: function(data){
-
             servicesRender(data);
 
             $('#total-price').html(data.total);
-            $('#total-price').attr('data-total-price', data.total);
+            $('#total-price').attr('data-total-price');
+        },
+        error: function (data) {
+            console.log(data);
         }
     });
 
@@ -403,6 +478,8 @@ var servicesRender = function (data) {
     });
     let services = '';
 
+    console.log('da');
+
     if(typeof data.services !== 'undefined') {
         if (Object.keys(data.services).length > 0) {
 
@@ -470,7 +547,7 @@ function getTariffPriceAjax(point, isWithinTheCity, x2, distance = null) {
         }
     });
     $.ajax({
-        type: 'post',
+        type: 'get',
         url: '/api/calculator/get-tariff-price',
         data: {
             city: point.data('name'), // Название города
@@ -483,9 +560,15 @@ function getTariffPriceAjax(point, isWithinTheCity, x2, distance = null) {
         },
         cache: false,
         beforeSend: function() {
-
+            console.log(this.url)
         },
         success: function(data){
+            let pointCheckbox = point.closest('.delivery-block').find('.delivery-checkbox');
+            $(pointCheckbox).data('price', data.price);
+            $(pointCheckbox).data('distance', data.distance);
+            $(pointCheckbox).data('point', point.data('name'));
+            renderDelivery();
+            getTotalPrice();
             console.log(data);
         },
         error: function (data) {
@@ -496,7 +579,7 @@ function getTariffPriceAjax(point, isWithinTheCity, x2, distance = null) {
 
 // Базовая функция просчета цены для "Забрать из" и "Доставить"
 function calcTariffPrice(city, point) {
-    if(city === point.data('fullName')) { // Если названия городов совпадают, то работаем в пределах города
+    if(city === point.data('name')) { // Если названия городов совпадают, то работаем в пределах города
         getTariffPriceAjax(point, true, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"));
     } else { // В противном случае просчитываем километраж с помощью Яндекс api
         let fullName = point.data('fullName');
@@ -563,4 +646,9 @@ $(document).on('change', '#ship-from-point', function () {
 
 $(document).on('change', '#bring-to-point', function () {
     calcTariffPrice($('#dest_city option:selected').text(), $('#dest_point')); // вызываем просчет для "Забрать из"
+});
+
+$(document).on('change', '.delivery-checkbox', function () {
+    renderDelivery();
+    getTotalPrice();
 });
