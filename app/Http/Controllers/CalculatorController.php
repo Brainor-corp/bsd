@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\City;
 use App\ForwardThreshold;
+use App\InsideForwarding;
 use App\OutsideForwarding;
 use App\Oversize;
 use App\OversizeMarkup;
@@ -15,6 +16,7 @@ use App\RouteTariff;
 use App\Service;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CalculatorController extends Controller
 {
@@ -306,6 +308,11 @@ class CalculatorController extends Controller
         if(isset($formData['total_volume'])){$totalVolume = $formData['total_volume'];}
         if($totalVolume == null){$totalVolume = 1;}
 
+
+        // Возьмём в учёт цену за забор и доставку груза
+        if($request->get('take_price')) {$totalPrice += floatval($request->get('take_price'));}
+        if($request->get('bring_price')) {$totalPrice += floatval($request->get('bring_price'));}
+
         if(isset($services)){
 
             $servicesData = Service::get();
@@ -359,7 +366,7 @@ class CalculatorController extends Controller
         if(isset($discount)){
 
             $discountPrice = ceil(($base_price * $discount) / 100);
-            $totalPrice += $discountPrice;
+            $totalPrice -= $discountPrice;
 
             $result['discount'] = $discountPrice;
 
@@ -374,61 +381,152 @@ class CalculatorController extends Controller
         }
     }
 
-    function getPoint($pointName) {
-
-        $point = Point::where('name',$pointName)->first();
-
-        return $point;
+    /**
+     * @param $pointName
+     * @return bool|Point
+     */
+    function getPointByName($pointName) {
+        return Point::where('name', $pointName)
+                ->has('city')
+                ->with('city')
+                ->first() ?? false;
     }
 
-    public function getOutsideForwarding(Request $request) {
-        if (is_string($request->point)) {
-            $point = $this->getPoint($request->point);
-            if($point)
-                $point_id = $point->id;
-            else
-                $point_id = false;
-        } else if (is_numeric($request->point)) {
-            $point_id = $request->point;
-        } else {
-            $point_id = false;
+    /**
+     * @param $cityName
+     * @return bool
+     */
+    public function getCityByName($cityName) {
+        return City::where('name', $cityName)
+                ->first() ?? false;
+    }
+
+    /**
+     * @param Request $request:
+     *
+     * $request->city // название города
+     * $request->weight
+     * $request->volume
+     * $request->units
+     * $request->distance
+     * $request->x2 // Умножим цену на 2, если нужна точная доставка
+     *
+     * @return array
+     */
+    public function getTariffPrice(Request $request) {
+        $price = 0;
+
+        // Изначально пытаемся получить город
+        $city = $this->getCityByName($request->get('city'));
+
+        // Если города нет, пытаемся найти пункт
+        if(!$city) {
+            $city = $this->getPointByName($request->get('city'));
         }
 
-        if ($point_id) {
-            $fixed_tariff = OutsideForwarding::
-            whereHas('point', function ($query) use ( $point_id ){
-                $query->where('id', $point_id);
+        // Если ни города, ни пункта не нашли, то выводим договорную цену
+        if(!$city) {
+            return [
+                'price' => 'Договорная'
+            ];
+        }
+
+        // Если город -- терминальный, то находим тариф за городом
+        if($city instanceof Point) {
+            $outside_tariff = DB::table('outside_forwarding')
+                ->join('points', 'points.id', '=', 'outside_forwarding.point')
+                ->join('cities', 'cities.id', '=', 'points.city_id')
+                ->join('forward_thresholds', function($join)
+                {
+                    $join->on('forward_thresholds.id', '=', 'outside_forwarding.forward_threshold_id');
+                    $join->on('forward_thresholds.threshold_group_id', '=', 'cities.threshold_group_id');
+                })
+                ->where([
+                    ['points.id', $city->id],
+                    ['forward_thresholds.weight', '>=', floatval($request->get('weight'))],
+                    ['forward_thresholds.volume', '>=', floatval($request->get('volume'))],
+                ])
+                ->orderBy('forward_thresholds.weight', 'ASC')
+                ->orderBy('forward_thresholds.volume', 'ASC')
+                ->first();
+
+            // Если тариф не нашли, то выводим договорную цену
+            if(!$outside_tariff) {
+                return [
+                    'price' => 'Договорная'
+                ];
+            }
+
+            // К итоговой цене прибавляем цену фиксированного тарифа до пункта
+            $price += $outside_tariff->tariff;
+            $city = $city->city; // Дальше будем работать с привязанным к пункту городом
+        }
+
+        // Найдем тариф внутри города
+        $fixed_tariff = DB::table('inside_forwarding')
+            ->join('forward_thresholds', function($join)
+            {
+                $join->on('inside_forwarding.forward_threshold_id', '=', 'forward_thresholds.id');
             })
-                ->whereHas('forwardThreshold', function ($query) use ( $request ){
-                    $query->where('weight', $request->weight);
-                    $query->where('volume', $request->volume);
-                    $query->where('units', $request->units);
-                })
-                ->first();
-            $fixed_tariff = $fixed_tariff->tariff;
-        } else {
-            $fixed_tariff = 0;
+            ->where([
+                ['city_id', $city->id],
+                ['forward_thresholds.weight', '>=', floatval($request->get('weight'))],
+                ['forward_thresholds.volume', '>=', floatval($request->get('volume'))],
+            ])
+            ->orderBy('forward_thresholds.weight', 'ASC')
+            ->orderBy('forward_thresholds.volume', 'ASC')
+            ->first();
+
+        $fixed_tariff = $fixed_tariff->tariff ?? false;
+        if(!$fixed_tariff && $request->get('isWithinTheCity') == 'true') {
+            return [
+                'price' => 'Договорная'
+            ];
         }
-        if ($fixed_tariff) {
-            return ['fixed_tariff' => $fixed_tariff];
-        } else {
-            $per_km_tariff = PerKmTariff::
-                whereHas('forwardThreshold', function ($query) use ( $request ){
-                    $query->where('weight', $request->weight);
-                    $query->where('volume', $request->volume);
-                    $query->where('units', $request->units);
-                })
-                ->join('regions', function ($join) {
-                    $join->on('regions.tariff_zone_id', '=', 'per_km_tariffs.zone_id')
-                        ->on('forwardThreshold.threshold_group_id', '=', 'regions.threshold_group_id');
-                })
-                ->where('regions.code', $request->regionCode)
-                ->first();
-            $per_km_tariff = $per_km_tariff->tariff;
-            if ($request->distance != 0)
-                return ['fixed_tariff' => $per_km_tariff * $request->distance * 2];
-            else
-                return ['per_km_tariff' => $per_km_tariff];
+
+        // Если в пределах города, то возвращаем тариф согласно пределам города
+        if($request->get('isWithinTheCity') == 'true') {
+            return [
+                'price' => $request->get('x2') === 'true' ? floatval($fixed_tariff) * 2 : floatval($fixed_tariff)
+            ];
         }
+
+        // Если за пределами города, то ищем покилометровый тариф с учетом тарифной зоны города
+        $per_km_tariff = DB::table('per_km_tariffs')
+            ->join('cities', 'cities.tariff_zone_id', '=', 'per_km_tariffs.tariff_zone_id')
+            ->join('forward_thresholds', function($join)
+            {
+                $join->on('forward_thresholds.id', '=', 'per_km_tariffs.forward_threshold_id');
+                $join->on('forward_thresholds.threshold_group_id', '=', 'cities.threshold_group_id');
+            })
+            ->where([
+                ['cities.id', $city->id],
+                ['forward_thresholds.weight', '>=', floatval($request->get('weight'))],
+                ['forward_thresholds.volume', '>=', floatval($request->get('volume'))],
+            ])
+            ->orderBy('forward_thresholds.weight', 'ASC')
+            ->orderBy('forward_thresholds.volume', 'ASC')
+            ->first();
+
+        if(!$per_km_tariff) {
+            return [
+                'price' => 'Договорная'
+            ];
+        }
+
+        $per_km_tariff = floatval($per_km_tariff->tariff);
+
+        // Стоимость доставки по городу + кол-во километров * 2 * стоимость из таблицы Тарифной зоны
+        $price +=
+//            $fixed_tariff +
+            intval($request->get('distance')) * 2 * $per_km_tariff;
+        if($request->get('x2') === 'true') { // Умножим цену на 2, если нужна точная доставка
+            $price *= 2;
+        }
+
+        return [
+            'distance' => intval($request->get('distance')),
+            'price' => floatval($price)
+        ];
     }
 }

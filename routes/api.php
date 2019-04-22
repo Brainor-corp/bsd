@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::any('/calculator/get-destination-cities', 'CalculatorController@getDestinationCities')->name('getDestinationCities');
 Route::any('/calculator/get-route', 'CalculatorController@getRoute')->name('getRoute');
 Route::any('/calculator/get-tariff', 'CalculatorController@getTariff')->name('getTariff');
+Route::any('/calculator/get-tariff-price', 'CalculatorController@getTariffPrice')->name('getTariffPrice');
 Route::any('/calculator/get-total-price', 'CalculatorController@getTotalPrice')->name('getTotalPrice');
 //END----CALCULATOR
 
