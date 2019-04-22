@@ -22,4 +22,7 @@ Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show
 Route::any('/calculator-show', 'CalculatorController@calculatorShow')->name('calculator-show');
 Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
 
+Route::post('/route-tariffs-options', 'Admin\AdminController@getRouteTariffsOptionsList');
+Route::post('/regions-options', 'Admin\AdminController@getRegionsOptionsList');
+
 Route::get('/home', 'HomeController@index')->name('home');
