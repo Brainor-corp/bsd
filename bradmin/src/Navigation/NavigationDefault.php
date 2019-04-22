@@ -59,6 +59,11 @@ class NavigationDefault
                 'text' => 'Предельные пороги'
             ],
             [
+                'url' => '/bradmin/InsideForwarding',
+                'icon' => 'fas fa-address-book',
+                'text' => 'Внутренние пересылки'
+            ],
+            [
                 'url' => '/bradmin/Users',
                 'icon' => 'fas fa-address-book',
                 'text' => 'Пользователи'

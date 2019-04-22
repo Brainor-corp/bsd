@@ -3,6 +3,7 @@
 namespace App\Admin\Sections;
 
 use App\City;
+use App\ForwardThreshold;
 use App\Oversize;
 use App\Region;
 use App\Route;
@@ -23,17 +24,15 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 
 
-class InsideForwardings extends Section {
-    protected $title = 'Предельные пороги';
+class InsideForwarding extends Section {
+    protected $title = 'Внутренние пересылки';
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::text('id', '#'),
-            Column::text('real_threshold', 'Группа отправных пунктов'),
-            Column::text('name', 'Название'),
-            Column::text('weight', 'Вес'),
-            Column::text('volume', 'Обьем'),
-            Column::text('units', 'Едениц'),
+            Column::text('real_city', 'Город'),
+            Column::text('real_forward_threshold', 'Группа предельных порогов'),
+            Column::text('tariff', 'Тариф'),
         ])->setPagination(10);
 
         return $display;
@@ -47,17 +46,15 @@ class InsideForwardings extends Section {
 
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('name', 'Название')->setRequired(true),
-                FormField::input('weight', 'Вес')->setType('number')->setRequired(true),
-                FormField::input('volume', 'Обьем')->setType('number')->setRequired(true),
-                FormField::input('units', 'Едениц')->setType('number')->setRequired(true),
-                FormField::select('threshold_group_id', 'Группа отправных пунктов')
+                FormField::select('city_id', 'Город')
                     ->setRequired(true)
-                    ->setModelForOptions(Type::class)
-                    ->setQueryFunctionForModel(function ($query){
-                        return $query->where('class', 'threshold_groups');
-                    })
+                    ->setModelForOptions(City::class)
                     ->setDisplay('name'),
+                FormField::select('forward_threshold_id', 'Группа предельных порогов')
+                    ->setRequired(true)
+                    ->setModelForOptions(ForwardThreshold::class)
+                    ->setDisplay('name'),
+                FormField::input('tariff', 'Тариф')->setType('number')->setRequired(true),
             ])
         ]);
 
