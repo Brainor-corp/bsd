@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class InsideForwarding extends Model
 {
     protected $table = 'inside_forwarding';
+    protected $fillable = [
+        'city_id', 'forward_threshold_id', 'tariff'
+    ];
 
     public function city() {
         return $this->hasOne(City::class, 'id', 'city_id');
@@ -18,5 +21,12 @@ class InsideForwarding extends Model
             ->orderBy('weight', 'ASC')
             ->orderBy('volume', 'ASC')
             ->orderBy('units', 'ASC');
+    }
+
+    public function getRealCityAttribute(){
+        return $this->city->name;
+    }
+    public function getRealForwardThresholdAttribute(){
+        return $this->forwardThreshold->name;
     }
 }

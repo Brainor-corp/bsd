@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class RouteTariff extends Model
 {
     protected $table = 'route_tariffs';
+    protected $fillable = [
+        'route_id', 'rate_id', 'threshold_id', 'price',
+    ];
 
     public function route()
     {
@@ -21,5 +24,17 @@ class RouteTariff extends Model
     public function threshold()
     {
         return $this->hasOne(Threshold::class, 'id','threshold_id')->orderBy('value');
+    }
+
+    public function getRealRouteAttribute(){
+        return $this->route->name;
+    }
+
+    public function getRealRateAttribute(){
+        return $this->rate->name;
+    }
+
+    public function getRealThresholdAttribute(){
+        return $this->threshold->value;
     }
 }
