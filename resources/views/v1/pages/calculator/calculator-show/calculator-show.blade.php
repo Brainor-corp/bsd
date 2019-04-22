@@ -109,7 +109,7 @@
                                 </div>
                                 <div class="form-item row block-for-distance">
                                     <label class="col-auto calc__label big">Откуда</label>
-                                    <div class="col">
+                                    <div class="col delivery-block">
                                         <div class="form-item">
                                             {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
                                             <select id="ship_city" class="form-control point-select" name="ship_city" placeholder="Москва">
@@ -122,7 +122,7 @@
                                             </select>
                                         </div>
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="need-to-take" name="need-to-take">
+                                            <input type="checkbox" class="custom-control-input delivery-checkbox" id="need-to-take" name="need-to-take">
                                             {{--<label class="custom-control-label" for="bring-your-own">Самостоятельно привезти груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
                                             <label class="custom-control-label" for="need-to-take">Нужно забрать груз из:</label>
                                         </div>
@@ -139,7 +139,7 @@
                                             {{--<label class="custom-control-label" for="pick-up-cargo">Забрать груз от адреса отправителя (1 050 <span class="rouble">p</span>)</label>--}}
                                         {{--</div>--}}
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="ship-from-point" name="ship-from-point">
+                                            <input type="checkbox" class="custom-control-input x2-check" id="ship-from-point" name="ship-from-point">
                                             {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
                                             <label class="custom-control-label" for="ship-from-point">Доставку груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
                                         </div>
@@ -147,7 +147,7 @@
                                 </div>
                                 <div class="form-item row block-for-distance">
                                     <label class="col-auto calc__label big">Куда</label>
-                                    <div class="col">
+                                    <div class="col delivery-block">
                                         <div class="form-item">
                                             {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
                                             <select id="dest_city" class="form-control point-select" name="dest_city" placeholder="Москва">
@@ -160,7 +160,7 @@
                                             </select>
                                         </div>
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="need-to-bring" name="need-to-bring" required>
+                                            <input type="checkbox" class="custom-control-input delivery-checkbox" id="need-to-bring" name="need-to-bring" required>
                                             {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
                                             <label class="custom-control-label" for="need-to-bring">Нужно доставить груз в:</label>
                                         </div>
@@ -176,7 +176,7 @@
                                             {{--<label class="custom-control-label" for="deliver-cargo">Доставить груз до адреса получателя (1 050 <span class="rouble">p</span>)</label>--}}
                                         {{--</div>--}}
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="bring-to-point" name="bring-to-point" required>
+                                            <input type="checkbox" class="custom-control-input x2-check" id="bring-to-point" name="bring-to-point" required>
                                             {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
                                             <label class="custom-control-label" for="bring-to-point">Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
                                         </div>
@@ -423,6 +423,16 @@
                                             {{--<span class="rouble">p</span>--}}
                                         {{--</span>--}}
                                     {{--</div>--}}
+                                    <div id="delivery-total-wrapper" style="display: none"
+                                    >
+                                        <div class="block__itogo_item d-flex">
+                                            <div class="d-flex flex-wrap">
+                                                <span class="block__itogo_label">Доставка:</span>
+                                            </div>
+                                        </div>
+                                        <div id="delivery-total-list">
+                                        </div>
+                                    </div>
                                     <div id="custom-services-total-wrapper"
                                          @if(
                                          !isset($tariff->total_data->services) &&
