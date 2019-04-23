@@ -10,6 +10,7 @@
 <input type="text" class="form-control filter-input"
        name="filter[{{ $name }}]"
        data-filter-name="{{ $name }}"
+       data-is-like="{{ $isLike }}"
        placeholder="{{ $placeholder }}"
        @if(null !==$filterValue) value="{{ $filterValue }}" @endif
 >
