@@ -16,7 +16,4 @@ class ForwardThreshold extends Model
         return $this->hasOne(Type::class, 'id','threshold_group_id');
     }
 
-    public function getRealThresholdAttribute(){
-        return $this->thresholdGroup->name ?? '';
-    }
 }

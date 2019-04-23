@@ -23,8 +23,8 @@ class InsideForwarding extends Section {
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::text('id', '#'),
-            Column::text('real_city', 'Город'),
-            Column::text('real_forward_threshold', 'Группа предельных порогов'),
+            Column::text('city.name', 'Город'),
+            Column::text('forwardThreshold.name', 'Группа предельных порогов'),
             Column::text('tariff', 'Тариф'),
         ])
             ->setFilter([

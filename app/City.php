@@ -51,11 +51,4 @@ class City extends Model
         return $this->doorstep ? 'Да' : 'Нет' ;
     }
 
-    public function getComprehensiveThresholdGroupAttribute(){
-        return $this->thresholdGroup->name;
-    }
-
-    public function getComprehensiveTariffZoneAttribute(){
-        return $this->tariffZone->name;
-    }
 }

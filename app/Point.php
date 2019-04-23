@@ -24,11 +24,4 @@ class Point extends Model
         return $this->hasOne(Region::class, 'code', 'region_code');
     }
 
-    public function getRealRegionAttribute(){
-        return $this->region->name;
-    }
-
-    public function getRealCityAttribute(){
-        return $this->city->name;
-    }
 }

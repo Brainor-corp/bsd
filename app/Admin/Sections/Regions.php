@@ -27,9 +27,9 @@ class Regions extends Section
             Column::text('fixed_tariff', 'Фикс. тариф'),
             Column::text('dist_tariff', 'Дист. тариф'),
             Column::text('inside_tariff', 'Внут. тариф'),
-            Column::text('comprehensive_destination_city', 'Город назначения'),
-            Column::text('comprehensive_tariff_zone', 'Тарифная зона'),
-            Column::text('comprehensive_threshold_group', 'Группа отправных пунктов'),
+            Column::text('destinationCity.name', 'Город назначения'),
+            Column::text('tariffZone.name', 'Тарифная зона'),
+            Column::text('thresholdGroup.name', 'Группа отправных пунктов'),
         ])
             ->setFilter([
                 FilterType::text('code', 'Код'),

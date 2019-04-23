@@ -24,8 +24,8 @@ class Terminals extends Section {
             Column::text('id', '#'),
             Column::text('name', 'Название'),
             Column::text('short_name', 'Кор. название'),
-            Column::text('real_region', 'Регион'),
-            Column::text('real_city', 'Город'),
+            Column::text('region.name', 'Регион'),
+            Column::text('city.name', 'Город'),
             Column::text('street', 'Улица'),
             Column::text('house', 'Дом'),
         ])
