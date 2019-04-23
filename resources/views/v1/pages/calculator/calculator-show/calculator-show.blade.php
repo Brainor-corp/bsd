@@ -49,6 +49,18 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="row">
+                                            <div class="col-11 form-item row align-items-center" style="padding-right: 0;">
+                                                <label class="col-auto calc__label"></label>
+                                                <div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">
+                                                    <div class="input-group">
+                                                        <span class="form-control dimensions-label text-center">Д</span>
+                                                        <span class="form-control dimensions-label text-center">Ш</span>
+                                                        <span class="form-control dimensions-label text-center">В</span>
+                                                        <span class="form-control dimensions-label text-center">Вес</span>
+                                                        <span class="form-control dimensions-label text-center">Кол-во</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             @if(isset($packages))
                                                 @foreach($packages as $key=>$package)
                                                     <div class="col-11 form-item row align-items-center package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
