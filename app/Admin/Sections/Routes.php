@@ -50,7 +50,7 @@ class Routes extends Section
     {
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('name', 'Название')->setValue('.')->setReadonly(true),
+                FormField::input('name', 'Название')->setRequired(true),
                 FormField::select('ship_city_id', 'Город отправки')
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
@@ -76,12 +76,4 @@ class Routes extends Section
         return $form;
     }
 
-    public function afterSave(Request $request, $model = null) {
-        $route = Route::where('id', $model->id)->first();
-        $shipCity = City::where('id', $request->ship_city_id)->first();
-        $destCity = City::where('id', $request->dest_city_id)->first();
-
-        $route->name = $shipCity->name . ' → ' . $destCity->name;
-        $route->update();
-    }
 }

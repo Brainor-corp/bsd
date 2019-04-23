@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 
 class Points extends Section
 {
-    protected $title = 'Точки';
+    protected $title = 'Пункты';
 
     public static function onDisplay(Request $request){
         $display = Display::table([
@@ -41,7 +41,7 @@ class Points extends Section
             FormColumn::column([
                 FormField::input('name', 'Название')->setRequired(true),
                 FormField::input('region_code', 'Код региона')->setRequired(true),
-//                FormField::select('region_code', 'Регион')
+//                FormField::select('region', 'Регион')
 //                    ->setRequired(true)
 //                    ->setModelForOptions(Region::class)
 //                    ->setDisplay('name'),
