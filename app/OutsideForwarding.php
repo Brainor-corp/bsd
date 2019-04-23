@@ -7,8 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class OutsideForwarding extends Model
 {
     protected $table = 'outside_forwardings';
+    protected $fillable = [
+        'point', 'forward_threshold_id', 'tariff'
+    ];
 
-    public function point()
+//    public function point()
+//    {
+//        return $this->hasOne(Point::class, 'id','point');
+//    }
+    public function point_relation() // эта связь для отображения в админке, т.к. поле названо не points_id, а points
     {
         return $this->hasOne(Point::class, 'id','point');
     }

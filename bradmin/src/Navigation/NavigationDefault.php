@@ -70,6 +70,11 @@ class NavigationDefault
                         'text' => 'Внутренние пересылки'
                     ],
                     [
+                        'url' => '/bradmin/OutsideForwarding',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Внешние пересылки'
+                    ],
+                    [
                         'url' => '/bradmin/PerKmTariffs',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Покилометровые тарифы'
