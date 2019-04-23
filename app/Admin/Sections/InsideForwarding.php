@@ -4,24 +4,16 @@ namespace App\Admin\Sections;
 
 use App\City;
 use App\ForwardThreshold;
-use App\Oversize;
-use App\Region;
-use App\Route;
-use App\RouteTariff;
-use App\Threshold;
-use App\Type;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
 use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Bradmin\SectionBuilder\Display\Table\DisplayTable;
+use Bradmin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Bradmin\SectionBuilder\Form\BaseForm\Form;
 use Bradmin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Bradmin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-//use Illuminate\Support\Facades\Request;
-use Bradmin\SectionBuilder\Meta\Meta;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+
+//use Illuminate\Support\Facades\Request;
 
 
 class InsideForwarding extends Section {
@@ -33,7 +25,18 @@ class InsideForwarding extends Section {
             Column::text('real_city', 'Город'),
             Column::text('real_forward_threshold', 'Группа предельных порогов'),
             Column::text('tariff', 'Тариф'),
-        ])->setPagination(10);
+        ])
+            ->setFilter([
+                null,
+                FilterType::select('city_id')
+                    ->setModelForOptions(City::class)
+                    ->setDisplay("name"),
+                FilterType::select('forward_threshold_id')
+                    ->setModelForOptions(ForwardThreshold::class)
+                    ->setDisplay("name"),
+                null,
+            ])
+            ->setPagination(10);
 
         return $display;
     }

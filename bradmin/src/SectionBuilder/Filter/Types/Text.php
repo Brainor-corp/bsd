@@ -12,12 +12,31 @@ use Illuminate\Support\Facades\View;
 
 class Text
 {
-    private $name, $placeholder;
+    private $name, $placeholder, $isLike;
 
-    public function __construct($name, $placeholder)
+    public function __construct($name, $placeholder, $isLike = true)
     {
         $this->setName($name);
+        $this->setIsLike($isLike);
         $this->setPlaceholder($placeholder);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isLike()
+    {
+        return $this->isLike;
+    }
+
+    /**
+     * @param mixed $isLike
+     * @return Text
+     */
+    public function setIsLike($isLike): Text
+    {
+        $this->isLike = $isLike;
+        return $this;
     }
 
     /**
@@ -60,7 +79,8 @@ class Text
     {
         $name = $this->getName();
         $placeholder = $this->getPlaceholder();
+        $isLike = $this->isLike();
 
-        return View::make('bradmin::SectionBuilder/Filter/text')->with(compact('name', 'placeholder'));
+        return View::make('bradmin::SectionBuilder/Filter/text')->with(compact('name', 'placeholder', 'isLike'));
     }
 }
