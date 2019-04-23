@@ -25,7 +25,7 @@
                                     Длина:
                                 </div>
                                 <div class="col-5">
-                                    {{ $item->legth }}
+                                    {{ $item->length }}
                                 </div>
                             </div>
                         </div>

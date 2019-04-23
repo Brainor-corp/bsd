@@ -1,9 +1,10 @@
-<form class="calculator-form" action="/calculator-show" method="post">
+<form class="calculator-form" action="{{ route('order-save-action') }}" method="post">
+    @csrf
     <div class="calc__title">Груз</div>
     <div class="form-item row align-items-center">
         <label class="col-auto calc__label">Наименование груза*</label>
         <div class="col">
-            <input type="text" class="form-control" placeholder="Введите наименование груза" name="cargo[name]" @if(isset($package['name'])) value="{{ $package['name'] }}" @endif>
+            <input type="text" class="form-control" placeholder="Введите наименование груза" name="cargo[name]" @if(isset($package['name'])) value="{{ $package['name'] }}" @endif required>
         </div>
     </div>
     <div class="row">
@@ -62,13 +63,13 @@
                     <label class="col-auto calc__label">Вес груза (кг)*</label>
                     <div class="col calc__inpgrp">
                         <input type="text" id="total-weight-hidden" hidden="hidden" style="display: none" name="cargo[total_weight]" data-total-volume="1" value="1"/>
-                        <input type="text" id="total-weight" class="form-control" value="1"/>
+                        <input type="text" id="total-weight" class="form-control" value="1" required/>
                     </div>
                 </div>
                 <div class="col-6 form-item row align-items-center text-right">
                     <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
                     <div class="col calc__inpgrp">
-                        <input type="text" id="total-volume-hidden" hidden="hidden" name="cargo[total_volume]" data-total-volume="0.01" value="0.01" />
+                        <input type="text" id="total-volume-hidden" hidden="hidden" name="cargo[total_volume]" data-total-volume="0.01" value="0.01" required/>
                         <input type="text" id="total-volume" class="form-control" value="0.01" />
                     </div>
                 </div>
@@ -132,7 +133,7 @@
                 </select>
             </div>
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input delivery-checkbox" id="need-to-bring" name="need-to-bring" required>
+                <input type="checkbox" class="custom-control-input delivery-checkbox" id="need-to-bring" name="need-to-bring">
                 {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
                 <label class="custom-control-label" for="need-to-bring">Нужно доставить груз в:</label>
             </div>
@@ -148,7 +149,7 @@
             {{--<label class="custom-control-label" for="deliver-cargo">Доставить груз до адреса получателя (1 050 <span class="rouble">p</span>)</label>--}}
             {{--</div>--}}
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input x2-check" id="bring-to-point" name="bring-to-point" required>
+                <input type="checkbox" class="custom-control-input x2-check" id="bring-to-point" name="bring-to-point">
                 {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
                 <label class="custom-control-label" for="bring-to-point">Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
             </div>
@@ -344,15 +345,15 @@
     {{--</div>--}}
     <div class="calc__title">Данные плательщика</div>
     <div class="custom-control custom-radio">
-        <input type="radio" class="custom-control-input" id="sender" name="payment_type" value="sender" required />
+        <input type="radio" class="custom-control-input" id="sender" name="payer_type" value="sender" required />
         <label class="custom-control-label" for="sender">Отправитель</label>
     </div>
     <div class="custom-control custom-radio">
-        <input type="radio" class="custom-control-input" id="recipient" name="payment_type" value="recipient" required />
+        <input type="radio" class="custom-control-input" id="recipient" name="payer_type" value="recipient" required />
         <label class="custom-control-label" for="recipient">Получатель</label>
     </div>
     <div class="custom-control custom-radio">
-        <input type="radio" class="custom-control-input" id="3rd-person" name="payment_type" value="3rd-person" required />
+        <input type="radio" class="custom-control-input" id="3rd-person" name="payer_type" value="3rd-person" required />
         <label class="custom-control-label" for="3rd-person">3-е лицо</label>
     </div>
     <div id="3rd-person-payer"  style="display: none">

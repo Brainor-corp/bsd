@@ -23,6 +23,8 @@ Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show
 Route::any('/calculator-show', 'CalculatorController@calculatorShow')->name('calculator-show');
 Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
 
+Route::post('/order-save', 'OrderController@orderSave')->name('order-save-action');
+
 Route::post('/route-tariffs-options', 'Admin\AdminController@getRouteTariffsOptionsList');
 Route::post('/regions-options', 'Admin\AdminController@getRegionsOptionsList');
 
