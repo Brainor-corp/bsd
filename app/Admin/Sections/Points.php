@@ -4,7 +4,6 @@ namespace App\Admin\Sections;
 
 use App\City;
 use App\Region;
-use App\Type;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
 use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -40,11 +39,12 @@ class Points extends Section
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('name', 'Название')->setRequired(true),
-                FormField::input('region_code', 'Код региона')->setRequired(true),
-//                FormField::select('region', 'Регион')
-//                    ->setRequired(true)
-//                    ->setModelForOptions(Region::class)
-//                    ->setDisplay('name'),
+//                FormField::input('region_code', 'Код региона')->setRequired(true),
+                FormField::select('region_code', 'Регион')
+                    ->setRequired(true)
+                    ->setModelForOptions(Region::class)
+                    ->setField('code')
+                    ->setDisplay('name'),
                 FormField::select('city_id', 'Город')
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
