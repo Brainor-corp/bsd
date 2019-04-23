@@ -23,10 +23,4 @@ class InsideForwarding extends Model
             ->orderBy('units', 'ASC');
     }
 
-    public function getRealCityAttribute(){
-        return $this->city->name;
-    }
-    public function getRealForwardThresholdAttribute(){
-        return $this->forwardThreshold->name;
-    }
 }

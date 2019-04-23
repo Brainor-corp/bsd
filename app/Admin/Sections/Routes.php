@@ -29,7 +29,7 @@ class Routes extends Section
             Column::text('min_cost', 'Мин. стоимость'),
             Column::text('delivery_time', 'Время доставки'),
             Column::text('addition', 'Доп.'),
-            Column::text('real_oversizes', 'Перегрузка'),
+            Column::text('oversize.name', 'Перегрузка'),
             Column::text('wrapper_tariff', 'Оберточный тариф'),
             Column::text('fixed_tariffs', 'Фикс. тариф'),
             Column::text('coefficient', 'Коэфф.'),

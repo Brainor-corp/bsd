@@ -26,15 +26,4 @@ class RouteTariff extends Model
         return $this->hasOne(Threshold::class, 'id','threshold_id')->orderBy('value');
     }
 
-    public function getRealRouteAttribute(){
-        return $this->route->name;
-    }
-
-    public function getRealRateAttribute(){
-        return $this->rate->name;
-    }
-
-    public function getRealThresholdAttribute(){
-        return $this->threshold->value;
-    }
 }

@@ -21,11 +21,4 @@ class PerKmTariff extends Model
         return $this->hasOne(Type::class, 'id','tariff_zone_id');
     }
 
-    public function getRealTariffZoneAttribute(){
-        return $this->tariffZone->name ?? '';
-    }
-
-    public function getRealForwardThresholdAttribute(){
-        return $this->forwardThreshold->name ?? '';
-    }
 }

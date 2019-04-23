@@ -70,11 +70,4 @@ class Terminal extends Model
         return $this->belongsTo(Region::class, 'region_code', 'code');
     }
 
-    public function getRealCityAttribute(){
-        return $this->city->name;
-    }
-
-    public function getRealRegionAttribute(){
-        return $this->region->name ?? '';
-    }
 }

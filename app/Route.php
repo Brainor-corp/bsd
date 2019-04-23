@@ -30,7 +30,4 @@ class Route extends Model
         return $this->hasOne(Oversize::class, 'id','oversizes_id');
     }
 
-    public function getRealOversizesAttribute(){
-        return $this->oversize->name;
-    }
 }

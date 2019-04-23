@@ -22,8 +22,8 @@ class Points extends Section
         $display = Display::table([
             Column::text('id', '#'),
             Column::text('name', 'Название'),
-            Column::text('real_region', 'Регион'),
-            Column::text('real_city', 'Город'),
+            Column::text('region.name', 'Регион'),
+            Column::text('city.name', 'Город'),
             Column::text('distance', 'Расстояние'),
         ])
             ->setFilter([
