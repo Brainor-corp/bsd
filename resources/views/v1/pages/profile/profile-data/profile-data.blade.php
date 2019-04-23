@@ -51,7 +51,7 @@
                                     <label class="col-auto profile__label">Пароль</label>
                                     <div class="col">
                                         <input type="text" class="form-control form-group" name="old_password" placeholder="Старый пароль">
-                                        <input type="text" class="form-control form-group" name="new_password" placeholder="Новый пароль">
+                                        <input type="text" class="form-control form-group" name="password" placeholder="Новый пароль">
                                     </div>
                                 </div>
                                 <button class="footer-btn btn margin-item btn-danger">Сохранить изменения</button>
