@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class PerKmTariff extends Model
 {
     protected $table = 'per_km_tariffs';
+    protected $fillable = [
+        'tariff', 'forward_threshold_id', 'tariff_zone_id'
+    ];
 
     public function forwardThreshold()
     {
@@ -16,5 +19,13 @@ class PerKmTariff extends Model
     public function tariffZone()
     {
         return $this->hasOne(Type::class, 'id','tariff_zone_id');
+    }
+
+    public function getRealTariffZoneAttribute(){
+        return $this->tariffZone->name ?? '';
+    }
+
+    public function getRealForwardThresholdAttribute(){
+        return $this->forwardThreshold->name ?? '';
     }
 }

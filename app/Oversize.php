@@ -14,4 +14,8 @@ class Oversize extends Model
     {
         return $this->hasMany(Route::class, 'oversizes_id','id');
     }
+
+    public function getRealNameAttribute(){
+        return $this->name;
+    }
 }
