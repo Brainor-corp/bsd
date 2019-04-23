@@ -2,9 +2,6 @@
 
 namespace App\Admin\Sections;
 
-use App\City;
-use App\Oversize;
-use App\Region;
 use App\Route;
 use App\RouteTariff;
 use App\Threshold;
@@ -12,15 +9,14 @@ use App\Type;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
 use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Bradmin\SectionBuilder\Display\Table\DisplayTable;
+use Bradmin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Bradmin\SectionBuilder\Form\BaseForm\Form;
 use Bradmin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Bradmin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-//use Illuminate\Support\Facades\Request;
 use Bradmin\SectionBuilder\Meta\Meta;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+
+//use Illuminate\Support\Facades\Request;
 
 
 class RouteTariffs extends Section {
@@ -33,7 +29,27 @@ class RouteTariffs extends Section {
             Column::text('real_rate', 'Мера'),
             Column::text('real_threshold', 'Значение'),
             Column::text('price', 'Цена'),
-        ])->setPagination(10);
+        ])
+            ->setFilter([
+                null,
+                FilterType::select('route_id')
+                    ->setIsLike(false)
+                    ->setModelForOptions(Route::class)
+                    ->setDisplay("name"),
+                FilterType::select('rate_id')
+                    ->setIsLike(false)
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($q) {
+                        return $q->where('class', 'rates');
+                    })
+                    ->setDisplay("name"),
+                FilterType::select('threshold_id')
+                    ->setIsLike(false)
+                    ->setModelForOptions(Threshold::class)
+                    ->setDisplay("value"),
+                null,
+            ])
+            ->setPagination(10);
 
         return $display;
     }

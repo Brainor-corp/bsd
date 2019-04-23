@@ -10,9 +10,8 @@ namespace Bradmin\SectionBuilder\Display\Table;
 
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Meta\Meta;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\View;
 use BRHelper;
+use Illuminate\Support\Facades\View;
 
 class DisplayTable
 {
@@ -74,7 +73,11 @@ class DisplayTable
             ->when(!empty($request->filter), function ($query) use ($request) {
                 parse_str($request->filter, $filterArray);
                 foreach ($filterArray as $filterItem) {
-                    $query = $query->where($filterItem['field'], 'like', '%' . $filterItem['value'] . '%');
+                    if($filterItem['is_like'] == '1') {
+                        $query = $query->where($filterItem['field'], 'like', '%' . $filterItem['value'] . '%');
+                    } else {
+                        $query = $query->where($filterItem['field'], $filterItem['value']);
+                    }
                 }
             })
             ->paginate($this->getPagination());

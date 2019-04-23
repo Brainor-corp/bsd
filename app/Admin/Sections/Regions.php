@@ -3,20 +3,17 @@
 namespace App\Admin\Sections;
 
 use App\City;
-use App\Region;
 use App\Type;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
 use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Bradmin\SectionBuilder\Display\Table\DisplayTable;
+use Bradmin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Bradmin\SectionBuilder\Form\BaseForm\Form;
 use Bradmin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Bradmin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-//use Illuminate\Support\Facades\Request;
-use Bradmin\SectionBuilder\Meta\Meta;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+
+//use Illuminate\Support\Facades\Request;
 
 
 class Regions extends Section
@@ -33,7 +30,33 @@ class Regions extends Section
             Column::text('comprehensive_destination_city', 'Город назначения'),
             Column::text('comprehensive_tariff_zone', 'Тарифная зона'),
             Column::text('comprehensive_threshold_group', 'Группа отправных пунктов'),
-        ])->setPagination(10);
+        ])
+            ->setFilter([
+                FilterType::text('code', 'Код'),
+                FilterType::text('name', 'Название'),
+                null,
+                null,
+                null,
+                FilterType::select('dest_city_id')
+                    ->setIsLike(false)
+                    ->setModelForOptions(City::class)
+                    ->setDisplay("name"),
+                FilterType::select('tariff_zone_id')
+                    ->setIsLike(false)
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($q) {
+                        return $q->where('class', 'tariff_zones');
+                    })
+                    ->setDisplay("name"),
+                FilterType::select('threshold_group_id')
+                    ->setIsLike(false)
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($q) {
+                        return $q->where('class', 'threshold_groups');
+                    })
+                    ->setDisplay("name"),
+            ])
+            ->setPagination(10);
 
         return $display;
     }

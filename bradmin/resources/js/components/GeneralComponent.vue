@@ -422,6 +422,7 @@
                         filterObject[$(this).data('filterName')] = {};
                         filterObject[$(this).data('filterName')]['field'] = $(this).data('filterName');
                         filterObject[$(this).data('filterName')]['value'] = $(this).val();
+                        filterObject[$(this).data('filterName')]['is_like'] = $(this).data('isLike');
                     }
                 });
 

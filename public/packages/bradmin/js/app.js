@@ -36061,6 +36061,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                     filterObject[__WEBPACK_IMPORTED_MODULE_1_jquery___default()(this).data('filterName')] = {};
                     filterObject[__WEBPACK_IMPORTED_MODULE_1_jquery___default()(this).data('filterName')]['field'] = __WEBPACK_IMPORTED_MODULE_1_jquery___default()(this).data('filterName');
                     filterObject[__WEBPACK_IMPORTED_MODULE_1_jquery___default()(this).data('filterName')]['value'] = __WEBPACK_IMPORTED_MODULE_1_jquery___default()(this).val();
+                    filterObject[__WEBPACK_IMPORTED_MODULE_1_jquery___default()(this).data('filterName')]['is_like'] = __WEBPACK_IMPORTED_MODULE_1_jquery___default()(this).data('isLike');
                 }
             });
 
