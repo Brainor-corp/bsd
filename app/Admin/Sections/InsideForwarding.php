@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 
 class InsideForwarding extends Section {
     protected $title = 'Внутренние пересылки';
+    protected $model = '\App\InsideForwarding';
 
     public static function onDisplay(Request $request) {
         $display = Display::table([

@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 
 class RouteTariffs extends Section {
     protected $title = 'Тарифы маршрутов';
+    protected $model = '\App\RouteTariff';
 
     public static function onDisplay(Request $request) {
         $display = Display::table([

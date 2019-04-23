@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 
 class ForwardThresholds extends Section {
     protected $title = 'Предельные пороги';
+    protected $model = '\App\ForwardThreshold';
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
