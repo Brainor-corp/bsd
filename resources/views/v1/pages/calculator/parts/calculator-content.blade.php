@@ -286,11 +286,11 @@
 
     <div class="form-item row align-items-center">
         <label class="col-auto calc__label">ФИО</label>
-        <div class="col"><input type="text" class="form-control" required /></div>
+        <div class="col"><input type="text" class="form-control" name="sender_name" required /></div>
     </div>
     <div class="form-item row align-items-center">
         <label class="col-auto calc__label">Телефон*</label>
-        <div class="col calc__inpgrp"><input type="text" class="form-control" required/></div>
+        <div class="col calc__inpgrp"><input type="text" class="form-control" name="sender_phone" required/></div>
     </div>
 
     <div class="calc__title">Получатель</div>
@@ -319,7 +319,7 @@
     {{--</div>--}}
     <div class="form-item row align-items-center">
         <label class="col-auto calc__label">ФИО</label>
-        <div class="col"><input type="text" class="form-control" required /></div>
+        <div class="col"><input type="text" class="form-control" name="recepient_name" required /></div>
     </div>
     {{--<div class="form-item row align-items-center">--}}
     {{--<label class="col-auto calc__label">Паспорт*</label>--}}
@@ -336,7 +336,7 @@
     {{--</div>--}}
     <div class="form-item row align-items-center">
         <label class="col-auto calc__label">Телефон*</label>
-        <div class="col calc__inpgrp"><input type="text" class="form-control" required/></div>
+        <div class="col calc__inpgrp"><input type="text" class="form-control" name="recepient_phone" required/></div>
     </div>
     {{--<div class="form-item row align-items-center">--}}
     {{--<label class="col-auto calc__label">Дополнительная информация</label>--}}
@@ -344,20 +344,26 @@
     {{--</div>--}}
     <div class="calc__title">Данные плательщика</div>
     <div class="custom-control custom-radio">
-        <input type="radio" class="custom-control-input" id="sender" name="payer_type" value="sender" required />
+        <input type="radio" class="custom-control-input" id="sender" name="payment_type" value="sender" required />
         <label class="custom-control-label" for="sender">Отправитель</label>
     </div>
     <div class="custom-control custom-radio">
-        <input type="radio" class="custom-control-input" id="recipient" name="payer_type" value="recipient" required />
+        <input type="radio" class="custom-control-input" id="recipient" name="payment_type" value="recipient" required />
         <label class="custom-control-label" for="recipient">Получатель</label>
     </div>
     <div class="custom-control custom-radio">
-        <input type="radio" class="custom-control-input" id="3rd-person" name="payer_type" value="3rd-person" required />
+        <input type="radio" class="custom-control-input" id="3rd-person" name="payment_type" value="3rd-person" required />
         <label class="custom-control-label" for="3rd-person">3-е лицо</label>
     </div>
-    <div id="3rd-person-payer" class="form-item row align-items-center" style="display: none">
-        <label class="col-auto calc__label">ФИО</label>
-        <div class="col calc__inpgrp"><input type="text" class="form-control" required/></div>
+    <div id="3rd-person-payer"  style="display: none">
+        <div class="form-item row align-items-center">
+            <label class="col-auto calc__label">ФИО</label>
+            <div class="col calc__inpgrp"><input type="text" class="form-control" name="payer_name"/></div>
+        </div>
+        <div class="form-item row align-items-center">
+            <label class="col-auto calc__label">Телефон</label>
+            <div class="col calc__inpgrp"><input type="text" class="form-control" name="payer_phone"/></div>
+        </div>
     </div>
     <div class="calc__title">Форма оплаты</div>
     <div class="custom-control custom-radio">
