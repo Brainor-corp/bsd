@@ -79,6 +79,11 @@ class NavigationDefault
                         'icon' => 'fas fa-address-book',
                         'text' => 'Множитель перегруза'
                     ],
+                    [
+                        'url' => '/bradmin/Thresholds',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Пределы'
+                    ],
 //            [
 //                'url' => '/bradmin/Comments',
 //                'icon' => 'fas fa-address-book',
