@@ -14,8 +14,12 @@ class Order extends Model
         return $this->belongsTo(Type::class, 'status_id');
     }
 
+    public function order_items(){
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function getRealStatusAttribute(){
-        return $this->status->name;
+        return $this->status->name ?? '';
     }
 
     public function getComprehensibleTakeNeed(){
