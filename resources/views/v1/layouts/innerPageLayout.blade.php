@@ -22,6 +22,7 @@
     </body>
 
     @include('v1.partials.footer.script')
+    @yield('footScripts')
 
     @include('v1.partials.footer.modalSelectionCity')
 
