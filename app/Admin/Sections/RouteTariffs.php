@@ -26,9 +26,9 @@ class RouteTariffs extends Section {
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::text('id', '#'),
-            Column::text('real_route', 'Маршрут'),
-            Column::text('real_rate', 'Мера'),
-            Column::text('real_threshold', 'Значение'),
+            Column::text('route.name', 'Маршрут'),
+            Column::text('rate.name', 'Мера'),
+            Column::text('threshold.value', 'Значение'),
             Column::text('price', 'Цена'),
         ])
             ->setFilter([

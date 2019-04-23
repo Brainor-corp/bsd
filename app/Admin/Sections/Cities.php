@@ -26,8 +26,8 @@ class Cities extends Section
             Column::text('comprehensive_is_ship', 'Можно доставить'),
             Column::text('comprehensive_is_filial', 'Является филиалом'),
             Column::text('comprehensive_doorstep', 'Доставка до двери'),
-            Column::text('comprehensive_tariff_zone', 'Тарифная зона'),
-            Column::text('comprehensive_threshold_group', 'Группа отправных пунктов'),
+            Column::text('tariffZone.name', 'Тарифная зона'),
+            Column::text('thresholdGroup.name', 'Группа отправных пунктов'),
         ])
             ->setFilter([
                 null,

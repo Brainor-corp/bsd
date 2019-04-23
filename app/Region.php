@@ -25,15 +25,4 @@ class Region extends Model
         return $this->hasOne(Type::class, 'id','tariff_zone_id');
     }
 
-    public function getComprehensiveThresholdGroupAttribute(){
-        return $this->thresholdGroup->name;
-    }
-
-    public function getComprehensiveTariffZoneAttribute(){
-        return $this->tariffZone->name;
-    }
-
-    public function getComprehensiveDestinationCityAttribute(){
-        return $this->destinationCity->name ?? 'Не указан';
-    }
 }
