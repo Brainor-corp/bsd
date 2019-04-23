@@ -69,6 +69,16 @@ class NavigationDefault
                         'icon' => 'fas fa-address-book',
                         'text' => 'Внутренние пересылки'
                     ],
+                    [
+                        'url' => '/bradmin/PerKmTariffs',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Покилометровые тарифы'
+                    ],
+                    [
+                        'url' => '/bradmin/OversizeMarkups',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Множитель перегруза'
+                    ],
 //            [
 //                'url' => '/bradmin/Comments',
 //                'icon' => 'fas fa-address-book',

@@ -51,7 +51,7 @@ class Orders extends Section {
     }
 
     public static function onEdit($id) {
-        $order = Order::whereId($id)->first()->with('order_items.type');
+        $order = Order::whereId($id)->with('order_items.type', 'order_services')->first();
 
 //        $meta = new Meta;
 //        $meta->setScripts([
@@ -145,6 +145,9 @@ class Orders extends Section {
                     })
                     ->setDisplay('full_name'),
 
+                FormField::custom(View::make('admin.orders.order-items')->with(compact('order'))->render()),
+                FormField::custom(View::make('admin.orders.order-services')->with(compact('order'))->render()),
+
                 FormField::datepicker('order_date', 'Зата заказа')
                     ->setTodayBtn(true)
                     ->setFormat('yyyy-mm-dd hh:ii:ss')
@@ -155,7 +158,6 @@ class Orders extends Section {
                     ->setFormat('yyyy-mm-dd hh:ii:ss')
                     ->setLanguage('ru')
                     ->setClearBtn(true),
-                FormField::custom(View::make('admin.orders.order-items')->with(compact('order'))->render())
             ])
         ]);
 

@@ -7,7 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'user_id', 'email', 'fio', 'ip', 'text', 'rating', 'visible', 'moderate',
+        'status_id', 'ship_city_id', 'ship_city_name', 'dest_city_id', 'dest_city_name',
+        'take_need', 'take_in_city', 'take_address', 'take_distance', 'take_point',
+        'take_time', 'take_price', 'delivery_need', 'delivery_in_city', 'delivery_address',
+        'delivery_distance', 'delivery_point', 'delivery_price', 'delivery_time', 'delivered_in',
+        'total_price', 'sender_id', 'sender_name', 'sender_phone', 'recipient_id',
+        'recepient_name', 'recepient_phone', 'payer_id', 'payer_name', 'payer_phone',
+        'payment_type', 'code_1c', 'manager_id', 'operator_id', 'order_date',
+        'order_finish_date',
     ];
 
     public function status(){
@@ -16,6 +23,10 @@ class Order extends Model
 
     public function order_items(){
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function order_services(){
+        return $this->belongsToMany(Service::class);
     }
 
     public function getRealStatusAttribute(){
