@@ -7,5 +7,6 @@
            value="{{ $value ?? null }}"
            @if($required) required @endif
            @if($readonly) readonly @endif
+           @if(!empty($pattern)) pattern="{{ $pattern }}" @endif
            placeholder="{{ $placeholder ?? null }}">
 </div>

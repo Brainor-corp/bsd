@@ -3,24 +3,16 @@
 namespace App\Admin\Sections;
 
 use App\City;
-use App\Oversize;
 use App\Region;
-use App\Route;
-use App\RouteTariff;
-use App\Threshold;
-use App\Type;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
 use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Bradmin\SectionBuilder\Display\Table\DisplayTable;
 use Bradmin\SectionBuilder\Form\BaseForm\Form;
 use Bradmin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Bradmin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-//use Illuminate\Support\Facades\Request;
-use Bradmin\SectionBuilder\Meta\Meta;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+
+//use Illuminate\Support\Facades\Request;
 
 
 class Terminals extends Section {
@@ -50,21 +42,30 @@ class Terminals extends Section {
             FormColumn::column([
                 FormField::input('name', 'Название')->setRequired(true),
                 FormField::input('short_name', 'Кор. название')->setRequired(true),
-                FormField::input('region', 'Код региона'),
-//                FormField::select('region_code', 'Регион')
-//                    ->setRequired(true)
-//                    ->setModelForOptions(Region::class)
-//                    ->setDisplay('name'),
+                FormField::select('region_code', 'Регион')
+                    ->setRequired(true)
+                    ->setModelForOptions(Region::class)
+                    ->setField('code')
+                    ->setDisplay('name'),
                 FormField::select('city_id', 'Город')
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
                 FormField::input('street', 'Улица')->setRequired(true),
                 FormField::input('house', 'Дом')->setRequired(true),
-                FormField::input('geo_point', 'Гео. точка'),
+                FormField::input('geo_point', 'Гео. точка (x.xxx, y.yyy)')
+                ->setPattern("(\d+\.\d+|\d+),\s(\d+\.\d+|\d+)"),
             ])
         ]);
 
         return $form;
+    }
+
+    public function afterSave(Request $request, $model = null)
+    {
+        if(empty($request->get('geo_point'))) {
+            $model->geo_point = "0, 0";
+            $model->save();
+        }
     }
 }
