@@ -2,26 +2,17 @@
 
 namespace App\Admin\Sections;
 
-use App\City;
-use App\ForwardThreshold;
-use App\Oversize;
-use App\Region;
-use App\Route;
-use App\RouteTariff;
-use App\Threshold;
 use App\Type;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
 use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Bradmin\SectionBuilder\Display\Table\DisplayTable;
+use Bradmin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Bradmin\SectionBuilder\Form\BaseForm\Form;
 use Bradmin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Bradmin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-//use Illuminate\Support\Facades\Request;
-use Bradmin\SectionBuilder\Meta\Meta;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+
+//use Illuminate\Support\Facades\Request;
 
 
 class Thresholds extends Section {
@@ -31,7 +22,17 @@ class Thresholds extends Section {
         $display = Display::table([
             Column::text('rate.name', 'Мера'),
             Column::text('value', 'Значение'),
-        ])->setPagination(10);
+        ])
+            ->setFilter([
+                FilterType::select('rate_id')
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($q){
+                        return $q->where('class', 'rates');
+                    })
+                    ->setDisplay('name'),
+                null
+            ])
+            ->setPagination(10);
 
         return $display;
     }
