@@ -30,6 +30,7 @@ class ForwardThresholds extends Section {
             ->setFilter([
                 null,
                 FilterType::select('threshold_group_id')
+                    ->setIsLike(false)
                     ->setModelForOptions(Type::class)
                     ->setDisplay("name")
                     ->setQueryFunctionForModel(function ($q) {

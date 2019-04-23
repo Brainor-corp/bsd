@@ -73,7 +73,7 @@ class DisplayTable
             ->when(!empty($request->filter), function ($query) use ($request) {
                 parse_str($request->filter, $filterArray);
                 foreach ($filterArray as $filterItem) {
-                    if($filterItem['isLike'] == '1') {
+                    if($filterItem['is_like'] == '1') {
                         $query = $query->where($filterItem['field'], 'like', '%' . $filterItem['value'] . '%');
                     } else {
                         $query = $query->where($filterItem['field'], $filterItem['value']);

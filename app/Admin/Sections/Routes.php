@@ -4,21 +4,16 @@ namespace App\Admin\Sections;
 
 use App\City;
 use App\Oversize;
-use App\Region;
-use App\Route;
-use App\Type;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
 use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Bradmin\SectionBuilder\Display\Table\DisplayTable;
+use Bradmin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Bradmin\SectionBuilder\Form\BaseForm\Form;
 use Bradmin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Bradmin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-//use Illuminate\Support\Facades\Request;
-use Bradmin\SectionBuilder\Meta\Meta;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+
+//use Illuminate\Support\Facades\Request;
 
 
 class Routes extends Section
@@ -29,6 +24,8 @@ class Routes extends Section
         $display = Display::table([
             Column::text('id', '#'),
             Column::text('name', 'Название'),
+            Column::text('shipCity.name', 'Город отправки'),
+            Column::text('destinationCity.name', 'Город назначения'),
             Column::text('min_cost', 'Мин. стоимость'),
             Column::text('delivery_time', 'Время доставки'),
             Column::text('addition', 'Доп.'),
@@ -36,7 +33,30 @@ class Routes extends Section
             Column::text('wrapper_tariff', 'Оберточный тариф'),
             Column::text('fixed_tariffs', 'Фикс. тариф'),
             Column::text('coefficient', 'Коэфф.'),
-        ])->setPagination(10);
+        ])
+            ->setFilter([
+                null,
+                FilterType::text('name', 'Название'),
+                FilterType::select('ship_city_id')
+                    ->setIsLike(false)
+                    ->setModelForOptions(City::class)
+                    ->setDisplay("name"),
+                FilterType::select('dest_city_id')
+                    ->setIsLike(false)
+                    ->setModelForOptions(City::class)
+                    ->setDisplay("name"),
+                null,
+                null,
+                null,
+                FilterType::select('oversizes_id')
+                    ->setIsLike(false)
+                    ->setModelForOptions(Oversize::class)
+                    ->setDisplay("name"),
+                null,
+                null,
+                null,
+            ])
+            ->setPagination(10);
 
         return $display;
     }

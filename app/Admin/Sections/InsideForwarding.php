@@ -29,9 +29,11 @@ class InsideForwarding extends Section {
             ->setFilter([
                 null,
                 FilterType::select('city_id')
+                    ->setIsLike(false)
                     ->setModelForOptions(City::class)
                     ->setDisplay("name"),
                 FilterType::select('forward_threshold_id')
+                    ->setIsLike(false)
                     ->setModelForOptions(ForwardThreshold::class)
                     ->setDisplay("name"),
                 null,

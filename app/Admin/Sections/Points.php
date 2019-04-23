@@ -7,6 +7,7 @@ use App\Region;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
 use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
+use Bradmin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Bradmin\SectionBuilder\Form\BaseForm\Form;
 use Bradmin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Bradmin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
@@ -24,7 +25,22 @@ class Points extends Section
             Column::text('real_region', 'Регион'),
             Column::text('real_city', 'Город'),
             Column::text('distance', 'Расстояние'),
-        ])->setPagination(10);
+        ])
+            ->setFilter([
+                null,
+                FilterType::text('name', 'Название'),
+                FilterType::select('region_code')
+                    ->setIsLike(false)
+                    ->setModelForOptions(Region::class)
+                    ->setField('code')
+                    ->setDisplay("name"),
+                FilterType::select('city_id')
+                    ->setIsLike(false)
+                    ->setModelForOptions(City::class)
+                    ->setDisplay("name"),
+                null
+            ])
+            ->setPagination(10);
 
         return $display;
     }
