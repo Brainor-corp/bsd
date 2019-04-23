@@ -3,7 +3,6 @@
 namespace App\Admin\Sections;
 
 use App\City;
-use App\ForwardThreshold;
 use App\Oversize;
 use App\Region;
 use App\Route;
@@ -24,15 +23,15 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 
 
-class InsideForwarding extends Section {
-    protected $title = 'Внутренние пересылки';
+class Notes extends Section {
+    protected $title = 'Заметки';
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::text('id', '#'),
-            Column::text('real_city', 'Город'),
-            Column::text('real_forward_threshold', 'Группа предельных порогов'),
-            Column::text('tariff', 'Тариф'),
+            Column::text('real_type', 'Тип заметки'),
+            Column::text('text', 'Текст заметки'),
+            Column::text('option', 'Наименование'),
         ])->setPagination(10);
 
         return $display;
@@ -43,17 +42,20 @@ class InsideForwarding extends Section {
     }
 
     public static function onEdit($id) {
+
         $form = Form::panel([
             FormColumn::column([
-                FormField::select('city_id', 'Город')
+                FormField::input('name', 'Наименование')->setRequired(true),
+                FormField::input('value', 'Данные')->setRequired(true),
+                FormField::input('description', 'Описание'),
+                FormField::input('group', 'Группа'),
+                FormField::select('type_id', 'Тип контакта')
                     ->setRequired(true)
-                    ->setModelForOptions(City::class)
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($query){
+                        return $query->where('class', 'contacts');
+                    })
                     ->setDisplay('name'),
-                FormField::select('forward_threshold_id', 'Группа предельных порогов')
-                    ->setRequired(true)
-                    ->setModelForOptions(ForwardThreshold::class)
-                    ->setDisplay('name'),
-                FormField::input('tariff', 'Тариф')->setType('number')->setRequired(true),
             ])
         ]);
 
