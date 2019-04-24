@@ -20,13 +20,15 @@
                         <div class="col-lg-8">
                             <div class="events-feed">
                                 @foreach($events as $event)
-                                    <div class="events-feed__item d-flex flex-column">
-                                        <div class="events-feed__close" data-event-id="{{ $event->id }}">
-                                            <i class="fa fa-close"></i>
+                                    <a href="{{ $event->url ? url($event->url) : '#' }}">
+                                        <div class="events-feed__item d-flex flex-column">
+                                            <div class="events-feed__close" data-event-id="{{ $event->id }}">
+                                                <i class="fa fa-close"></i>
+                                            </div>
+                                            <div class="events-feed__title">{{ $event->name }}</div>
+                                            <div class="events-feed__date">{{ $event->created_at->format('h:i d.m.Y') }}</div>
                                         </div>
-                                        <div class="events-feed__title">{{ $event->name }}</div>
-                                        <div class="events-feed__date">{{ $event->created_at->format('h:i d.m.Y') }}</div>
-                                    </div>
+                                    </a>
                                 @endforeach
                             </div>
                         </div>

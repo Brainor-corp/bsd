@@ -3,9 +3,7 @@
 
 namespace App\Http\Helpers;
 
-
 use App\Event;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EventHelper {
