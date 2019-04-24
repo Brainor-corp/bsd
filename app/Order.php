@@ -20,6 +20,12 @@ class Order extends Model
     public function status(){
         return $this->belongsTo(Type::class, 'status_id');
     }
+    public function payment(){
+        return $this->belongsTo(Type::class, 'payment_type');
+    }
+    public function payer(){
+        return $this->belongsTo(Type::class, 'payer_type');
+    }
 
     public function order_items(){
         return $this->hasMany(OrderItem::class);

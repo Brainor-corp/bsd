@@ -105,8 +105,10 @@ class ProfileController extends Controller {
     }
 
     public function showReportPage($id){
-        $report = Order::where('user_id', Auth::user()->id)->where('id', $id)->with('status', 'order_items')->firstOrFail();
+        $order = Order::where('user_id', Auth::user()->id)->where('id', $id)->with('status', 'order_items', 'order_services', 'payment')->firstOrFail();
 
+        //todo вывод доставки и терминальной перевозки
 
+        return View::make('v1.pages.profile.profile-inner.report-show-page')->with(compact('order'))->render();
     }
 }
