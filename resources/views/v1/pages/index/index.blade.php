@@ -68,7 +68,7 @@
         </div>
     </div>
 </section>
-<section class="about-company bg-dark">
+<section class="about-company bg-dark mb-0">
     <div class="container">
         <div class="row">
             <div class="col-sm-12 col-md-7">
@@ -110,119 +110,119 @@
         </div>
     </div>
 </section>
-<section class="calculation">
-    <div class="container">
-        <h3>Расчет стоимости</h3>
-        <div class="row">
-            <div class="col-md-6">
-                @include('v1.pages.calculator.parts.calculator-content')
-            </div>
-            <div class="col-md-4 offset-md-2">
-                <section class="block__itogo">
-                    <div class="block__itogo-inner">
-                        <header class="block__itogo_title">Перевозка груза включает</header>
-                        {{--<div class="block__itogo_item d-flex">--}}
-                        {{--<div class="d-flex flex-wrap">--}}
-                        {{--<span class="block__itogo_label">Забор груза:</span>--}}
-                        {{--<span class="block__itogo_value">Терминал</span>--}}
-                        {{--</div>--}}
-                        {{--<span class="block__itogo_price d-flex flex-nowrap">--}}
-                        {{--<span class="block__itogo_amount">155</span>--}}
-                        {{--<span class="rouble">p</span>--}}
-                        {{--</span>--}}
-                        {{--</div>--}}
-                        <div class="block__itogo_item d-flex">
-                            <div class="d-flex flex-wrap">
-                                <span class="block__itogo_label">Межтерминальная перевозка:</span>
-                                <span class="block__itogo_value">{{ $tariff->route->name ?? ''}}</span>
-                            </div>
-                            <span class="block__itogo_price d-flex flex-nowrap">
-                                            <span class="block__itogo_amount" id="base-price" data-base-price="{{ $tariff->base_price ?? 0}}">{{ $tariff->base_price ?? 0}}</span>
-                                            <span class="rouble">p</span>
-                                        </span>
-                        </div>
-                        {{--<div class="block__itogo_item d-flex">--}}
-                        {{--<div class="d-flex flex-wrap">--}}
-                        {{--<span class="block__itogo_label">Доставка груза:</span>--}}
-                        {{--<span class="block__itogo_value">Терминал</span>--}}
-                        {{--</div>--}}
-                        {{--<span class="block__itogo_price d-flex flex-nowrap">--}}
-                        {{--<span class="block__itogo_amount">155</span>--}}
-                        {{--<span class="rouble">p</span>--}}
-                        {{--</span>--}}
-                        {{--</div>--}}
-                        <div id="custom-services-total-wrapper"
-                             @if(
-                             !isset($tariff->total_data->services) &&
-                             !isset($tariff->total_data->insurance) &&
-                             !isset($tariff->total_data->discount)
-                             )
-                             style="display: none"
-                                @endif
-                        >
-                            <div class="block__itogo_item d-flex">
-                                <div class="d-flex flex-wrap">
-                                    <span class="block__itogo_label">Дополнительные услуги:</span>
-                                </div>
-                            </div>
-                            <div id="custom-services-total-list">
-                                @if(isset($tariff->total_data->services))
-                                    @foreach($tariff->total_data->services as $service)
-                                        <div class="custom-service-total-item">
-                                            <div class="block__itogo_item d-flex">
-                                                <div class="d-flex flex-wrap" id="services-total-names">
-                                                    <span class="block__itogo_value">{{ $service->name }}</span>
-                                                </div>
-                                                <span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">
-                                                                <span class="block__itogo_amount">{{ $service->total }}</span>
-                                                                <span class="rouble">p</span>
-                                                            </span>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                @endif
-                                @if(isset($tariff->total_data->insurance))
-                                    <div class="custom-service-total-item">
-                                        <div class="block__itogo_item d-flex">
-                                            <div class="d-flex flex-wrap" id="services-total-names">
-                                                <span class="block__itogo_value">Страхование</span>
-                                            </div>
-                                            <span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">
-                                                        <span class="block__itogo_amount">{{ $tariff->total_data->insurance }}</span>
-                                                        <span class="rouble">p</span>
-                                                    </span>
-                                        </div>
-                                    </div>
-                                @endif
-                                @if(isset($tariff->total_data->discount))
-                                    <div class="custom-service-total-item">
-                                        <div class="block__itogo_item d-flex">
-                                            <div class="d-flex flex-wrap" id="services-total-names">
-                                                <span class="block__itogo_value">Скидка</span>
-                                            </div>
-                                            <span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">
-                                                    <span class="block__itogo_amount">{{ $tariff->total_data->discount }}</span>
-                                                    <span class="rouble">p</span>
-                                                </span>
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="separator-hr"></div>
-                        <footer class="block__itogo_footer d-flex">
-                            <span>Стоимость перевозки*</span>
-                            <span class="block__itogo_price d-flex flex-nowrap">
-                                            <span class="block__itogo_amount"><span id="total-price"> {{ $tariff->total_data->total ?? 0}}</span></span>
-                                            <span class="rouble">p</span>
-                                            <span id="total-volume" data-total-volume="{{ $tariff->total_volume ?? 0.01}}" style="display: none"></span>
-                                        </span>
-                        </footer>
-                    </div>
-                    <div class="annotation-text">* - Предварительный расчет. Точная стоимость доставки будет определена после обмера груза специалистами компании БСД на складе.</div>
-                </section>
-            </div>
-        </div>
-    </div>
-</section>
+{{--<section class="calculation">--}}
+{{--    <div class="container">--}}
+{{--        <h3>Расчет стоимости</h3>--}}
+{{--        <div class="row">--}}
+{{--            <div class="col-md-6">--}}
+{{--                @include('v1.pages.calculator.parts.calculator-content')--}}
+{{--            </div>--}}
+{{--            <div class="col-md-4 offset-md-2">--}}
+{{--                <section class="block__itogo">--}}
+{{--                    <div class="block__itogo-inner">--}}
+{{--                        <header class="block__itogo_title">Перевозка груза включает</header>--}}
+{{--                        --}}{{--<div class="block__itogo_item d-flex">--}}
+{{--                        --}}{{--<div class="d-flex flex-wrap">--}}
+{{--                        --}}{{--<span class="block__itogo_label">Забор груза:</span>--}}
+{{--                        --}}{{--<span class="block__itogo_value">Терминал</span>--}}
+{{--                        --}}{{--</div>--}}
+{{--                        --}}{{--<span class="block__itogo_price d-flex flex-nowrap">--}}
+{{--                        --}}{{--<span class="block__itogo_amount">155</span>--}}
+{{--                        --}}{{--<span class="rouble">p</span>--}}
+{{--                        --}}{{--</span>--}}
+{{--                        --}}{{--</div>--}}
+{{--                        <div class="block__itogo_item d-flex">--}}
+{{--                            <div class="d-flex flex-wrap">--}}
+{{--                                <span class="block__itogo_label">Межтерминальная перевозка:</span>--}}
+{{--                                <span class="block__itogo_value">{{ $tariff->route->name ?? ''}}</span>--}}
+{{--                            </div>--}}
+{{--                            <span class="block__itogo_price d-flex flex-nowrap">--}}
+{{--                                            <span class="block__itogo_amount" id="base-price" data-base-price="{{ $tariff->base_price ?? 0}}">{{ $tariff->base_price ?? 0}}</span>--}}
+{{--                                            <span class="rouble">p</span>--}}
+{{--                                        </span>--}}
+{{--                        </div>--}}
+{{--                        --}}{{--<div class="block__itogo_item d-flex">--}}
+{{--                        --}}{{--<div class="d-flex flex-wrap">--}}
+{{--                        --}}{{--<span class="block__itogo_label">Доставка груза:</span>--}}
+{{--                        --}}{{--<span class="block__itogo_value">Терминал</span>--}}
+{{--                        --}}{{--</div>--}}
+{{--                        --}}{{--<span class="block__itogo_price d-flex flex-nowrap">--}}
+{{--                        --}}{{--<span class="block__itogo_amount">155</span>--}}
+{{--                        --}}{{--<span class="rouble">p</span>--}}
+{{--                        --}}{{--</span>--}}
+{{--                        --}}{{--</div>--}}
+{{--                        <div id="custom-services-total-wrapper"--}}
+{{--                             @if(--}}
+{{--                             !isset($tariff->total_data->services) &&--}}
+{{--                             !isset($tariff->total_data->insurance) &&--}}
+{{--                             !isset($tariff->total_data->discount)--}}
+{{--                             )--}}
+{{--                             style="display: none"--}}
+{{--                                @endif--}}
+{{--                        >--}}
+{{--                            <div class="block__itogo_item d-flex">--}}
+{{--                                <div class="d-flex flex-wrap">--}}
+{{--                                    <span class="block__itogo_label">Дополнительные услуги:</span>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                            <div id="custom-services-total-list">--}}
+{{--                                @if(isset($tariff->total_data->services))--}}
+{{--                                    @foreach($tariff->total_data->services as $service)--}}
+{{--                                        <div class="custom-service-total-item">--}}
+{{--                                            <div class="block__itogo_item d-flex">--}}
+{{--                                                <div class="d-flex flex-wrap" id="services-total-names">--}}
+{{--                                                    <span class="block__itogo_value">{{ $service->name }}</span>--}}
+{{--                                                </div>--}}
+{{--                                                <span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">--}}
+{{--                                                                <span class="block__itogo_amount">{{ $service->total }}</span>--}}
+{{--                                                                <span class="rouble">p</span>--}}
+{{--                                                            </span>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    @endforeach--}}
+{{--                                @endif--}}
+{{--                                @if(isset($tariff->total_data->insurance))--}}
+{{--                                    <div class="custom-service-total-item">--}}
+{{--                                        <div class="block__itogo_item d-flex">--}}
+{{--                                            <div class="d-flex flex-wrap" id="services-total-names">--}}
+{{--                                                <span class="block__itogo_value">Страхование</span>--}}
+{{--                                            </div>--}}
+{{--                                            <span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">--}}
+{{--                                                        <span class="block__itogo_amount">{{ $tariff->total_data->insurance }}</span>--}}
+{{--                                                        <span class="rouble">p</span>--}}
+{{--                                                    </span>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                @endif--}}
+{{--                                @if(isset($tariff->total_data->discount))--}}
+{{--                                    <div class="custom-service-total-item">--}}
+{{--                                        <div class="block__itogo_item d-flex">--}}
+{{--                                            <div class="d-flex flex-wrap" id="services-total-names">--}}
+{{--                                                <span class="block__itogo_value">Скидка</span>--}}
+{{--                                            </div>--}}
+{{--                                            <span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">--}}
+{{--                                                    <span class="block__itogo_amount">{{ $tariff->total_data->discount }}</span>--}}
+{{--                                                    <span class="rouble">p</span>--}}
+{{--                                                </span>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                @endif--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                        <div class="separator-hr"></div>--}}
+{{--                        <footer class="block__itogo_footer d-flex">--}}
+{{--                            <span>Стоимость перевозки*</span>--}}
+{{--                            <span class="block__itogo_price d-flex flex-nowrap">--}}
+{{--                                            <span class="block__itogo_amount"><span id="total-price"> {{ $tariff->total_data->total ?? 0}}</span></span>--}}
+{{--                                            <span class="rouble">p</span>--}}
+{{--                                            <span id="total-volume" data-total-volume="{{ $tariff->total_volume ?? 0.01}}" style="display: none"></span>--}}
+{{--                                        </span>--}}
+{{--                        </footer>--}}
+{{--                    </div>--}}
+{{--                    <div class="annotation-text">* - Предварительный расчет. Точная стоимость доставки будет определена после обмера груза специалистами компании БСД на складе.</div>--}}
+{{--                </section>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+{{--</section>--}}
 @endsection
