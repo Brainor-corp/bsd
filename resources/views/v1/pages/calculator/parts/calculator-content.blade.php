@@ -85,7 +85,7 @@
         <div class="col delivery-block">
             <div class="form-item">
                 {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
-                <select id="ship_city" class="form-control point-select" name="ship_city" placeholder="Москва">
+                <select id="ship_city" class="form-control point-select" name="ship_city" placeholder="Выберите город">
                     <option value=""></option>
                     @if($shipCities->count() > 0)
                         @foreach($shipCities as $shipCity)
@@ -131,7 +131,7 @@
         <div class="col delivery-block">
             <div class="form-item">
                 {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
-                <select id="dest_city" class="form-control point-select" name="dest_city" placeholder="Москва">
+                <select id="dest_city" class="form-control point-select" name="dest_city" placeholder="Выберите город">
                     <option value=""></option>
                     @if(isset($destinationCities))
                         @foreach($destinationCities as $destinationCity)
@@ -361,15 +361,15 @@
     {{--</div>--}}
     <div class="calc__title">Данные плательщика</div>
     <div class="custom-control custom-radio">
-        <input type="radio" class="custom-control-input" id="sender" name="payer_type" value="sender" required />
+        <input type="radio" class="custom-control-input" id="sender" name="payer_type" value="otpravitel" required />
         <label class="custom-control-label" for="sender">Отправитель</label>
     </div>
     <div class="custom-control custom-radio">
-        <input type="radio" class="custom-control-input" id="recipient" name="payer_type" value="recipient" required />
+        <input type="radio" class="custom-control-input" id="recipient" name="payer_type" value="poluchatel" required />
         <label class="custom-control-label" for="recipient">Получатель</label>
     </div>
     <div class="custom-control custom-radio">
-        <input type="radio" class="custom-control-input" id="3rd-person" name="payer_type" value="3rd-person" required />
+        <input type="radio" class="custom-control-input" id="3rd-person" name="payer_type" value="3-e-lico" required />
         <label class="custom-control-label" for="3rd-person">3-е лицо</label>
     </div>
     <div id="3rd-person-payer"  style="display: none">
@@ -392,8 +392,8 @@
         <label class="custom-control-label" for="non-cash">Безналичный расчет</label>
     </div>
     <div class="form-item d-flex">
-        <button class="btn margin-item btn-danger">Оформить заказ</button>
-        <button class="btn margin-item btn-default">Сохранить черновик</button>
+        <button type="submit" name="status" value="ozhidaet-moderacii" class="btn margin-item btn-danger">Оформить заказ</button>
+        <button type="submit" name="status" value="chernovik" class="btn margin-item btn-default">Сохранить черновик</button>
     </div>
     @csrf
 </form>

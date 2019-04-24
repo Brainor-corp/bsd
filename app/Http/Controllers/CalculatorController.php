@@ -306,8 +306,10 @@ class CalculatorController extends Controller
 
 
         // Возьмём в учёт цену за забор и доставку груза
-        if($request->get('take_price')) {$totalPrice += floatval($request->get('take_price'));}
-        if($request->get('bring_price')) {$totalPrice += floatval($request->get('bring_price'));}
+        if(is_numeric($totalPrice)) {
+            if($request->get('take_price') && is_numeric($request->get('take_price'))) {$totalPrice += floatval($request->get('take_price'));}
+            if($request->get('bring_price') && is_numeric($request->get('bring_price'))) {$totalPrice += floatval($request->get('bring_price'));}
+        }
 
         if(isset($services)){
 
