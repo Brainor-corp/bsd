@@ -51,7 +51,7 @@ class Orders extends Section {
     }
 
     public static function onEdit($id) {
-        $order = Order::whereId($id)->with('order_items.type', 'order_services')->first();
+        $order = isset($id) ? Order::whereId($id)->with('order_items.type', 'order_services')->first() : null;
 
 //        $meta = new Meta;
 //        $meta->setScripts([
@@ -68,10 +68,10 @@ class Orders extends Section {
                         return $query->where('class', 'order_status');
                     })
                     ->setDisplay('name'),
-                FormField::select('ship_city_id', 'Город отправки')//aftersave
+                FormField::select('ship_city_id', 'Город отправки')
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
-                FormField::select('dest_city_id', 'Город доставки')//aftersave
+                FormField::select('dest_city_id', 'Город доставки')
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
 
@@ -148,7 +148,7 @@ class Orders extends Section {
                 FormField::custom(View::make('admin.orders.order-items')->with(compact('order'))->render()),
                 FormField::custom(View::make('admin.orders.order-services')->with(compact('order'))->render()),
 
-                FormField::datepicker('order_date', 'Зата заказа')
+                FormField::datepicker('order_date', 'Дата заказа')
                     ->setTodayBtn(true)
                     ->setFormat('yyyy-mm-dd hh:ii:ss')
                     ->setLanguage('ru')

@@ -29,6 +29,13 @@ class Order extends Model
         return $this->belongsToMany(Service::class);
     }
 
+    public function ship_city(){
+        return $this->belongsTo(City::class, 'ship_city_id');
+    }
+    public function dest_city(){
+        return $this->belongsTo(City::class, 'dest_city_id');
+    }
+
     public function getRealStatusAttribute(){
         return $this->status->name ?? '';
     }
