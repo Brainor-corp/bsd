@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Event;
+use App\Order;
 use App\User;
 
 use Illuminate\Http\Request;
@@ -56,6 +57,11 @@ class ProfileController extends Controller
 
         $events = Event::where([['user_id', $user->id], ['visible', true]])->get();
         return View::make('v1.pages.profile.profile-inner.event-list-page')->with(compact('events'));
+    }
+
+    public function showReportListPage(){
+        $orders = Order::all();
+        return View::make('v1.pages.profile.profile-inner.report-list-page')->with(compact('orders'));
     }
 
     public function actionHideEvent(Request $request){

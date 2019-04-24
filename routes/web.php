@@ -29,6 +29,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/event-list', 'ProfileController@showEventListPage')->name('event-list');
     Route::post('/event-hide', 'ProfileController@actionHideEvent')->name('event-hide');
 
+    Route::get('/report-list', 'ProfileController@showReportListPage')->name('report-list');
+
     Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
     Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
 });

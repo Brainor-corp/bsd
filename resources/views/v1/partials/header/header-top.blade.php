@@ -50,7 +50,7 @@
                                     <a class="dropdown-item" href="{{ url('/klientam/faq') }}">FAQ</a>
                                     <a class="dropdown-item" href="{{ route('event-list') }}">Лента событий</a>
                                     <a class="dropdown-item" href="{{ url('/klientam/napravleniya') }}">Направления</a>
-                                    <a class="dropdown-item" href="{{ url('/klientam/otchety') }}">Отчеты</a>
+                                    <a class="dropdown-item" href="{{ route('report-list') }}">Отчеты</a>
                                     <a class="dropdown-item" href="{{ url('/klientam/otzyvy') }}">Отзывы</a>
                                 </div>
                             </li>
