@@ -384,11 +384,11 @@
     </div>
     <div class="calc__title">Форма оплаты</div>
     <div class="custom-control custom-radio">
-        <input type="radio" class="custom-control-input" id="available" name="payment" required />
+        <input type="radio" class="custom-control-input" id="available" value="nalichnyy-raschet" name="payment" required />
         <label class="custom-control-label" for="available">Наличный расчет</label>
     </div>
     <div class="custom-control custom-radio">
-        <input type="radio" class="custom-control-input" id="non-cash" name="payment" required />
+        <input type="radio" class="custom-control-input" id="non-cash" value="beznalichnyy-raschet" name="payment" required />
         <label class="custom-control-label" for="non-cash">Безналичный расчет</label>
     </div>
     <div class="form-item d-flex">

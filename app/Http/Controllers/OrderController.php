@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\Http\Helpers\EventHelper;
 use App\Order;
 use App\OrderItem;
 use App\Service;
@@ -30,7 +31,7 @@ class OrderController extends Controller
         }
 
         if(!count($packages)) {
-            return abort(404);
+            return abort(500, 'Не указаны габариты.');
         }
 
         $allTypes = Type::where('class', 'payer_type')
@@ -55,8 +56,31 @@ class OrderController extends Controller
             $request->get('dest_city'),
         ])->get();
 
-        $order = new Order;
+        $payerType = $allTypes->where('class', 'payer_type')
+                ->where('slug', $request->get('payer_type'))
+                ->first() ?? false;
 
+        if(!$payerType) {
+            return abort(500, 'Тип плательщика не найден.');
+        }
+
+        $orderStatus = $allTypes->where('class', 'order_status')
+                ->where('slug', $request->get('status'))
+                ->first() ?? false;
+
+        if(!$orderStatus) {
+            return abort(500, 'Статус заказа не найден.');
+        }
+
+        $paymentType = $allTypes->where('class', 'payment_type')
+                ->where('slug', $request->get('payment'))
+                ->first() ?? false;
+
+        if(!$paymentType) {
+            return abort(500, 'Тип оплаты не найден.');
+        }
+
+        $order = new Order;
         $order->total_price = ''; // todo
         $order->shipping_name = $request->get('cargo')['name'];
         $order->total_weight = $totalWidth;
@@ -82,39 +106,22 @@ class OrderController extends Controller
         $order->insurance_amount = $request->get('insurance_amount');
         $order->user_id = Auth::user()->id ?? null;
         $order->enter_id = $_COOKIE['enter_id'];
-
-        $payerType = $allTypes->where('class', 'payer_type')
-                ->where('slug', $request->get('payer_type'))
-                ->first() ?? false;
-
-        if(!$payerType) {
-            return abort(500, 'Тип плательщика не найден.');
-        }
-
         $order->payer_type = $payerType->id;
         $order->payer_name = $request->get('payer_name');
         $order->payer_phone = $request->get('payer_phone');
-
-        $orderStatus = $allTypes->where('class', 'order_status')
-                ->where('slug', $request->get('status'))
-                ->first() ?? false;
-
-        if(!$orderStatus) {
-            return abort(500, 'Статус заказа не найден.');
-        }
-
+        $order->payment_type = $paymentType->id;
         $order->status_id = $orderStatus->id;
         $order->order_date = Carbon::now();
 
         $order->save();
+
         $order->order_items()->saveMany($packages);
         $order->order_services()->attach($services);
 
-        // todo Создание евента
+        if($orderStatus->slug === "ozhidaet-moderacii") {
+            EventHelper::createEvent('Заказ успешно зарегистрирован!', null, true, route('report-show', ['id' => $order->id], $absolute = false));
+        }
 
-        return redirect()->back()->withSuccess('Заказ успешно сохранён');
-
-//        dd($request->all());
-
+        return redirect(route('report-show', ['id' => $order->id]));
     }
 }
