@@ -427,34 +427,35 @@ class CalculatorController extends Controller
             ];
         }
 
-        // Если город -- терминальный, то находим тариф за городом
+        // Если город -- терминальный
+        ////, то находим тариф за городом
         if($city instanceof Point) {
-            $outside_tariff = DB::table('outside_forwarding')
-                ->join('points', 'points.id', '=', 'outside_forwarding.point')
-                ->join('cities', 'cities.id', '=', 'points.city_id')
-                ->join('forward_thresholds', function($join)
-                {
-                    $join->on('forward_thresholds.id', '=', 'outside_forwarding.forward_threshold_id');
-                    $join->on('forward_thresholds.threshold_group_id', '=', 'cities.threshold_group_id');
-                })
-                ->where([
-                    ['points.id', $city->id],
-                    ['forward_thresholds.weight', '>=', floatval($request->get('weight'))],
-                    ['forward_thresholds.volume', '>=', floatval($request->get('volume'))],
-                ])
-                ->orderBy('forward_thresholds.weight', 'ASC')
-                ->orderBy('forward_thresholds.volume', 'ASC')
-                ->first();
-
-            // Если тариф не нашли, то выводим договорную цену
-            if(!$outside_tariff) {
-                return [
-                    'price' => 'Договорная'
-                ];
-            }
-
-            // К итоговой цене прибавляем цену фиксированного тарифа до пункта
-            $price += $outside_tariff->tariff;
+//            $outside_tariff = DB::table('outside_forwarding')
+//                ->join('points', 'points.id', '=', 'outside_forwarding.point')
+//                ->join('cities', 'cities.id', '=', 'points.city_id')
+//                ->join('forward_thresholds', function($join)
+//                {
+//                    $join->on('forward_thresholds.id', '=', 'outside_forwarding.forward_threshold_id');
+//                    $join->on('forward_thresholds.threshold_group_id', '=', 'cities.threshold_group_id');
+//                })
+//                ->where([
+//                    ['points.id', $city->id],
+//                    ['forward_thresholds.weight', '>=', floatval($request->get('weight'))],
+//                    ['forward_thresholds.volume', '>=', floatval($request->get('volume'))],
+//                ])
+//                ->orderBy('forward_thresholds.weight', 'ASC')
+//                ->orderBy('forward_thresholds.volume', 'ASC')
+//                ->first();
+//
+//            // Если тариф не нашли, то выводим договорную цену
+//            if(!$outside_tariff) {
+//                return [
+//                    'price' => 'Договорная'
+//                ];
+//            }
+//
+//            // К итоговой цене прибавляем цену фиксированного тарифа до пункта
+//            $price += $outside_tariff->tariff;
             $city = $city->city; // Дальше будем работать с привязанным к пункту городом
         }
 
