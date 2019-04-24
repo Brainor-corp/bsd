@@ -32,7 +32,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/event-hide', 'ProfileController@actionHideEvent')->name('event-hide');
 
     Route::get('/klientam/report-list', 'ProfileController@showReportListPage')->name('report-list');
-    Route::get('/klientam/report/{id}', 'ProfileController@showReportListPage')->name('report-show');
+    Route::get('/klientam/report/{id}', 'ProfileController@showReportPage')->name('report-show');
 
     Route::post('/search-orders', 'ProfileController@searchOrders')->name('search-orders');
     Route::post('/get-order-items', 'ProfileController@actionGetOrderItems')->name('get-order-items');
