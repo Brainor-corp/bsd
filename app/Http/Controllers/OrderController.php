@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\City;
 use App\Order;
 use App\OrderItem;
+use App\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -25,6 +27,15 @@ class OrderController extends Controller
             ]);
 
             $totalWidth += $package['width'] * $package['quantity'];
+        }
+
+        $allServices = Service::all('id')->pluck('id')->toArray();
+
+        $services = [];
+        foreach($request->get('service') as $service) {
+            if(in_array($service['id'], $allServices)) {
+                $services[] = $service['id'];
+            }
         }
 
         if(!count($packages)) {
@@ -55,8 +66,16 @@ class OrderController extends Controller
         $order->recepient_name = $request->get('recepient_name');
         $order->recepient_phone = $request->get('recepient_phone');
 
+
+        $order->discount = $request->get('discount');
+        $order->insurance_amount = $request->get('insurance_amount');
+
+        $order->user_id = Auth::user()->id ?? null;
+        $order->enter_id = '';
+
         $order->save();
         $order->order_items()->saveMany($packages);
+        $order->order_services()->attach($services);
 
         return redirect()->back()->withSuccess('Заказ успешно сохранён');
 

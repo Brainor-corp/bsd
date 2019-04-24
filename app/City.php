@@ -39,6 +39,10 @@ class City extends Model
         return $this->hasOne(Type::class, 'id', 'tariff_zone_id');
     }
 
+    public function terminal() {
+        return$this->hasOne(Terminal::class, 'city_id', 'id');
+    }
+
     public function getComprehensiveIsShipAttribute(){
         return $this->is_ship ? 'Да' : 'Нет' ;
     }

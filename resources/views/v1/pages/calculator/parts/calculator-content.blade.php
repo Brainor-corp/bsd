@@ -89,7 +89,7 @@
                     <option value=""></option>
                     @if($shipCities->count() > 0)
                         @foreach($shipCities as $shipCity)
-                            <option value="{{ $shipCity->id }}" @if($selectedShipCity == $shipCity->id) selected @endif>{{ $shipCity->name }}</option>
+                            <option value="{{ $shipCity->id }}" data-terminal="{{ $destinationCity->terminal->address ?? '' }}" @if($selectedShipCity == $shipCity->id) selected @endif>{{ $shipCity->name }}</option>
                         @endforeach
                     @endif
                 </select>
@@ -97,13 +97,21 @@
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input delivery-checkbox" id="need-to-take" name="need-to-take">
                 {{--<label class="custom-control-label" for="bring-your-own">Самостоятельно привезти груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
-                <label class="custom-control-label" for="need-to-take">Нужно забрать груз из:</label>
+                <label class="custom-control-label" for="need-to-take">Нужно забрать груз</label>
+            </div>
+            <div class="custom-control custom-radio">
+                <input type="radio" checked class="custom-control-input need-to-take-input" id="need-to-take-type-in" name="need-to-take-type" value="in" disabled/>
+                <label class="custom-control-label" for="need-to-take-type-in">в пределах города отправления</label>
+            </div>
+            <div class="custom-control custom-radio">
+                <input type="radio" class="custom-control-input need-to-take-input" id="need-to-take-type-from" name="need-to-take-type" value="from" disabled/>
+                <label class="custom-control-label" for="need-to-take-type-from">из:</label>
             </div>
 
             <div class="form-item ininner">
                 <div class="relative">
                     <i class="dropdown-toggle fa-icon"></i>
-                    <input class="form-control suggest_address" id="ship_point" maxlength="256" name="ship_point" size="63" type="text" data-end="dest" placeholder="Название населенного пункта или адрес">
+                    <input class="form-control suggest_address need-to-take-input-address" id="ship_point" maxlength="256" name="ship_point" size="63" type="text" data-end="dest" placeholder="Название населенного пункта или адрес"  disabled>
                 </div>
                 {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
             </div>
@@ -112,7 +120,7 @@
             {{--<label class="custom-control-label" for="pick-up-cargo">Забрать груз от адреса отправителя (1 050 <span class="rouble">p</span>)</label>--}}
             {{--</div>--}}
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input x2-check" id="ship-from-point" name="ship-from-point">
+                <input type="checkbox" class="custom-control-input need-to-take-input x2-check" id="ship-from-point" name="ship-from-point" disabled>
                 {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
                 <label class="custom-control-label" for="ship-from-point">Доставку груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
             </div>
@@ -127,7 +135,7 @@
                     <option value=""></option>
                     @if(isset($destinationCities))
                         @foreach($destinationCities as $destinationCity)
-                            <option value="{{ $destinationCity->id }}" @if($selectedDestCity == $destinationCity->id) selected @endif>{{ $destinationCity->name }}</option>
+                            <option value="{{ $destinationCity->id }}" data-terminal="{{ $destinationCity->terminal->address ?? '' }}" @if($selectedDestCity == $destinationCity->id) selected @endif>{{ $destinationCity->name }}</option>
                         @endforeach
                     @endif
                 </select>
@@ -135,12 +143,20 @@
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input delivery-checkbox" id="need-to-bring" name="need-to-bring">
                 {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
-                <label class="custom-control-label" for="need-to-bring">Нужно доставить груз в:</label>
+                <label class="custom-control-label" for="need-to-bring">Нужно доставить груз</label>
+            </div>
+            <div class="custom-control custom-radio">
+                <input type="radio" checked class="custom-control-input need-to-bring-input" id="need-to-bring-type-in" name="need-to-bring-type" value="in" disabled/>
+                <label class="custom-control-label" for="need-to-bring-type-in">в пределах города отправления</label>
+            </div>
+            <div class="custom-control custom-radio">
+                <input type="radio" class="custom-control-input need-to-bring-input" id="need-to-bring-type-from" name="need-to-bring-type" value="from" disabled/>
+                <label class="custom-control-label" for="need-to-bring-type-from">в:</label>
             </div>
             <div class="form-item ininner">
                 <div class="relative">
                     <i class="dropdown-toggle fa-icon"></i>
-                    <input class="form-control suggest_address"  id="dest_point" name="dest_point" placeholder="Название населенного пункта или адрес">
+                    <input class="form-control suggest_address need-to-bring-input-address"  id="dest_point" name="dest_point" placeholder="Название населенного пункта или адрес" disabled>
                 </div>
                 {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
             </div>
@@ -149,7 +165,7 @@
             {{--<label class="custom-control-label" for="deliver-cargo">Доставить груз до адреса получателя (1 050 <span class="rouble">p</span>)</label>--}}
             {{--</div>--}}
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input x2-check" id="bring-to-point" name="bring-to-point">
+                <input type="checkbox" class="custom-control-input need-to-bring-input x2-check" id="bring-to-point" name="bring-to-point" disabled>
                 {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
                 <label class="custom-control-label" for="bring-to-point">Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
             </div>
