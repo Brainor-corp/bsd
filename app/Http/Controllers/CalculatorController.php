@@ -3,18 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\City;
-use App\ForwardThreshold;
-use App\InsideForwarding;
-use App\OutsideForwarding;
 use App\Oversize;
 use App\OversizeMarkup;
-use App\PerKmTariff;
 use App\Point;
-use App\Region;
 use App\Route;
 use App\RouteTariff;
 use App\Service;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -36,7 +30,7 @@ class CalculatorController extends Controller
             ];
         }
 
-        $shipCities = City::where('is_ship', true)->get();
+        $shipCities = City::where('is_ship', true)->with('terminal')->get();
         $selectedShipCity = null;
         $selectedDestCity = null;
         if(isset($request->ship_city)){
@@ -45,6 +39,7 @@ class CalculatorController extends Controller
             $selectedShipCity = 53;
         }
         $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity))
+            ->with('terminal')
             ->orderBy('name')
             ->get();
 
@@ -78,6 +73,7 @@ class CalculatorController extends Controller
             $ship_city = $request->ship_city;
         }
         $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $ship_city))
+            ->with('terminal')
             ->orderBy('name')
             ->get();
         return view('v1.pages.calculator.parts.destination-cities')->with(compact('destinationCities'));

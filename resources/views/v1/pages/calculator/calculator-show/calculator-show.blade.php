@@ -57,7 +57,7 @@
                                     <div class="block__itogo_item d-flex">
                                         <div class="d-flex flex-wrap">
                                             <span class="block__itogo_label">Межтерминальная перевозка:</span>
-                                            <span class="block__itogo_value">{{ $tariff->route->name ?? ''}}</span>
+                                            <span class="block__itogo_value" id="route-name">{{ $tariff->route->name ?? ''}}</span>
                                         </div>
                                         <span class="block__itogo_price d-flex flex-nowrap">
                                             <span class="block__itogo_amount" id="base-price" data-base-price="{{ $tariff->base_price ?? 0}}">{{ $tariff->base_price ?? 0}}</span>
