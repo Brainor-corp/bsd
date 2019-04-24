@@ -6,10 +6,6 @@
             <span class="breadcrumb__item"><a href="{{ route('index') }}" class="">Главная</a></span>
             <span class="breadcrumb__item"><a href="{{ url('/klientam') }}" class="">Клиентам</a></span>
             <span class="breadcrumb__item">Отчеты</span>
-{{--            <span class="breadcrumb__item"><a href="{{ route('index') }}" class="">Главная</a></span>--}}
-{{--            @foreach($ancestors as $ancestor)--}}
-{{--                <span class="breadcrumb__item"><a href="{{ url($ancestor->url) }}" class="">{{ $ancestor->title }}</a></span>--}}
-{{--            @endforeach--}}
         </div>
     </div>
     <section class="wrapper">
@@ -23,17 +19,17 @@
                         <div class="col-12">
                             <div class="reports__header row align-items-center">
                                 <span class="reports__header-label margin-md-item">Поиск:</span>
-                                <div class="margin-md-item d-flex flex-wrap control-group">
-                                    <select class="custom-select">
-                                        <option disabled selected>Выберите из списка</option>
-                                        <option>По номеру</option>
-                                        <option>По типу</option>
+                                <div id="search-wrapper" class="margin-md-item d-flex flex-wrap control-group">
+                                    <select id="search-type-select" class="custom-select">
+                                        <option disabled value="" selected>Выберите из списка</option>
+                                        <option selected value="id">По номеру</option>
+                                        <option value="status">По типу</option>
                                     </select>
-                                    <input type="text" class="form-control search-input" placeholder="Введите номер">
+                                    <input id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">
                                 </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="insurance">
-                                    <label class="custom-control-label" for="insurance">Только завершенные</label>
+                                <div id="cb-input" class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="finished-cb">
+                                    <label class="custom-control-label" for="finished-cb">Только завершенные</label>
                                 </div>
                                 <button type="button" class="btn btn-dotted ml-auto d-flex align-items-center">
                                     <i class="icons excel-icon margin-item"></i>
@@ -58,82 +54,8 @@
                                             <th>&nbsp;</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>456</td>
-                                            <td>12.02.2019</td>
-                                            <td>
-                                                <div>
-                                                    <span class="label">Вес:</span>
-                                                    <span>112 кг</span>
-                                                </div>
-                                                <div>
-                                                    <span class="label">ДхШхВ:</span>
-                                                    <span>3х2х6 м</span>
-                                                </div>
-                                            </td>
-                                            <td>Санкт-Петербург</td>
-                                            <td>Екатеринбурн</td>
-                                            <td>ИП Вяткино</td>
-                                            <td>Смирнов Валерий</td>
-                                            <td>9 120 <span>р</span></td>
-                                            <td>В очереди на доставку</td>
-                                            <td><a href="##" class="table-text-link">Наименование<br />документа</a></td>
-                                            <td>
-                                                <a href="##" class="table-icon-link"><i class="fa fa-pencil-square-o"></i></a>
-                                                <a href="##" class="table-icon-link"><i class="fa fa-eye"></i></a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>456</td>
-                                            <td>12.02.2019</td>
-                                            <td>
-                                                <div>
-                                                    <span class="label">Вес:</span>
-                                                    <span>112 кг</span>
-                                                </div>
-                                                <div>
-                                                    <span class="label">ДхШхВ:</span>
-                                                    <span>3х2х6 м</span>
-                                                </div>
-                                            </td>
-                                            <td>Санкт-Петербург</td>
-                                            <td>Екатеринбурн</td>
-                                            <td>ИП Вяткино</td>
-                                            <td>Смирнов Валерий</td>
-                                            <td>9 120 <span>р</span></td>
-                                            <td>В очереди на доставку</td>
-                                            <td><a href="##" class="table-text-link">Наименование<br />документа</a></td>
-                                            <td>
-                                                <a href="##" class="table-icon-link"><i class="fa fa-pencil-square-o"></i></a>
-                                                <a href="##" class="table-icon-link"><i class="fa fa-eye"></i></a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>456</td>
-                                            <td>12.02.2019</td>
-                                            <td>
-                                                <div>
-                                                    <span class="label">Вес:</span>
-                                                    <span>112 кг</span>
-                                                </div>
-                                                <div>
-                                                    <span class="label">ДхШхВ:</span>
-                                                    <span>3х2х6 м</span>
-                                                </div>
-                                            </td>
-                                            <td>Санкт-Петербург</td>
-                                            <td>Екатеринбурн</td>
-                                            <td>ИП Вяткино</td>
-                                            <td>Смирнов Валерий</td>
-                                            <td>9 120 <span>р</span></td>
-                                            <td>В очереди на доставку</td>
-                                            <td><a href="##" class="table-text-link">Наименование<br />документа</a></td>
-                                            <td>
-                                                <a href="##" class="table-icon-link"><i class="fa fa-pencil-square-o"></i></a>
-                                                <a href="##" class="table-icon-link"><i class="fa fa-eye"></i></a>
-                                            </td>
-                                        </tr>
+                                        <tbody id="orders-table-body">
+                                            @include('v1.partials.profile.orders')
                                         </tbody>
                                     </table>
                                 </div>
@@ -144,4 +66,25 @@
             </div>
         </div>
     </section>
+    <div class="modal fade" id="orderItemsModal" tabindex="-1" role="dialog" aria-labelledby="orderItemsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderItemsModalLabel">Габариты</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('footScripts')
+    <script src="{{ asset('v1/js/profile.js') }}"></script>
 @endsection
