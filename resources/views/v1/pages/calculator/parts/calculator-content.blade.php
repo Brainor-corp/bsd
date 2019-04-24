@@ -89,7 +89,7 @@
                     <option value=""></option>
                     @if($shipCities->count() > 0)
                         @foreach($shipCities as $shipCity)
-                            <option value="{{ $shipCity->id }}" data-terminal="{{ $destinationCity->terminal->address ?? '' }}" @if($selectedShipCity == $shipCity->id) selected @endif>{{ $shipCity->name }}</option>
+                            <option value="{{ $shipCity->id }}" data-data='{"terminal": "{{ isset($shipCity->terminal) ? addcslashes($shipCity->terminal->address, '"') : $shipCity->name }}"}' @if($selectedShipCity == $shipCity->id) selected @endif>{{ $shipCity->name }}</option>
                         @endforeach
                     @endif
                 </select>
@@ -135,7 +135,7 @@
                     <option value=""></option>
                     @if(isset($destinationCities))
                         @foreach($destinationCities as $destinationCity)
-                            <option value="{{ $destinationCity->id }}" data-terminal="{{ $destinationCity->terminal->address ?? '' }}" @if($selectedDestCity == $destinationCity->id) selected @endif>{{ $destinationCity->name }}</option>
+                            <option value="{{ $destinationCity->id }}" data-data='{"terminal": "{{ isset($destinationCity->terminal) ? addcslashes($destinationCity->terminal->address, '"') : $destinationCity->name }}"}' @if($selectedDestCity == $destinationCity->id) selected @endif>{{ $destinationCity->name }}</option>
                         @endforeach
                     @endif
                 </select>

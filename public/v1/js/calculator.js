@@ -1,4 +1,9 @@
 ﻿$('#ship_city').selectize({
+    render: {
+        option: function (data, escape) {
+            return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
+        }
+    },
     onChange: function(value) {// при изменении города отправления
 
         if (!value.length) return;
@@ -20,6 +25,11 @@
                 $('#dest_city').selectize()[0].selectize.destroy();
                 $('#dest_city').html(html);
                 $('#dest_city').selectize({
+                    render: {
+                        option: function (data, escape) {
+                            return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
+                        }
+                    },
                     onChange: function(value) {// при изменении города назначения
                         getRoute();
                     }
@@ -34,6 +44,11 @@
 });
 
 $('#dest_city').selectize({
+    render: {
+        option: function (data, escape) {
+            return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
+        }
+    },
     onChange: function(value) {// при изменении города назначения
         getRoute();
 
@@ -588,12 +603,10 @@ function calcTariffPrice(city, point, inCity) {
         if (!fullName)
             return;
 
-        // Находим ближайший селектор города и берем его значение
-        let terminal = point.closest('.block-for-distance').find('.point-select option:selected').text();
-
-        if (terminal) {
-            ymaps.route([terminal, fullName], {mapStateAutoApply: true})
+        if (city) {
+            ymaps.route([city, fullName], {mapStateAutoApply: true})
                 .then(function (route) {
+                    console.log('From: ' + city + ' To: ' + fullName + ': ' + Math.ceil(route.getLength() / 1000));
                     getTariffPriceAjax(point, false, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"), Math.ceil(route.getLength() / 1000));
                 });
         }
@@ -615,9 +628,9 @@ function kladrChange(obj, point) {
         point.data('id', 0);
 
     if(point.attr('id') === "ship_point") {
-        calcTariffPrice($('#ship_city option:selected').text(), point, $('input[name="need-to-take-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
+        calcTariffPrice($('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal, point, $('input[name="need-to-take-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
     } else {
-        calcTariffPrice($('#dest_city option:selected').text(), point, $('input[name="need-to-bring-type"]:checked').val() == "in"); // вызываем просчет для "Доставить"
+        calcTariffPrice($('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal, point, $('input[name="need-to-bring-type"]:checked').val() == "in"); // вызываем просчет для "Доставить"
     }
 }
 
@@ -633,7 +646,7 @@ $(document).on('change', '#need-to-take', function () {
         $('.need-to-take-input-address').attr('disabled', 'disabled');
     }
 
-    calcTariffPrice($('#ship_city option:selected').text(), $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in");
+    calcTariffPrice($('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal, $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in");
 });
 
 $(document).on('change', 'input[name="need-to-take-type"]', function () {
@@ -643,7 +656,7 @@ $(document).on('change', 'input[name="need-to-take-type"]', function () {
         $('.need-to-take-input-address').attr('disabled', 'disabled');
     }
 
-    calcTariffPrice($('#ship_city option:selected').text(), $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in");
+    calcTariffPrice($('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal, $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in");
 });
 
 $(document).on('change', '#need-to-bring', function () {
@@ -657,7 +670,7 @@ $(document).on('change', '#need-to-bring', function () {
         $('.need-to-bring-input-address').attr('disabled', 'disabled');
     }
 
-    calcTariffPrice($('#dest_city option:selected').text(), $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in");
+    calcTariffPrice($('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal, $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in");
 });
 
 $(document).on('change', 'input[name="need-to-bring-type"]', function () {
@@ -667,7 +680,7 @@ $(document).on('change', 'input[name="need-to-bring-type"]', function () {
         $('.need-to-bring-input-address').attr('disabled', 'disabled');
     }
 
-    calcTariffPrice($('#dest_city option:selected').text(), $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in");
+    calcTariffPrice($('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal, $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in");
 });
 
 ////////////////////////////////////////////////////////////////////////
@@ -692,9 +705,9 @@ $('input.suggest_address').on('change', function () {
 });
 
 $(document).on('change', '#ship-from-point', function () {
-    calcTariffPrice($('#ship_city option:selected').text(), $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
+    calcTariffPrice($('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal, $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
 });
 
 $(document).on('change', '#bring-to-point', function () {
-    calcTariffPrice($('#dest_city option:selected').text(), $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
+    calcTariffPrice($('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal, $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
 });
