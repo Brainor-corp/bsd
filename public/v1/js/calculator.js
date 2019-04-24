@@ -135,6 +135,7 @@ var getRoute = function () {
             },
             success: function(data){
                 $('#delivery-time').text(data.delivery_time);
+                $('#route-name').text(data.name);
                 getBaseTariff();
             }
         });
@@ -180,7 +181,9 @@ var getBaseTariff = function () {
 
 function renderDelivery() {
     let needToTakeCheck = $('#need-to-take'),
+        needToTakeInCity = $('input[name="need-to-take-type"]:checked').val() == "in",
         needToBringCheck = $('#need-to-bring'),
+        needToBringInCity = $('input[name="need-to-bring-type"]:checked').val() == "in",
         deliveryPoints = '',
         render = false;
 
@@ -188,15 +191,15 @@ function renderDelivery() {
         'display': 'none',
     });
 
-    if(needToTakeCheck.is(':checked') && typeof needToTakeCheck.data('point') !== "undefined") {
+    if(needToTakeCheck.is(':checked') && (typeof needToTakeCheck.data('point') !== "undefined" || needToTakeInCity)) {
         deliveryPoints +=
             '<div class="custom-service-total-item">'+
             '<div class="block__itogo_item d-flex">'+
             '<div class="d-flex flex-wrap" id="services-total-names">'+
             '<span class="block__itogo_value">' +
-            'Забор груза: ' + needToTakeCheck.data('point')
+            'Забор груза: ' + (needToTakeInCity ? $('#ship_city option:selected').text() : needToTakeCheck.data('point'))
             +
-            (typeof needToTakeCheck.data('distance') !== "undefined" ? ('<small> (' + needToTakeCheck.data('distance') + ' км) </small>') : '')
+            (typeof needToTakeCheck.data('distance') !== "undefined" && !needToTakeInCity ? ('<small> (' + needToTakeCheck.data('distance') + ' км) </small>') : '')
             +
             '</span>'+
             '</div>'+
@@ -210,15 +213,15 @@ function renderDelivery() {
         render = true;
     }
 
-    if(needToBringCheck.is(':checked') && typeof needToBringCheck.data('point') !== "undefined") {
+    if(needToBringCheck.is(':checked') && (typeof needToBringCheck.data('point') !== "undefined" || needToBringInCity)) {
         deliveryPoints +=
             '<div class="custom-service-total-item">'+
             '<div class="block__itogo_item d-flex">'+
             '<div class="d-flex flex-wrap" id="services-total-names">'+
             '<span class="block__itogo_value">' +
-            'Доставка груза: ' + needToBringCheck.data('point')
+            'Доставка груза: ' + (needToBringInCity ? $('#dest_city option:selected').text() : needToBringCheck.data('point'))
             +
-            (typeof needToBringCheck.data('distance') !== "undefined" ? ('<small> (' + needToBringCheck.data('distance') + ' км) </small>') : '')
+            (typeof needToBringCheck.data('distance') !== "undefined" && !needToBringInCity ? ('<small> (' + needToBringCheck.data('distance') + ' км) </small>') : '')
             +
             '</span>'+
             '</div>'+
@@ -550,7 +553,7 @@ function getTariffPriceAjax(point, isWithinTheCity, x2, distance = null) {
         type: 'get',
         url: '/api/calculator/get-tariff-price',
         data: {
-            city: point.data('name'), // Название города
+            city: isWithinTheCity ? $(point.closest('.delivery-block').find('.point-select option:selected')).text() : point.data('name'), // Название города
             weight: $('#total-weight').val(),
             volume: $('#total-volume').val(),
             units: $('.package-item').length,
@@ -569,7 +572,6 @@ function getTariffPriceAjax(point, isWithinTheCity, x2, distance = null) {
             $(pointCheckbox).data('point', point.data('name'));
             renderDelivery();
             getTotalPrice();
-            console.log(data);
         },
         error: function (data) {
             console.log(data);
@@ -578,8 +580,8 @@ function getTariffPriceAjax(point, isWithinTheCity, x2, distance = null) {
 }
 
 // Базовая функция просчета цены для "Забрать из" и "Доставить"
-function calcTariffPrice(city, point) {
-    if(city === point.data('name')) { // Если названия городов совпадают, то работаем в пределах города
+function calcTariffPrice(city, point, inCity) {
+    if(inCity) { // Если названия городов совпадают, то работаем в пределах города
         getTariffPriceAjax(point, true, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"));
     } else { // В противном случае просчитываем километраж с помощью Яндекс api
         let fullName = point.data('fullName');
@@ -600,14 +602,12 @@ function calcTariffPrice(city, point) {
 
 // Срабатывает при изменении значения селекта выбора города
 function kladrChange(obj, point) {
-    let name = obj.type === "Город" ? obj : $.grep(obj.parents, function(v) {
+    let name = obj.type === "Город" ? obj : typeof obj.parents !== "undefined" ? $.grep(obj.parents, function(v) {
         return v.type === "Город";
-    })[0];
+    })[0] : undefined;
 
     point.data('name', typeof name === "undefined" ? obj.name : name.name); // Это имя отправляем к нам на сервер
     point.data('fullName', obj.fullName); // Это имя отправляем яндексу для просчета дистанции
-
-    console.log(point.data('name'));
 
     if (obj.id !== undefined)
         point.data('id', obj.id);
@@ -615,11 +615,62 @@ function kladrChange(obj, point) {
         point.data('id', 0);
 
     if(point.attr('id') === "ship_point") {
-        calcTariffPrice($('#ship_city option:selected').text(), point); // вызываем просчет для "Забрать из"
+        calcTariffPrice($('#ship_city option:selected').text(), point, $('input[name="need-to-take-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
     } else {
-        calcTariffPrice($('#dest_city option:selected').text(), point); // вызываем просчет для "Доставить"
+        calcTariffPrice($('#dest_city option:selected').text(), point, $('input[name="need-to-bring-type"]:checked').val() == "in"); // вызываем просчет для "Доставить"
     }
 }
+
+// Включение и отключение инпутов для забора и доставки груза //////////
+$(document).on('change', '#need-to-take', function () {
+    if($(this).is(':checked')) {
+        $('.need-to-take-input').removeAttr('disabled');
+        if($('input[name="need-to-take-type"]:checked').val() === 'from') {
+            $('.need-to-take-input-address').removeAttr('disabled');
+        }
+    } else {
+        $('.need-to-take-input').attr('disabled', 'disabled');
+        $('.need-to-take-input-address').attr('disabled', 'disabled');
+    }
+
+    calcTariffPrice($('#ship_city option:selected').text(), $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in");
+});
+
+$(document).on('change', 'input[name="need-to-take-type"]', function () {
+    if($('input[name="need-to-take-type"]:checked').val() === 'from') {
+        $('.need-to-take-input-address').removeAttr('disabled');
+    } else if($('input[name="need-to-take-type"]:checked').val() === 'in') {
+        $('.need-to-take-input-address').attr('disabled', 'disabled');
+    }
+
+    calcTariffPrice($('#ship_city option:selected').text(), $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in");
+});
+
+$(document).on('change', '#need-to-bring', function () {
+    if($(this).is(':checked')) {
+        $('.need-to-bring-input').removeAttr('disabled');
+        if($('input[name="need-to-bring-type"]:checked').val() === 'from') {
+            $('.need-to-bring-input-address').removeAttr('disabled');
+        }
+    } else {
+        $('.need-to-bring-input').attr('disabled', 'disabled');
+        $('.need-to-bring-input-address').attr('disabled', 'disabled');
+    }
+
+    calcTariffPrice($('#dest_city option:selected').text(), $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in");
+});
+
+$(document).on('change', 'input[name="need-to-bring-type"]', function () {
+    if($('input[name="need-to-bring-type"]:checked').val() === 'from') {
+        $('.need-to-bring-input-address').removeAttr('disabled');
+    } else if($('input[name="need-to-bring-type"]:checked').val() === 'in') {
+        $('.need-to-bring-input-address').attr('disabled', 'disabled');
+    }
+
+    calcTariffPrice($('#dest_city option:selected').text(), $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in");
+});
+
+////////////////////////////////////////////////////////////////////////
 
 // Первично инициализируем селекты с кладром
 $('input.suggest_address').on('change', function () {
@@ -641,14 +692,9 @@ $('input.suggest_address').on('change', function () {
 });
 
 $(document).on('change', '#ship-from-point', function () {
-    calcTariffPrice($('#ship_city option:selected').text(), $('#ship_point')); // вызываем просчет для "Забрать из"
+    calcTariffPrice($('#ship_city option:selected').text(), $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
 });
 
 $(document).on('change', '#bring-to-point', function () {
-    calcTariffPrice($('#dest_city option:selected').text(), $('#dest_point')); // вызываем просчет для "Забрать из"
-});
-
-$(document).on('change', '.delivery-checkbox', function () {
-    renderDelivery();
-    getTotalPrice();
+    calcTariffPrice($('#dest_city option:selected').text(), $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
 });
