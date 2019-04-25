@@ -192,6 +192,9 @@ var getBaseTariff = function () {
                 $('#total-price').html(data.total_data.total);
                 $('#total-price').attr('data-total-price', data.total_data.total);
                 $('#total-volume').attr('data-total-volume', data.total_volume);
+            },
+            error: function (data) {
+                console.log(data);
             }
         });
 
