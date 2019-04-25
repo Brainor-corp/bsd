@@ -2,11 +2,14 @@
 
 namespace App\Http\Helpers;
 
+use App\City;
 use App\Oversize;
 use App\OversizeMarkup;
+use App\Point;
 use App\Route;
 use App\RouteTariff;
 use App\Service;
+use Illuminate\Support\Facades\DB;
 
 class CalculatorHelper
 {
@@ -282,5 +285,117 @@ class CalculatorHelper
         }
 
         return $resultData;
+    }
+
+    public static function getTariffPrice($cityName, $weight, $volume, $isWithinTheCity, $x2, $distance) {
+        $price = 0;
+
+        // Изначально пытаемся получить город
+        $city = self::getCityByName($cityName);
+
+        // Если города нет, пытаемся найти пункт
+        if(!$city) {
+            $city = self::getPointByName($cityName);
+        }
+
+        // Если ни города, ни пункта не нашли, то выводим договорную цену
+        if(!$city) {
+            return [
+                'price' => 'Договорная'
+            ];
+        }
+
+        // Если город -- терминальный
+        ////, то находим тариф за городом
+        if($city instanceof Point) {
+            $city = $city->city; // Дальше будем работать с привязанным к пункту городом
+        }
+
+        // Найдем тариф внутри города
+        $fixed_tariff = DB::table('inside_forwarding')
+            ->join('forward_thresholds', function($join)
+            {
+                $join->on('inside_forwarding.forward_threshold_id', '=', 'forward_thresholds.id');
+            })
+            ->where([
+                ['city_id', $city->id],
+                ['forward_thresholds.weight', '>=', floatval($weight)],
+                ['forward_thresholds.volume', '>=', floatval($volume)],
+            ])
+            ->orderBy('forward_thresholds.weight', 'ASC')
+            ->orderBy('forward_thresholds.volume', 'ASC')
+            ->first();
+
+        $fixed_tariff = $fixed_tariff->tariff ?? false;
+        if(!$fixed_tariff && $isWithinTheCity) {
+            return [
+                'price' => 'Договорная'
+            ];
+        }
+
+        // Если в пределах города, то возвращаем тариф согласно пределам города
+        if($isWithinTheCity == 'true') {
+            return [
+                'price' => $x2 ? floatval($fixed_tariff) * 2 : floatval($fixed_tariff)
+            ];
+        }
+
+        // Если за пределами города, то ищем покилометровый тариф с учетом тарифной зоны города
+        $per_km_tariff = DB::table('per_km_tariffs')
+            ->join('cities', 'cities.tariff_zone_id', '=', 'per_km_tariffs.tariff_zone_id')
+            ->join('forward_thresholds', function($join)
+            {
+                $join->on('forward_thresholds.id', '=', 'per_km_tariffs.forward_threshold_id');
+                $join->on('forward_thresholds.threshold_group_id', '=', 'cities.threshold_group_id');
+            })
+            ->where([
+                ['cities.id', $city->id],
+                ['forward_thresholds.weight', '>=', floatval($weight)],
+                ['forward_thresholds.volume', '>=', floatval($volume)],
+            ])
+            ->orderBy('forward_thresholds.weight', 'ASC')
+            ->orderBy('forward_thresholds.volume', 'ASC')
+            ->first();
+
+        if(!$per_km_tariff) {
+            return [
+                'price' => 'Договорная'
+            ];
+        }
+
+        $per_km_tariff = floatval($per_km_tariff->tariff);
+
+        // Стоимость доставки по городу + кол-во километров * 2 * стоимость из таблицы Тарифной зоны
+        $price +=
+//            $fixed_tariff +
+            intval($distance) * 2 * $per_km_tariff;
+        if($x2) { // Умножим цену на 2, если нужна точная доставка
+            $price *= 2;
+        }
+
+        return [
+            'distance' => intval($distance),
+            'price' => floatval($price)
+        ];
+    }
+
+    /**
+     * @param $pointName
+     * @return bool|Point
+     */
+    public static function getPointByName($pointName) {
+        return Point::where('name', $pointName)
+                ->has('city')
+                ->with('city')
+                ->first() ?? false;
+    }
+
+    /**
+     * @param $cityName
+     * @return bool
+     */
+    public static function getCityByName($cityName) {
+        return City::where('name', $cityName)
+                ->first() ?? false;
     }
 }

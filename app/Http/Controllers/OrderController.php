@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\City;
 use App\Http\Helpers\CalculatorHelper;
 use App\Http\Helpers\EventHelper;
+use App\Http\Helpers\YandexHelper;
 use App\Order;
 use App\OrderItem;
 use App\Route;
@@ -17,8 +18,7 @@ use Illuminate\Support\Facades\Auth;
 class OrderController extends Controller
 {
     public function orderSave(Request $request) {
-        $totalWidth = 0;
-
+        $totalWeight = $totalVolume = 0;
         $packages = [];
         foreach($request->get('cargo')['packages'] as $package) {
             $packages[] = new OrderItem([
@@ -30,7 +30,8 @@ class OrderController extends Controller
                 'quantity' => $package['quantity'],
             ]);
 
-            $totalWidth += $package['width'] * $package['quantity'];
+            $totalWeight += $package['weight'] * $package['quantity'];
+            $totalVolume += $package['volume'] * $package['quantity'];
         }
 
         if(!count($packages)) {
@@ -113,38 +114,99 @@ class OrderController extends Controller
         }
 
         $order = new Order;
+
+        // Если нужен забор груза
+        if($request->get('need-to-take') === "on") {
+            $order->take_point = $request->get('ship-from-point') === "on";
+            $order->take_in_city = $request->get('need-to-take-type') === "in";
+
+            // Если забор груза за пределами города
+            if($request->get('need-to-take-type') === "from") {
+                $pointFrom = $shipCity->terminal->geo_point ?? YandexHelper::getCoordinates($shipCity->name);
+                $pointTo = YandexHelper::getCoordinates($request->get('ship_point'));
+                $takeDistance = YandexHelper::getDistance($pointFrom, $pointTo);
+
+                if(!$takeDistance) {
+                    return abort(500, 'Не удалось определить дистанцию для забора груза');
+                }
+
+                $takePrice = CalculatorHelper::getTariffPrice(
+                    $shipCity->name,
+                    $totalWeight,
+                    $totalVolume,
+                    $request->get('need-to-take-type') === "in",
+                    $request->get('ship-from-point') === "on",
+                    $takeDistance
+                );
+
+                if(!isset($takePrice['price'])) {
+                    return abort(500, 'Не удалось определить цену для забора груза');
+                }
+                $takePrice = $takePrice['price'];
+
+                $take_city_name = strpos( // Проверяем, чтобы название города содержалось в адресе
+                    $request->get('ship_point'),
+                    $request->get('take_city_name')
+                ) ? $request->get('take_city_name') : null;
+
+                $order->take_address = $request->get('ship_point'); // Адрес забора
+                $order->take_city_name = $take_city_name; // Город забора
+                $order->take_distance = $takeDistance; // Дистанция от города отправки до адреса забора
+                $order->take_price = $takePrice; // Цена забора
+            }
+        }
+
+        // Если нужна доставка груза
+        if($request->get('need-to-bring') === "on") {
+            $order->delivery_point = $request->get('bring-to-point') === "on";
+            $order->delivery_in_city = $request->get('need-to-bring-type') === "in";
+
+            // Если доставка за пределами города
+            if($request->get('need-to-bring-type') === "from") {
+                $pointFrom = ($destCity->terminal->geo_point ?? $destCity->terminal->address) ?? YandexHelper::getCoordinates($destCity->name);
+                $pointTo = YandexHelper::getCoordinates($request->get('dest_point'));
+                $bringDistance = YandexHelper::getDistance($pointFrom, $pointTo);
+
+                if(!$bringDistance) {
+                    return abort(500, 'Не удалось определить дистанцию для забора груза');
+                }
+
+                $bringPrice = CalculatorHelper::getTariffPrice(
+                    $destCity->name,
+                    $totalWeight,
+                    $totalVolume,
+                    $request->get('need-to-bring-type') === "in",
+                    $request->get('bring-to-point') === "on",
+                    $bringDistance
+                );
+
+                if(!isset($bringPrice['price'])) {
+                    return abort(500, 'Не удалось определить цену для забора груза');
+                }
+                $bringPrice = $bringPrice['price'];
+
+                $delivery_city_name = strpos( // Проверяем, чтобы название города содержалось в адресе
+                    $request->get('dest_point'),
+                    $request->get('bring_city_name')
+                ) ? $request->get('bring_city_name') : null;
+
+                $order->delivery_address = $request->get('dest_point'); // Адрес доставки
+                $order->delivery_city_name = $delivery_city_name; // Город доставки
+                $order->delivery_distance = $bringDistance; // Дистанция от города назначения до адреса доставки
+                $order->delivery_price = $bringPrice; // Цена доставки
+            }
+        }
+
         $order->total_price = $tariff['total_data']['total'];
         $order->base_price = $tariff['base_price'];
         $order->shipping_name = $request->get('cargo')['name'];
-        $order->total_weight = $totalWidth;
+        $order->total_weight = $totalWeight;
         $order->ship_city_id = $shipCity->id;
         $order->ship_city_name = $shipCity->name;
         $order->dest_city_id = $destCity->id;
         $order->dest_city_name = $destCity->name;
-        $order->take_need = $request->get('need-to-take') === "on";
-        $order->take_address = $request->get('ship_point');
-        $order->take_in_city = $request->get('need-to-take-type') === "in";
-        $order->take_point = $request->get('ship-from-point') === "on";
-
-//        if($request->get('need-to-take') === "on" && $request->get('need-to-take-type') === "from") {
-//            $pointFrom = $shipCity->terminal->geo_point ?? YandexHelper::getCoordinates($shipCity->name);
-//            $pointTo = YandexHelper::getCoordinates($request->get('ship_point'));
-//            $takeDistance = YandexHelper::getDistance($pointFrom, $pointTo);
-//            if(!$takeDistance) {
-//                return abort(500, 'Не удалось определить дистанцию для забора груза');
-//            }
-//
-//            $order->take_distance = $takeDistance;
-//        }
-        $order->take_distance = 0; // todo
-
-        $order->delivery_need = $request->get('need-to-bring') === "on";
-        $order->delivery_address = $request->get('dest_point');
-        $order->delivery_in_city = $request->get('need-to-bring-type') === "in";
-        $order->delivery_point = $request->get('bring-to-point') === "on";
-
-        $order->delivery_distance = 0; // todo
-
+        $order->take_need = $request->get('need-to-take') === "on"; // Нужен ли забор груза
+        $order->delivery_need = $request->get('need-to-bring') === "on"; // Нужна ли доставка груза
         $order->sender_name = $request->get('sender_name');
         $order->sender_phone = $request->get('sender_phone');
         $order->recepient_name = $request->get('recepient_name');

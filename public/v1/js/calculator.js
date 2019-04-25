@@ -610,7 +610,7 @@ function calcTariffPrice(city, point, inCity) {
             return;
 
         if (city) {
-            ymaps.route([city, fullName], {mapStateAutoApply: true})
+            ymaps.route([city, fullName])
                 .then(function (route) {
                     console.log('From: ' + city + ' To: ' + fullName + ': ' + Math.ceil(route.getLength() / 1000));
                     getTariffPriceAjax(point, false, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"), Math.ceil(route.getLength() / 1000));
@@ -635,10 +635,12 @@ function kladrChange(obj, point) {
 
     if(point.attr('id') === "ship_point") {
         if($('#ship_city').data().selectize.getValue() !== "") {
+            $('input[name="take_city_name"]').val(point.data('name'));
             calcTariffPrice($('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal, point, $('input[name="need-to-take-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
         }
     } else {
         if($('#dest_city').data().selectize.getValue() !== "") {
+            $('input[name="bring_city_name"]').val(point.data('name'));
             calcTariffPrice($('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal, point, $('input[name="need-to-bring-type"]:checked').val() == "in"); // вызываем просчет для "Доставить"
         }
     }

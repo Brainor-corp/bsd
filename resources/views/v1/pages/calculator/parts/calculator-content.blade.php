@@ -89,7 +89,7 @@
                     <option value=""></option>
                     @if($shipCities->count() > 0)
                         @foreach($shipCities as $shipCity)
-                            <option value="{{ $shipCity->id }}" data-data='{"terminal": "{{ isset($shipCity->terminal) ? addcslashes($shipCity->terminal->address, '"') : $shipCity->name }}"}' @if($selectedShipCity == $shipCity->id) selected @endif>{{ $shipCity->name }}</option>
+                            <option value="{{ $shipCity->id }}" data-data='{"terminal": "{{ isset($shipCity->terminal) ? addcslashes(($shipCity->terminal->revert_geo_point ?? $shipCity->terminal->address), '"') : $shipCity->name }}"}' @if($selectedShipCity == $shipCity->id) selected @endif>{{ $shipCity->name }}</option>
                         @endforeach
                     @endif
                 </select>
@@ -108,6 +108,7 @@
                 <label class="custom-control-label" for="need-to-take-type-from">из:</label>
             </div>
 
+            <input type="hidden" name="take_city_name">
             <div class="form-item ininner">
                 <div class="relative">
                     <i class="dropdown-toggle fa-icon"></i>
@@ -135,7 +136,7 @@
                     <option value=""></option>
                     @if(isset($destinationCities))
                         @foreach($destinationCities as $destinationCity)
-                            <option value="{{ $destinationCity->id }}" data-data='{"terminal": "{{ isset($destinationCity->terminal) ? addcslashes($destinationCity->terminal->address, '"') : $destinationCity->name }}"}' @if($selectedDestCity == $destinationCity->id) selected @endif>{{ $destinationCity->name }}</option>
+                            <option value="{{ $destinationCity->id }}" data-data='{"terminal": "{{ isset($destinationCity->terminal) ? addcslashes(($destinationCity->terminal->revert_geo_point ?? $destinationCity->terminal->address), '"') : $destinationCity->name }}"}' @if($selectedDestCity == $destinationCity->id) selected @endif>{{ $destinationCity->name }}</option>
                         @endforeach
                     @endif
                 </select>
@@ -153,6 +154,7 @@
                 <input type="radio" class="custom-control-input need-to-bring-input" id="need-to-bring-type-from" name="need-to-bring-type" value="from" disabled/>
                 <label class="custom-control-label" for="need-to-bring-type-from">в:</label>
             </div>
+            <input type="hidden" name="bring_city_name">
             <div class="form-item ininner">
                 <div class="relative">
                     <i class="dropdown-toggle fa-icon"></i>

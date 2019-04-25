@@ -31,12 +31,13 @@ class Terminal extends Model
     }
 
     /**
+     * Преобразует координаты точки из формата Point в строку
+     *
      * @param string $value
      * @return string
      */
     public function getGeoPointAttribute($value)
     {
-        // cleanup the database response into a Point
         $response = explode(
             ' ',
             str_replace(
@@ -51,7 +52,25 @@ class Terminal extends Model
             )
         );
 
-        return count($response) == 2 ? $response[0] . ', ' . $response[1] : '';
+        return count($response) == 2 ? $response[0] . ', ' . $response[1] : null;
+    }
+
+
+    /**
+     * Возвращает координаты точки в перевернутом виде (нужно для API Яндекса)
+     *
+     * @return null|string
+     */
+    public function getRevertGeoPointAttribute() {
+        $point = $this->point;
+
+        if(!$point) {
+            return null;
+        }
+
+        $pointParts = explode(', ', $point);
+
+        return "$pointParts[1], $pointParts[0]";
     }
 
     public function newQuery($excludeDeleted = true)
