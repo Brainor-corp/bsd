@@ -48,7 +48,7 @@ class OrderController extends Controller
         $cities = City::whereIn('id', [
             $request->get('ship_city'),
             $request->get('dest_city'),
-        ])->get();
+        ])->with('terminal')->get();
 
         if($cities->count() != 2) {
             return abort(500, 'Город(а) маршрута не найдены.');
@@ -125,17 +125,33 @@ class OrderController extends Controller
         $order->take_address = $request->get('ship_point');
         $order->take_in_city = $request->get('need-to-take-type') === "in";
         $order->take_point = $request->get('ship-from-point') === "on";
+
+//        if($request->get('need-to-take') === "on" && $request->get('need-to-take-type') === "from") {
+//            $pointFrom = $shipCity->terminal->geo_point ?? YandexHelper::getCoordinates($shipCity->name);
+//            $pointTo = YandexHelper::getCoordinates($request->get('ship_point'));
+//            $takeDistance = YandexHelper::getDistance($pointFrom, $pointTo);
+//            if(!$takeDistance) {
+//                return abort(500, 'Не удалось определить дистанцию для забора груза');
+//            }
+//
+//            $order->take_distance = $takeDistance;
+//        }
         $order->take_distance = 0; // todo
+
         $order->delivery_need = $request->get('need-to-bring') === "on";
         $order->delivery_address = $request->get('dest_point');
         $order->delivery_in_city = $request->get('need-to-bring-type') === "in";
         $order->delivery_point = $request->get('bring-to-point') === "on";
+
         $order->delivery_distance = 0; // todo
+
         $order->sender_name = $request->get('sender_name');
         $order->sender_phone = $request->get('sender_phone');
         $order->recepient_name = $request->get('recepient_name');
         $order->recepient_phone = $request->get('recepient_phone');
-        $order->discount = $tariff['total_data']['discount'] ?? null;
+        $order->discount = $request->get('discount');
+        $order->discount_amount = $tariff['total_data']['discount'] ?? null;
+        $order->insurance = $request->get('insurance_amount');
         $order->insurance_amount = $tariff['total_data']['insurance'] ?? null;
         $order->user_id = Auth::user()->id ?? null;
         $order->enter_id = $_COOKIE['enter_id'];

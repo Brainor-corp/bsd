@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Helpers;
 
 use App\Event;

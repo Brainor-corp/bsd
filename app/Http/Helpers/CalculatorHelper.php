@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Helpers;
 
 use App\Oversize;
@@ -11,7 +10,6 @@ use App\Service;
 
 class CalculatorHelper
 {
-
     public static function oversize_ratio($package)
     {
         $query = new  OversizeMarkup();

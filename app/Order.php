@@ -14,7 +14,7 @@ class Order extends Model
         'total_price', 'sender_id', 'sender_name', 'sender_phone', 'recipient_id',
         'recepient_name', 'recepient_phone', 'payer_id', 'payer_name', 'payer_phone',
         'payment_type', 'code_1c', 'manager_id', 'operator_id', 'order_date',
-        'order_finish_date',
+        'order_finish_date', 'discount', 'discount_amount', 'insurance', 'insurance_amount'
     ];
 
     public function status(){
