@@ -46,11 +46,11 @@
                                                 </div>
                                             </div>
                                             @php($totalVolume = 0)
-                                            @foreach($order->order_items as $item)
+                                            @foreach($order->order_items as $key => $item)
                                                 @php($totalVolume += $item->volume)
                                                 <div class="col-11 form-item row align-items-center package-item"
                                                      id="package-1" style="padding-right: 0;">
-                                                    <label class="col-auto calc__label">Габариты (м)*</label>
+                                                    <label class="col-auto calc__label">@if($key == 0)Габариты (м)*@endif</label>
                                                     <div class="col calc__inpgrp relative row__inf"
                                                          style="padding-right: 0;">
                                                         <div class="input-group">
@@ -188,13 +188,13 @@
                                         <label class="" for="insurance-amount">Сумма страховки</label>
                                         <input type="text" readonly class="form-control" id="insurance-amount"
                                                placeholder="Введите сумму страховки"
-                                               value="{{ $order->insurance_amount }}">
+                                               value="{{ $order->insurance }}">
                                         <br>
                                     </div>
                                     <div class="relative">
                                         <i class="dropdown-toggle fa-icon"></i>
                                         <select class="custom-select" id="discount" name="discount">
-                                            <option disabled selected>{{ $order->discount ? $order->discount . '%' : 'Нет скидки'}}</option>
+                                            <option disabled selected>{{ $order->discount ? $order->discount . '%' : 'Нет скидки' }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -278,7 +278,7 @@
                                         </div>
                                         <span class="block__itogo_price d-flex flex-nowrap">
                                             <span class="block__itogo_amount" id="base-price"
-                                                  data-base-price="договорная">договорная</span>
+                                                  data-base-price="договорная">{{ $order->base_price }}</span>
                                             <span class="rouble">p</span>
                                         </span>
                                     </div>
@@ -339,7 +339,7 @@
                                                         </div>
                                                         <span class="block__itogo_price d-flex flex-nowrap" id="services-total-prices">
                                                             <span class="block__itogo_amount">
-                                                                {{ $service->price }}
+                                                                {{ $service->pivot->price }}
                                                             </span>
                                                             <span class="rouble">p</span>
                                                         </span>
@@ -356,6 +356,19 @@
                                                         <span class="rouble">p</span>
                                                     </span>
                                                 </div>
+                                                @if(isset($order->discount_amount))
+                                                    <div class="block__itogo_item d-flex">
+                                                        <div class="d-flex flex-wrap" id="services-total-names">
+                                                            <span class="block__itogo_value">Скидка</span>
+                                                        </div>
+                                                        <span class="block__itogo_price d-flex flex-nowrap" id="services-total-prices">
+                                                            <span class="block__itogo_amount">
+                                                                {{ $order->discount_amount }}
+                                                            </span>
+                                                            <span class="rouble">p</span>
+                                                        </span>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>

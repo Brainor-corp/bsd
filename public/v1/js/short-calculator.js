@@ -3,9 +3,9 @@
 
         if (!value.length) return;
 
-        var $select = $('#ship_city').selectize();
-        var selectize = $select[0].selectize;
-        selectize.setValue(value, false);
+        // var $select = $('#ship_city').selectize();
+        // var selectize = $select.selectize;
+        // selectize.setValue(value, false);
 
         $.ajaxSetup({
             headers: {
@@ -25,21 +25,20 @@
                 $('#short_dest_city').html(html);
                 $('#short_dest_city').selectize({
                     onChange: function(value) {// при изменении города назначения
-                        var $select = $('#dest_city').selectize();
-                        var selectize = $select[0].selectize;
-                        selectize.setValue(value, false);
+                        // var $select = $('#dest_city').selectize();
+                        // var selectize = $select[0].selectize;
+                        // selectize.setValue(value, false);
                         getShortRoute();
                     }
                 });
 
-                $('#dest_city').selectize()[0].selectize.destroy();
-                $('#dest_city').html(html);
-                $('#dest_city').selectize({
-                    onChange: function(value) {// при изменении города назначения
-
-                        getShortRoute();
-                    }
-                });
+                // $('#dest_city').selectize()[0].selectize.destroy();
+                // $('#dest_city').html(html);
+                // $('#dest_city').selectize({
+                //     onChange: function(value) {// при изменении города назначения
+                //         getShortRoute();
+                //     }
+                // });
 
                 getShortRoute();
             }
@@ -50,9 +49,9 @@
 $('#short_dest_city').selectize({
     onChange: function(value) {// при изменении города назначения
 
-        var $select = $('#dest_city').selectize();
-        var selectize = $select[0].selectize;
-        selectize.setValue(value, false);
+        // var $select = $('#dest_city').selectize();
+        // var selectize = $select[0].selectize;
+        // selectize.setValue(value, false);
 
         getShortRoute();
     }
@@ -79,6 +78,9 @@ var getShortRoute = function () {
             },
             success: function(data){
                 getShortBaseTariff();
+            },
+            error: function (err) {
+                console.log(err);
             }
         });
     }
@@ -119,6 +121,9 @@ var getShortBaseTariff = function () {
                 $('#total-price').html(data.total_data.total);
                 $('#total-price').attr('data-total-price', data.total_data.total);
                 $('#total-volume').attr('data-total-volume', data.total_volume);
+            },
+            error: function (err) {
+                console.log(err);
             }
         });
 
