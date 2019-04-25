@@ -17,7 +17,8 @@
                     </header>
                     <div class="row">
                         <div class="col-12">
-                            <div class="reports__header row align-items-center">
+                            <form action="{{ route('download-reports') }}" method="post" class="reports__header row align-items-center">
+                                @csrf
                                 <span class="reports__header-label margin-md-item">Поиск:</span>
                                 <div id="search-wrapper" class="margin-md-item d-flex flex-wrap control-group">
                                     <select id="search-type-select" class="custom-select">
@@ -25,17 +26,17 @@
                                         <option selected value="id">По номеру</option>
                                         <option value="status">По типу</option>
                                     </select>
-                                    <input id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">
+                                    <input name="id" id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">
                                 </div>
                                 <div id="cb-input" class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="finished-cb">
+                                    <input name="finished" value="true" type="checkbox" class="custom-control-input" id="finished-cb">
                                     <label class="custom-control-label" for="finished-cb">Только завершенные</label>
                                 </div>
-                                <button type="button" class="btn btn-dotted ml-auto d-flex align-items-center">
+                                <button type="submit" class="btn btn-dotted ml-auto d-flex align-items-center">
                                     <i class="icons excel-icon margin-item"></i>
                                     <span class="btn-label margin-item">Выгрузить в excel</span>
                                 </button>
-                            </div>
+                            </form>
                             <div class="row">
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
