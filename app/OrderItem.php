@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderItem extends Model
 {
     protected $fillable = [
-        'length', 'width', 'height', 'volume', 'quantity'
+        'length', 'width', 'height', 'volume', 'quantity', 'weight'
     ];
 
     public function type(){

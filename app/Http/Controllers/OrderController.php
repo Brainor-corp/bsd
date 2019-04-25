@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\Http\Helpers\CalculatorHelper;
 use App\Http\Helpers\EventHelper;
 use App\Order;
 use App\OrderItem;
+use App\Route;
 use App\Service;
 use App\Type;
 use Carbon\Carbon;
@@ -24,6 +26,7 @@ class OrderController extends Controller
                 'width' => $package['width'],
                 'height' => $package['height'],
                 'volume' => $package['length'] * $package['width'] * $package['height'],
+                'weight' => $package['weight'],
                 'quantity' => $package['quantity'],
             ]);
 
@@ -42,19 +45,22 @@ class OrderController extends Controller
             })
             ->get();
 
-        $allServices = Service::all('id')->pluck('id')->toArray();
-
-        $services = [];
-        foreach($request->get('service') as $service) {
-            if(in_array($service, $allServices)) {
-                $services[] = $service;
-            }
-        }
-
         $cities = City::whereIn('id', [
             $request->get('ship_city'),
             $request->get('dest_city'),
         ])->get();
+
+        if($cities->count() != 2) {
+            return abort(500, 'Город(а) маршрута не найдены.');
+        }
+
+        $shipCity = $cities->where('id', $request->get('ship_city'))->first();
+        $destCity = $cities->where('id', $request->get('dest_city'))->first();
+
+        $route = Route::where([
+            ['ship_city_id', $shipCity->id],
+            ['dest_city_id', $destCity->id],
+        ])->firstOrFail();
 
         $payerType = $allTypes->where('class', 'payer_type')
                 ->where('slug', $request->get('payer_type'))
@@ -80,14 +86,41 @@ class OrderController extends Controller
             return abort(500, 'Тип оплаты не найден.');
         }
 
+        $tariff = CalculatorHelper::getTariff(
+            $request->get('cargo')['packages'],
+            $route->id,
+            $request->get('service'),
+            $request->get('insurance_amount'),
+            $request->get('discount'),
+            true
+        );
+
+        if(!isset($tariff) || !isset($tariff['base_price']) || !isset($tariff['total_data']['total'])) {
+            return abort(500, 'Не удалось определить тариф');
+        }
+
+        $allServices = Service::all('id', 'slug');
+
+        $services = [];
+        if(isset($tariff['total_data']['services'])) {
+            foreach($tariff['total_data']['services'] as $service) {
+                if(in_array($service['slug'], $allServices->pluck('slug')->toArray())) {
+                    $services[$allServices->where('slug', $service['slug'])->first()->id] = [
+                        'price' => $service['total']
+                    ];
+                }
+            }
+        }
+
         $order = new Order;
-        $order->total_price = ''; // todo
+        $order->total_price = $tariff['total_data']['total'];
+        $order->base_price = $tariff['base_price'];
         $order->shipping_name = $request->get('cargo')['name'];
         $order->total_weight = $totalWidth;
-        $order->ship_city_id = $cities->where('id', $request->get('ship_city'))->first()->id;
-        $order->ship_city_name = $cities->where('id', $request->get('ship_city'))->first()->name;
-        $order->dest_city_id = $cities->where('id', $request->get('dest_city'))->first()->id;
-        $order->dest_city_name = $cities->where('id', $request->get('dest_city'))->first()->name;
+        $order->ship_city_id = $shipCity->id;
+        $order->ship_city_name = $shipCity->name;
+        $order->dest_city_id = $destCity->id;
+        $order->dest_city_name = $destCity->name;
         $order->take_need = $request->get('need-to-take') === "on";
         $order->take_address = $request->get('ship_point');
         $order->take_in_city = $request->get('need-to-take-type') === "in";
@@ -102,8 +135,8 @@ class OrderController extends Controller
         $order->sender_phone = $request->get('sender_phone');
         $order->recepient_name = $request->get('recepient_name');
         $order->recepient_phone = $request->get('recepient_phone');
-        $order->discount = $request->get('discount');
-        $order->insurance_amount = $request->get('insurance_amount');
+        $order->discount = $tariff['total_data']['discount'] ?? null;
+        $order->insurance_amount = $tariff['total_data']['insurance'] ?? null;
         $order->user_id = Auth::user()->id ?? null;
         $order->enter_id = $_COOKIE['enter_id'];
         $order->payer_type = $payerType->id;
@@ -118,10 +151,15 @@ class OrderController extends Controller
         $order->order_items()->saveMany($packages);
         $order->order_services()->attach($services);
 
-        if($orderStatus->slug === "ozhidaet-moderacii") {
-            EventHelper::createEvent('Заказ успешно зарегистрирован!', null, true, route('report-show', ['id' => $order->id], $absolute = false));
+        if($orderStatus->slug === "ozhidaet-moderacii" && Auth::check()) {
+            EventHelper::createEvent(
+                'Заказ успешно зарегистрирован!',
+                null,
+                true,
+                route('report-show', ['id' => $order->id], $absolute = false)
+            );
         }
 
-        return redirect(route('report-show', ['id' => $order->id]));
+        return Auth::check() ? redirect(route('report-show', ['id' => $order->id])) : redirect()->back();
     }
 }
