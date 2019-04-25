@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Http\Helpers;
+
+use Illuminate\Support\Facades\File;
+
+class DocumentHelper {
+    public static function generateDocument($templatePath, $documentExtension, Array $parameters){
+
+        $TBS = new \clsTinyButStrong();
+        $TBS->Plugin(TBS_INSTALL, \clsOpenTBS::class);
+
+        $TBS->LoadTemplate($templatePath);
+
+        $TBS->SetOption('charset', false);
+        $TBS->SetOption('render', TBS_OUTPUT);
+
+        foreach ($parameters as $name => $value){
+            $TBS->MergeField($name, $value);
+        }
+
+        $name = md5('docs bsd' . time()) . $documentExtension;
+        $path = storage_path('app\public\documents\\');
+
+        $tempFile = $path . $name;
+
+        File::makeDirectory($path, $mode = 0777, true, true);
+
+        $TBS->Show(OPENTBS_FILE, $tempFile);
+        return $tempFile;
+    }
+}

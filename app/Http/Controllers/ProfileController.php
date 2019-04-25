@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Event;
+use App\Http\Helpers\DocumentHelper;
 use App\Order;
 use App\Type;
 use App\User;
@@ -196,4 +197,60 @@ class ProfileController extends Controller {
 
         return response()->download($path . $name, 'Отчет БСД - ' . date('d.m.Y') . '.xlsx')->deleteFileAfterSend(true);
     }
+
+    public function actionDownloadDocumentContract(Request $request){
+        $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city', 'user')->firstOrFail();
+
+        $path = public_path('templates\\ContractTemplate.docx');
+        $documentName = 'Договор';
+        $documentExtension = '.docx';
+
+        $params = [
+            'created_at' => $order->created_at,
+            'number' => $order->id,
+            'client_phone' => $order->user->phone ?? 'Тел. —',
+            'client_email' => $order->user->email,
+            'client_name' => $order->user->full_name,
+            'client_short' => $order->user->surname_initials,
+        ];
+
+        $tempFile = DocumentHelper::generateDocument($path, $documentExtension, $params);
+
+        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
+    }
+
+    public function actionDownloadDocumentInvoice(Request $request){
+        $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
+
+        $path = public_path('templates\\InvoiceTemplate.xlsx');
+        $documentName = 'Счет на оплату';
+        $documentExtension = '.xlsx';
+
+        $params = [
+            'created_at' => $order->created_at,
+            'number' => $order->id,
+        ];
+
+        $tempFile = DocumentHelper::generateDocument($path, $documentExtension, $params);
+
+        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
+    }
+
+    public function actionDownloadDocumentReceipt(Request $request){
+        $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
+
+        $path = public_path('templates\\ReceiptTemplate.xlsx');
+        $documentName = 'Экспедиторская расписка';
+        $documentExtension = '.xlsx';
+
+        $params = [
+            'created_at' => $order->created_at,
+            'number' => $order->id,
+        ];
+
+        $tempFile = DocumentHelper::generateDocument($path, $documentExtension, $params);
+
+        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
+    }
+
 }

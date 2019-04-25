@@ -18,7 +18,10 @@
         <td>{{ $order->recepient_name }}</td>
         <td>{{ $order->total_price }} <span>р</span></td>
         <td>{{ $order->status->name }}</td>
-        <td><a href="##" class="table-text-link">Наименование<br/>документа</a>
+        <td>
+            <a href="#" class="table-text-link show-order-documents" data-order-id="{{ $order->id }}">
+                Доступные<br/>документы
+            </a>
         </td>
         <td>
             {{--<a href="##" class="table-icon-link"><i class="fa fa-pencil-square-o"></i></a>--}}

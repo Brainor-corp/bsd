@@ -84,6 +84,38 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="orderDocumentsModal" tabindex="-1" role="dialog" aria-labelledby="orderDocumentsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderDocumentsModalLabel">Доступные документы</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul>
+                        <li>
+                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-request') }}">Заявка</a>
+                        </li>
+                        <li>
+                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-invoice') }}">Счет на оплату</a>
+                        </li>
+                        <li>
+                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-transfer') }}">УПД</a>
+                        </li>
+                        <li>
+                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-contract') }}">Договор</a>
+                        </li>
+                        <li>
+                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-receipt') }}">Экспедиторская расписка</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('footScripts')
