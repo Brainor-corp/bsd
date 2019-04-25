@@ -80,7 +80,7 @@ var getShortRoute = function () {
                 getShortBaseTariff();
             },
             error: function (err) {
-                console.log(err);
+                // console.log(err);
             }
         });
     }
@@ -92,9 +92,9 @@ var getShortBaseTariff = function () {
         destCityID = $("#short_dest_city").val(),
         formData  = $('.short_calculator-form').serialize();
 
-    console.log(shipCityID);
-    console.log(destCityID);
-    console.log(formData);
+    // console.log(shipCityID);
+    // console.log(destCityID);
+    // console.log(formData);
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -123,7 +123,7 @@ var getShortBaseTariff = function () {
                 $('#total-volume').attr('data-total-volume', data.total_volume);
             },
             error: function (err) {
-                console.log(err);
+                // console.log(err);
             }
         });
 
