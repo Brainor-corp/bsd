@@ -9,8 +9,11 @@ use App\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\View;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ProfileController extends Controller {
     public function profileData() {
@@ -110,5 +113,87 @@ class ProfileController extends Controller {
         //todo вывод доставки и терминальной перевозки
 
         return View::make('v1.pages.profile.profile-inner.report-show-page')->with(compact('order'))->render();
+    }
+
+    public function actionDownloadReports(Request $request){
+        $orders = Order::with('status', 'ship_city', 'dest_city')
+            ->where('user_id', Auth::user()->id)
+            ->when($request->get('id'), function ($order) use ($request) {
+                return $order->where('id', 'LIKE', '%' . $request->get('id') . '%');
+            })
+            ->when($request->get('finished') === 'true', function ($order) use ($request) {
+                return $order->whereHas('status', function ($type){
+                    return $type->where('slug', 'dostavlen');
+                });
+            })
+            ->when($request->get('finished') !== 'true' && $request->get('status'), function ($order) use ($request) {
+                return $order->where('status_id', $request->get('status'));
+            })
+            ->get();
+
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()
+            ->setCreator('Балтийская служба доставки')
+            ->setLastModifiedBy('Балтийская служба доставки')
+            ->setTitle('Отчеты о заказах')
+            ->setSubject('Отчеты о заказах')
+            ->setDescription('Отчеты о заказах');
+
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Отчеты');
+
+        $headers = [
+            '№ ',
+            'Дата',
+            'Параметры груза',
+            'Город отправителя',
+            'Город получателя',
+            'Отправитель',
+            'Получатель',
+            'Стоимость',
+            'Статус заказа',
+        ];
+
+        $x = range('A', 'Z');
+        foreach ($headers as $key => $header){
+            $sheet->setCellValue($x[$key] . 1, $header);
+        }
+        foreach ($orders as $key => $order){
+            $items = "Вес: " . $order->total_weight . ".\nГабариты: ";
+
+            foreach ($order->order_items as $order_item){
+                $items .= "\nДхШхВ: " . $order_item->length . "х" . $order_item->width . "х" . $order_item->height . " м";
+            }
+
+            $sheet->setCellValue('A' . ($key +2), $order->id);
+            $sheet->setCellValue('B' . ($key +2), $order->created_at->format('d.m.Y'));
+            $sheet->setCellValue('C' . ($key +2), $items);
+            $sheet->setCellValue('D' . ($key +2), $order->ship_city_name ?? $order->ship_city->name ?? '-');
+            $sheet->setCellValue('E' . ($key +2), $order->dest_city_name ?? $order->dest_city->name ?? '-');
+            $sheet->setCellValue('F' . ($key +2), $order->sender_name ?? '-');
+            $sheet->setCellValue('G' . ($key +2), $order->recepient_name ?? '-');
+            $sheet->setCellValue('H' . ($key +2), $order->total_price . 'р');
+            $sheet->setCellValue('I' . ($key +2), $order->status->name);
+        }
+
+        $rowIterator = $sheet->getRowIterator()->resetStart();
+        $rowIterator->rewind();
+        $cellIterator = $rowIterator->current()->getCellIterator();
+        $cellIterator->setIterateOnlyExistingCells(true);
+
+        foreach ($cellIterator as $cell) {
+            $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+            $sheet->getStyle($cell->getColumn())->getAlignment()->setHorizontal('center');
+        }
+
+        $writer = new Xlsx($spreadsheet);
+
+        $name = md5('Отчеты bsd' . time()) . '.xlsx';
+        $path = storage_path('app\public\reports\\');
+
+        File::makeDirectory($path, $mode = 0777, true, true);
+        $writer->save($path . $name);
+
+        return response()->download($path . $name, 'Отчет БСД - ' . date('d.m.Y') . '.xlsx')->deleteFileAfterSend(true);
     }
 }
