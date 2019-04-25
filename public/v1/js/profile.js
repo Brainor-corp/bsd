@@ -54,7 +54,7 @@ $(document).ready(function () {
         if (select.val() === 'id') {
             $('#search-input').remove();
             $('#search-select').remove();
-            $('#search-wrapper').append('<input id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">');
+            $('#search-wrapper').append('<input name="id" id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">');
         } else if (select.val() === 'status') {
             $.ajaxSetup({
                 headers: {

@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/search-orders', 'ProfileController@searchOrders')->name('search-orders');
     Route::post('/get-order-items', 'ProfileController@actionGetOrderItems')->name('get-order-items');
     Route::post('/get-order-search-input', 'ProfileController@actionGetOrderSearchInput')->name('get-order-search-input');
+    Route::post('/download-reports', 'ProfileController@actionDownloadReports')->name('download-reports');
 
     Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
     Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
