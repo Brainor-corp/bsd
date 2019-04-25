@@ -32,7 +32,7 @@ class Order extends Model
     }
 
     public function order_services(){
-        return $this->belongsToMany(Service::class);
+        return $this->belongsToMany(Service::class)->withPivot('price');
     }
 
     public function ship_city(){
