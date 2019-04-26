@@ -39,6 +39,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/get-order-search-input', 'ProfileController@actionGetOrderSearchInput')->name('get-order-search-input');
     Route::post('/download-reports', 'ProfileController@actionDownloadReports')->name('download-reports');
 
+    Route::get('/download-document-request', 'ProfileController@actionDownloadDocumentRequest')->name('download-document-request');
+    Route::get('/download-document-invoice', 'ProfileController@actionDownloadDocumentInvoice')->name('download-document-invoice');
+    Route::get('/download-document-transfer', 'ProfileController@actionDownloadDocumentTransfer')->name('download-document-transfer');
+    Route::get('/download-document-contract', 'ProfileController@actionDownloadDocumentContract')->name('download-document-contract');
+    Route::get('/download-document-receipt', 'ProfileController@actionDownloadDocumentReceipt')->name('download-document-receipt');
+
     Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
     Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
 });
