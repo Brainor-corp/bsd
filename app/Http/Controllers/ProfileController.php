@@ -6,7 +6,6 @@ use App\Event;
 use App\Order;
 use App\Type;
 use App\User;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -108,9 +107,17 @@ class ProfileController extends Controller {
     }
 
     public function showReportPage($id){
-        $order = Order::where('user_id', Auth::user()->id)->where('id', $id)->with('status', 'order_items', 'order_services', 'payment')->firstOrFail();
-
-        //todo вывод доставки и терминальной перевозки
+        $order = Order::where('user_id', Auth::user()->id)
+            ->where('id', $id)
+            ->with([
+                'status',
+                'order_items',
+                'payment',
+                'order_services' => function ($services) {
+                    return $services->withPivot('price');
+                }
+            ])
+            ->firstOrFail();
 
         return View::make('v1.pages.profile.profile-inner.report-show-page')->with(compact('order'))->render();
     }

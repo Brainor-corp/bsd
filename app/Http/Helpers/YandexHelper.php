@@ -44,7 +44,7 @@ class YandexHelper {
 
         $result = json_decode($resp);
 
-        if($result->rows[0]->elements[0]->status === "OK") {
+        if(isset($result->rows[0]->elements[0]) && $result->rows[0]->elements[0]->status === "OK") {
             return intval($result->rows[0]->elements[0]->distance->value / 1000);
         }
 
