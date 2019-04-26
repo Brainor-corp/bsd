@@ -154,7 +154,7 @@
                                         <div class="form-item ininner">
                                             <div class="relative">
                                                 <i class="dropdown-toggle fa-icon"></i>
-                                                <input class="form-control suggest_address need-to-bring-input-address" id="dest_point" name="dest_point" placeholder="Название населенного пункта или адрес" disabled>
+                                                <input class="form-control suggest_address need-to-bring-input-address" value="{{ $order->delivery_address }}" id="dest_point" name="dest_point" placeholder="Название населенного пункта или адрес" disabled>
                                             </div>
                                         </div>
                                         <div class="custom-control custom-checkbox">
@@ -284,7 +284,7 @@
                                     </div>
 
                                     @if($order->take_need || $order->delivery_need)
-                                        <div id="delivery-total-wrapper" style="display: none;">
+                                        <div id="delivery-total-wrapper">
                                             <div class="block__itogo_item d-flex">
                                                 <div class="d-flex flex-wrap">
                                                     <span class="block__itogo_label">Доставка:</span>
@@ -296,7 +296,7 @@
                                                         <div class="block__itogo_item d-flex">
                                                             <div class="d-flex flex-wrap" id="services-total-names">
                                                                 <span class="block__itogo_value">
-                                                                    Забор груза: ?? @if($order->take_distance)<small> ({{ $order->take_distance }} км) </small>@endif
+                                                                    Забор груза: {{ $order->take_city_name }} @if($order->take_distance)<small> ({{ $order->take_distance }} км) </small>@endif
                                                                 </span>
                                                             </div>
                                                             <span class="block__itogo_price d-flex flex-nowrap" id="services-total-prices">
@@ -307,12 +307,12 @@
                                                     </div>
                                                 </div>
                                             @endif
-                                            @if($order->delvery_need)
+                                            @if($order->delivery_need)
                                                 <div class="custom-service-total-item">
                                                     <div class="block__itogo_item d-flex">
                                                         <div class="d-flex flex-wrap" id="services-total-names">
                                                             <span class="block__itogo_value">
-                                                                Доставка груза: ?? @if($order->delicery_distance)<small> ({{ $order->delicery_distance }} км) </small>@endif
+                                                                Доставка груза: {{ $order->delivery_city_name }} @if($order->delivery_distance)<small> ({{ $order->delivery_distance }} км) </small>@endif
                                                             </span>
                                                         </div>
                                                         <span class="block__itogo_price d-flex flex-nowrap" id="services-total-prices">
@@ -324,7 +324,7 @@
                                             @endif
                                         </div>
                                     @endif
-                                    <div id="custom-services-total-wrapper" style="display: block;">
+                                    <div id="custom-services-total-wrapper">
                                         <div class="block__itogo_item d-flex">
                                             <div class="d-flex flex-wrap">
                                                 <span class="block__itogo_label">Дополнительные услуги:</span>
