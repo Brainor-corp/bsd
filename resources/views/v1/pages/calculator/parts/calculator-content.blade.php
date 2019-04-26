@@ -85,7 +85,7 @@
         <div class="col delivery-block">
             <div class="form-item">
                 {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
-                <select id="ship_city" class="form-control point-select" name="ship_city" placeholder="Выберите город">
+                <select id="ship_city" class="form-control point-select" name="ship_city" placeholder="Выберите город" required>
                     <option value=""></option>
                     @if($shipCities->count() > 0)
                         @foreach($shipCities as $shipCity)
@@ -109,6 +109,7 @@
             </div>
 
             <input type="hidden" name="take_city_name">
+            <input type="hidden" name="take_distance" value="0" class="distance-hidden-input">
             <div class="form-item ininner">
                 <div class="relative">
                     <i class="dropdown-toggle fa-icon"></i>
@@ -132,7 +133,7 @@
         <div class="col delivery-block">
             <div class="form-item">
                 {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
-                <select id="dest_city" class="form-control point-select" name="dest_city" placeholder="Выберите город">
+                <select id="dest_city" class="form-control point-select" name="dest_city" placeholder="Выберите город" required>
                     <option value=""></option>
                     @if(isset($destinationCities))
                         @foreach($destinationCities as $destinationCity)
@@ -154,7 +155,9 @@
                 <input type="radio" class="custom-control-input need-to-bring-input" id="need-to-bring-type-from" name="need-to-bring-type" value="from" disabled/>
                 <label class="custom-control-label" for="need-to-bring-type-from">в:</label>
             </div>
+
             <input type="hidden" name="bring_city_name">
+            <input type="hidden" name="bring_distance" value="0" class="distance-hidden-input">
             <div class="form-item ininner">
                 <div class="relative">
                     <i class="dropdown-toggle fa-icon"></i>
