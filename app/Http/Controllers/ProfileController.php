@@ -218,7 +218,7 @@ class ProfileController extends Controller {
     public function actionDownloadDocumentContract(Request $request) {
         $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city', 'user')->firstOrFail();
 
-        $path = public_path('templates\\ContractTemplate.docx');
+        $path = public_path('templates/ContractTemplate.docx');
         $documentName = 'Договор';
         $documentExtension = '.docx';
 
@@ -241,7 +241,7 @@ class ProfileController extends Controller {
 
         $orderDate = Date::now()->format('d F Y');
         $documentExtension = '.xlsx';
-        $templateFile = public_path('templates\\InvoiceTemplate.xlsx');
+        $templateFile = public_path('templates/InvoiceTemplate.xlsx');
         $documentName = "Счет на оплату №$order->id от $orderDate г.";
 
         $params = [
@@ -258,7 +258,7 @@ class ProfileController extends Controller {
 
 
         $name = md5('docs bsd' . time()) . $documentExtension;
-        $path = storage_path('app\public\documents\\');
+        $path = storage_path('app/public/documents/');
 
         $tempFile = $path . $name;
         File::makeDirectory($path, $mode = 0777, true, true);
@@ -310,7 +310,7 @@ class ProfileController extends Controller {
         $documentName = "Экспедиторская расписка №$order->id от $orderDate г.";
         $documentExtension = '.xlsx';
 
-        $templateFile = public_path('templates\\ReceiptTemplate.xlsx');
+        $templateFile = public_path('templates/ReceiptTemplate.xlsx');
 
         $params = [
             '{order_id}' => $order->id,
@@ -326,7 +326,7 @@ class ProfileController extends Controller {
         $params['[item_price]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_items->pluck('price')->toArray());
 
         $name = md5('docs bsd' . time()) . $documentExtension;
-        $path = storage_path('app\public\documents\\');
+        $path = storage_path('app/public/documents/');
 
         $tempFile = $path . $name;
         File::makeDirectory($path, $mode = 0777, true, true);
@@ -339,7 +339,7 @@ class ProfileController extends Controller {
         $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
 
         $orderDate = Date::now()->format('d F Y');
-        $templateFile = public_path('templates\\TransferTemplate.xlsx');
+        $templateFile = public_path('templates/TransferTemplate.xlsx');
 
         $documentName = "УПД (статус 1) №$order->id от $orderDate г.";
         $documentExtension = '.xlsx';
@@ -350,7 +350,7 @@ class ProfileController extends Controller {
         ];
 
         $name = md5('docs bsd' . time()) . $documentExtension;
-        $path = storage_path('app\public\documents\\');
+        $path = storage_path('app/public/documents/');
 
         $tempFile = $path . $name;
         File::makeDirectory($path, $mode = 0777, true, true);
