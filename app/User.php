@@ -48,4 +48,10 @@ class User extends Authenticatable
             $this->patronomic,
         ]);
     }
+    public function getSurnameInitialsAttribute(){
+        return implode(' ', [
+            $this->surname,
+            $this->name[0] . '.' . $this->patronomic[0] . '.',
+        ]);
+    }
 }

@@ -48,6 +48,16 @@ $(document).ready(function () {
             }
         });
     });
+    $(document).on('click', '.show-order-documents', function (e) {
+        e.preventDefault();
+        let modal = $('#orderDocumentsModal');
+        let link = $(this);
+
+        $.each(modal.find('.document-link'), function () {
+            $(this).attr('href', $(this).data('href') + '/?id=' + link.data('order-id') )
+        });
+        modal.modal();
+    });
 
     $('#search-type-select').change(function () {
         let select = $(this);
