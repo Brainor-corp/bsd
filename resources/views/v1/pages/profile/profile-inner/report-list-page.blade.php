@@ -107,9 +107,9 @@
                         <li>
                             <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-contract') }}">Договор</a>
                         </li>
-                        <li>
-                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-receipt') }}">Экспедиторская расписка</a>
-                        </li>
+{{--                        <li>--}}
+{{--                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-receipt') }}">Экспедиторская расписка</a>--}}
+{{--                        </li>--}}
                     </ul>
                 </div>
                 <div class="modal-footer"></div>

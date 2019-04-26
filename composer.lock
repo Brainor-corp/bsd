@@ -4,8 +4,52 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "02708e38b49f119604d3e495d5596bd1",
+    "content-hash": "8c86d11cb0b5adc2f42def8c1148bcdb",
     "packages": [
+        {
+            "name": "alhimik1986/php-excel-templator",
+            "version": "v1.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alhimik1986/php-excel-templator.git",
+                "reference": "f18c832941dff7cb7ecc49f28c10b649ca23194b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alhimik1986/php-excel-templator/zipball/f18c832941dff7cb7ecc49f28c10b649ca23194b",
+                "reference": "f18c832941dff7cb7ecc49f28c10b649ca23194b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "phpoffice/phpspreadsheet": ">=1.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "alhimik1986\\PhpExcelTemplator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sidorovich Nikolay",
+                    "email": "sidorovich21101986@mail.ru"
+                }
+            ],
+            "description": "PHP Spreadsheet extension for generating excel files from template",
+            "keywords": [
+                "excel",
+                "php",
+                "template",
+                "templater",
+                "templator"
+            ],
+            "time": "2018-11-06T15:57:50+00:00"
+        },
         {
             "name": "cocur/slugify",
             "version": "v3.2",

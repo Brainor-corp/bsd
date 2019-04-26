@@ -5,7 +5,7 @@ namespace App\Http\Helpers;
 use Illuminate\Support\Facades\File;
 
 class DocumentHelper {
-    public static function generateDocument($templatePath, $documentExtension, Array $parameters, Array $blocks = null){
+    public static function generateTBSDocument($templatePath, $documentExtension, Array $parameters, Array $blocks = null){
         $TBS = new \clsTinyButStrong();
         $TBS->Plugin(TBS_INSTALL, \clsOpenTBS::class);
 
