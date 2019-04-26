@@ -608,11 +608,23 @@ function calcTariffPrice(city, point, inCity) {
             return;
 
         if (city) {
-            ymaps.route([city, fullName])
-                .then(function (route) {
-                    console.log('From: ' + city + ' To: ' + fullName + ': ' + Math.ceil(route.getLength() / 1000));
-                    getTariffPriceAjax(point, false, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"), Math.ceil(route.getLength() / 1000));
-                });
+            // ymaps.geocode(fullName, {
+            //     results: 1
+            // }).then(function (res) {
+            //     // Выбираем первый результат геокодирования.
+            //     let firstGeoObject = res.geoObjects.get(0);
+            //     // Координаты геообъекта.
+            //     let coords = firstGeoObject.geometry.getCoordinates();
+            //
+            //     fullName = coords[0].toString() + ', ' + coords[1].toString();
+
+                ymaps.route([city, fullName])
+                    .then(function (route) {
+                        console.log('От: ' + city + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
+                        console.log(route);
+                        getTariffPriceAjax(point, false, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"), Math.ceil(route.getLength() / 1000));
+                    });
+            // });
         }
     }
 }

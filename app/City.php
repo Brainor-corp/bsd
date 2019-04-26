@@ -55,4 +55,18 @@ class City extends Model
         return $this->doorstep ? 'Да' : 'Нет' ;
     }
 
+    public function getCoordinatesOrAddressAttribute() {
+        $result = '';
+
+        if(isset($this->terminal)) {
+            $result = $this->terminal->revert_geo_point ?? $this->terminal->address;
+            $result = addcslashes($result, '"');
+        }
+
+        if(empty(trim($result))) {
+            $result = $this->name;
+        }
+
+        return $result;
+    }
 }
