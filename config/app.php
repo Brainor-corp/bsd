@@ -180,6 +180,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         \App\Providers\UserIdentificationServiceProvider::class,
+        \App\Providers\ViewComposerServiceProvider::class,
 
     ],
 

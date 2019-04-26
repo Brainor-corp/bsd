@@ -46,9 +46,9 @@
                     @else
                         <li class="ftr_list-item"><a class="ftr_link" href="{{ route('login') }}">Войти</a></li>
                     @endif
-                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/lenta-sobytiy') }}">Лента событий</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ route('event-list') }}">Лента событий</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Мои заказы</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/otchety') }}">Отчеты</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ route('report-list') }}">Отчеты</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Переписка с менеджером</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Претензии</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="#">Для физических лиц</a></li>
