@@ -115,7 +115,7 @@ class CalculatorHelper
         return $result;
     }
 
-    public static function getTariff($packages, $route_id, $services = null, $insuranceAmount = null, $discount = null, $totalNeed = true)
+    public static function getTariff($packages, $route_id, $services = null, $insuranceAmount = null, $discount = null, $totalNeed = true, $take_price = null, $bring_price = null)
     {
         $weight = 0;
         $volume = 0;
@@ -280,7 +280,7 @@ class CalculatorHelper
         ];
 
         if ($totalNeed) {
-            $totalPrice = self::getTotalPrice($basePrice, $services, $totalVolume, $insuranceAmount, $discount);
+            $totalPrice = self::getTotalPrice($basePrice, $services, $totalVolume, $insuranceAmount, $discount, $take_price, $bring_price);
             $resultData['total_data'] = $totalPrice;
         }
 

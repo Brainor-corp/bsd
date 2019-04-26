@@ -105,13 +105,13 @@ $(document).on('click', '#add-package-btn', function (e) {
         '<label class="col-auto calc__label"></label>' +
         '<div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">' +
         '<div class="input-group">' +
-        '<input type="text" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
-        '<input type="text" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][width]" data-package-id="'+ nextId +'"  data-dimension-type="width" placeholder="Ширина" value="0.1">' +
-        '<input type="text" id="packages_'+ nextId +'_height" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][height]" data-package-id="'+ nextId +'"  data-dimension-type="height" placeholder="Высота" value="0.1">' +
-        '<input type="text" id="packages_'+ nextId +'_weight" class="form-control text-center package-params package-weight" name="cargo[packages]['+ nextId +'][weight]" data-package-id="'+ nextId +'"  data-dimension-type="weight" placeholder="Вес" value="1">' +
-        '<input type="text" id="packages_'+ nextId +'_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages]['+ nextId +'][quantity]" data-package-id="'+ nextId +'"  data-dimension-type="quantity" placeholder="Места" value="1">' +
+        '<input type="number" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
+        '<input type="number" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][width]" data-package-id="'+ nextId +'"  data-dimension-type="width" placeholder="Ширина" value="0.1">' +
+        '<input type="number" id="packages_'+ nextId +'_height" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][height]" data-package-id="'+ nextId +'"  data-dimension-type="height" placeholder="Высота" value="0.1">' +
+        '<input type="number" id="packages_'+ nextId +'_weight" class="form-control text-center package-params package-weight" name="cargo[packages]['+ nextId +'][weight]" data-package-id="'+ nextId +'"  data-dimension-type="weight" placeholder="Вес" value="1">' +
+        '<input type="number" id="packages_'+ nextId +'_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages]['+ nextId +'][quantity]" data-package-id="'+ nextId +'"  data-dimension-type="quantity" placeholder="Места" value="1">' +
         '</div>' +
-        '<input type="text" hidden="hidden" id="packages_'+ nextId +'_volume" class="form-control text-center package-params package-volume" name="cargo[packages]['+ nextId +'][volume]" data-package-id="'+ nextId +'"  data-dimension-type="volume"  value="0.01">' +
+        '<input type="number" hidden="hidden" id="packages_'+ nextId +'_volume" class="form-control text-center package-params package-volume" name="cargo[packages]['+ nextId +'][volume]" data-package-id="'+ nextId +'"  data-dimension-type="volume"  value="0.001">' +
         '</div>' +
         '</div>';
 
@@ -168,9 +168,7 @@ var getBaseTariff = function () {
         destCityID = $("#dest_city").val(),
         formData  = $('.calculator-form').serialize();
 
-    console.log(shipCityID);
-    console.log(destCityID);
-    console.log(formData);
+        console.log(formData);
 
         $.ajaxSetup({
             headers: {
@@ -275,6 +273,8 @@ var getTotalPrice = function () {
         takePrice = $.isNumeric($(".takePrice").text()) ? parseFloat($(".takePrice").text()) : 0,
         bringPrice = $.isNumeric($(".bringPrice").text()) ? parseFloat($(".bringPrice").text()) : 0,
         formData  = $('.calculator-form').serialize();
+
+    console.log(totalVolume);
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -335,8 +335,7 @@ $(document).on('change', '.package-dimensions', function (e) {
         height = $('#packages_'+ id +'_height').val(),
         dimensionType = 'max_'+$(this).data('dimensionType'),
         dimensionMax = 0,
-        volume = 1
-    ;
+        volume = 1;
 
     dimensionMax = parameters[dimensionType];
     if($(this).val() >dimensionMax){
@@ -362,7 +361,7 @@ $(document).on('change', '.package-dimensions', function (e) {
         $('#packages_'+ id +'_height').attr('value', height).val(height);
     }else{height = parseFloat(height.replace(',', '.'))}
 
-    volume = parseFloat((length * width * height).toFixed(2));
+    volume = parseFloat((length * width * height).toFixed(3));
 
     $('#packages_'+ id +'_volume').attr('value', volume).val(volume);
 
@@ -471,9 +470,10 @@ var totalVolumeRecount = function () {
     let totalVolume = 0;
     $.each($(".package-volume"), function(index, item) {
         var curAmount = parseFloat($(item).prev('.input-group').find( ".package-quantity" ).val());
-
+        console.log('Amount: ' + curAmount);
         if(isNaN(curAmount)){curAmount = 1;}
-        var curVolume = parseFloat($(item).val().replace(',', '.')) * curAmount;
+
+        var curVolume = parseFloat($(item).val().replace(',', '.').toString()) * curAmount;
         totalVolume = totalVolume + curVolume;
     });
 
@@ -501,8 +501,6 @@ var servicesRender = function (data) {
         'display': 'none',
     });
     let services = '';
-
-    console.log('da');
 
     if(typeof data.services !== 'undefined') {
         if (Object.keys(data.services).length > 0) {
@@ -610,11 +608,23 @@ function calcTariffPrice(city, point, inCity) {
             return;
 
         if (city) {
-            ymaps.route([city, fullName])
-                .then(function (route) {
-                    console.log('From: ' + city + ' To: ' + fullName + ': ' + Math.ceil(route.getLength() / 1000));
-                    getTariffPriceAjax(point, false, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"), Math.ceil(route.getLength() / 1000));
-                });
+            // ymaps.geocode(fullName, {
+            //     results: 1
+            // }).then(function (res) {
+            //     // Выбираем первый результат геокодирования.
+            //     let firstGeoObject = res.geoObjects.get(0);
+            //     // Координаты геообъекта.
+            //     let coords = firstGeoObject.geometry.getCoordinates();
+            //
+            //     fullName = coords[0].toString() + ', ' + coords[1].toString();
+
+                ymaps.route([city, fullName])
+                    .then(function (route) {
+                        console.log('От: ' + city + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
+                        console.log(route);
+                        getTariffPriceAjax(point, false, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"), Math.ceil(route.getLength() / 1000));
+                    });
+            // });
         }
     }
 }

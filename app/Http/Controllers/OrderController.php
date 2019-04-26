@@ -87,34 +87,9 @@ class OrderController extends Controller
             return abort(500, 'Тип оплаты не найден.');
         }
 
-        $tariff = CalculatorHelper::getTariff(
-            $request->get('cargo')['packages'],
-            $route->id,
-            $request->get('service'),
-            $request->get('insurance_amount'),
-            $request->get('discount'),
-            true
-        );
-
-        if(!isset($tariff) || !isset($tariff['base_price']) || !isset($tariff['total_data']['total'])) {
-            return abort(500, 'Не удалось определить тариф');
-        }
-
-        $allServices = Service::all('id', 'slug');
-
-        $services = [];
-        if(isset($tariff['total_data']['services'])) {
-            foreach($tariff['total_data']['services'] as $service) {
-                if(in_array($service['slug'], $allServices->pluck('slug')->toArray())) {
-                    $services[$allServices->where('slug', $service['slug'])->first()->id] = [
-                        'price' => $service['total']
-                    ];
-                }
-            }
-        }
-
         $order = new Order;
 
+        $takePrice = null;
         // Если нужен забор груза
         if($request->get('need-to-take') === "on") {
             $order->take_point = $request->get('ship-from-point') === "on";
@@ -156,6 +131,7 @@ class OrderController extends Controller
             }
         }
 
+        $bringPrice = null;
         // Если нужна доставка груза
         if($request->get('need-to-bring') === "on") {
             $order->delivery_point = $request->get('bring-to-point') === "on";
@@ -194,6 +170,34 @@ class OrderController extends Controller
                 $order->delivery_city_name = $delivery_city_name; // Город доставки
                 $order->delivery_distance = $bringDistance; // Дистанция от города назначения до адреса доставки
                 $order->delivery_price = $bringPrice; // Цена доставки
+            }
+        }
+
+        $tariff = CalculatorHelper::getTariff(
+            $request->get('cargo')['packages'],
+            $route->id,
+            $request->get('service'),
+            $request->get('insurance_amount'),
+            $request->get('discount'),
+            true,
+            $takePrice,
+            $bringPrice
+        );
+
+        if(!isset($tariff) || !isset($tariff['base_price']) || !isset($tariff['total_data']['total'])) {
+            return abort(500, 'Не удалось определить тариф');
+        }
+
+        $allServices = Service::all('id', 'slug');
+
+        $services = [];
+        if(isset($tariff['total_data']['services'])) {
+            foreach($tariff['total_data']['services'] as $service) {
+                if(in_array($service['slug'], $allServices->pluck('slug')->toArray())) {
+                    $services[$allServices->where('slug', $service['slug'])->first()->id] = [
+                        'price' => $service['total']
+                    ];
+                }
             }
         }
 

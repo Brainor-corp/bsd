@@ -62,7 +62,7 @@ class Terminal extends Model
      * @return null|string
      */
     public function getRevertGeoPointAttribute() {
-        $point = $this->point;
+        $point = $this->geo_point;
 
         if(!$point) {
             return null;
