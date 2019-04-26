@@ -11,7 +11,7 @@ class DocumentHelper {
 
         $TBS->LoadTemplate($templatePath);
 
-        $TBS->SetOption('charset', false);
+        $TBS->SetOption('charset', true);
         $TBS->SetOption('render', TBS_OUTPUT);
 
         foreach ($parameters as $name => $value){
@@ -25,7 +25,7 @@ class DocumentHelper {
         }
 
         $name = md5('docs bsd' . time()) . $documentExtension;
-        $path = storage_path('app\public\documents\\');
+        $path = storage_path('app/public/documents/');
 
         $tempFile = $path . $name;
 
