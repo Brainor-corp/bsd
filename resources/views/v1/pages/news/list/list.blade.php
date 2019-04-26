@@ -61,16 +61,22 @@
                                 </div>
                             </div>
                             <div class="news__block">
-                                <div class="news__item d-flex flex-column">
-                                    <div>
-                                        <span class="news__title">Возможны задержки автоперевозок в Камышине, Саратове и Энгельсе</span>
+                                @foreach($posts as $post)
+                                    <div class="news__item d-flex flex-column">
+                                        <div>
+                                            <span class="news__title">{{ $post->title }}</span>
+                                        </div>
+                                        <span class="news__content">{{ $post->description }}</span>
+                                        <span class="news__info d-flex align-items-center">
+                                            <span class="news__info-date">{{ \Jenssegers\Date\Date::createFromFormat('Y-m-d H:i:s', $post->published_at)->format('d F Y') }}</span>
+                                            <span class="news__info-category">
+                                                @foreach($post->terms->where('type', 'category') as $category)
+                                                    {{ $category->title . ', '}}
+                                                @endforeach
+                                            </span>
+                                        </span>
                                     </div>
-                                    <span class="news__content">Из-за сильного снегопада возможны задержки межтерминальной перевозки грузов в Камышин, Саратов и Энгельс, а также по всем направлениям из этих городов.</span>
-                                    <span class="news__info d-flex align-items-center">
-                                        <span class="news__info-date">26 декабря 2018</span>
-                                        <span class="news__info-category">Региональные новости, Новости компании</span>
-                                    </span>
-                                </div>
+                                @endforeach
                                 <div class="news__item d-flex flex-column">
                                     <div>
                                         <span class="news__title">Возможны задержки автоперевозок в Камышине, Саратове и Энгельсе</span>
