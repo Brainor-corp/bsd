@@ -8,6 +8,8 @@ use App\Order;
 use App\Type;
 use App\User;
 
+use Carbon\Carbon;
+use Jenssegers\Date\Date;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -222,8 +224,9 @@ class ProfileController extends Controller {
     public function actionDownloadDocumentInvoice(Request $request){
         $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
 
+        $orderDate = Date::now()->format('d F Y');
         $path = public_path('templates\\InvoiceTemplate.xlsx');
-        $documentName = 'Счет на оплату';
+        $documentName = "Счет на оплату №$order->id от $orderDate г.";
         $documentExtension = '.xlsx';
 
         $params = [
@@ -239,12 +242,50 @@ class ProfileController extends Controller {
     public function actionDownloadDocumentReceipt(Request $request){
         $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
 
+        $orderDate = Date::now()->format('d F Y');
         $path = public_path('templates\\ReceiptTemplate.xlsx');
-        $documentName = 'Экспедиторская расписка';
+        $documentName = "Экспедиторская расписка №$order->id от $orderDate г.";
         $documentExtension = '.xlsx';
 
         $params = [
             'created_at' => $order->created_at,
+            'number' => $order->id,
+            'ship_city' => $order->ship_city_name ?? $order->ship_city->name,
+            'dest_city' => $order->dest_city_name ?? $order->dest_city->name,
+        ];
+
+        foreach ($order->order_items as $key => $item){
+            $blocks['items'][$key]['quantity'] = $item->quantity;
+            $blocks['items'][$key]['weight'] = $item->weight;
+            $blocks['items'][$key]['volume'] = $item->volume;
+            $blocks['items'][$key]['price'] = 312;
+            $blocks['items'][$key]['name'] = 'efsd';
+        }
+        foreach ($order->order_items as $key => $item){
+            $blocks['items'][$key+2]['quantity'] = $item->quantity;
+            $blocks['items'][$key+2]['weight'] = $item->weight;
+            $blocks['items'][$key+2]['volume'] = $item->volume;
+            $blocks['items'][$key+2]['price'] = 123;
+            $blocks['items'][$key+2]['name'] = 'asdads';
+        }
+
+//        dd($blocks);
+        $tempFile = DocumentHelper::generateDocument($path, $documentExtension, $params, $blocks);
+
+        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
+    }
+
+    public function actionDownloadDocumentTransfer(Request $request){
+        Date::setLocale('ru');
+        $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
+
+        $orderDate = Date::now()->format('d F Y');
+        $path = public_path('templates\\TransferTemplate.xlsx');
+        $documentName = "УПД (статус 1) №$order->id от $orderDate г.";
+        $documentExtension = '.xlsx';
+
+        $params = [
+            'formatted_date' => $orderDate . ' г.',
             'number' => $order->id,
         ];
 

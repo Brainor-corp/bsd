@@ -5,8 +5,7 @@ namespace App\Http\Helpers;
 use Illuminate\Support\Facades\File;
 
 class DocumentHelper {
-    public static function generateDocument($templatePath, $documentExtension, Array $parameters){
-
+    public static function generateDocument($templatePath, $documentExtension, Array $parameters, Array $blocks = null){
         $TBS = new \clsTinyButStrong();
         $TBS->Plugin(TBS_INSTALL, \clsOpenTBS::class);
 
@@ -17,6 +16,12 @@ class DocumentHelper {
 
         foreach ($parameters as $name => $value){
             $TBS->MergeField($name, $value);
+        }
+
+        if(isset($blocks)){
+            foreach ($blocks as $blockName => $blockValues){
+                $TBS->MergeBlock($blockName, $blockValues);
+            }
         }
 
         $name = md5('docs bsd' . time()) . $documentExtension;
