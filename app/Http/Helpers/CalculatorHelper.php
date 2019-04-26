@@ -287,7 +287,7 @@ class CalculatorHelper
         return $resultData;
     }
 
-    public static function getTariffPrice($cityName, $weight, $volume, $isWithinTheCity, $x2, $distance) {
+    public static function getTariffPrice($cityName, $weight, $volume, $isWithinTheCity, $x2, $distance = null) {
         $price = 0;
 
         // Изначально пытаемся получить город

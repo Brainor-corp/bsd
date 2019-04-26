@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\City;
 use App\Http\Helpers\CalculatorHelper;
 use App\Http\Helpers\EventHelper;
-use App\Http\Helpers\YandexHelper;
 use App\Order;
 use App\OrderItem;
 use App\Route;
@@ -97,19 +96,25 @@ class OrderController extends Controller
 
             // Если забор груза за пределами города
             if($request->get('need-to-take-type') === "from") {
-                $pointFrom = $shipCity->terminal->geo_point ?? YandexHelper::getCoordinates($shipCity->name);
-                $pointTo = YandexHelper::getCoordinates($request->get('ship_point'));
-                $takeDistance = YandexHelper::getDistance($pointFrom, $pointTo);
+//                $pointFrom = $shipCity->terminal->geo_point ?? YandexHelper::getCoordinates($shipCity->name);
+//                $pointTo = YandexHelper::getCoordinates($request->get('ship_point'));
+//                $takeDistance = YandexHelper::getDistance($pointFrom, $pointTo);
 
+                $takeDistance = floatval($request->get('take_distance'));
                 if(!$takeDistance) {
                     return abort(500, 'Не удалось определить дистанцию для забора груза');
                 }
 
+                $take_city_name = strpos( // Проверяем, чтобы название города содержалось в адресе
+                    $request->get('ship_point'),
+                    $request->get('take_city_name')
+                ) ? $request->get('take_city_name') : null;
+
                 $takePrice = CalculatorHelper::getTariffPrice(
-                    $shipCity->name,
+                    $take_city_name,
                     $totalWeight,
                     $totalVolume,
-                    $request->get('need-to-take-type') === "in",
+                    false,
                     $request->get('ship-from-point') === "on",
                     $takeDistance
                 );
@@ -119,16 +124,23 @@ class OrderController extends Controller
                 }
                 $takePrice = $takePrice['price'];
 
-                $take_city_name = strpos( // Проверяем, чтобы название города содержалось в адресе
-                    $request->get('ship_point'),
-                    $request->get('take_city_name')
-                ) ? $request->get('take_city_name') : null;
-
                 $order->take_address = $request->get('ship_point'); // Адрес забора
                 $order->take_city_name = $take_city_name; // Город забора
                 $order->take_distance = $takeDistance; // Дистанция от города отправки до адреса забора
-                $order->take_price = $takePrice; // Цена забора
+            } else { // Если забор в пределах города
+                $takePrice = CalculatorHelper::getTariffPrice(
+                    $shipCity->name,
+                    $totalWeight,
+                    $totalVolume,
+                    true,
+                    $request->get('ship-from-point') === "on"
+                );
+                $takePrice = $takePrice['price'];
+
+                $order->take_city_name = $shipCity->name; // Город забора
             }
+
+            $order->take_price = $takePrice; // Цена забора
         }
 
         $bringPrice = null;
@@ -139,19 +151,25 @@ class OrderController extends Controller
 
             // Если доставка за пределами города
             if($request->get('need-to-bring-type') === "from") {
-                $pointFrom = ($destCity->terminal->geo_point ?? $destCity->terminal->address) ?? YandexHelper::getCoordinates($destCity->name);
-                $pointTo = YandexHelper::getCoordinates($request->get('dest_point'));
-                $bringDistance = YandexHelper::getDistance($pointFrom, $pointTo);
+//                $pointFrom = ($destCity->terminal->geo_point ?? $destCity->terminal->address) ?? YandexHelper::getCoordinates($destCity->name);
+//                $pointTo = YandexHelper::getCoordinates($request->get('dest_point'));
+//                $bringDistance = YandexHelper::getDistance($pointFrom, $pointTo);
 
+                $bringDistance = floatval($request->get('bring_distance'));
                 if(!$bringDistance) {
                     return abort(500, 'Не удалось определить дистанцию для забора груза');
                 }
 
+                $delivery_city_name = strpos( // Проверяем, чтобы название города содержалось в адресе
+                    $request->get('dest_point'),
+                    $request->get('bring_city_name')
+                ) ? $request->get('bring_city_name') : null;
+
                 $bringPrice = CalculatorHelper::getTariffPrice(
-                    $destCity->name,
+                    $delivery_city_name,
                     $totalWeight,
                     $totalVolume,
-                    $request->get('need-to-bring-type') === "in",
+                    false,
                     $request->get('bring-to-point') === "on",
                     $bringDistance
                 );
@@ -161,16 +179,23 @@ class OrderController extends Controller
                 }
                 $bringPrice = $bringPrice['price'];
 
-                $delivery_city_name = strpos( // Проверяем, чтобы название города содержалось в адресе
-                    $request->get('dest_point'),
-                    $request->get('bring_city_name')
-                ) ? $request->get('bring_city_name') : null;
-
                 $order->delivery_address = $request->get('dest_point'); // Адрес доставки
                 $order->delivery_city_name = $delivery_city_name; // Город доставки
                 $order->delivery_distance = $bringDistance; // Дистанция от города назначения до адреса доставки
-                $order->delivery_price = $bringPrice; // Цена доставки
+            } else { // Если доставка в пределах города
+                $bringPrice = CalculatorHelper::getTariffPrice(
+                    $destCity->name,
+                    $totalWeight,
+                    $totalVolume,
+                    true,
+                    $request->get('bring-to-point') === "on"
+                );
+                $bringPrice = $bringPrice['price'];
+
+                $order->delivery_city_name = $destCity->name; // Город забора
             }
+
+            $order->delivery_price = $bringPrice; // Цена доставки
         }
 
         $tariff = CalculatorHelper::getTariff(

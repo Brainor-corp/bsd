@@ -621,7 +621,8 @@ function calcTariffPrice(city, point, inCity) {
                 ymaps.route([city, fullName])
                     .then(function (route) {
                         console.log('От: ' + city + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
-                        console.log(route);
+                        $(point.closest('.delivery-block')).find('.distance-hidden-input').val(Math.ceil(route.getLength() / 1000));
+
                         getTariffPriceAjax(point, false, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"), Math.ceil(route.getLength() / 1000));
                     });
             // });
