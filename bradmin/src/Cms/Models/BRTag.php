@@ -2,28 +2,10 @@
 
 namespace Bradmin\Cms\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\Sluggable;
 
 class BRTag extends BRTerm
 {
     protected $table = 'b_r_terms';
-
-    use Sluggable;
-
-    /**
-     * Return the sluggable configuration array for this model.
-     *
-     * @return array
-     */
-    public function sluggable()
-    {
-        return [
-            'slug' => [
-                'source' => 'title'
-            ]
-        ];
-    }
 
     /**
      * The attributes that are mass assignable.

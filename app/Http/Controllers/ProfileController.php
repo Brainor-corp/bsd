@@ -239,7 +239,7 @@ class ProfileController extends Controller {
     public function actionDownloadDocumentInvoice(Request $request) {
         $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
 
-        $orderDate = Date::now()->format('d F Y');
+        $orderDate = Date::now()->format('d F Y'); //todo поменять дату с бета-версии на актуальную
         $documentExtension = '.xlsx';
         $templateFile = public_path('templates/InvoiceTemplate.xlsx');
         $documentName = "Счет на оплату №$order->id от $orderDate г.";
