@@ -9,6 +9,24 @@ class NavigationDefault
     {
         $navigation = [
             [
+                'url' => '/'.config('bradmin.admin_url').'/us',
+                'icon' => 'fas fa-users',
+                'text' => 'Пользователи',
+                'noDirect' => true,
+                'nodes' => [
+                    [
+                        'url' => '/bradmin/Users',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Список'
+                    ],
+                    [
+                        'url' => '/bradmin/Roles',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Роли'
+                    ],
+                ]
+            ],
+            [
                 'url' => '/'.config('bradmin.admin_url').'/db',
                 'icon' => 'fas fa-users',
                 'text' => 'Данные таблиц',
@@ -109,11 +127,6 @@ class NavigationDefault
 //                'icon' => 'fas fa-address-book',
 //                'text' => 'Заметки'
 //            ],
-                    [
-                        'url' => '/bradmin/Users',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Пользователи'
-                    ],
                     [
                         'url' => '/bradmin/Services',
                         'icon' => 'fas fa-address-book',
