@@ -60,6 +60,8 @@ class Cities extends Section
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::select('doorstep', 'Доставка до двери')
                     ->setOptions([0=>'Нет', 1=>'Да']),
+                FormField::select('is_popular', 'Показывать в популярных городах')
+                    ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::select('tariff_zone_id', 'Тарифная зона')
                     ->setRequired(true)
                     ->setModelForOptions(Type::class)

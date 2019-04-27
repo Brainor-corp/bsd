@@ -24,6 +24,9 @@ Route::any('/calculator/get-tariff-price', 'CalculatorController@getTariffPrice'
 Route::any('/calculator/get-total-price', 'CalculatorController@getTotalPrice')->name('getTotalPrice');
 //END----CALCULATOR
 
+Route::post('/get-cities-by-term', 'CitiesController@getCitiesByTerm')->name('get-cities-by-name');
+Route::get('/change-city/{city_id?}', 'CitiesController@changeCity')->name('change-city');
+
 Route::get('/upload-xml-cities', 'UploadXmlController@uploadCities')->name('uploadXmlCities');
 Route::get('/upload-xml-thresholds', 'UploadXmlController@uploadThresholds')->name('uploadXmlThresholds');
 Route::get('/upload-xml-routes', 'UploadXmlController@uploadRoutes')->name('uploadXmlRoutes');
