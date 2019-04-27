@@ -3,6 +3,7 @@
 namespace App\Admin\Sections;
 
 use App\Post;
+use App\Role;
 use App\User;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
@@ -60,6 +61,9 @@ class Users extends Section
                 FormField::input('patronomic', 'Отчество')->setRequired(true),
                 FormField::input('email', 'EMail')->setRequired(true),
                 FormField::input('phone', 'Телефон'),
+                FormField::multiselect('roles', 'Роли')
+                    ->setModelForOptions(Role::class)
+                    ->setDisplay('name'),
             ]),
         ]);
 
