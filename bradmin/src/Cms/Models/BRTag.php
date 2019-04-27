@@ -2,10 +2,6 @@
 
 namespace Bradmin\Cms\Models;
 
-use Cviebrock\EloquentSluggable\Services\SlugService;
-use Illuminate\Database\Eloquent\Model;
-use Cviebrock\EloquentSluggable\Sluggable;
-use Kalnoy\Nestedset\NodeTrait;
 
 class BRTag extends BRTerm
 {

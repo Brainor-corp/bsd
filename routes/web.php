@@ -18,6 +18,7 @@ Route::get('/', 'MainPageController@index')->name('index');
 Route::get('/terminals-addresses', 'TerminalsController@showAddresses')->name('terminals-addresses-show');
 Route::get('/promotion-list', 'PromotionsController@showList')->name('promotion-list-show');
 Route::get('/news-list', 'NewsController@showList')->name('news-list-show');
+Route::get('/o-kompanii/documents-and-certificates', 'InnerPagesController@showDocuments')->name('documents-show');
 Route::any('/calculator-show', 'CalculatorController@calculatorShow')->name('calculator-show');
 Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
 

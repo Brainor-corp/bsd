@@ -33,7 +33,7 @@
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ route('promotion-list-show') }}">Акции</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/reklamodatelyam') }}">Рекламодателям</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/adres-terminalov') }}">Адреса терминалов</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/dokumenty-i-sertifikaty') }}">Документы и сертификаты</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ route('documents-show') }}">Документы и сертификаты</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/partnery') }}">Партнеры</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/sotrudniki') }}">Сотрудники</a></li>
                 </ul>

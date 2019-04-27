@@ -33,10 +33,10 @@
                     <td>Размер</td>
                     <td>{{ $file->size }} байт ({{ round($file->size / 1024, 2) }} кб)</td>
                 </tr>
-                <tr>
-                    <td>Путь</td>
-                    <td>{{ $file->path }}</td>
-                </tr>
+{{--                <tr>--}}
+{{--                    <td>Путь</td>--}}
+{{--                    <td>{{ $file->path }}</td>--}}
+{{--                </tr>--}}
                 <tr>
                     <td>Создан</td>
                     <td>{{ $file->created_at }}</td>
