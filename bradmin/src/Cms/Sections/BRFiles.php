@@ -3,6 +3,7 @@
 namespace Bradmin\Cms\Sections;
 
 use Bradmin\Cms\Models\BRFile;
+use Bradmin\Cms\Models\BRTag;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
 use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -88,6 +89,14 @@ class BRFiles extends Section
             "0.01" => FormField::input('title', 'Заголовок'),
             "0.02" => FormField::input('alt', 'Alt (для изображений)'),
             "0.03" => FormField::textarea('description', 'Описание'),
+            '0.04' => FormField::multiselect('tags', 'Метки')
+                ->setModelForOptions(BRTag::class)
+                ->setQueryFunctionForModel(
+                    function ($query) {
+                        return $query->tags();
+                    }
+                )
+                ->setDisplay('title'),
         ];
 
         $brFieldsRight = [
