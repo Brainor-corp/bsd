@@ -1,8 +1,8 @@
 @if(isset($order))
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-12">
             <h3>
-                Список предметов
+                Список габаритов
             </h3>
         </div>
         @if($order->order_items->count())
@@ -13,20 +13,10 @@
                             <div class="col-12">
                                 <div class="row">
                                     <div class="col">
-                                        Название:
-                                    </div>
-                                    <div class="col-5">
-                                        {{ $item->name }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="row">
-                                    <div class="col">
                                         Длина:
                                     </div>
                                     <div class="col-5">
-                                        {{ $item->legth }}
+                                        {{ $item->length }}
                                     </div>
                                 </div>
                             </div>
@@ -60,16 +50,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <div class="row">
-                                    <div class="col">
-                                        Тип:
-                                    </div>
-                                    <div class="col-5">
-                                        {{ $item->type->name }}
-                                    </div>
-                                </div>
-                            </div>
         {{--                    <div class="col-12 mt-1">--}}
         {{--                        <button class="btn btn-link text-danger" id="delete-item" data-item-id="{{ $item->id }}">Удалить</button>--}}
         {{--                    </div>--}}
@@ -79,7 +59,7 @@
             @endforeach
         @else
             <div class="col-12">
-                <h5>Список предметов пуст</h5>
+                <h5>Список габаритов пуст</h5>
             </div>
         @endif
     </div>

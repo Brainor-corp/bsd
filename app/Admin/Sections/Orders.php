@@ -4,26 +4,18 @@ namespace App\Admin\Sections;
 
 use App\City;
 use App\Order;
-use App\Oversize;
-use App\Region;
-use App\Route;
-use App\RouteTariff;
-use App\Threshold;
 use App\Type;
 use App\User;
 use Bradmin\Section;
 use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
 use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Bradmin\SectionBuilder\Display\Table\DisplayTable;
 use Bradmin\SectionBuilder\Form\BaseForm\Form;
 use Bradmin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Bradmin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-//use Illuminate\Support\Facades\Request;
-use Bradmin\SectionBuilder\Meta\Meta;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
+
+//use Illuminate\Support\Facades\Request;
 
 
 class Orders extends Section {
@@ -51,7 +43,12 @@ class Orders extends Section {
     }
 
     public static function onEdit($id) {
-        $order = isset($id) ? Order::whereId($id)->with('order_items.type', 'order_services')->first() : null;
+        $order = isset($id) ? Order::whereId($id)->with([
+            'order_items.type',
+            'order_services' => function ($servicesQuery) {
+                return $servicesQuery->withPivot('price');
+            }
+        ])->first() : null;
 
 //        $meta = new Meta;
 //        $meta->setScripts([
@@ -78,35 +75,38 @@ class Orders extends Section {
                 FormField::select('take_need', 'Нужно забрать')
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::select('take_in_city', 'Забор в городе')
-                ->setModelForOptions(City::class)
+                    ->setModelForOptions(City::class)
                     ->setDisplay('name'),
                 FormField::input('take_address', 'Адрес забора'),
-                FormField::input('take_distance', 'Расстояние забора')->setType('number'),
-                FormField::input('take_point', 'Пункт забора'),
-                FormField::datepicker('take_time', 'Время забора')
-                    ->setTodayBtn(true)
-                    ->setFormat('yyyy-mm-dd hh:ii:ss')
-                    ->setLanguage('ru')
-                    ->setClearBtn(true),
-                FormField::input('take_price', 'Цена забора')->setType('number'),
+                FormField::input('take_distance', 'Расстояние забора (км)')->setType('number'),
+                FormField::select('take_point', 'Точный забор')
+                    ->setOptions([0=>'Нет', 1=>'Да']),
+//                FormField::datepicker('take_time', 'Время забора')
+//                    ->setTodayBtn(true)
+//                    ->setFormat('yyyy-mm-dd hh:ii:ss')
+//                    ->setLanguage('ru')
+//                    ->setClearBtn(true),
+                FormField::input('take_price', 'Цена забора'),
 
                 FormField::select('delivery_need', 'Нужно доставить')
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::select('delivery_in_city', 'Доставка в город')
-                ->setModelForOptions(City::class)
+                    ->setModelForOptions(City::class)
                     ->setDisplay('name'),
                 FormField::input('delivery_address', 'Адрес доставки'),
-                FormField::input('delivery_distance', 'Расстояние доставки')->setType('number'),
-                FormField::input('delivery_point', 'Пункт доставки'),
-                FormField::datepicker('delivery_time', 'Время доставки')
-                    ->setTodayBtn(true)
-                    ->setFormat('yyyy-mm-dd hh:ii:ss')
-                    ->setLanguage('ru')
-                    ->setClearBtn(true),
-                FormField::input('delivery_price', 'Цена доствки')->setType('number'),
-                FormField::input('delivered_in', 'Доставлено')->setType('number'),
-
-                FormField::input('total_price', 'Сумма')->setType('number'),
+                FormField::input('delivery_distance', 'Расстояние доставки (км)')->setType('number'),
+                FormField::select('delivery_point', 'Точная доставка')
+                    ->setOptions([0=>'Нет', 1=>'Да']),
+//                FormField::datepicker('delivery_time', 'Время доставки')
+//                    ->setTodayBtn(true)
+//                    ->setFormat('yyyy-mm-dd hh:ii:ss')
+//                    ->setLanguage('ru')
+//                    ->setClearBtn(true),
+                FormField::input('delivery_price', 'Цена доствки'),
+//                FormField::input('delivered_in', 'Доставлено')->setType('number'),
+            ], 'col-lg-6 col-12'),
+            FormColumn::column([
+                FormField::input('total_price', 'Сумма'),
 
                 FormField::select('sender_id', 'Отправитель(зарегестрированный)')
                     ->setModelForOptions(User::class)
@@ -145,9 +145,6 @@ class Orders extends Section {
                     })
                     ->setDisplay('full_name'),
 
-                FormField::custom(View::make('admin.orders.order-items')->with(compact('order'))->render()),
-                FormField::custom(View::make('admin.orders.order-services')->with(compact('order'))->render()),
-
                 FormField::datepicker('order_date', 'Дата заказа')
                     ->setTodayBtn(true)
                     ->setFormat('yyyy-mm-dd hh:ii:ss')
@@ -158,7 +155,11 @@ class Orders extends Section {
                     ->setFormat('yyyy-mm-dd hh:ii:ss')
                     ->setLanguage('ru')
                     ->setClearBtn(true),
-            ])
+            ], 'col-lg-6 col-12'),
+            FormColumn::column([
+                FormField::custom(View::make('admin.orders.order-items')->with(compact('order'))->render()),
+                FormField::custom(View::make('admin.orders.order-services')->with(compact('order'))->render()),
+            ], 'col-12')
         ]);
 
         return $form;

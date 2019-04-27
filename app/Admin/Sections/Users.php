@@ -10,7 +10,6 @@ use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
 use Bradmin\SectionBuilder\Form\BaseForm\Form;
 use Bradmin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Bradmin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -23,8 +22,7 @@ class Users extends Section
             Column::text('id', '#'),
             Column::text('name', 'Имя'),
             Column::text('email', 'EMail'),
-            Column::text('tel', 'Телефон'),
-            Column::text('contact_email', 'Контактная почта'),
+            Column::text('phone', 'Телефон'),
         ])->setPagination(10);
 
         return $display;
@@ -35,16 +33,12 @@ class Users extends Section
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('name', 'Имя')->setRequired(true),
-                FormField::input('last', 'Фамилия')->setRequired(true),
-                FormField::input('middle', 'Отчество')->setRequired(true),
-                FormField::input('company', 'Компания')->setRequired(true),
-                FormField::input('position', 'Должность')->setRequired(true),
+                FormField::input('surname', 'Фамилия'),
+                FormField::input('patronomic', 'Отчество'),
                 FormField::hidden('verified')->setValue(0),
                 FormField::input('email', 'EMail')->setRequired(true)
                     ->setType('email'),
-                FormField::input('contact_email', 'Контактная почта')->setRequired(true)
-                    ->setType('email'),
-                FormField::input('tel', 'Телефон')->setRequired(true),
+                FormField::input('phone', 'Телефон'),
                 FormField::input('password', 'Пароль')
                     ->setRequired(true)
                     ->setType('password'),
@@ -62,14 +56,10 @@ class Users extends Section
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('name', 'Имя')->setRequired(true),
-                FormField::input('last', 'Фамилия')->setRequired(true),
-                FormField::input('middle', 'Отчество')->setRequired(true),
-                FormField::input('company', 'Компания')->setRequired(true),
-                FormField::input('position', 'Должность')->setRequired(true),
+                FormField::input('surname', 'Фамилия')->setRequired(true),
+                FormField::input('patronomic', 'Отчество')->setRequired(true),
                 FormField::input('email', 'EMail')->setRequired(true),
-                FormField::input('contact_email', 'Контактная почта')->setRequired(true)
-                    ->setType('email'),
-                FormField::input('tel', 'Телефон')->setRequired(true),
+                FormField::input('phone', 'Телефон'),
             ]),
         ]);
 
