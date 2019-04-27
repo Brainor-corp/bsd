@@ -1,5 +1,5 @@
 @if(isset($order))
-    <div class="row">
+    <div class="row mt-4">
         <div class="col-12">
             <h3>
                 Список услуг
@@ -20,23 +20,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 my-2">
-                                <div class="row">
-                                    <div class="col">
-                                        Описание:
-                                    </div>
-                                    <div class="col-12">
-                                        {{ $service->description }}
-                                    </div>
-                                </div>
-                            </div>
                             <div class="col-12">
                                 <div class="row">
                                     <div class="col">
                                         Цена:
                                     </div>
                                     <div class="col-3">
-                                        {{ $service->price }}
+                                        {{ $service->pivot->price }}
                                     </div>
                                 </div>
                             </div>
