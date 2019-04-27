@@ -11,13 +11,13 @@ class Promotion extends Model
         'title', 'text', 'start_at', 'end_at', 'amount'
     ];
 
-    public function getCStartAtAttribute($date)
+    public function getCStartAtAttribute()
     {
-        return Carbon::parse($date);
+        return Carbon::parse($this->start_at);
     }
 
-    public function getCEndAtAttribute($date)
+    public function getCEndAtAttribute()
     {
-        return Carbon::parse($date);
+        return Carbon::parse($this->end_at);
     }
 }

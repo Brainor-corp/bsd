@@ -2,7 +2,6 @@
 
 namespace App\Admin\Sections;
 
-use App\Post;
 use App\Role;
 use App\User;
 use Bradmin\Section;
