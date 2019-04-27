@@ -39,3 +39,11 @@
     border: none;
 }
 /* КОНЕЦ --- Калькулятор*/
+
+.link-with-dotted {
+    color: #ef402f;
+}
+.link-with-dotted:hover {
+    text-decoration: none;
+    cursor: pointer;
+}

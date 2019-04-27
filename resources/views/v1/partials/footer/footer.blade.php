@@ -17,7 +17,7 @@
                 <div class="footer_title">Клиентам</div>
                 <ul class="m-0">
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/faq') }}">FAQ</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/otzyvy') }}">Отзывы</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ route('reviews') }}">Отзывы</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/dokumenty-i-sertifikaty') }}">Документы</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/dopolnitelnye-uslugi') }}">Дополнительные услуги</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/prays-list') }}">Прайс лист</a></li>
