@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class City extends Model
 {
     protected $fillable = [
-        'name', 'is_ship', 'is_filial', 'doorstep', 'tariff_zone_id', 'threshold_group_id', 'message'
+        'name', 'is_ship', 'is_filial', 'is_popular', 'doorstep', 'tariff_zone_id', 'threshold_group_id', 'message'
     ];
 
     use Sluggable;
@@ -26,10 +26,10 @@ class City extends Model
         return $this->hasMany(Route::class, 'ship_city_id','id');
     }
 
-    public function destinationCityRoutes()
-    {
-        return $this->hasMany(City::class, 'dest_city_id','id');
-    }
+//    public function destinationCityRoutes()
+//    {
+//        return $this->hasMany(City::class, 'dest_city_id','id');
+//    }
 
     public function thresholdGroup(){
         return $this->hasOne(Type::class, 'id', 'threshold_group_id');

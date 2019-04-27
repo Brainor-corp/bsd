@@ -11,17 +11,20 @@
                 <div class="row">
                     <div class="col-sm-7">
                         <div class="relative">
-                            <input type="text" class="form-control" placeholder="Введите название города"/>
+                            <input type="text" class="form-control city-search" id="changeCityGlobal" data-redirect="{{ route('change-city') }}" placeholder="Введите название города"/>
                             <i class="fa fa-search fa-icon"></i>
                         </div>
                     </div>
                     <div class="col-sm-5">
                         <div class="styles-list__title">Популярные города:</div>
                         <ul class="styles-list">
-                            <li>Москва</li>
-                            <li>Санкт-Петербург</li>
-                            <li>Екатеринбург</li>
-                            <li>Краснодар</li>
+                            @foreach($popularCities as $popularCity)
+                                <li>
+                                    <a href="{{ route('change-city', ['city_id' => $popularCity->id]) }}" class="text-dark">
+                                        {{ $popularCity->name }}
+                                    </a>
+                                </li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>

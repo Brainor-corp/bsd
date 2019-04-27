@@ -11,7 +11,7 @@
                            href="#"
                            role="button"
                            data-toggle="modal"
-                           data-target="#selection-city">Санкт Петербург</a>
+                           data-target="#selection-city">{{ $city->name }}</a>
                     </div>
                     <div class="phones d-flex flex-column flex-md-row justify-content-center">
                         <a href="tel:8 (812) 644-67-77">8 (812) 644-67-77</a>

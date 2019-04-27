@@ -14,6 +14,8 @@ class ViewComposerServiceProvider extends ServiceProvider {
 
     public function boot() {
         view()->composer("v1.partials.header.header-top", "App\Http\ViewComposers\EventsCounterViewComposer");
+        view()->composer("v1.partials.header.header-top", "App\Http\ViewComposers\CurrentCityViewComposer");
+        view()->composer("v1.partials.footer.modalSelectionCity", "App\Http\ViewComposers\PopularCitiesViewComposer");
     }
 
 }
