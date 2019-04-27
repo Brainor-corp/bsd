@@ -15,6 +15,11 @@ class NavigationDefault
                 'noDirect' => true,
                 'nodes' => [
                     [
+                        'url' => '/bradmin/Promotions',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Акции'
+                    ],
+                    [
                         'url' => '/bradmin/Types',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Типы'
