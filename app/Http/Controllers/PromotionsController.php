@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Promotion;
 
 class PromotionsController extends Controller
 {
     public function showList() {
-        return view('v1.pages.promotions.list.list');
+        $promotions = Promotion::all();
+
+        return view('v1.pages.promotions.list.list')->with(compact('promotions'));
     }
 }
