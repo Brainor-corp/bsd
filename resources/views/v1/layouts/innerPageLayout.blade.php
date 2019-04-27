@@ -6,6 +6,7 @@
     @include('v1.partials.header.meta')
 
     @include('v1.partials.header.style')
+    @yield('headStyles')
 
     @include('v1.partials.header.script')
 
