@@ -59,6 +59,10 @@ return [
             'driver' => 'local',
             'root' => public_path('importFiles'),
         ],
+        'available_public' => [
+            'driver' => 'local',
+            'root' => public_path(''),
+        ],
 
         's3' => [
             'driver' => 's3',
