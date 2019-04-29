@@ -752,4 +752,78 @@ class UploadXmlController  extends Controller
             }
         }
     }
+
+    public function uploadTerminals(Request $request) {
+        $files = Storage::disk('import')->files();
+
+        $nowTimestamp = Carbon::now()->format('Y.m.d H:i:s');
+
+        foreach ($files as $fileKey=>$file)//перебираем все файлы
+        {
+            if ((preg_match("|.xml$|", $file)) OR (preg_match("|.XML$|", $file))) {//если это XML
+
+                $dom = new \DOMDocument();
+                $dom->loadXML(Storage::disk('import')->get($file));
+                $xml = simplexml_import_dom($dom);
+                $rowData = [];
+
+                foreach ($xml->database->table as $rowKey=>$row) {
+
+                    foreach ($row->column as $column) {
+                        switch ($column->attributes()->name) {
+                            case 'terminal_id':
+                                $id = (string)$column;
+                                $rowData[$id]['id'] = (string)$column;
+                                break;
+                            case 'name':
+                                $rowData[$id]['name'] = (string)$column;
+                                break;
+                            case 'region_code':
+                                $currentId = (string)$column;
+                                if($currentId == 'NULL'){
+                                    $rowData[$id]['region_code'] = null;
+                                }else{
+                                    $routeID = DB::table('regions')->where('code',$currentId)->first();
+                                    if($routeID){
+                                        $rowData[$id]['region_code'] = $routeID->code;
+                                    }else{
+                                        $rowData[$id]['region_code'] = null;
+                                    }
+                                }
+                                break;
+                            case 'city_id':
+                                $currentId = (string)$column;
+                                if($currentId == 'NULL'){
+                                    $rowData[$id]['city_id'] = null;
+                                }else{
+                                    $routeID = DB::table('cities')->where('old_id',$currentId)->first();
+                                    $rowData[$id]['city_id'] = $routeID->id;
+                                }
+                                break;
+                            case 'address':
+                                $rowData[$id]['address'] = (string)$column;
+                                break;
+                            case 'phone':
+                                $rowData[$id]['phone'] = (string)$column;
+                                break;
+                            case 'geo_point':
+                                $rowData[$id]['geo_point'] = $column;
+                                break;
+                        }
+                    }
+                    DB::table('terminals')->insert([
+                        'old_id' => $rowData[$id]['id'],
+                        'name' => $rowData[$id]['name'],
+                        'region_code' => $rowData[$id]['region_code'],
+                        'city_id' => $rowData[$id]['city_id'],
+                        'address' => $rowData[$id]['address'],
+                        'phone' => $rowData[$id]['phone'],
+//                        'geo_point' => $rowData[$id]['geo_point'],
+                        'created_at' => $nowTimestamp,
+                        'updated_at' => $nowTimestamp,
+                    ]);
+                }
+            }
+        }
+    }
 }
