@@ -37,3 +37,4 @@ Route::get('/upload-xml-inside-forwarding', 'UploadXmlController@uploadInsideFor
 Route::get('/upload-xml-outside-forwarding', 'UploadXmlController@uploadOutsideForwarding')->name('uploadOutsideForwarding');
 Route::get('/upload-xml-regions', 'UploadXmlController@uploadRegions')->name('uploadRegions');
 Route::get('/upload-xml-points', 'UploadXmlController@uploadPoints')->name('uploadPoints');
+Route::get('/upload-xml-terminals', 'UploadXmlController@uploadTerminals')->name('uploadTerminals');
