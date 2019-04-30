@@ -36,6 +36,12 @@ class NewsController extends Controller {
         return view('v1.pages.news.list.list')->with(compact('posts', 'cityTags', 'newsTerms', 'request'));
     }
 
+    public function showSingleNews($id){
+        $post = BRPost::findOrFail($id);//todo finish
+        dd($post);
+        return View::make('v1.')->with(compact('post'));
+    }
+
     public function filterAction(Request $request) {
         $args = [
             'term' => ['novosti'],
