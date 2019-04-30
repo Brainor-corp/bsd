@@ -18,7 +18,8 @@
         "laravel/tinker": "^1.0",
         "phpoffice/phpspreadsheet": "^1.6",
         "tinybutstrong/opentbs": "^1.9",
-        "tinybutstrong/tinybutstrong": "^3.11"
+        "tinybutstrong/tinybutstrong": "^3.11",
+      "ext-json": "*"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

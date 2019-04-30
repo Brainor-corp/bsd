@@ -23,7 +23,7 @@ class NewsController extends Controller
                     },
                     'tags',
                 ]
-            )->paginate(5);
+            )->paginate(1);
 
         $cityRootTag = BRTag::where([['type', 'tag'], ['slug', 'gorod']])->first();
         $cityTags = BRTag::whereDescendantOf($cityRootTag)->get();
@@ -32,5 +32,9 @@ class NewsController extends Controller
         $newsTerms = BRTerm::whereDescendantOf($newsRootTerm)->get();
 
         return view('v1.pages.news.list.list')->with(compact('posts', 'cityTags', 'newsTerms'));
+    }
+
+    public function filterAction(Request $request){
+        return $request->all();
     }
 }
