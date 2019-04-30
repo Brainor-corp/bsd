@@ -18,6 +18,7 @@ Route::get('/', 'MainPageController@index')->name('index');
 Route::get('/terminals-addresses', 'TerminalsController@showAddresses')->name('terminals-addresses-show');
 Route::get('/promotion-list', 'PromotionsController@showList')->name('promotion-list-show');
 Route::get('/news-list', 'NewsController@showList')->name('news-list-show');
+Route::post('/news-filter', 'NewsController@filterAction')->name('news-filter');
 Route::get('/o-kompanii/documents-and-certificates', 'DocumentsController@showDocuments')->name('documents-show');
 Route::get('/klientam/reviews', 'ReviewsController@showReviews')->name('reviews');
 Route::post('/save-review', 'ReviewsController@saveReview')->name('save-review');
