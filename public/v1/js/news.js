@@ -1,5 +1,49 @@
 $(document).ready(function () {
+    init();
 
+    $(document).on('click', '.delete-tag', function (e) {
+        e.preventDefault();
+        $(this).parent().remove();
+        let type = $(this).data('type');
+
+        if (type === 'date_select') {
+            $('input[name="daterange"]').val('');
+        } else {
+            let valuesArray = [];
+            $.each($('#tag-label-wrapper').find('[data-type=' + type + ']'), function () {
+                valuesArray.push($(this).data('value'));
+            });
+
+            $("#" + type).selectpicker('val', valuesArray);
+        }
+        sendForm();
+    });
+
+});
+
+function sendForm() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'post',
+        url: '/news-filter',
+        data: $('#filter-form').serialize(),
+        cache: false,
+        success: function (data) {
+            $('#filter-wrapper').html(data);
+            init();
+        },
+        error: function (data) {
+            // console.log(data);
+        }
+    });
+
+}
+
+function init() {
     const dateRange = $('input[name="daterange"]');
 
     dateRange.daterangepicker({
@@ -39,93 +83,34 @@ $(document).ready(function () {
         },
         opens: 'left',
         autoUpdateInput: false,
+        autoApply: true,
     }, function (start, end, label) {
     });
-    dateRange.val('');
 
     dateRange.on("apply.daterangepicker", function (e, picker) {
         picker.element.val(picker.startDate.format(picker.locale.format) + ' - ' + picker.endDate.format(picker.locale.format));
         sendForm();
     });
+
     dateRange.on('cancel.daterangepicker', function (ev, picker) {
         $(this).val('');
     });
 
-    $('select').selectpicker();
+    $('#category_select').selectpicker();
+    $('#city_select').selectpicker();
 
-    $('#category_select').change(function () {
-        sendForm();
-
-    });
-    $('#city_select').change(function () {
-        sendForm();
-    });
-
-    $(document).on('click', '.delete-tag', function (e) {
-        e.preventDefault();
-        $(this).parent().remove();
-        let type = $(this).data('type');
-
-        if (type == 'date_select') {
-            dateRange.val('');
-        } else {
-            let valuesArray = [];
-            $.each($('#tag-label-wrapper').find('[data-type=' + type + ']'), function () {
-                valuesArray.push($(this).data('value'));
-            });
-
-            $("#" + type).selectpicker('val', valuesArray);
+    $('#category_select').on('hidden.bs.select', function (e) {
+        if ($(this).val() != $(this).data('value')) {
+            sendForm();
         }
+        $(this).data('value', $(this).val());
     });
 
-});
-
-function sendForm() {
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    $('#city_select').on('hidden.bs.select', function (e) {
+        if ($(this).val() != $(this).data('value')) {
+            sendForm();
         }
-    });
-    $.ajax({
-        type: 'post',
-        url: '/news-filter',
-        data: $('#filter-form').serialize(),
-        cache: false,
-        success: function (data) {
-            console.table(data);
-            reDraw();
-        },
+        $(this).data('value', $(this).val());
     });
 
-}
-
-function deleteTags() {
-    $.each($('.delete-tag'), function () {
-        $(this).parent().remove();
-    });
-}
-
-function reDraw() {
-    deleteTags();
-
-    if ($('input[name="daterange"]').val()) {
-        let datepicker = $('input[name="daterange"]').data('daterangepicker');
-        let text = 'С ' + datepicker.startDate.format('DD.MM.YYYY') + ' по ' + datepicker.endDate.format('DD.MM.YYYY');
-        addTag('date_select', 0, text);
-    }
-
-    $.each($('#category_select').val(), function () {
-        addTag('category_select', this, $('#category_select').find('option[value=' + this + ']').text());
-    });
-    $.each($('#city_select').val(), function () {
-        addTag('city_select', this, $('#city_select').find('option[value=' + this + ']').text());
-    });
-}
-
-function addTag(type, value, text) {
-    $('#tag-label-wrapper').append('' +
-        '<div class="selected-item d-flex align-items-center margin-item">\n' +
-        '   <span class="selected-item__name">' + text + '</span>\n' +
-        '   <a data-type="' + type + '" data-value="' + value + '" class="delete-tag" href="#"><i class="fa fa-close"></i></a>\n' +
-        '</div>');
 }
