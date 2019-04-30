@@ -11,7 +11,7 @@ class DocumentHelper {
 
         $TBS->LoadTemplate($templatePath);
 
-        $TBS->SetOption('charset', false);
+        $TBS->SetOption('charset', true);
         $TBS->SetOption('render', TBS_OUTPUT);
 
         foreach ($parameters as $name => $value){

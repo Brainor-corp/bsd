@@ -65,7 +65,7 @@
                                     <div class="col">
                                         <select required name="city" type="text" class="form-control">
                                             @foreach($cities as $city)
-                                                <option @if(old('city') === $city->id || (isset($_COOKIE['current_city']) ? $_COOKIE['current_city'] : '' === $city->id)) selected @endif value="{{ $city->id }}">{{ $city->name }}</option>
+                                                <option @if(old('city') == $city->id) selected @elseif(isset($_COOKIE['current_city']) && $_COOKIE['current_city'] == $city->id) selected @endif value="{{ $city->id }}">{{ $city->name }}</option>
                                             @endforeach
                                         </select>
                                         @foreach ($errors->get('city') as $message)
