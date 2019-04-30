@@ -117,7 +117,7 @@ class ProfileController extends Controller {
         return View::make('v1.partials.profile.order-search-select')->with(compact('types'))->render();
     }
 
-    public function showReportPage($id){
+    public function showReportPage($id) {
         $order = Order::where('user_id', Auth::user()->id)
             ->where('id', $id)
             ->with([
@@ -239,7 +239,7 @@ class ProfileController extends Controller {
     public function actionDownloadDocumentInvoice(Request $request) {
         $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
 
-        $orderDate = Date::now()->format('d F Y'); //todo поменять дату с бета-версии на актуальную
+        $orderDate = Date::parse($order->created_at)->format('d F Y');
         $documentExtension = '.xlsx';
         $templateFile = public_path('templates/InvoiceTemplate.xlsx');
         $documentName = "Счет на оплату №$order->id от $orderDate г.";
@@ -249,7 +249,7 @@ class ProfileController extends Controller {
             '{order_date}' => $order->created_at->format('d.m.Y h:i:s'),
         ];
 
-        $params['[service_number]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, range(3, $order->order_services->count()+2));
+        $params['[service_number]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, range(3, $order->order_services->count() + 2));
         $params['[service_name]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_services->pluck('name')->toArray());
         $params['[service_quantity]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_services->pluck('quantity')->toArray());
         $params['[service_point]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_services->pluck('point')->toArray());
@@ -306,7 +306,7 @@ class ProfileController extends Controller {
     public function actionDownloadDocumentReceipt(Request $request) {
         $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
 
-        $orderDate = Date::now()->format('d F Y');
+        $orderDate = Date::parse($order->created_at)->format('d F Y');
         $documentName = "Экспедиторская расписка №$order->id от $orderDate г.";
         $documentExtension = '.xlsx';
 
@@ -338,7 +338,7 @@ class ProfileController extends Controller {
     public function actionDownloadDocumentTransfer(Request $request) {
         $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
 
-        $orderDate = Date::now()->format('d F Y');
+        $orderDate = Date::parse($order->created_at)->format('d F Y');
         $templateFile = public_path('templates/TransferTemplate.xlsx');
 
         $documentName = "УПД (статус 1) №$order->id от $orderDate г.";

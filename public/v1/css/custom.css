@@ -47,3 +47,13 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+#news-page__filter-block .dropdown-toggle::after{
+    content: unset;
+}
+#news-page__filter-block .inner{
+    width: unset;
+}
+#news-page__filter-block .dropdown-menu{
+    top: 0!important;
+}
