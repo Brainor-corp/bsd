@@ -117,6 +117,11 @@ class NavigationDefault
                         'icon' => 'fas fa-address-book',
                         'text' => 'Отзывы'
                     ],
+                    [
+                        'url' => '/bradmin/Supports',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Обращения'
+                    ],
 //            [
 //                'url' => '/bradmin/Comments',
 //                'icon' => 'fas fa-address-book',
