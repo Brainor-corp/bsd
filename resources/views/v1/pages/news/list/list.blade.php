@@ -85,8 +85,8 @@
                                 @endif
                             </div>
                             <div class="news__block">
-                                @foreach($posts as $post)
-                                    <div class="news__item d-flex flex-column">
+                                @forelse($posts as $post)
+                                    <a href="{{ route('news-single-show', ['id' => $post->id]) }}" class="news__item d-flex flex-column">
                                         <div>
                                             <span class="news__title">{{ $post->title }}</span>
                                         </div>
@@ -99,8 +99,10 @@
                                                 @endforeach
                                             </span>
                                         </span>
-                                    </div>
-                                @endforeach
+                                    </a>
+                                @empty
+                                    <span>Записи отсутствуют</span>
+                                @endforelse
                                 {{ $posts->appends($request->input())->links('v1.partials.pagination.pagination') }}
                             </div>
                         </div>
