@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\City;
 use App\Http\Helpers\CalculatorHelper;
 use App\Http\Helpers\EventHelper;
+use App\Mail\OrderCreated;
+use App\ContactEmail;
 use App\Order;
 use App\OrderItem;
 use App\Route;
@@ -13,6 +15,7 @@ use App\Type;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 
 class OrderController extends Controller
@@ -267,6 +270,11 @@ class OrderController extends Controller
                 true,
                 route('report-show', ['id' => $order->id], $absolute = false)
             );
+
+            ContactEmail::where('active', true)->pluck('email')->each(function ($email) use ($order) {
+                Mail::to($email)->send(new OrderCreated($order));
+            });
+
         }
 
         return Auth::check() ? redirect(route('report-show', ['id' => $order->id])) : redirect()->back();
