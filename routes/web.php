@@ -17,6 +17,7 @@ Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/', 'MainPageController@index')->name('index');
 Route::get('/terminals-addresses', 'TerminalsController@showAddresses')->name('terminals-addresses-show');
 Route::get('/promotion-list', 'PromotionsController@showList')->name('promotion-list-show');
+Route::get('/promotion/{id}', 'PromotionsController@showSinglePromotion')->name('promotion-single-show');
 Route::get('/news-list', 'NewsController@showList')->name('news-list-show');
 Route::get('/news/{id}', 'NewsController@showSingleNews')->name('news-single-show');
 Route::post('/news-filter', 'NewsController@filterAction')->name('news-filter');
