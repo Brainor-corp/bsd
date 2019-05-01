@@ -1,6 +1,5 @@
 @extends('v1.layouts.innerPageLayout')
 
-
 @section('content')
     <div class="breadcrumb__list d-flex">
         <div class="container">

@@ -97,6 +97,11 @@ class Orders extends Section {
                 FormField::input('delivery_distance', 'Расстояние доставки (км)')->setType('number'),
                 FormField::select('delivery_point', 'Точная доставка')
                     ->setOptions([0=>'Нет', 1=>'Да']),
+                FormField::datepicker('estimated_delivery_date', 'Плановая дата доставки') //todo убрать время из календарика
+                    ->setTodayBtn(true)
+                    ->setFormat('yyyy-mm-dd')
+                    ->setLanguage('ru')
+                    ->setClearBtn(true),
 //                FormField::datepicker('delivery_time', 'Время доставки')
 //                    ->setTodayBtn(true)
 //                    ->setFormat('yyyy-mm-dd hh:ii:ss')
@@ -131,7 +136,7 @@ class Orders extends Section {
                 FormField::select('manager_id', 'Менеджер')
                     ->setModelForOptions(User::class)
                     ->setQueryFunctionForModel(function ($user){
-                        return $user->whereHas('role', function ($role){
+                        return $user->whereHas('roles', function ($role){
                             return $role->where('slug', 'menedzher');// todo нормальные слаги ролей
                         });
                     })
@@ -139,7 +144,7 @@ class Orders extends Section {
                 FormField::select('operator_id', 'Оператор')
                     ->setModelForOptions(User::class)
                     ->setQueryFunctionForModel(function ($user){
-                        return $user->whereHas('role', function ($role){
+                        return $user->whereHas('roles', function ($role){
                             return $role->where('slug', 'operator');// todo нормальные слаги ролей
                         });
                     })
