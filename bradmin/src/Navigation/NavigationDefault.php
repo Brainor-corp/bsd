@@ -122,6 +122,11 @@ class NavigationDefault
                         'icon' => 'fas fa-address-book',
                         'text' => 'Обращения'
                     ],
+                    [
+                        'url' => '/bradmin/ContactEmails',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Имейлы'
+                    ],
 //            [
 //                'url' => '/bradmin/Comments',
 //                'icon' => 'fas fa-address-book',
