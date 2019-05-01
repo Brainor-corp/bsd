@@ -26,6 +26,8 @@ Route::get('/klientam/reviews', 'ReviewsController@showReviews')->name('reviews'
 Route::post('/save-review', 'ReviewsController@saveReview')->name('save-review');
 Route::any('/calculator-show', 'CalculatorController@calculatorShow')->name('calculator-show');
 Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
+Route::get('/partners', 'PartnersController@showPartnersPage')->name('partners-page');
+Route::post('/partners-action', 'PartnersController@sendPartnersFeedback')->name('partners-page-action');
 
 
 Route::post('/order-save', 'OrderController@orderSave')->name('order-save-action');

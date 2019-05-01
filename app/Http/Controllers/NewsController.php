@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\View;
 class NewsController extends Controller {
     public function showList(Request $request) {
         $args = [
-            'term' => ['novosti'],
+            'category' => ['novosti'],
             'type' => 'post',
         ];
         $posts = CMSHelper::getQueryBuilder($args)
@@ -55,7 +55,7 @@ class NewsController extends Controller {
 
     public function showSingleNews($id){
         $args = [
-            'term' => ['novosti'],
+            'category' => ['novosti'],
             'type' => 'post',
         ];
         $post = CMSHelper::getQueryBuilder($args)
@@ -76,7 +76,7 @@ class NewsController extends Controller {
 
     public function filterAction(Request $request) {
         $args = [
-            'term' => ['novosti'],
+            'category' => ['novosti'],
             'type' => 'post',
         ];
 
