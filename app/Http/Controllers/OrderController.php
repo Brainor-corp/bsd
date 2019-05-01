@@ -13,6 +13,7 @@ use App\Type;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 class OrderController extends Controller
 {
@@ -233,6 +234,7 @@ class OrderController extends Controller
         $order->ship_city_id = $shipCity->id;
         $order->ship_city_name = $shipCity->name;
         $order->dest_city_id = $destCity->id;
+        $order->estimated_delivery_date = Carbon::now()->addDays($route->delivery_time)->toDateString();
         $order->dest_city_name = $destCity->name;
         $order->take_need = $request->get('need-to-take') === "on"; // Нужен ли забор груза
         $order->delivery_need = $request->get('need-to-bring') === "on"; // Нужна ли доставка груза
@@ -268,5 +270,10 @@ class OrderController extends Controller
         }
 
         return Auth::check() ? redirect(route('report-show', ['id' => $order->id])) : redirect()->back();
+    }
+
+    public function shipmentSearch(Request $request){
+        $order = Order::with('status')->find($request->order_id);
+        return View::make('v1.pages.shipment-status.status-page')->with(compact('order'));
     }
 }

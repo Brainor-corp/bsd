@@ -29,6 +29,7 @@ Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
 Route::get('/partners', 'PartnersController@showPartnersPage')->name('partners-page');
 Route::post('/partners-action', 'PartnersController@sendPartnersFeedback')->name('partners-page-action');
 
+Route::any('/shipment-search', 'OrderController@shipmentSearch')->name('shipment-search');
 
 Route::post('/order-save', 'OrderController@orderSave')->name('order-save-action');
 
