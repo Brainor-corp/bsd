@@ -13,6 +13,7 @@ use App\Type;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 class OrderController extends Controller
 {
@@ -268,5 +269,10 @@ class OrderController extends Controller
         }
 
         return Auth::check() ? redirect(route('report-show', ['id' => $order->id])) : redirect()->back();
+    }
+
+    public function shipmentSearch(Request $request){
+        $order = Order::with('status')->find($request->order_id);
+        return View::make('v1.pages.shipment-status.status-page')->with(compact('order'));
     }
 }
