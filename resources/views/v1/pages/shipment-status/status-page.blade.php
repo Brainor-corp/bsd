@@ -44,9 +44,15 @@
                                     <tbody>
                                     <tr>
                                         <td>{{ $order->id }}</td>
-                                        <td>
-                                            12.02.2019<br><span class="annotation-text">Плановая дата доставки</span>
-                                        </td>
+                                        @if(isset($order->estimated_delivery_date))
+                                            <td>
+                                                {{ \Carbon\Carbon::createFromDate($order->estimated_delivery_date)->format('d.m.Y') }}<br><span class="annotation-text">Плановая дата доставки</span>
+                                            </td>
+                                        @else
+                                            <td>
+                                                уточняется
+                                            </td>
+                                        @endif
                                         <td>{{ $order->status->name }}</td>
                                     </tr>
                                     </tbody>

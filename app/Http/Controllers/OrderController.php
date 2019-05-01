@@ -234,6 +234,7 @@ class OrderController extends Controller
         $order->ship_city_id = $shipCity->id;
         $order->ship_city_name = $shipCity->name;
         $order->dest_city_id = $destCity->id;
+        $order->estimated_delivery_date = Carbon::now()->addDays($route->delivery_time)->toDateString();
         $order->dest_city_name = $destCity->name;
         $order->take_need = $request->get('need-to-take') === "on"; // Нужен ли забор груза
         $order->delivery_need = $request->get('need-to-bring') === "on"; // Нужна ли доставка груза
