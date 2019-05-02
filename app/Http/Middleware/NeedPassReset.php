@@ -18,7 +18,9 @@ class NeedPassReset
      */
     public function handle($request, Closure $next, $guard = null)
     {
-    	$user = User::whereId(Auth::user()->id)->first();
+    	if(isset(Auth::user()->id)){
+		    $user = User::whereId(Auth::user()->id)->first();
+	    }
 
         if (isset($user) && $user->need_password_reset){
 	        return redirect('profile');
