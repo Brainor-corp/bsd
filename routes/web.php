@@ -24,7 +24,7 @@ Route::post('/news-filter', 'NewsController@filterAction')->name('news-filter');
 Route::get('/o-kompanii/documents-and-certificates', 'DocumentsController@showDocuments')->name('documents-show');
 Route::get('/klientam/reviews', 'ReviewsController@showReviews')->name('reviews');
 Route::post('/save-review', 'ReviewsController@saveReview')->name('save-review');
-Route::any('/calculator-show', 'CalculatorController@calculatorShow')->name('calculator-show');
+Route::any('/calculator-show/{id?}', 'CalculatorController@calculatorShow')->name('calculator-show');
 Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
 Route::get('/partners', 'PartnersController@showPartnersPage')->name('partners-page');
 Route::post('/partners-action', 'PartnersController@sendPartnersFeedback')->name('partners-page-action');

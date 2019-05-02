@@ -4,48 +4,81 @@ namespace App\Http\Controllers;
 
 use App\City;
 use App\Http\Helpers\CalculatorHelper;
+use App\Order;
 use App\Oversize;
 use App\Point;
 use App\Route;
 use App\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CalculatorController extends Controller
 {
-    public function calculatorShow(Request $request) {
-        if(isset($request->packages)){
-            $packages = $request->packages;
-        }else{
-            $packages=[
-              1=>[
-                  'length' => '0.1',
-                  'width' => '0.1',
-                  'height' => '0.1',
-                  'weight' => '1',
-                  'volume' => '0.1',
-                  'quantity' => '1'
-              ]
-            ];
+    public function calculatorShow($id = null, Request $request) {
+        $shipCities = City::where('is_ship', true)->with('terminal')->get();
+
+        $order = null;
+        if(isset($id)) { // Если открыли страницу черновика
+            $order = Order::where('id', $id)
+                ->when(
+                    Auth::check(),
+                    function ($orderQuery) {
+                        return $orderQuery->where('user_id', Auth::user()->id);
+                    }
+                )
+                ->when(
+                    !Auth::check(),
+                    function ($orderQuery) {
+                        return $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+                    }
+                )
+                ->with([
+                    'order_items',
+                    'order_services',
+                    'ship_city',
+                    'dest_city',
+                ])
+                ->firstOrFail();
+
+            $packages = $order->order_items->toArray();
+            $selectedShipCity = $order->ship_city_id;
+            $selectedDestCity = $order->dest_city_id;
+        } else { // Если открыли стандартный калькулятор
+            if(isset($request->packages)){
+                $packages = $request->packages;
+            }else{
+                $packages=[
+                    1=>[
+                        'length' => '0.1',
+                        'width' => '0.1',
+                        'height' => '0.1',
+                        'weight' => '1',
+                        'volume' => '0.1',
+                        'quantity' => '1'
+                    ]
+                ];
+            }
+
+            $selectedShipCity = null;
+            $selectedDestCity = null;
+            if(isset($request->ship_city)){
+                $selectedShipCity = $request->ship_city;
+            }else{
+                $selectedShipCity = 53;
+            }
+
+            if(isset($request->ship_city) && isset($request->dest_city)){
+                $selectedDestCity = $request->dest_city;
+            }else{
+                $selectedDestCity = 78;
+            }
         }
 
-        $shipCities = City::where('is_ship', true)->with('terminal')->get();
-        $selectedShipCity = null;
-        $selectedDestCity = null;
-        if(isset($request->ship_city)){
-            $selectedShipCity = $request->ship_city;
-        }else{
-            $selectedShipCity = 53;
-        }
         $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity))
             ->with('terminal')
             ->orderBy('name')
             ->get();
 
-        if(isset($request->ship_city) && isset($request->dest_city)){
-            $selectedDestCity = $request->dest_city;
-        }else{
-            $selectedDestCity = 78;
-        }
         $route = $this->getRoute($request, $selectedShipCity,$selectedDestCity);
         $tariff = json_decode($this->getTariff($request, $packages, $selectedShipCity,$selectedDestCity)->content());
 
@@ -60,7 +93,8 @@ class CalculatorController extends Controller
                 'tariff',
                 'services',
                 'selectedShipCity',
-                'selectedDestCity'
+                'selectedDestCity',
+                'order'
             ));
 
     }
