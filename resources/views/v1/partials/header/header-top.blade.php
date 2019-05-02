@@ -61,7 +61,7 @@
                                     <a class="dropdown-item" href="{{ route('news-list-show') }}">Новости</a>
                                     <a class="dropdown-item" href="{{ route('promotion-list-show') }}">Акции</a>
                                     <a class="dropdown-item" href="{{ url('/o-kompanii/reklamodatelyam') }}">Рекламодателям</a>
-                                    <a class="dropdown-item" href="{{ url('/adres-terminalov') }}">Адреса терминалов</a>
+                                    <a class="dropdown-item" href="{{ route('terminals-addresses-show') }}">Адреса терминалов</a>
                                     <a class="dropdown-item" href="{{ url('/o-kompanii/dokumenty-i-sertifikaty') }}">Документы и сертификаты</a>
                                     <a class="dropdown-item" href="{{ url('/partnery') }}">Партнеры</a>
                                     <a class="dropdown-item" href="#">Сотрудники</a>
