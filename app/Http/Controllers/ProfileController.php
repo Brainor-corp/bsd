@@ -12,14 +12,12 @@ use App\Http\Helpers\DocumentHelper;
 use App\Order;
 use App\Type;
 use App\User;
-
-use Carbon\Carbon;
-use Jenssegers\Date\Date;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\View;
+use Jenssegers\Date\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -28,6 +26,8 @@ define('SPECIAL_ARRAY_TYPE', CellSetterArrayValueSpecial::class);
 class ProfileController extends Controller {
     public function profileData() {
 	    $user = User::whereId(Auth::user()->id)->first();
+        $showPassResetMsg = null;
+
     	if(isset($user) && $user->need_password_reset){
     		$user->need_password_reset = false;
     		$user->update();
