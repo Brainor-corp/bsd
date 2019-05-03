@@ -2,6 +2,8 @@
     totalWeigthRecount();
     totalVolumeRecount();
 
+    getAllCalculatedData();
+
     $('#ship_city').selectize({
         render: {
             option: function (data, escape) {
@@ -746,3 +748,136 @@
         }
     });
 });
+
+function getAllCalculatedData() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'post',
+        url: '/api/calculator/get-all-calculated',
+        data: $('.calculator-form').serialize(),
+        dataType: "json",
+        cache: false,
+        beforeSend: function() {
+        },
+        success: function(data){
+            console.table(data);
+            renderCalendar(data);
+        },
+        error: function(data){
+            console.log(data)
+        }
+    });
+}
+
+function drawDelivery(delivery) {
+    let deliveryPoints = '';
+
+    if(delivery.take !== null) {
+        deliveryPoints +=
+            '<div class="custom-service-total-item">'+
+            '<div class="block__itogo_item d-flex">'+
+            '<div class="d-flex flex-wrap">'+
+            '<span class="block__itogo_value">' +
+            'Забор груза: ' + delivery.take.city_name
+            +
+            (delivery.take.distance !== null ? ('<small> (' + delivery.take.distance + ' км) </small>') : '')
+            +
+            '</span>'+
+            '</div>'+
+            '<span class="block__itogo_price d-flex flex-nowrap">'+
+            '<span class="block__itogo_amount takePrice">' + delivery.take.price.toString() + '</span>'+
+            '<span class="rouble">p</span>'+
+            '</span>'+
+            '</div>'+
+            '</div>';
+    }
+
+    if(delivery.bring !== null) {
+        deliveryPoints +=
+            '<div class="custom-service-total-item">'+
+            '<div class="block__itogo_item d-flex">'+
+            '<div class="d-flex flex-wrap">'+
+            '<span class="block__itogo_value">' +
+            'Забор груза: ' + delivery.bring.city_name
+            +
+            (delivery.bring.distance !== null ? ('<small> (' + delivery.bring.distance + ' км) </small>') : '')
+            +
+            '</span>'+
+            '</div>'+
+            '<span class="block__itogo_price d-flex flex-nowrap">'+
+            '<span class="block__itogo_amount bringPrice">' + delivery.bring.price.toString() + '</span>'+
+            '<span class="rouble">p</span>'+
+            '</span>'+
+            '</div>'+
+            '</div>';
+    }
+
+    if(deliveryPoints !== '') {
+        $('#delivery-total-list').html(deliveryPoints);
+        $('#delivery-total-wrapper').show();
+    } else {
+        $('#delivery-total-wrapper').hide();
+    }
+}
+
+function drawServices(services) {
+    let servicesPoints = '';
+
+    $.each(services, function(index, item) {
+        servicesPoints +=
+            '<div class="custom-service-total-item">'+
+            '<div class="block__itogo_item d-flex">'+
+            '<div class="d-flex flex-wrap">'+
+            '<span class="block__itogo_value">' + item.name + '</span>'+
+            '</div>'+
+            '<span class="block__itogo_price d-flex flex-nowrap">'+
+            '<span class="block__itogo_amount">' + item.total + '</span>'+
+            '<span class="rouble">p</span>'+
+            '</span>'+
+            '</div>'+
+            '</div>';
+    });
+
+    if(servicesPoints !== ''){
+        $('#custom-services-total-list').html(servicesPoints);
+        $('#custom-services-total-wrapper').show();
+    } else {
+        $('#custom-services-total-list').html('');
+        $('#custom-services-total-wrapper').hide();
+    }
+}
+
+function drawDiscount(discount) {
+    if(discount) {
+        $('#custom-services-total-list').append(
+            '<div class="custom-service-total-item">'+
+            '<div class="block__itogo_item d-flex">'+
+            '<div class="d-flex flex-wrap">'+
+            '<span class="block__itogo_value">Скидка</span>'+
+            '</div>'+
+            '<span class="block__itogo_price d-flex flex-nowrap">'+
+            '<span class="block__itogo_amount">' + discount + '</span>'+
+            '<span class="rouble">p</span>'+
+            '</span>'+
+            '</div>'+
+            '</div>'
+        );
+
+        $('#custom-services-total-wrapper').show();
+    }
+}
+
+function renderCalendar(data) {
+    $('#route-name').html(data.route.name);
+    $('#base-price').html(data.route.price);
+
+    drawDelivery(data.delivery);
+    drawServices(data.services);
+    drawDiscount(data.discount);
+
+    $('#total-price').html(data.total);
+}

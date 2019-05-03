@@ -169,8 +169,8 @@
                            value="{{ $order->delivery_address ?? '' }}"
                            placeholder="Название населенного пункта или адрес"
                            @if(!isset($order) || (isset($order) && !$order->delivery_need && $order->delivery_in_city)) disabled @endif
-                           data-name="{{ $order->delivery_city_name }}"
-                           data-full-name="{{ $order->delivery_address }}"
+                           data-name="{{ $order->delivery_city_name ?? '' }}"
+                           data-full-name="{{ $order->delivery_address ?? '' }}"
                     >
                 </div>
                 {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}

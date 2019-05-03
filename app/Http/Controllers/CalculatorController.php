@@ -99,6 +99,50 @@ class CalculatorController extends Controller
 
     }
 
+    public function getAllCalculatedData(Request $request) {
+        $cities = City::whereIn('id', [
+            $request->get('ship_city'),
+            $request->get('dest_city')
+        ])->get();
+
+        if(count($cities) < 2) {
+            return false;
+        }
+
+        $totalWeight = 0;
+        $totalVolume = 0;
+
+        foreach($request->get('cargo')['packages'] as $package) {
+            $totalWeight += $package['weight'];
+            $totalVolume += $package['volume'];
+        }
+
+        return CalculatorHelper::getAllCalculatedData(
+            $cities->where('id', $request->get('ship_city'))->first(),
+            $cities->where('id', $request->get('dest_city'))->first(),
+            $request->get('cargo')['packages'],
+            $request->get('service'),
+            [
+                'cityName' => $cities->where('id', $request->get('ship_city'))->first()->name,
+                'weight' => $totalWeight,
+                'volume' => $totalVolume,
+                'isWithinTheCity' => $request->get('need-to-take-type') === "in",
+                'x2' => $request->get('ship-from-point') === "on",
+                'distance' => $request->get('take_distance')
+            ],
+            [
+                'cityName' => $cities->where('id', $request->get('dest_city'))->first()->name,
+                'weight' => $totalWeight,
+                'volume' => $totalVolume,
+                'isWithinTheCity' => $request->get('need-to-bring-type') === "in",
+                'x2' => $request->get('bring-to-point') === "on",
+                'distance' => $request->get('bring_distance')
+            ],
+            $request->get('insurance_amount'),
+            $request->get('discount')
+        );
+    }
+
     public function getDestinationCities(Request $request, $ship_city = null) {
 
         if($ship_city == null){
