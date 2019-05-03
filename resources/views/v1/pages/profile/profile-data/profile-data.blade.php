@@ -17,6 +17,18 @@
                         <h1>Профиль</h1>
                     </header>
                     <div class="row">
+                        @if(isset($showPassResetMsg))
+                            <div class="col-12">
+                                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <p>
+                                        Ваша учетная запись создана оператором. Если Вы хотите изменить пароль, Вы можете сделать это на этой странице.
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
                         <div class="col-4">
 
                             @include('v1.partials.messages.alertMessage')
