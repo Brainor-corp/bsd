@@ -603,7 +603,7 @@
 
 // Базовая функция просчета цены для "Забрать из" и "Доставить"
     function calcTariffPrice(city, point, inCity) {
-        if(inCity) { // Если названия городов совпадают, то работаем в пределах города
+        if(inCity) { // Если работаем в пределах города
             getTariffPriceAjax(point, true, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"));
         } else { // В противном случае просчитываем километраж с помощью Яндекс api
             let fullName = point.data('fullName');

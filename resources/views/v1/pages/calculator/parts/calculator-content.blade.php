@@ -68,7 +68,6 @@
         <label class="col-auto calc__label big">Откуда</label>
         <div class="col delivery-block">
             <div class="form-item">
-                {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
                 <select id="ship_city" class="form-control point-select" name="ship_city" placeholder="Выберите город" required>
                     <option value=""></option>
                     @if($shipCities->count() > 0)
@@ -88,16 +87,35 @@
                 <label class="custom-control-label" for="need-to-take-type-in">в пределах города отправления</label>
             </div>
             <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input need-to-take-input" id="need-to-take-type-from" name="need-to-take-type" value="from" @if(isset($order) && $order->take_need && !$order->take_in_city) checked @endif @if(!isset($order) || (isset($order) && !$order->take_need)) disabled @endif/>
+                <input type="radio"
+                       class="custom-control-input need-to-take-input"
+                       id="need-to-take-type-from"
+                       name="need-to-take-type"
+                       value="from"
+                       @if(isset($order) && $order->take_need && !$order->take_in_city) checked @endif
+                       @if(!isset($order) || (isset($order) && !$order->take_need)) disabled @endif
+                />
                 <label class="custom-control-label" for="need-to-take-type-from">из:</label>
             </div>
 
-            <input type="hidden" name="take_city_name">
-            <input type="hidden" name="take_distance" value="0" class="distance-hidden-input">
+            <input type="hidden" name="take_city_name" value="{{ $order->take_city_name ?? '' }}">
+            <input type="hidden" name="take_distance" value="{{ $order->take_distance ?? 0 }}" class="distance-hidden-input">
             <div class="form-item ininner">
                 <div class="relative">
                     <i class="dropdown-toggle fa-icon"></i>
-                    <input class="form-control suggest_address need-to-take-input-address" id="ship_point" maxlength="256" name="ship_point" size="63" type="text" data-end="dest" value="{{ $order->take_address ?? '' }}" placeholder="Название населенного пункта или адрес" @if(!isset($order) || (isset($order) && !$order->take_need && $order->take_in_city)) disabled @endif>
+                    <input class="form-control suggest_address need-to-take-input-address"
+                           id="ship_point"
+                           maxlength="256"
+                           name="ship_point"
+                           size="63"
+                           type="text"
+                           data-end="dest"
+                           value="{{ $order->take_address ?? '' }}"
+                           placeholder="Название населенного пункта или адрес"
+                           data-name="{{ $order->take_city_name ?? '' }}"
+                           data-full-name="{{ $order->take_address ?? '' }}"
+                           @if(!isset($order) || (isset($order) && !$order->take_need && $order->take_in_city)) disabled @endif
+                    >
                 </div>
                 {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
             </div>
@@ -140,12 +158,20 @@
                 <label class="custom-control-label" for="need-to-bring-type-from">в:</label>
             </div>
 
-            <input type="hidden" name="bring_city_name">
-            <input type="hidden" name="bring_distance" value="0" class="distance-hidden-input">
+            <input type="hidden" name="bring_city_name" value="{{ $order->delivery_city_name ?? '' }}">
+            <input type="hidden" name="bring_distance" value="{{ $order->delivery_distance ?? 0 }}" class="distance-hidden-input">
             <div class="form-item ininner">
                 <div class="relative">
                     <i class="dropdown-toggle fa-icon"></i>
-                    <input class="form-control suggest_address need-to-bring-input-address"  id="dest_point" name="dest_point" value="{{ $order->delivery_address ?? '' }}" placeholder="Название населенного пункта или адрес" @if(!isset($order) || (isset($order) && !$order->delivery_need && $order->delivery_in_city)) disabled @endif>
+                    <input class="form-control suggest_address need-to-bring-input-address"
+                           id="dest_point"
+                           name="dest_point"
+                           value="{{ $order->delivery_address ?? '' }}"
+                           placeholder="Название населенного пункта или адрес"
+                           @if(!isset($order) || (isset($order) && !$order->delivery_need && $order->delivery_in_city)) disabled @endif
+                           data-name="{{ $order->delivery_city_name }}"
+                           data-full-name="{{ $order->delivery_address }}"
+                    >
                 </div>
                 {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
             </div>
@@ -154,7 +180,13 @@
             {{--<label class="custom-control-label" for="deliver-cargo">Доставить груз до адреса получателя (1 050 <span class="rouble">p</span>)</label>--}}
             {{--</div>--}}
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input need-to-bring-input x2-check" id="bring-to-point" name="bring-to-point" @if(isset($order) && $order->delivery_need && $order->delivery_point) checked @endif @if(!isset($order) || (isset($order) && !$order->delivery_need)) disabled @endif>
+                <input type="checkbox"
+                       class="custom-control-input need-to-bring-input x2-check"
+                       id="bring-to-point"
+                       name="bring-to-point"
+                       @if(isset($order) && $order->delivery_need && $order->delivery_point) checked @endif
+                       @if(!isset($order) || (isset($order) && !$order->delivery_need)) disabled @endif
+                >
                 {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
                 <label class="custom-control-label" for="bring-to-point">Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
             </div>
