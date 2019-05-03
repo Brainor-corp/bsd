@@ -11,9 +11,7 @@
             }
         },
         onChange: function(value) {// при изменении города отправления
-
             if (!value.length) return;
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -22,7 +20,7 @@
             $.ajax({
                 type: 'post',
                 url: '/api/calculator/get-destination-cities',
-                data: {ship_city:value},//здесь мы передаем стандартным пост методом без сериализации. В конечном скрипте данные будут лежать в $_POST['ajax_data']
+                data: {ship_city:value}, //здесь мы передаем стандартным пост методом без сериализации. В конечном скрипте данные будут лежать в $_POST['ajax_data']
                 cache: false,
                 beforeSend: function() {
 
@@ -37,18 +35,16 @@
                             }
                         },
                         onChange: function(value) {// при изменении города назначения
-                            getRoute();
+                            getAllCalculatedData();
                         },
                     });
 
                     var selectize = select[0].selectize;
 
-                    getRoute();
+                    // Вызываем тригер изменения пункта самовывоза, чтобы пересчитать дистанцию
+                    $('#ship_point').trigger('change');
                 }
             });
-
-            // Вызываем тригер изменения пункта самовывоза, чтобы пересчитать дистанцию
-            $('#ship_point').trigger('change');
         }
     });
 
@@ -59,8 +55,6 @@
             }
         },
         onChange: function(value) {// при изменении города назначения
-            getRoute();
-
             // Вызываем тригер изменения пункта самовывоза, чтобы пересчитать дистанцию
             $('#dest_point').trigger('change');
         }
@@ -70,41 +64,6 @@
         e.preventDefault();
         var lastId = $( '.package-item' ).filter( ':last' ).data('packageId');
         var nextId = lastId+1;
-        // var html =
-        //         '<div id="package-'+ nextId +'" class="package-item" data-package-id="'+ nextId +'">'+
-        //                 '<div class="form-item row align-items-center">'+
-        //                 '<label class="col-auto calc__label">Наименование груза*</label>'+
-        //             '<div class="col">'+
-        //                 '<input type="text" class="form-control" placeholder="Шкаф" name="packages['+ nextId +'][name]">'+
-        //         '</div>'+
-        //             '</div>'+
-        //             '<div class="row">'+
-        //                 '<div class="col-8">'+
-        //                 '<div class="form-item row align-items-center">'+
-        //                 '<label class="col-auto calc__label">Габариты (м)*</label>'+
-        //                 '<div class="col calc__inpgrp relative row__inf">'+
-        //                 '<div class="input-group">'+
-        //                 '<input type="text" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="packages['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Д"/>'+
-        //         '<input type="text" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="packages['+ nextId +'][width]" data-package-id="'+ nextId +'" data-dimension-type="width" placeholder="Ш">'+
-        //         '<input type="text" id="packages_'+ nextId +'_height" class="form-control text-center package-params package-dimensions" name="packages['+ nextId +'][height]" data-package-id="'+ nextId +'" data-dimension-type="height" placeholder="В"/>'+
-        //         '</div>'+
-        //             '</div>'+
-        //             '</div>'+
-        //             '<div class="form-item row align-items-center">'+
-        //                 '<label class="col-auto calc__label">Вес груза (кг)*</label>'+
-        //             '<div class="col calc__inpgrp"><input type="text" id="packages_'+ nextId +'_weight" class="form-control package-params package-weight" name="packages['+ nextId +'][weight]" data-package-id="'+ nextId +'" data-dimension-type="weight"/></div>'+
-        //             '</div>'+
-        //             '<div class="form-item row align-items-center">'+
-        //                 '<label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>'+
-        //             '<div class="col calc__inpgrp"><input type="text" id="packages_'+ nextId +'_volume" class="form-control package-params package-volume" name="packages['+ nextId +'][volume]" data-package-id="'+ nextId +'" data-dimension-type="volume"/></div>'+
-        //             '</div>'+
-        //             '</div>'+
-        //             '<div class="col-4">'+
-        //                 '<p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>'+
-        //             '</div>'+
-        //             '</div>'+
-        //             '</div>'
-        // ;
 
         var html =
             '<div class="col-11 form-item row align-items-center package-item" id="package-'+ nextId +'" data-package-id="'+ nextId +'" style="padding-right: 0;">' +
@@ -125,8 +84,8 @@
         $(this).before(html);
 
         totalVolumeRecount();
-
         totalWeigthRecount();
+        getAllCalculatedData();
     });
 
 //При изменении параметров пакета
@@ -134,192 +93,18 @@
         let shipCityID = $("#ship_city").val(),
             destCityID = $("#dest_city").val();
         if (shipCityID && destCityID) {
-            getBaseTariff();
+            getAllCalculatedData();
         }
     });
 
-// получение маршрута
-    var getRoute = function () {
-        let shipCityID = $("#ship_city").val(),
-            destCityID = $("#dest_city").val(),
-            formData  = $('.calculator-form').serialize();
-        if (shipCityID && destCityID) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                type: 'post',
-                url: '/api/calculator/get-route',
-                data: {ship_city:shipCityID, dest_city:destCityID, formData},
-                cache: false,
-                beforeSend: function() {
-
-                },
-                success: function(data){
-                    $('#delivery-time').text(data.delivery_time);
-                    $('#route-name').text(data.name);
-                    getBaseTariff();
-                }
-            });
-        } else
-            $('#delivery_time').removeClass('loading').val('');
-
-    };
-
-    function getBaseTariff () {
-        console.log('getBaseTariff');
-        let shipCityID = $("#ship_city").val(),
-            destCityID = $("#dest_city").val(),
-            formData  = $('.calculator-form').serialize();
-
-        console.log(formData);
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        $.ajax({
-            type: 'post',
-            url: '/api/calculator/get-tariff',
-            data: {ship_city:shipCityID, dest_city:destCityID, formData},
-            cache: false,
-            beforeSend: function() {
-
-            },
-            success: function(data){
-                servicesRender(data.total_data);
-                $('#base-price').html(data.base_price);
-                $('#base-price').attr('data-base-price', data.base_price);
-                $('#total-price').html(data.total_data.total);
-                $('#total-price').attr('data-total-price', data.total_data.total);
-                $('#total-volume').attr('data-total-volume', data.total_volume);
-            },
-            error: function (data) {
-                console.log(data);
-            }
-        });
-
-    };
-
-    function renderDelivery() {
-        let needToTakeCheck = $('#need-to-take'),
-            needToTakeInCity = $('input[name="need-to-take-type"]:checked').val() == "in",
-            needToBringCheck = $('#need-to-bring'),
-            needToBringInCity = $('input[name="need-to-bring-type"]:checked').val() == "in",
-            deliveryPoints = '',
-            render = false;
-
-        $('#delivery-total-wrapper').css({
-            'display': 'none',
-        });
-
-        if(needToTakeCheck.is(':checked') && (typeof needToTakeCheck.data('point') !== "undefined" || needToTakeInCity)) {
-            deliveryPoints +=
-                '<div class="custom-service-total-item">'+
-                '<div class="block__itogo_item d-flex">'+
-                '<div class="d-flex flex-wrap" id="services-total-names">'+
-                '<span class="block__itogo_value">' +
-                'Забор груза: ' + (needToTakeInCity ? $('#ship_city option:selected').text() : needToTakeCheck.data('point'))
-                +
-                (typeof needToTakeCheck.data('distance') !== "undefined" && !needToTakeInCity ? ('<small> (' + needToTakeCheck.data('distance') + ' км) </small>') : '')
-                +
-                '</span>'+
-                '</div>'+
-                '<span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">'+
-                '<span class="block__itogo_amount takePrice">' + needToTakeCheck.data('price') + '</span>'+
-                '<span class="rouble">p</span>'+
-                '</span>'+
-                '</div>'+
-                '</div>';
-
-            render = true;
-        }
-
-        if(needToBringCheck.is(':checked') && (typeof needToBringCheck.data('point') !== "undefined" || needToBringInCity)) {
-            deliveryPoints +=
-                '<div class="custom-service-total-item">'+
-                '<div class="block__itogo_item d-flex">'+
-                '<div class="d-flex flex-wrap" id="services-total-names">'+
-                '<span class="block__itogo_value">' +
-                'Доставка груза: ' + (needToBringInCity ? $('#dest_city option:selected').text() : needToBringCheck.data('point'))
-                +
-                (typeof needToBringCheck.data('distance') !== "undefined" && !needToBringInCity ? ('<small> (' + needToBringCheck.data('distance') + ' км) </small>') : '')
-                +
-                '</span>'+
-                '</div>'+
-                '<span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">'+
-                '<span class="block__itogo_amount bringPrice">' + needToBringCheck.data('price') + '</span>'+
-                '<span class="rouble">p</span>'+
-                '</span>'+
-                '</div>'+
-                '</div>';
-
-            render = true;
-        }
-
-        $('#delivery-total-list').html(deliveryPoints);
-
-        if(render) {
-            $('#delivery-total-wrapper').css({
-                'display': 'block',
-            });
-        }
-
-        console.log('asdf');
-    }
-
-    var getTotalPrice = function () {
-        let shipCityID = $("#ship_city").val(),
-            destCityID = $("#dest_city").val(),
-            basePrice = $("#base-price").data('basePrice'),
-            totalVolume = $("#total-volume").attr('data-total-volume'),
-            takePrice = $.isNumeric($(".takePrice").text()) ? parseFloat($(".takePrice").text()) : 0,
-            bringPrice = $.isNumeric($(".bringPrice").text()) ? parseFloat($(".bringPrice").text()) : 0,
-            formData  = $('.calculator-form').serialize();
-
-        console.log(totalVolume);
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        $.ajax({
-            type: 'post',
-            url: '/api/calculator/get-total-price',
-            data: {
-                ship_city: shipCityID,
-                dest_city: destCityID,
-                base_price: basePrice,
-                total_volume: totalVolume,
-                take_price: takePrice,
-                bring_price: bringPrice,
-                formData: formData
-            },
-            cache: false,
-            success: function(data){
-                servicesRender(data);
-
-                $('#total-price').html(data.total);
-                $('#total-price').attr('data-total-price');
-            },
-            error: function (data) {
-                console.log(data);
-            }
-        });
-
-    };
-
     $(document).on('change', '.custom-service-checkbox', function (e) {
         e.preventDefault();
-        getTotalPrice();
+        getAllCalculatedData();
     });
 
     $(document).on('change', '#discount', function (e) {
         e.preventDefault();
-        getTotalPrice();
+        getAllCalculatedData();
     });
 
     $(document).on('change', '#insurance', function (e) {
@@ -330,7 +115,7 @@
 
     $(document).on('change', '#insurance-amount', function (e) {
         e.preventDefault();
-        getTotalPrice();
+        getAllCalculatedData();
     });
 
     $(document).on('change', '.package-dimensions', function (e) {
@@ -372,8 +157,7 @@
         $('#packages_'+ id +'_volume').attr('value', volume).val(volume);
 
         totalVolumeRecount();
-
-        getBaseTariff();
+        getAllCalculatedData();
     });
 
     $(document).on('change', '.package-weight', function (e) {
@@ -385,8 +169,7 @@
             height = $('#packages_'+ id +'_height').val(),
             volume = $('#packages_'+ id +'_volume').val(),
             dimensionType = 'max_'+$(this).data('dimensionType'),
-            dimensionMax = 0
-        ;
+            dimensionMax = 0;
 
         dimensionMax = parameters[dimensionType];
         if($(this).val() >dimensionMax){
@@ -400,8 +183,7 @@
         }
 
         totalWeigthRecount();
-
-        getBaseTariff();
+        getAllCalculatedData();
     });
 
     $(document).on('change', '.package-volume', function (e) {
@@ -413,9 +195,7 @@
             height = $('#packages_'+ id +'_height').val(),
             volume = $('#packages_'+ id +'_volume').val(),
             dimensionType = 'max_'+$(this).data('dimensionType'),
-            dimensionMax = 0
-        ;
-
+            dimensionMax = 0;
 
         dimensionMax = parameters[dimensionType];
         if($(this).val() > dimensionMax){
@@ -456,23 +236,20 @@
                 }
             }
         }
-        totalVolumeRecount();
 
-        getBaseTariff();
+        totalVolumeRecount();
+        getAllCalculatedData();
     });
 
     $(document).on('change', '.package-quantity', function (e) {
         e.preventDefault();
-
         totalWeigthRecount();
-
         totalVolumeRecount();
 
-        getBaseTariff();
+        getAllCalculatedData();
     });
 
     function totalVolumeRecount() {
-
         let totalVolume = 0;
         $.each($(".package-volume"), function(index, item) {
             var curAmount = parseFloat($(item).prev('.input-group').find( ".package-quantity" ).val());
@@ -501,153 +278,41 @@
         $("#total-weight-hidden").attr('data-total-weight', totalWeigth).attr('value', totalWeigth).val(totalWeigth);
     };
 
-    var servicesRender = function (data) {
-        $('#custom-services-total-wrapper').css({
-            'display': 'none',
-        });
-        let services = '';
-
-        if(typeof data.services !== 'undefined') {
-            if (Object.keys(data.services).length > 0) {
-
-                $.each(data.services, function(index, item) {
-                    services = services +
-                        '<div class="custom-service-total-item">'+
-                        '<div class="block__itogo_item d-flex">'+
-                        '<div class="d-flex flex-wrap" id="services-total-names">'+
-                        '<span class="block__itogo_value">' + item.name + '</span>'+
-                        '</div>'+
-                        '<span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">'+
-                        '<span class="block__itogo_amount">' + item.total + '</span>'+
-                        '<span class="rouble">p</span>'+
-                        '</span>'+
-                        '</div>'+
-                        '</div>';
-                });
-            }
-        }
-        if(typeof data.insurance !== 'undefined') {
-            services = services +
-                '<div class="custom-service-total-item">'+
-                '<div class="block__itogo_item d-flex">'+
-                '<div class="d-flex flex-wrap" id="services-total-names">'+
-                '<span class="block__itogo_value">Страхование</span>'+
-                '</div>'+
-                '<span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">'+
-                '<span class="block__itogo_amount">' + data.insurance + '</span>'+
-                '<span class="rouble">p</span>'+
-                '</span>'+
-                '</div>'+
-                '</div>';
-        }
-        if(typeof data.discount !== 'undefined') {
-            services = services +
-                '<div class="custom-service-total-item">'+
-                '<div class="block__itogo_item d-flex">'+
-                '<div class="d-flex flex-wrap" id="services-total-names">'+
-                '<span class="block__itogo_value">Скидка</span>'+
-                '</div>'+
-                '<span class="block__itogo_price d-flex flex-nowrap"  id="services-total-prices">'+
-                '<span class="block__itogo_amount">' + data.discount + '</span>'+
-                '<span class="rouble">p</span>'+
-                '</span>'+
-                '</div>'+
-                '</div>';
-        }
-
-        if(services !== ''){
-            $('#custom-services-total-list').html(services);
-
-            $('#custom-services-total-wrapper').css({
-                'display': 'block',
-            });
-        }
-    };
-
-//// Просчет суммы "Забрать груз из" ////////////////////////
-
-// Вспомогательная функция для отправки ajax на сервер для получения цены для "Забрать из"
-    function getTariffPriceAjax(point, isWithinTheCity, x2, distance = null) {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        $.ajax({
-            type: 'get',
-            url: '/api/calculator/get-tariff-price',
-            data: {
-                city: isWithinTheCity ? $(point.closest('.delivery-block').find('.point-select option:selected')).text() : point.data('name'), // Название города
-                weight: $('#total-weight').val(),
-                volume: $('#total-volume').val(),
-                units: $('.package-item').length,
-                distance: distance, // Километраж
-                isWithinTheCity: isWithinTheCity, // Флаг работы в пределах города
-                x2: x2 // Умножим цену на 2, если нужна точная доставка
-            },
-            cache: false,
-            beforeSend: function() {
-                console.log(this.url)
-            },
-            success: function(data){
-                let pointCheckbox = point.closest('.delivery-block').find('.delivery-checkbox');
-                $(pointCheckbox).data('price', data.price);
-                $(pointCheckbox).data('distance', data.distance);
-                $(pointCheckbox).data('point', point.data('name'));
-                renderDelivery();
-                getTotalPrice();
-            },
-            error: function (data) {
-                console.log(data);
-            }
-        });
-    }
-
-// Базовая функция просчета цены для "Забрать из" и "Доставить"
+    // Базовая функция просчета цены для "Забрать из" и "Доставить"
     function calcTariffPrice(city, point, inCity) {
         if(inCity) { // Если работаем в пределах города
-            getTariffPriceAjax(point, true, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"));
+            getAllCalculatedData();
         } else { // В противном случае просчитываем километраж с помощью Яндекс api
             let fullName = point.data('fullName');
             if (!fullName)
                 return;
 
             if (city) {
-                // ymaps.geocode(fullName, {
-                //     results: 1
-                // }).then(function (res) {
-                //     // Выбираем первый результат геокодирования.
-                //     let firstGeoObject = res.geoObjects.get(0);
-                //     // Координаты геообъекта.
-                //     let coords = firstGeoObject.geometry.getCoordinates();
-                //
-                //     fullName = coords[0].toString() + ', ' + coords[1].toString();
+                ymaps.route([city, fullName]).then(function (route) {
+                    console.log('От: ' + city + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
+                    $(point.closest('.delivery-block')).find('.distance-hidden-input').val(Math.ceil(route.getLength() / 1000));
 
-                ymaps.route([city, fullName])
-                    .then(function (route) {
-                        console.log('От: ' + city + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
-                        $(point.closest('.delivery-block')).find('.distance-hidden-input').val(Math.ceil(route.getLength() / 1000));
-
-                        getTariffPriceAjax(point, false, $(point.closest('.delivery-block')).find('.x2-check').is(":checked"), Math.ceil(route.getLength() / 1000));
-                    });
-                // });
+                    getAllCalculatedData();
+                });
             }
         }
     }
 
-// Срабатывает при изменении значения селекта выбора города
-    function kladrChange(obj, point) {
-        let name = obj.type === "Город" ? obj : typeof obj.parents !== "undefined" ? $.grep(obj.parents, function(v) {
-            return v.type === "Город";
-        })[0] : undefined;
+    // Срабатывает при изменении значения селекта выбора города
+    function kladrChange(obj = null, point) {
+        if(obj !== null) {
+            let name = obj.type === "Город" ? obj : typeof obj.parents !== "undefined" ? $.grep(obj.parents, function(v) {
+                return v.type === "Город";
+            })[0] : undefined;
 
-        point.data('name', typeof name === "undefined" ? obj.name : name.name); // Это имя отправляем к нам на сервер
-        point.data('fullName', obj.fullName); // Это имя отправляем яндексу для просчета дистанции
+            point.data('name', typeof name === "undefined" ? obj.name : name.name); // Это имя отправляем к нам на сервер
+            point.data('fullName', obj.fullName); // Это имя отправляем яндексу для просчета дистанции
 
-        if (obj.id !== undefined)
-            point.data('id', obj.id);
-        else
-            point.data('id', 0);
+            if (obj.id !== undefined)
+                point.data('id', obj.id);
+            else
+                point.data('id', 0);
+        }
 
         if(point.attr('id') === "ship_point") {
             if($('#ship_city').data().selectize.getValue() !== "") {
@@ -662,7 +327,7 @@
         }
     }
 
-// Включение и отключение инпутов для забора и доставки груза //////////
+    // Включение и отключение инпутов для забора и доставки груза //////////
     $(document).on('change', '#need-to-take', function () {
         if($(this).is(':checked')) {
             $('.need-to-take-input').removeAttr('disabled');
@@ -715,16 +380,12 @@
         }
     });
 
-////////////////////////////////////////////////////////////////////////
-
 // Первично инициализируем селекты с кладром
     $('input.suggest_address').on('change', function () {
         let point = $(this);
         let obj = point.kladr('current');
 
-        if(obj != null) {
-            kladrChange(obj, point);
-        }
+        kladrChange(obj, point);
     }).each(function () { // Инициализация кладра для каждого из селектора
         var point = $(this);
         $(this).kladr({
@@ -737,15 +398,11 @@
     });
 
     $(document).on('change', '#ship-from-point', function () {
-        if($('#ship_city').data().selectize.getValue() !== "") {
-            calcTariffPrice($('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal, $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
-        }
+        getAllCalculatedData();
     });
 
     $(document).on('change', '#bring-to-point', function () {
-        if($('#dest_city').data().selectize.getValue() !== "") {
-            calcTariffPrice($('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal, $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
-        }
+        getAllCalculatedData();
     });
 });
 
@@ -762,6 +419,7 @@ function getAllCalculatedData() {
         dataType: "json",
         cache: false,
         beforeSend: function() {
+            console.log('calculate..');
         },
         success: function(data){
             console.table(data);
@@ -771,6 +429,19 @@ function getAllCalculatedData() {
             console.log(data)
         }
     });
+}
+
+function renderCalendar(data) {
+    if(data.error === undefined) {
+        $('#route-name').html(data.route.name);
+        $('#base-price').html(data.route.price);
+
+        drawDelivery(data.delivery);
+        drawServices(data.services);
+        drawDiscount(data.discount);
+
+        $('#total-price').html(data.total);
+    }
 }
 
 function drawDelivery(delivery) {
@@ -784,7 +455,7 @@ function drawDelivery(delivery) {
             '<span class="block__itogo_value">' +
             'Забор груза: ' + delivery.take.city_name
             +
-            (delivery.take.distance !== null ? ('<small> (' + delivery.take.distance + ' км) </small>') : '')
+            (typeof delivery.take.distance !== "undefined" ? ('<small> (' + delivery.take.distance + ' км) </small>') : '')
             +
             '</span>'+
             '</div>'+
@@ -804,7 +475,7 @@ function drawDelivery(delivery) {
             '<span class="block__itogo_value">' +
             'Забор груза: ' + delivery.bring.city_name
             +
-            (delivery.bring.distance !== null ? ('<small> (' + delivery.bring.distance + ' км) </small>') : '')
+            (typeof delivery.bring.distance !== "undefined" ? ('<small> (' + delivery.bring.distance + ' км) </small>') : '')
             +
             '</span>'+
             '</div>'+
@@ -869,15 +540,4 @@ function drawDiscount(discount) {
 
         $('#custom-services-total-wrapper').show();
     }
-}
-
-function renderCalendar(data) {
-    $('#route-name').html(data.route.name);
-    $('#base-price').html(data.route.price);
-
-    drawDelivery(data.delivery);
-    drawServices(data.services);
-    drawDiscount(data.discount);
-
-    $('#total-price').html(data.total);
 }

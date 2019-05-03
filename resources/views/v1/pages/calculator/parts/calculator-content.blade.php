@@ -237,11 +237,11 @@
             <i class="dropdown-toggle fa-icon"></i>
             <select class="custom-select" id="discount" name="discount">
                 <option disabled selected>У меня есть скидка</option>
-                <option value="3" @if(isset($order) && $order->discount === "3") selected @endif>3%</option>
-                <option value="5" @if(isset($order) && $order->discount === "5") selected @endif>5%</option>
-                <option value="10" @if(isset($order) && $order->discount === "10") selected @endif>10%</option>
-                <option value="15" @if(isset($order) && $order->discount === "15") selected @endif>15%</option>
-                <option value="20" @if(isset($order) && $order->discount === "20") selected @endif>20%</option>
+                <option value="3" @if(isset($order) && $order->discount == 3) selected @endif>3%</option>
+                <option value="5" @if(isset($order) && $order->discount == 5) selected @endif>5%</option>
+                <option value="10" @if(isset($order) && $order->discount == 10) selected @endif>10%</option>
+                <option value="15" @if(isset($order) && $order->discount == 15) selected @endif>15%</option>
+                <option value="20" @if(isset($order) && $order->discount == 20) selected @endif>20%</option>
             </select>
         </div>
 

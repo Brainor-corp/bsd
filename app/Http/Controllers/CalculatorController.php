@@ -106,7 +106,7 @@ class CalculatorController extends Controller
         ])->get();
 
         if(count($cities) < 2) {
-            return false;
+            return ["error" => "error"];
         }
 
         $totalWeight = 0;
@@ -122,22 +122,28 @@ class CalculatorController extends Controller
             $cities->where('id', $request->get('dest_city'))->first(),
             $request->get('cargo')['packages'],
             $request->get('service'),
+            $request->get('need-to-take') === "on" ?
             [
-                'cityName' => $cities->where('id', $request->get('ship_city'))->first()->name,
+                'cityName' => $request->get('need-to-take-type') === "in" ?
+                    $cities->where('id', $request->get('ship_city'))->first()->name :
+                    $request->get('take_city_name'),
                 'weight' => $totalWeight,
                 'volume' => $totalVolume,
                 'isWithinTheCity' => $request->get('need-to-take-type') === "in",
                 'x2' => $request->get('ship-from-point') === "on",
                 'distance' => $request->get('take_distance')
-            ],
+            ] : [],
+            $request->get('need-to-bring') === "on" ?
             [
-                'cityName' => $cities->where('id', $request->get('dest_city'))->first()->name,
+                'cityName' => $request->get('need-to-bring-type') === "in" ?
+                    $cities->where('id', $request->get('dest_city'))->first()->name :
+                    $request->get('bring_city_name'),
                 'weight' => $totalWeight,
                 'volume' => $totalVolume,
                 'isWithinTheCity' => $request->get('need-to-bring-type') === "in",
                 'x2' => $request->get('bring-to-point') === "on",
                 'distance' => $request->get('bring_distance')
-            ],
+            ] : [],
             $request->get('insurance_amount'),
             $request->get('discount')
         );

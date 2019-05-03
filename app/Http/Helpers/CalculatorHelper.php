@@ -510,7 +510,8 @@ class CalculatorHelper
         // Если ни города, ни пункта не нашли, то выводим договорную цену
         if(!$city) {
             return [
-                'price' => 'Договорная'
+                'price' => 'Договорная',
+                'city_name' => $cityName,
             ];
         }
 
@@ -538,14 +539,16 @@ class CalculatorHelper
         $fixed_tariff = $fixed_tariff->tariff ?? false;
         if(!$fixed_tariff && $isWithinTheCity) {
             return [
-                'price' => 'Договорная'
+                'price' => 'Договорная',
+                'city_name' => $cityName,
             ];
         }
 
         // Если в пределах города, то возвращаем тариф согласно пределам города
         if($isWithinTheCity == 'true') {
             return [
-                'price' => $x2 ? floatval($fixed_tariff) * 2 : floatval($fixed_tariff)
+                'price' => $x2 ? floatval($fixed_tariff) * 2 : floatval($fixed_tariff),
+                'city_name' => $cityName,
             ];
         }
 
@@ -568,7 +571,8 @@ class CalculatorHelper
 
         if(!$per_km_tariff) {
             return [
-                'price' => 'Договорная'
+                'price' => 'Договорная',
+                'city_name' => $cityName,
             ];
         }
 
@@ -647,23 +651,29 @@ class CalculatorHelper
             }
         }
 
-        $takeData = self::getTariffPrice(
-            $takeParams['cityName'],
-            $takeParams['weight'],
-            $takeParams['volume'],
-            $takeParams['isWithinTheCity'],
-            $takeParams['x2'],
-            $takeParams['distance']
-        );
+        $takeData = null;
+        if(!empty($takeParams)) {
+            $takeData = self::getTariffPrice(
+                $takeParams['cityName'],
+                $takeParams['weight'],
+                $takeParams['volume'],
+                $takeParams['isWithinTheCity'],
+                $takeParams['x2'],
+                $takeParams['distance']
+            );
+        }
 
-        $bringData = self::getTariffPrice(
-            $bringParams['cityName'],
-            $bringParams['weight'],
-            $bringParams['volume'],
-            $bringParams['isWithinTheCity'],
-            $bringParams['x2'],
-            $bringParams['distance']
-        );
+        $bringData = null;
+        if(!empty($bringParams)) {
+            $bringData = self::getTariffPrice(
+                $bringParams['cityName'],
+                $bringParams['weight'],
+                $bringParams['volume'],
+                $bringParams['isWithinTheCity'],
+                $bringParams['x2'],
+                $bringParams['distance']
+            );
+        }
 
         if(
             is_numeric($routeData['price']) &&
