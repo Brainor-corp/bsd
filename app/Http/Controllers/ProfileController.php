@@ -27,12 +27,18 @@ define('SPECIAL_ARRAY_TYPE', CellSetterArrayValueSpecial::class);
 
 class ProfileController extends Controller {
     public function profileData() {
-        return view('v1.pages.profile.profile-data.profile-data');
+	    $user = User::whereId(Auth::user()->id)->first();
+    	if(isset($user) && $user->need_password_reset){
+    		$user->need_password_reset = false;
+    		$user->update();
+		    $showPassResetMsg = true;
+	    }
+	    return view('v1.pages.profile.profile-data.profile-data')->with(compact('showPassResetMsg'));
     }
 
     public function edit(Request $request) {
 
-        $user = User:: where('id', $request->user_id)->first();
+        $user = User::where('id', Auth::user()->id)->first();
         if ($user) {
             if (Hash::check($request->old_password, $user->password)) {
                 User::where('id', $request->user_id)->update(

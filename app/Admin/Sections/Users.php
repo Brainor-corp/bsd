@@ -36,6 +36,7 @@ class Users extends Section
                 FormField::input('surname', 'Фамилия'),
                 FormField::input('patronomic', 'Отчество'),
                 FormField::hidden('verified')->setValue(0),
+                FormField::hidden('need_password_reset')->setValue(true),
                 FormField::input('email', 'EMail')->setRequired(true)
                     ->setType('email'),
                 FormField::input('phone', 'Телефон'),
@@ -45,6 +46,7 @@ class Users extends Section
                 FormField::input('repeat_password', 'Повторите пароль')
                     ->setRequired(true)
                     ->setType('password'),
+
             ]),
         ]);
 
@@ -85,6 +87,10 @@ class Users extends Section
     {
         if($request->has('password')){
             $model->password = Hash::make($request->password);
+            $model->save();
+        }
+        if($request->has('need_password_reset')){
+            $model->need_password_reset = 1;
             $model->save();
         }
     }
