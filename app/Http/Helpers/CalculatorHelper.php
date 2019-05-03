@@ -678,13 +678,13 @@ class CalculatorHelper
         if(
             is_numeric($routeData['price']) &&
             is_numeric($servicesPrice) &&
-            is_numeric($takeData['price']) &&
-            is_numeric($bringData['price'])
+            ($takeData == null || is_numeric($takeData['price'])) &&
+            ($bringData == null || is_numeric($bringData['price']))
         ) {
             $totalPrice = floatval($routeData['price']) +
                 floatval($servicesPrice) +
-                floatval($takeData['price']) +
-                floatval($bringData['price']);
+                floatval($takeData['price'] ?? 0) +
+                floatval($bringData['price'] ?? 0);
         }
 
         if(is_numeric($totalPrice)) {
