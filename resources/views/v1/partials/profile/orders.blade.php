@@ -24,8 +24,11 @@
             </a>
         </td>
         <td>
-            {{--<a href="##" class="table-icon-link"><i class="fa fa-pencil-square-o"></i></a>--}}
-            <a href="{{ route('report-show', ['id' => $order->id]) }}" class="table-icon-link"><i class="fa fa-eye"></i></a>
+            @if($order->status->slug === "chernovik")
+                <a href="{{ route('calculator-show', ['id' => $order->id]) }}" class="table-icon-link"><i class="fa fa-pencil-square-o"></i></a>
+            @else
+                <a href="{{ route('report-show', ['id' => $order->id]) }}" class="table-icon-link"><i class="fa fa-eye"></i></a>
+            @endif
         </td>
     </tr>
 @endforeach
