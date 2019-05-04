@@ -53,7 +53,12 @@ class ReportsController extends Controller
 
     public function actionDownloadReports(Request $request) {
         $orders = Order::with('status', 'ship_city', 'dest_city')
-            ->where('user_id', Auth::user()->id)
+            ->where(function ($orderQuery) {
+                return Auth::check() ? $orderQuery
+                    ->where('user_id', Auth::user()->id)
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+            })
             ->when($request->get('id'), function ($order) use ($request) {
                 return $order->where('id', 'LIKE', '%' . $request->get('id') . '%');
             })
@@ -134,7 +139,14 @@ class ReportsController extends Controller
     }
 
     public function actionDownloadDocumentContract(Request $request) {
-        $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city', 'user')->firstOrFail();
+        $order = Order::where('id', $request->id)
+            ->where(function ($orderQuery) {
+                return Auth::check() ? $orderQuery
+                    ->where('user_id', Auth::user()->id)
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+            })
+            ->with('status', 'ship_city', 'dest_city', 'user')->firstOrFail();
 
         $path = public_path('templates/ContractTemplate.docx');
         $documentName = 'Договор';
@@ -155,7 +167,14 @@ class ReportsController extends Controller
     }
 
     public function actionDownloadDocumentInvoice(Request $request) {
-        $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
+        $order = Order::where('id', $request->id)
+            ->where(function ($orderQuery) {
+                return Auth::check() ? $orderQuery
+                    ->where('user_id', Auth::user()->id)
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+            })
+            ->with('status', 'ship_city', 'dest_city')->firstOrFail();
 
         $orderDate = Date::parse($order->created_at)->format('d F Y');
         $documentExtension = '.xlsx';
@@ -186,7 +205,14 @@ class ReportsController extends Controller
     }
 
 //    public function actionDownloadDocumentReceipt(Request $request){
-//        $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
+//        $order = Order::where('id', $request->id)
+//            ->where(function ($orderQuery) {
+//                return Auth::check() ? $orderQuery
+//                    ->where('user_id', Auth::user()->id)
+//                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+//                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+//            })
+//            ->with('status', 'ship_city', 'dest_city')->firstOrFail();
 //
 //        $orderDate = Date::now()->format('d F Y');
 //        $path = public_path('templates\\ReceiptTemplate.xlsx');
@@ -222,7 +248,14 @@ class ReportsController extends Controller
 //    }
 
     public function actionDownloadDocumentReceipt(Request $request) {
-        $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
+        $order = Order::where('id', $request->id)
+            ->where(function ($orderQuery) {
+                return Auth::check() ? $orderQuery
+                    ->where('user_id', Auth::user()->id)
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+            })
+            ->with('status', 'ship_city', 'dest_city')->firstOrFail();
 
         $orderDate = Date::parse($order->created_at)->format('d F Y');
         $documentName = "Экспедиторская расписка №$order->id от $orderDate г.";
@@ -254,7 +287,14 @@ class ReportsController extends Controller
     }
 
     public function actionDownloadDocumentTransfer(Request $request) {
-        $order = Order::where([['id', $request->id], ['user_id', Auth::user()->id]])->with('status', 'ship_city', 'dest_city')->firstOrFail();
+        $order = Order::where('id', $request->id)
+            ->where(function ($orderQuery) {
+                return Auth::check() ? $orderQuery
+                    ->where('user_id', Auth::user()->id)
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+            })
+            ->with('status', 'ship_city', 'dest_city')->firstOrFail();
 
         $orderDate = Date::parse($order->created_at)->format('d F Y');
         $templateFile = public_path('templates/TransferTemplate.xlsx');

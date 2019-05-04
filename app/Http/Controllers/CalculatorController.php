@@ -55,7 +55,7 @@ class CalculatorController extends Controller
                         'width' => '0.1',
                         'height' => '0.1',
                         'weight' => '1',
-                        'volume' => '0.1',
+                        'volume' => '0.001',
                         'quantity' => '1'
                     ]
                 ];

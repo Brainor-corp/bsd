@@ -366,11 +366,10 @@ function totalVolumeRecount() {
     let totalVolume = 0;
     $.each($(".package-volume"), function(index, item) {
         var curAmount = parseFloat($(item).prev('.input-group').find( ".package-quantity" ).val());
-        console.log('Amount: ' + curAmount);
         if(isNaN(curAmount)){curAmount = 1;}
 
         var curVolume = parseFloat($(item).val().replace(',', '.').toString()) * curAmount;
-        totalVolume = totalVolume + curVolume;
+        totalVolume += curVolume;
     });
 
     $("#total-volume").attr('value', totalVolume).val(totalVolume);
