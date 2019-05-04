@@ -15,7 +15,6 @@ Route::group(['middleware' => ['password_reset']], function () {
     Auth::routes();
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
-
     // Главная
     Route::get('/', 'MainPageController@index')->name('index');
 
@@ -72,9 +71,6 @@ Route::group(['middleware' => ['password_reset']], function () {
     // Статус груза по номеру заказа
     Route::any('/shipment-search', 'OrderController@shipmentSearch')->name('shipment-search');
 
-    Route::post('/route-tariffs-options', 'Admin\AdminController@getRouteTariffsOptionsList');
-    Route::post('/regions-options', 'Admin\AdminController@getRegionsOptionsList');
-
     Route::group(['middleware' => ['auth']], function () {
         // Оформленные заказы могут смотреть только авторизованные пользователи,
         // т.к. оформить заказ можно только будучи авторизованным.
@@ -83,9 +79,11 @@ Route::group(['middleware' => ['password_reset']], function () {
         // Работа с оповещениями доступна только авторизованным пользователям.
         Route::get('/event-list', 'EventsController@showEventListPage')->name('event-list');
         Route::post('/event-hide', 'EventsController@actionHideEvent')->name('event-hide');
-
-        // Профиль пользователя
-        Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
-        Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
     });
+});
+
+Route::group(['middleware' => ['auth']], function () {
+    // Профиль пользователя
+    Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
+    Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
 });
