@@ -237,7 +237,11 @@ class OrderController extends Controller
     }
 
     public function shipmentSearch(Request $request){
-        $order = Order::with('status')->find($request->get('order_id'));
+        $order = Order::with('status')
+            ->whereDoesntHave('status', function ($statusQuery) {
+                return $statusQuery->where('slug', "chernovik");
+            })
+            ->find($request->get('order_id'));
 
         return View::make('v1.pages.shipment-status.status-page')->with(compact('order'));
     }

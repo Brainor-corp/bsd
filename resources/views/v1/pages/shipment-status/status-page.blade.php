@@ -20,7 +20,7 @@
                             <div class="reports__header row align-items-center">
                                 <span class="reports__header-label margin-md-item">Поиск:</span>
                                 <div class="margin-md-item d-flex flex-wrap control-group">
-                                    <input name="order_id" type="text" class="form-control search-input" placeholder="Введите номер">
+                                    <input name="order_id" type="text" class="form-control search-input" placeholder="Введите номер" value="{{ request()->get('order_id') }}">
                                 </div>
                                 <button type="submit" class="btn btn-danger">Найти груз</button>
                             </div>
