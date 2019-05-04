@@ -266,9 +266,15 @@ class OrderController extends Controller
         return View::make('v1.partials.profile.orders')->with(compact('orders'))->render();
     }
 
-    // todo Проверка принадлежности заказа пользователю
     public function actionGetOrderItems(Request $request) {
-        $order = Order::where('id', $request->order_id)->with('order_items')->firstOrFail();
+        $order = Order::where('id', $request->order_id)
+            ->where(function ($orderQuery) {
+                return Auth::check() ? $orderQuery
+                    ->where('user_id', Auth::user()->id)
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+            })
+            ->with('order_items')->firstOrFail();
         return View::make('v1.partials.profile.order-items-modal-body')->with(compact('order'))->render();
     }
 
