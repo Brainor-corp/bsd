@@ -52,17 +52,17 @@ Route::post('/order-save', 'OrderController@orderSave')
 // Страница со списком отчётов доступна всем пользователям.
 // Если пользователь не авторизован, то выводятся отчёты с текущим enter_id.
 // Если пользователь авторизован, то выводятся отчёты с текущим enter_id или с текущим user_id.
-Route::get('/klientam/report-list', 'ProfileController@showReportListPage')->name('report-list');
-Route::post('/search-orders', 'ProfileController@searchOrders')->name('search-orders');
-Route::post('/get-order-items', 'ProfileController@actionGetOrderItems')->name('get-order-items');
-Route::post('/get-order-search-input', 'ProfileController@actionGetOrderSearchInput')->name('get-order-search-input');
-Route::post('/download-reports', 'ProfileController@actionDownloadReports')->name('download-reports');
+Route::get('/klientam/report-list', 'ReportsController@showReportListPage')->name('report-list');
+Route::post('/download-reports', 'ReportsController@actionDownloadReports')->name('download-reports');
+Route::post('/search-orders', 'OrderController@searchOrders')->name('search-orders');
+Route::post('/get-order-items', 'OrderController@actionGetOrderItems')->name('get-order-items');
+Route::post('/get-order-search-input', 'OrderController@actionGetOrderSearchInput')->name('get-order-search-input');
 
-Route::get('/download-document-request', 'ProfileController@actionDownloadDocumentRequest')->name('download-document-request');
-Route::get('/download-document-invoice', 'ProfileController@actionDownloadDocumentInvoice')->name('download-document-invoice');
-Route::get('/download-document-transfer', 'ProfileController@actionDownloadDocumentTransfer')->name('download-document-transfer');
-Route::get('/download-document-contract', 'ProfileController@actionDownloadDocumentContract')->name('download-document-contract');
-Route::get('/download-document-receipt', 'ProfileController@actionDownloadDocumentReceipt')->name('download-document-receipt');
+Route::get('/download-document-request', 'ReportsController@actionDownloadDocumentRequest')->name('download-document-request');
+Route::get('/download-document-invoice', 'ReportsController@actionDownloadDocumentInvoice')->name('download-document-invoice');
+Route::get('/download-document-transfer', 'ReportsController@actionDownloadDocumentTransfer')->name('download-document-transfer');
+Route::get('/download-document-contract', 'ReportsController@actionDownloadDocumentContract')->name('download-document-contract');
+Route::get('/download-document-receipt', 'ReportsController@actionDownloadDocumentReceipt')->name('download-document-receipt');
 
 // Партнёры
 Route::get('/partners', 'PartnersController@showPartnersPage')->name('partners-page');
@@ -77,11 +77,11 @@ Route::post('/regions-options', 'Admin\AdminController@getRegionsOptionsList');
 Route::group(['middleware' => ['auth']], function () {
     // Оформленные заказы могут смотреть только авторизованные пользователи,
     // т.к. оформить заказ можно только будучи авторизованным.
-    Route::get('/klientam/report/{id}', 'ProfileController@showReportPage')->name('report-show');
+    Route::get('/klientam/report/{id}', 'ReportsController@showReportPage')->name('report-show');
 
     // Работа с оповещениями доступна только авторизованным пользователям.
-    Route::get('/event-list', 'ProfileController@showEventListPage')->name('event-list');
-    Route::post('/event-hide', 'ProfileController@actionHideEvent')->name('event-hide');
+    Route::get('/event-list', 'EventsController@showEventListPage')->name('event-list');
+    Route::post('/event-hide', 'EventsController@actionHideEvent')->name('event-hide');
 
     // Профиль пользователя
     Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
