@@ -6,7 +6,6 @@ use App\City;
 use App\Http\Helpers\CalculatorHelper;
 use App\Order;
 use App\Oversize;
-use App\Point;
 use App\Route;
 use App\Service;
 use Illuminate\Http\Request;
@@ -23,7 +22,10 @@ class CalculatorController extends Controller
                 ->when(
                     Auth::check(),
                     function ($orderQuery) {
-                        return $orderQuery->where('user_id', Auth::user()->id);
+                        return $orderQuery->where(function ($orderSubQuery) {
+                            return $orderSubQuery->where('user_id', Auth::user()->id)
+                                ->orWhere('enter_id', $_COOKIE['enter_id']);
+                        });
                     }
                 )
                 ->when(
@@ -269,49 +271,5 @@ class CalculatorController extends Controller
         }else{
             return $result;
         }
-    }
-
-    /**
-     * @param $pointName
-     * @return bool|Point
-     */
-    function getPointByName($pointName) {
-        return Point::where('name', $pointName)
-                ->has('city')
-                ->with('city')
-                ->first() ?? false;
-    }
-
-    /**
-     * @param $cityName
-     * @return bool
-     */
-    public function getCityByName($cityName) {
-        return City::where('name', $cityName)
-                ->first() ?? false;
-    }
-
-    /**
-     * @param Request $request:
-     *
-     * $request->city // Название города
-     * $request->weight
-     * $request->volume
-     * $request->units // Пакеты
-     * $request->distance
-     * $request->isWithinTheCity // Внутри города
-     * $request->x2 // Умножим цену на 2, если нужна точная доставка
-     *
-     * @return array
-     */
-    public function getTariffPrice(Request $request) {
-        return CalculatorHelper::getTariffPrice(
-            $request->get('city'),
-            $request->get('weight'),
-            $request->get('volume'),
-            $request->get('isWithinTheCity') === "true",
-            $request->get('x2') === "true",
-            $request->get('distance')
-        );
     }
 }

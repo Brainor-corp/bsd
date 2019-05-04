@@ -12,14 +12,12 @@ use App\Http\Helpers\DocumentHelper;
 use App\Order;
 use App\Type;
 use App\User;
-
-use Carbon\Carbon;
-use Jenssegers\Date\Date;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\View;
+use Jenssegers\Date\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -83,14 +81,25 @@ class ProfileController extends Controller {
 
     public function showReportListPage() {
         $orders = Order::with('status', 'ship_city', 'dest_city')
-            ->where('user_id', Auth::user()->id)
+            ->where(function ($ordersQuery) {
+                return Auth::check() ? $ordersQuery
+                    ->where('user_id', Auth::user()->id)
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
+            })
             ->get();
+
         return View::make('v1.pages.profile.profile-inner.report-list-page')->with(compact('orders'));
     }
 
     public function searchOrders(Request $request) {
         $orders = Order::with('status', 'ship_city', 'dest_city')
-            ->where('user_id', Auth::user()->id)
+            ->where(function ($ordersQuery) {
+                return Auth::check() ? $ordersQuery
+                    ->where('user_id', Auth::user()->id)
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
+            })
             ->when($request->get('id'), function ($order) use ($request) {
                 return $order->where('id', 'LIKE', '%' . $request->get('id') . '%');
             })
@@ -128,6 +137,9 @@ class ProfileController extends Controller {
                     return $services->withPivot('price');
                 }
             ])
+            ->whereDoesntHave('status', function ($statusQuery) {
+                return $statusQuery->where('slug', 'chernovik');
+            })
             ->firstOrFail();
 
         return View::make('v1.pages.profile.profile-inner.report-show-page')->with(compact('order'))->render();

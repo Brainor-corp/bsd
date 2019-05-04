@@ -182,7 +182,7 @@ class CalculatorHelper
         $totalVolume = 0;
 
         foreach($packages as $package) {
-            $totalVolume += $package['volume'];
+            $totalVolume += $package['volume']  * $package['quantity'];
         }
 
         $servicesData = Service::get();
@@ -194,7 +194,8 @@ class CalculatorHelper
                 $currentService = $servicesData->where('id', $serviceId)->first();
                 $currentServicePrice = max($currentService->price * $totalVolume, 200);
 
-                $usedServices[$serviceId]=[
+                $usedServices[$serviceId] = [
+                    'id'            =>          $currentService->id,
                     'name'          =>          $currentService->name,
                     'slug'          =>          $currentService->slug,
                     'description'   =>          $currentService->description,
@@ -688,7 +689,7 @@ class CalculatorHelper
         }
 
         if(is_numeric($totalPrice)) {
-            $discount = $totalPrice * ($discount / 100);
+            $discount = round($totalPrice * ($discount / 100), 2);
             $totalPrice -= $discount;
         }
 

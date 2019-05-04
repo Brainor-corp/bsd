@@ -72,6 +72,8 @@
         var lastId = $( '.package-item' ).filter( ':last' ).data('packageId');
         var nextId = lastId+1;
 
+        console.log(lastId, nextId);
+
         var html =
             '<div class="col-11 form-item row align-items-center package-item" id="package-'+ nextId +'" data-package-id="'+ nextId +'" style="padding-right: 0;">' +
             '<label class="col-auto calc__label"></label>' +
@@ -351,7 +353,7 @@ function getAllCalculatedData() {
             console.log('calculate..');
         },
         success: function(data){
-            console.table(data);
+            // console.table(data);
             renderCalendar(data);
         },
         error: function(data){
