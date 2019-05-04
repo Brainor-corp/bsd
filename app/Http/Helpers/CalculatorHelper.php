@@ -510,9 +510,13 @@ class CalculatorHelper
 
         // Если ни города, ни пункта не нашли, то выводим договорную цену
         if(!$city) {
-            return [
+            return $isWithinTheCity ? [
+                'price' => 'Договорная',
+                'city_name' => $cityName
+            ] : [
                 'price' => 'Договорная',
                 'city_name' => $cityName,
+                'distance' => intval($distance),
             ];
         }
 
@@ -542,14 +546,15 @@ class CalculatorHelper
             return [
                 'price' => 'Договорная',
                 'city_name' => $cityName,
+                'distance' => intval($distance),
             ];
         }
 
         // Если в пределах города, то возвращаем тариф согласно пределам города
-        if($isWithinTheCity == 'true') {
+        if($isWithinTheCity) {
             return [
                 'price' => $x2 ? floatval($fixed_tariff) * 2 : floatval($fixed_tariff),
-                'city_name' => $cityName,
+                'city_name' => $cityName
             ];
         }
 
@@ -574,6 +579,7 @@ class CalculatorHelper
             return [
                 'price' => 'Договорная',
                 'city_name' => $cityName,
+                'distance' => intval($distance),
             ];
         }
 
@@ -691,6 +697,8 @@ class CalculatorHelper
         if(is_numeric($totalPrice)) {
             $discount = round($totalPrice * ($discount / 100), 2);
             $totalPrice -= $discount;
+        } else {
+            $discount = "Договорная";
         }
 
         return [
