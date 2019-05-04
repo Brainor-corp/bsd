@@ -22,6 +22,7 @@ Route::any('/calculator/get-route', 'CalculatorController@getRoute')->name('getR
 Route::any('/calculator/get-tariff', 'CalculatorController@getTariff')->name('getTariff');
 Route::any('/calculator/get-tariff-price', 'CalculatorController@getTariffPrice')->name('getTariffPrice');
 Route::any('/calculator/get-total-price', 'CalculatorController@getTotalPrice')->name('getTotalPrice');
+Route::any('/calculator/get-all-calculated', 'CalculatorController@getAllCalculatedData')->name('getAllCalculated');
 //END----CALCULATOR
 
 Route::post('/get-cities-by-term', 'CitiesController@getCitiesByTerm')->name('get-cities-by-name');

@@ -4,48 +4,83 @@ namespace App\Http\Controllers;
 
 use App\City;
 use App\Http\Helpers\CalculatorHelper;
+use App\Order;
 use App\Oversize;
-use App\Point;
 use App\Route;
 use App\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CalculatorController extends Controller
 {
-    public function calculatorShow(Request $request) {
-        if(isset($request->packages)){
-            $packages = $request->packages;
-        }else{
-            $packages=[
-              1=>[
-                  'length' => '0.1',
-                  'width' => '0.1',
-                  'height' => '0.1',
-                  'weight' => '1',
-                  'volume' => '0.1',
-                  'quantity' => '1'
-              ]
-            ];
+    public function calculatorShow($id = null, Request $request) {
+        $shipCities = City::where('is_ship', true)->with('terminal')->get();
+
+        $order = null;
+        if(isset($id)) { // Если открыли страницу черновика
+            $order = Order::where('id', $id)
+                ->when(
+                    Auth::check(),
+                    function ($orderQuery) {
+                        return $orderQuery->where(function ($orderSubQuery) {
+                            return $orderSubQuery->where('user_id', Auth::user()->id)
+                                ->orWhere('enter_id', $_COOKIE['enter_id']);
+                        });
+                    }
+                )
+                ->when(
+                    !Auth::check(),
+                    function ($orderQuery) {
+                        return $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+                    }
+                )
+                ->with([
+                    'order_items',
+                    'order_services',
+                    'ship_city',
+                    'dest_city',
+                ])
+                ->firstOrFail();
+
+            $packages = $order->order_items->toArray();
+            $selectedShipCity = $order->ship_city_id;
+            $selectedDestCity = $order->dest_city_id;
+        } else { // Если открыли стандартный калькулятор
+            if(isset($request->packages)){
+                $packages = $request->packages;
+            }else{
+                $packages=[
+                    1=>[
+                        'length' => '0.1',
+                        'width' => '0.1',
+                        'height' => '0.1',
+                        'weight' => '1',
+                        'volume' => '0.001',
+                        'quantity' => '1'
+                    ]
+                ];
+            }
+
+            $selectedShipCity = null;
+            $selectedDestCity = null;
+            if(isset($request->ship_city)){
+                $selectedShipCity = $request->ship_city;
+            }else{
+                $selectedShipCity = 53;
+            }
+
+            if(isset($request->ship_city) && isset($request->dest_city)){
+                $selectedDestCity = $request->dest_city;
+            }else{
+                $selectedDestCity = 78;
+            }
         }
 
-        $shipCities = City::where('is_ship', true)->with('terminal')->get();
-        $selectedShipCity = null;
-        $selectedDestCity = null;
-        if(isset($request->ship_city)){
-            $selectedShipCity = $request->ship_city;
-        }else{
-            $selectedShipCity = 53;
-        }
         $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity))
             ->with('terminal')
             ->orderBy('name')
             ->get();
 
-        if(isset($request->ship_city) && isset($request->dest_city)){
-            $selectedDestCity = $request->dest_city;
-        }else{
-            $selectedDestCity = 78;
-        }
         $route = $this->getRoute($request, $selectedShipCity,$selectedDestCity);
         $tariff = json_decode($this->getTariff($request, $packages, $selectedShipCity,$selectedDestCity)->content());
 
@@ -60,9 +95,60 @@ class CalculatorController extends Controller
                 'tariff',
                 'services',
                 'selectedShipCity',
-                'selectedDestCity'
+                'selectedDestCity',
+                'order'
             ));
 
+    }
+
+    public function getAllCalculatedData(Request $request) {
+        $cities = City::whereIn('id', [
+            $request->get('ship_city'),
+            $request->get('dest_city')
+        ])->get();
+
+        if(count($cities) < 2) {
+            return ["error" => "error"];
+        }
+
+        $totalWeight = 0;
+        $totalVolume = 0;
+
+        foreach($request->get('cargo')['packages'] as $package) {
+            $totalWeight += $package['weight'];
+            $totalVolume += $package['volume'];
+        }
+
+        return CalculatorHelper::getAllCalculatedData(
+            $cities->where('id', $request->get('ship_city'))->first(),
+            $cities->where('id', $request->get('dest_city'))->first(),
+            $request->get('cargo')['packages'],
+            $request->get('service'),
+            $request->get('need-to-take') === "on" ?
+            [
+                'cityName' => $request->get('need-to-take-type') === "in" ?
+                    $cities->where('id', $request->get('ship_city'))->first()->name :
+                    $request->get('take_city_name'),
+                'weight' => $totalWeight,
+                'volume' => $totalVolume,
+                'isWithinTheCity' => $request->get('need-to-take-type') === "in",
+                'x2' => $request->get('ship-from-point') === "on",
+                'distance' => $request->get('take_distance')
+            ] : [],
+            $request->get('need-to-bring') === "on" ?
+            [
+                'cityName' => $request->get('need-to-bring-type') === "in" ?
+                    $cities->where('id', $request->get('dest_city'))->first()->name :
+                    $request->get('bring_city_name'),
+                'weight' => $totalWeight,
+                'volume' => $totalVolume,
+                'isWithinTheCity' => $request->get('need-to-bring-type') === "in",
+                'x2' => $request->get('bring-to-point') === "on",
+                'distance' => $request->get('bring_distance')
+            ] : [],
+            $request->get('insurance_amount'),
+            $request->get('discount')
+        );
     }
 
     public function getDestinationCities(Request $request, $ship_city = null) {
@@ -185,49 +271,5 @@ class CalculatorController extends Controller
         }else{
             return $result;
         }
-    }
-
-    /**
-     * @param $pointName
-     * @return bool|Point
-     */
-    function getPointByName($pointName) {
-        return Point::where('name', $pointName)
-                ->has('city')
-                ->with('city')
-                ->first() ?? false;
-    }
-
-    /**
-     * @param $cityName
-     * @return bool
-     */
-    public function getCityByName($cityName) {
-        return City::where('name', $cityName)
-                ->first() ?? false;
-    }
-
-    /**
-     * @param Request $request:
-     *
-     * $request->city // Название города
-     * $request->weight
-     * $request->volume
-     * $request->units // Пакеты
-     * $request->distance
-     * $request->isWithinTheCity // Внутри города
-     * $request->x2 // Умножим цену на 2, если нужна точная доставка
-     *
-     * @return array
-     */
-    public function getTariffPrice(Request $request) {
-        return CalculatorHelper::getTariffPrice(
-            $request->get('city'),
-            $request->get('weight'),
-            $request->get('volume'),
-            $request->get('isWithinTheCity') === "true",
-            $request->get('x2') === "true",
-            $request->get('distance')
-        );
     }
 }

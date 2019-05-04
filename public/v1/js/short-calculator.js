@@ -109,7 +109,6 @@ var getShortBaseTariff = function () {
 
             },
             success: function(data){
-                servicesRender(data.total_data);
                 $('#short_base-price').html(data.base_price);
                 $('#short_base-price').attr('data-base-price', data.base_price);
                 $('#short_total-price').html(data.total_data.total);
@@ -126,37 +125,6 @@ var getShortBaseTariff = function () {
                 // console.log(err);
             }
         });
-
-};
-
-var getShortTotalPrice = function () {
-    let shipCityID = $("#short_ship_city").val(),
-        destCityID = $("#short_dest_city").val(),
-        basePrice = $("#short_base-price").data('basePrice'),
-        totalVolume = $("#short_total-volume").attr('data-total-volume'),
-        formData  = $('.short_calculator-form').serialize();
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'post',
-        url: '/api/calculator/get-total-price',
-        data: {ship_city:shipCityID, dest_city:destCityID, base_price:basePrice, total_volume:totalVolume, formData},
-        cache: false,
-        beforeSend: function() {
-
-        },
-        success: function(data){
-
-            $('#short_total-price').html(data.total);
-            $('#short_total-price').attr('data-total-price', data.total);
-
-            $('#total-price').html(data.total);
-            $('#total-price').attr('data-total-price', data.total);
-        }
-    });
 
 };
 

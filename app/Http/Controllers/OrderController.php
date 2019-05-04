@@ -4,24 +4,30 @@ namespace App\Http\Controllers;
 
 use App\City;
 use App\Http\Helpers\CalculatorHelper;
-use App\Http\Helpers\EventHelper;
-use App\Mail\OrderCreated;
-use App\ContactEmail;
 use App\Order;
 use App\OrderItem;
 use App\Route;
-use App\Service;
 use App\Type;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 
 class OrderController extends Controller
 {
     public function orderSave(Request $request) {
-        $totalWeight = $totalVolume = 0;
+        $cities = City::whereIn('id', [
+            $request->get('ship_city'),
+            $request->get('dest_city')
+        ])->get();
+
+        if(count($cities) < 2) {
+            return abort(500, "Город(а) маршрута не найден(ы).");
+        }
+
+        $totalWeight = 0;
+        $totalVolume = 0;
+
         $packages = [];
         foreach($request->get('cargo')['packages'] as $package) {
             $packages[] = new OrderItem([
@@ -37,8 +43,39 @@ class OrderController extends Controller
             $totalVolume += $package['volume'] * $package['quantity'];
         }
 
-        if(!count($packages)) {
-            return abort(500, 'Не указаны габариты.');
+        $calculatedData = CalculatorHelper::getAllCalculatedData(
+            $cities->where('id', $request->get('ship_city'))->first(),
+            $cities->where('id', $request->get('dest_city'))->first(),
+            $request->get('cargo')['packages'],
+            $request->get('service'),
+            $request->get('need-to-take') === "on" ?
+                [
+                    'cityName' => $request->get('need-to-take-type') === "in" ?
+                        $cities->where('id', $request->get('ship_city'))->first()->name :
+                        $request->get('take_city_name'),
+                    'weight' => $totalWeight,
+                    'volume' => $totalVolume,
+                    'isWithinTheCity' => $request->get('need-to-take-type') === "in",
+                    'x2' => $request->get('ship-from-point') === "on",
+                    'distance' => $request->get('take_distance')
+                ] : [],
+            $request->get('need-to-bring') === "on" ?
+                [
+                    'cityName' => $request->get('need-to-bring-type') === "in" ?
+                        $cities->where('id', $request->get('dest_city'))->first()->name :
+                        $request->get('bring_city_name'),
+                    'weight' => $totalWeight,
+                    'volume' => $totalVolume,
+                    'isWithinTheCity' => $request->get('need-to-bring-type') === "in",
+                    'x2' => $request->get('bring-to-point') === "on",
+                    'distance' => $request->get('bring_distance')
+                ] : [],
+            $request->get('insurance_amount'),
+            $request->get('discount')
+        );
+
+        if(!$calculatedData) {
+            return abort(400);
         }
 
         $allTypes = Type::where('class', 'payer_type')
@@ -48,23 +85,6 @@ class OrderController extends Controller
                     ->whereIn('slug', ['chernovik', 'ozhidaet-moderacii']);
             })
             ->get();
-
-        $cities = City::whereIn('id', [
-            $request->get('ship_city'),
-            $request->get('dest_city'),
-        ])->with('terminal')->get();
-
-        if($cities->count() != 2) {
-            return abort(500, 'Город(а) маршрута не найдены.');
-        }
-
-        $shipCity = $cities->where('id', $request->get('ship_city'))->first();
-        $destCity = $cities->where('id', $request->get('dest_city'))->first();
-
-        $route = Route::where([
-            ['ship_city_id', $shipCity->id],
-            ['dest_city_id', $destCity->id],
-        ])->firstOrFail();
 
         $payerType = $allTypes->where('class', 'payer_type')
                 ->where('slug', $request->get('payer_type'))
@@ -90,148 +110,33 @@ class OrderController extends Controller
             return abort(500, 'Тип оплаты не найден.');
         }
 
-        $order = new Order;
-
-        $takePrice = null;
-        // Если нужен забор груза
-        if($request->get('need-to-take') === "on") {
-            $order->take_point = $request->get('ship-from-point') === "on";
-            $order->take_in_city = $request->get('need-to-take-type') === "in";
-
-            // Если забор груза за пределами города
-            if($request->get('need-to-take-type') === "from") {
-//                $pointFrom = $shipCity->terminal->geo_point ?? YandexHelper::getCoordinates($shipCity->name);
-//                $pointTo = YandexHelper::getCoordinates($request->get('ship_point'));
-//                $takeDistance = YandexHelper::getDistance($pointFrom, $pointTo);
-
-                $takeDistance = floatval($request->get('take_distance'));
-                if(!$takeDistance) {
-                    return abort(500, 'Не удалось определить дистанцию для забора груза');
-                }
-
-                $take_city_name = strpos( // Проверяем, чтобы название города содержалось в адресе
-                    $request->get('ship_point'),
-                    $request->get('take_city_name')
-                ) ? $request->get('take_city_name') : null;
-
-                $takePrice = CalculatorHelper::getTariffPrice(
-                    $take_city_name,
-                    $totalWeight,
-                    $totalVolume,
-                    false,
-                    $request->get('ship-from-point') === "on",
-                    $takeDistance
-                );
-
-                if(!isset($takePrice['price'])) {
-                    return abort(500, 'Не удалось определить цену для забора груза');
-                }
-                $takePrice = $takePrice['price'];
-
-                $order->take_address = $request->get('ship_point'); // Адрес забора
-                $order->take_city_name = $take_city_name; // Город забора
-                $order->take_distance = $takeDistance; // Дистанция от города отправки до адреса забора
-            } else { // Если забор в пределах города
-                $takePrice = CalculatorHelper::getTariffPrice(
-                    $shipCity->name,
-                    $totalWeight,
-                    $totalVolume,
-                    true,
-                    $request->get('ship-from-point') === "on"
-                );
-                $takePrice = $takePrice['price'];
-
-                $order->take_city_name = $shipCity->name; // Город забора
-            }
-
-            $order->take_price = $takePrice; // Цена забора
+        $order = null;
+        if($request->get('order_id')) {
+            $order = Order::where(function ($orderQuery) use ($request) {
+                return Auth::check() ? $orderQuery->where([
+                    ['id', $request->get('order_id')],
+                    ['user_id', Auth::user()->id]
+                ]) : $orderQuery->where([
+                    ['id', $request->get('order_id')],
+                    ['enter_id', $_COOKIE['enter_id']],
+                ]);
+            })->firstOrFail();
         }
 
-        $bringPrice = null;
-        // Если нужна доставка груза
-        if($request->get('need-to-bring') === "on") {
-            $order->delivery_point = $request->get('bring-to-point') === "on";
-            $order->delivery_in_city = $request->get('need-to-bring-type') === "in";
+        $shipCity = $cities->where('id', $request->get('ship_city'))->first();
+        $destCity = $cities->where('id', $request->get('dest_city'))->first();
 
-            // Если доставка за пределами города
-            if($request->get('need-to-bring-type') === "from") {
-//                $pointFrom = ($destCity->terminal->geo_point ?? $destCity->terminal->address) ?? YandexHelper::getCoordinates($destCity->name);
-//                $pointTo = YandexHelper::getCoordinates($request->get('dest_point'));
-//                $bringDistance = YandexHelper::getDistance($pointFrom, $pointTo);
+        $route = Route::where([
+            ['ship_city_id', $shipCity->id],
+            ['dest_city_id', $destCity->id],
+        ])->firstOrFail();
 
-                $bringDistance = floatval($request->get('bring_distance'));
-                if(!$bringDistance) {
-                    return abort(500, 'Не удалось определить дистанцию для забора груза');
-                }
-
-                $delivery_city_name = strpos( // Проверяем, чтобы название города содержалось в адресе
-                    $request->get('dest_point'),
-                    $request->get('bring_city_name')
-                ) ? $request->get('bring_city_name') : null;
-
-                $bringPrice = CalculatorHelper::getTariffPrice(
-                    $delivery_city_name,
-                    $totalWeight,
-                    $totalVolume,
-                    false,
-                    $request->get('bring-to-point') === "on",
-                    $bringDistance
-                );
-
-                if(!isset($bringPrice['price'])) {
-                    return abort(500, 'Не удалось определить цену для забора груза');
-                }
-                $bringPrice = $bringPrice['price'];
-
-                $order->delivery_address = $request->get('dest_point'); // Адрес доставки
-                $order->delivery_city_name = $delivery_city_name; // Город доставки
-                $order->delivery_distance = $bringDistance; // Дистанция от города назначения до адреса доставки
-            } else { // Если доставка в пределах города
-                $bringPrice = CalculatorHelper::getTariffPrice(
-                    $destCity->name,
-                    $totalWeight,
-                    $totalVolume,
-                    true,
-                    $request->get('bring-to-point') === "on"
-                );
-                $bringPrice = $bringPrice['price'];
-
-                $order->delivery_city_name = $destCity->name; // Город забора
-            }
-
-            $order->delivery_price = $bringPrice; // Цена доставки
+        if(!isset($order)) {
+            $order = new Order;
         }
 
-        $tariff = CalculatorHelper::getTariff(
-            $request->get('cargo')['packages'],
-            $route->id,
-            $request->get('service'),
-            $request->get('insurance_amount'),
-            $request->get('discount'),
-            true,
-            $takePrice,
-            $bringPrice
-        );
-
-        if(!isset($tariff) || !isset($tariff['base_price']) || !isset($tariff['total_data']['total'])) {
-            return abort(500, 'Не удалось определить тариф');
-        }
-
-        $allServices = Service::all('id', 'slug');
-
-        $services = [];
-        if(isset($tariff['total_data']['services'])) {
-            foreach($tariff['total_data']['services'] as $service) {
-                if(in_array($service['slug'], $allServices->pluck('slug')->toArray())) {
-                    $services[$allServices->where('slug', $service['slug'])->first()->id] = [
-                        'price' => $service['total']
-                    ];
-                }
-            }
-        }
-
-        $order->total_price = $tariff['total_data']['total'];
-        $order->base_price = $tariff['base_price'];
+        $order->total_price = $calculatedData['total'];
+        $order->base_price = $calculatedData['route']['price'];
         $order->shipping_name = $request->get('cargo')['name'];
         $order->total_weight = $totalWeight;
         $order->ship_city_id = $shipCity->id;
@@ -246,9 +151,9 @@ class OrderController extends Controller
         $order->recepient_name = $request->get('recepient_name');
         $order->recepient_phone = $request->get('recepient_phone');
         $order->discount = $request->get('discount');
-        $order->discount_amount = $tariff['total_data']['discount'] ?? null;
+        $order->discount_amount = $calculatedData['discount'] ?? 0;
         $order->insurance = $request->get('insurance_amount');
-        $order->insurance_amount = $tariff['total_data']['insurance'] ?? null;
+        $order->insurance_amount = end($calculatedData['services'])['total'] ?? 0;
         $order->user_id = Auth::user()->id ?? null;
         $order->enter_id = $_COOKIE['enter_id'];
         $order->payer_type = $payerType->id;
@@ -258,30 +163,127 @@ class OrderController extends Controller
         $order->status_id = $orderStatus->id;
         $order->order_date = Carbon::now();
 
-        $order->save();
+        if($request->get('need-to-take') === "on") {
+            $order->take_point = $request->get('ship-from-point') === "on";
+            $order->take_in_city = $request->get('need-to-take-type') === "in";
 
-        $order->order_items()->saveMany($packages);
-        $order->order_services()->attach($services);
+            // Если забор груза за пределами города
+            if($request->get('need-to-take-type') === "from") {
+                $order->take_address = $request->get('ship_point'); // Адрес забора
+                $order->take_city_name = $calculatedData['delivery']['take']['city_name']; // Город забора
+                $order->take_distance = $calculatedData['delivery']['take']['distance']; // Дистанция от города отправки до адреса забора
+            } else { // Если забор в пределах города
+                $order->take_address = null;
+                $order->take_distance = null;
+                $order->take_city_name = $shipCity->name; // Город забора
+            }
 
-        if($orderStatus->slug === "ozhidaet-moderacii" && Auth::check()) {
-            EventHelper::createEvent(
-                'Заказ успешно зарегистрирован!',
-                null,
-                true,
-                route('report-show', ['id' => $order->id], $absolute = false)
-            );
-
-            ContactEmail::where('active', true)->pluck('email')->each(function ($email) use ($order) {
-                Mail::to($email)->send(new OrderCreated($order));
-            });
-
+            $order->take_price = $calculatedData['delivery']['take']['price']; // Цена забора
+        } else {
+            $order->take_point = false;
+            $order->take_in_city = false;
+            $order->take_address = null;
+            $order->take_city_name = null;
+            $order->take_distance = null;
+            $order->take_price = null;
         }
 
-        return Auth::check() ? redirect(route('report-show', ['id' => $order->id])) : redirect()->back();
+        if($request->get('need-to-bring') === "on") {
+            $order->delivery_point = $request->get('bring-to-point') === "on";
+            $order->delivery_in_city = $request->get('need-to-bring-type') === "in";
+
+            // Если доставка за пределами города
+            if($request->get('need-to-bring-type') === "from") {
+                $order->delivery_address = $request->get('dest_point'); // Адрес доставки
+                $order->delivery_city_name = $calculatedData['delivery']['bring']['city_name']; // Город доставки
+                $order->delivery_distance = $calculatedData['delivery']['bring']['distance']; // Дистанция от города назначения до адреса доставки
+            } else { // Если доставка в пределах города
+                $order->delivery_address = null;
+                $order->delivery_distance = null;
+                $order->delivery_city_name = $destCity->name; // Город забора
+            }
+
+            $order->delivery_price = $calculatedData['delivery']['bring']['price']; // Цена доставки
+        } else {
+            $order->delivery_point = false;
+            $order->delivery_in_city = false;
+            $order->delivery_address = null;
+            $order->delivery_city_name = null;
+            $order->delivery_distance = null;
+            $order->delivery_price = null;
+        }
+
+        $servicesToSync = [];
+        foreach($calculatedData['services'] as $service) {
+            if(!isset($service['id'])) {
+                continue;
+            }
+
+            $servicesToSync[$service['id']] = [
+                'price' => $service['total']
+            ];
+        }
+
+        $order->save();
+
+        $order->order_items()->delete();
+        $order->order_items()->saveMany($packages);
+
+        $order->order_services()->sync($servicesToSync);
+
+        return $order->status->slug === "chernovik" ?
+            redirect(route('calculator-show', ['id' => $order->id])) :
+            redirect(route('report-show', ['id' => $order->id]));
     }
 
     public function shipmentSearch(Request $request){
-        $order = Order::with('status')->find($request->order_id);
+        $order = Order::with('status')
+            ->whereDoesntHave('status', function ($statusQuery) {
+                return $statusQuery->where('slug', "chernovik");
+            })
+            ->find($request->get('order_id'));
+
         return View::make('v1.pages.shipment-status.status-page')->with(compact('order'));
+    }
+
+    public function searchOrders(Request $request) {
+        $orders = Order::with('status', 'ship_city', 'dest_city')
+            ->where(function ($ordersQuery) {
+                return Auth::check() ? $ordersQuery
+                    ->where('user_id', Auth::user()->id)
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
+            })
+            ->when($request->get('id'), function ($order) use ($request) {
+                return $order->where('id', 'LIKE', '%' . $request->get('id') . '%');
+            })
+            ->when($request->finished == 'true', function ($order) use ($request) {
+                return $order->whereHas('status', function ($type) {
+                    return $type->where('slug', 'dostavlen');
+                });
+            })
+            ->when($request->finished == 'false' && $request->get('status'), function ($order) use ($request) {
+                return $order->where('status_id', $request->get('status'));
+            })
+            ->get();
+
+        return View::make('v1.partials.profile.orders')->with(compact('orders'))->render();
+    }
+
+    public function actionGetOrderItems(Request $request) {
+        $order = Order::where('id', $request->order_id)
+            ->where(function ($orderQuery) {
+                return Auth::check() ? $orderQuery
+                    ->where('user_id', Auth::user()->id)
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+            })
+            ->with('order_items')->firstOrFail();
+        return View::make('v1.partials.profile.order-items-modal-body')->with(compact('order'))->render();
+    }
+
+    public function actionGetOrderSearchInput() {
+        $types = Type::where('class', 'order_status')->get();
+        return View::make('v1.partials.profile.order-search-select')->with(compact('types'))->render();
     }
 }
