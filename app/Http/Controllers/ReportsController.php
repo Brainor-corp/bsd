@@ -155,10 +155,10 @@ class ReportsController extends Controller
         $params = [
             'created_at' => $order->created_at,
             'number' => $order->id,
-            'client_phone' => $order->user->phone ?? 'Тел. —',
-            'client_email' => $order->user->email,
-            'client_name' => $order->user->full_name,
-            'client_short' => $order->user->surname_initials,
+            'client_phone' => $order->user->phone ?? '—',
+            'client_email' => $order->user->email ?? '—',
+            'client_name' => $order->user->full_name ?? '—',
+            'client_short' => $order->user->surname_initials ?? '—',
         ];
 
         $tempFile = DocumentHelper::generateTBSDocument($path, $documentExtension, $params);
