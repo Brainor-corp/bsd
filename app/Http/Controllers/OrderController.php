@@ -112,15 +112,13 @@ class OrderController extends Controller
 
         $order = null;
         if($request->get('order_id')) {
-            $order = Order::where(function ($orderQuery) use ($request) {
-                return Auth::check() ? $orderQuery->where([
-                    ['id', $request->get('order_id')],
-                    ['user_id', Auth::user()->id]
-                ]) : $orderQuery->where([
-                    ['id', $request->get('order_id')],
-                    ['enter_id', $_COOKIE['enter_id']],
-                ]);
-            })->firstOrFail();
+            $order = Order::where('id', $request->get('order_id'))
+                ->where(function ($orderQuery) {
+                    return Auth::check() ? $orderQuery
+                        ->where('user_id', Auth::user()->id)
+                        ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                        $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+                })->firstOrFail();
         }
 
         $shipCity = $cities->where('id', $request->get('ship_city'))->first();
