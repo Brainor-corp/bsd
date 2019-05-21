@@ -57,3 +57,9 @@
 #news-page__filter-block .dropdown-menu{
     top: 0!important;
 }
+
+/*Кладр*/
+#kladr_autocomplete .autocomplete {
+    width: auto!important;
+}
+/*Конец Кладр*/

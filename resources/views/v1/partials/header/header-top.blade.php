@@ -50,7 +50,7 @@
                                     <a class="dropdown-item" href="{{ url('/klientam/faq') }}">FAQ</a>
                                     <a class="dropdown-item" href="{{ route('event-list') }}">Лента событий</a>
                                     <a class="dropdown-item" href="{{ url('/klientam/napravleniya') }}">Направления</a>
-                                    <a class="dropdown-item" href="{{ route('report-list') }}">Отчеты</a>
+                                    <a class="dropdown-item" href="{{ route('orders-list') }}">Мои заказы</a>
                                     <a class="dropdown-item" href="{{ route('reviews') }}">Отзывы</a>
                                 </div>
                             </li>
@@ -64,13 +64,13 @@
                                     <a class="dropdown-item" href="{{ route('terminals-addresses-show') }}">Адреса терминалов</a>
                                     <a class="dropdown-item" href="{{ url('/o-kompanii/dokumenty-i-sertifikaty') }}">Документы и сертификаты</a>
                                     <a class="dropdown-item" href="{{ url('/partnery') }}">Партнеры</a>
-                                    <a class="dropdown-item" href="#">Сотрудники</a>
+                                    <a class="dropdown-item" href="{{ url('/o-kompanii/sotrudniki') }}">Сотрудники</a>
                                 </div>
                             </li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Контакты</a>
                                 <div role="menu" class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ url('/adres-terminalov') }}">Адрес терминалов</a>
+                                    <a class="dropdown-item" href="{{ route('terminals-addresses-show') }}">Адрес терминалов</a>
                                 </div>
                             </li>
                         </ul>

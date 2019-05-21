@@ -223,10 +223,10 @@ class CalculatorHelper
         return $usedServices;
     }
 
-    public static function oversize_ratio($package)
+    public static function oversize_ratio($oversizes_id, $package)
     {
         $query = new  OversizeMarkup();
-        $query = $query->where('oversize_id', 1);
+        $query = $query->where('oversize_id', $oversizes_id);
         $query = $query->where(function ($q) use ($package) {
             $q->orWhere([['rate_id', 26], ['threshold', '<=', $package['weight']]]);
             $q->orWhere([['rate_id', 27], ['threshold', '<=', $package['volume']]]);

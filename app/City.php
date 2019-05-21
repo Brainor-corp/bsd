@@ -43,6 +43,10 @@ class City extends Model
         return$this->hasOne(Terminal::class, 'city_id', 'id');
     }
 
+    public function kladr() {
+        return$this->hasOne(Kladr::class, 'id', 'kladr_id');
+    }
+
     public function getComprehensiveIsShipAttribute(){
         return $this->is_ship ? 'Да' : 'Нет' ;
     }

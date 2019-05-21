@@ -5,7 +5,7 @@
         <div class="container">
             <span class="breadcrumb__item"><a href="{{ route('index') }}" class="">Главная</a></span>
             <span class="breadcrumb__item"><a href="{{ url('/klientam') }}" class="">Клиентам</a></span>
-            <span class="breadcrumb__item">Отчеты</span>
+            <span class="breadcrumb__item">Мои заказы</span>
         </div>
     </div>
     <section class="wrapper">
@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-12">
                     <header class="wrapper__header">
-                        <h1>Отчеты</h1>
+                        <h1>Мои заказы</h1>
                     </header>
                     <div class="row">
                         <div class="col-12">
