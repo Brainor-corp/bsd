@@ -34,6 +34,7 @@
                         },
                         onChange: function(value) {// при изменении города назначения
                             getAllCalculatedData();
+                            kladrInitialize();
                         },
                     });
 
@@ -41,6 +42,7 @@
 
                     // Вызываем тригер изменения пункта самовывоза, чтобы пересчитать дистанцию
                     $('#ship_point').trigger('change');
+                    kladrInitialize();
                 }
             });
         }
@@ -54,8 +56,11 @@
         onChange: function(value) {// при изменении города назначения
             // Вызываем тригер изменения пункта самовывоза, чтобы пересчитать дистанцию
             $('#dest_point').trigger('change');
+            kladrInitialize();
         }
     });
+
+    kladrInitialize();
 
     getAllCalculatedData();
 
@@ -312,21 +317,38 @@
     });
 
     // Первично инициализируем селекты с кладром
-    $('input.suggest_address').on('change', function () {
+    $('input.suggest_address').on('keyup', function () {
         let point = $(this);
-        let obj = point.kladr('current');
-
-        kladrChange(obj, point);
-    }).each(function () { // Инициализация кладра для каждого из селектора
-        var point = $(this);
-        $(this).kladr({
-            // type: $.kladr.type.city, // берем город
-            oneString: true, // Если включить эту штуку, то будет возвращаться полный адрес
-            select: function (obj) {
-                kladrChange(obj, point);
-            }
-        });
+        if(point.val().length > 2){
+            let obj = point.kladr('current');
+            kladrChange(obj, point);
+        }
     });
+    function kladrInitialize() {
+        $('input.suggest_address').each(function (indx, element) { // Инициализация кладра для каждого из селектора
+            var point = $(element);
+            var city = '';
+            var cityKladrId = '';
+            if(point.attr('id') === 'ship_point'){
+                city = $('#ship_city').text();
+                cityKladrId = $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].kladrId;
+            }
+            if(point.attr('id') === 'dest_point') {
+                city = $('#dest_city').text();
+                cityKladrId = $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].kladrId;
+            }
+            console.log(cityKladrId);
+            $(element).kladr({
+                // type: $.kladr.type.city, // берем город
+                oneString: true, // Если включить эту штуку, то будет возвращаться полный адрес
+                parentType: $.kladr.type.city,
+                parentId: cityKladrId,
+                select: function (obj) {
+                    kladrChange(obj, point);
+                }
+            });
+        });
+    }
 
     $(document).on('change', '#ship-from-point', function () {
         getAllCalculatedData();

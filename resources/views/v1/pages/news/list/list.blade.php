@@ -86,7 +86,7 @@
                             </div>
                             <div class="news__block">
                                 @forelse($posts as $post)
-                                    <a href="{{ route('news-single-show', ['id' => $post->id]) }}" class="news__item d-flex flex-column">
+                                    <a href="{{ route('news-single-show', ['slug' => $post->slug]) }}" class="news__item d-flex flex-column">
                                         <div>
                                             <span class="news__title">{{ $post->title }}</span>
                                         </div>

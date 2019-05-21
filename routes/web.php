@@ -22,12 +22,12 @@ Route::group(['middleware' => ['password_reset']], function () {
     Route::get('/terminals-addresses', 'TerminalsController@showAddresses')->name('terminals-addresses-show');
 
     // Акции
-    Route::get('/promotion-list', 'PromotionsController@showList')->name('promotion-list-show');
-    Route::get('/promotion/{id}', 'PromotionsController@showSinglePromotion')->name('promotion-single-show');
+    Route::get('/promotions', 'PromotionsController@showList')->name('promotion-list-show');
+    Route::get('/promotions/{slug}', 'PromotionsController@showSinglePromotion')->name('promotion-single-show');
 
     // Новости
-    Route::get('/news-list', 'NewsController@showList')->name('news-list-show');
-    Route::get('/news/{id}', 'NewsController@showSingleNews')->name('news-single-show');
+    Route::get('/news', 'NewsController@showList')->name('news-list-show');
+    Route::get('/news/{slug}', 'NewsController@showSingleNews')->name('news-single-show');
     Route::post('/news-filter', 'NewsController@filterAction')->name('news-filter');
 
     // Документы и сертификаты
@@ -53,6 +53,7 @@ Route::group(['middleware' => ['password_reset']], function () {
     // Если пользователь не авторизован, то выводятся отчёты с текущим enter_id.
     // Если пользователь авторизован, то выводятся отчёты с текущим enter_id или с текущим user_id.
     Route::get('/klientam/report-list', 'ReportsController@showReportListPage')->name('report-list');
+    Route::get('/klientam/orders', 'ReportsController@showReportListPage')->name('orders-list');
     Route::post('/download-reports', 'ReportsController@actionDownloadReports')->name('download-reports');
     Route::post('/search-orders', 'OrderController@searchOrders')->name('search-orders');
     Route::post('/get-order-items', 'OrderController@actionGetOrderItems')->name('get-order-items');
