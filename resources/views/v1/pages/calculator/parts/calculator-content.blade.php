@@ -75,7 +75,7 @@
                     <option value=""></option>
                     @if($shipCities->count() > 0)
                         @foreach($shipCities as $shipCity)
-                            <option value="{{ $shipCity->id }}" data-data='{"terminal": "{{ $shipCity->coordinates_or_address }}"}' @if($selectedShipCity == $shipCity->id) selected @endif>{{ $shipCity->name }}</option>
+                            <option value="{{ $shipCity->id }}"  data-data='{"terminal": "{{ $shipCity->coordinates_or_address }}","kladrId": "{{ $shipCity->kladr->code ?? 'null' }}"}' @if($selectedShipCity == $shipCity->id) selected @endif>{{ $shipCity->name }}</option>
                         @endforeach
                     @endif
                 </select>
@@ -142,7 +142,7 @@
                     <option value=""></option>
                     @if(isset($destinationCities))
                         @foreach($destinationCities as $destinationCity)
-                            <option value="{{ $destinationCity->id }}" data-data='{"terminal": "{{ $destinationCity->coordinates_or_address }}"}' @if($selectedDestCity == $destinationCity->id) selected @endif>{{ $destinationCity->name }}</option>
+                            <option value="{{ $destinationCity->id }}" data-data='{"terminal": "{{ $destinationCity->coordinates_or_address }}","kladrId": "{{ $destinationCity->kladr->code ?? 'null' }}"}' @if($selectedDestCity == $destinationCity->id) selected @endif>{{ $destinationCity->name }}</option>
                         @endforeach
                     @endif
                 </select>

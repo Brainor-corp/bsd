@@ -14,8 +14,8 @@ class PromotionsController extends Controller
         return view('v1.pages.promotions.list.list')->with(compact('promotions'));
     }
 
-    public function showSinglePromotion($id){
-        $promotion = Promotion::where([['end_at', '>', Carbon::now()], ['id', $id]])->firstOrFail();
+    public function showSinglePromotion($slug){
+        $promotion = Promotion::where([['end_at', '>', Carbon::now()], ['slug', $slug]])->firstOrFail();
 
         return View::make('v1.pages.promotions.single.single-promotion')->with(compact('promotion'));
     }

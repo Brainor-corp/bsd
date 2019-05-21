@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 class CalculatorController extends Controller
 {
     public function calculatorShow($id = null, Request $request) {
-        $shipCities = City::where('is_ship', true)->with('terminal')->get();
+        $shipCities = City::where('is_ship', true)->with('terminal','kladr')->get();
 
         $order = null;
         if(isset($id)) { // Если открыли страницу черновика
@@ -46,8 +46,24 @@ class CalculatorController extends Controller
             $selectedShipCity = $order->ship_city_id;
             $selectedDestCity = $order->dest_city_id;
         } else { // Если открыли стандартный калькулятор
-            if(isset($request->packages)){
-                $packages = $request->packages;
+            if(isset($request->cargo['packages'])){
+                $requestPackages = $request->cargo['packages'];
+                foreach ($requestPackages as $key=>$package){
+
+                    $packages[$key]=[
+                        'length' => floatval($package['length'] ?? '0.1'),
+                        'width' => floatval($package['width'] ?? '0.1'),
+                        'height' => floatval($package['height'] ?? '0.1'),
+                        'weight' => floatval($package['weight'] ?? '1'),
+                        'volume' => floatval($package['volume'] ?? '0.001'),
+                        'quantity' => floatval($package['quantity'] ?? '1')
+                    ];
+                    if($packages[$key]['length'] * $packages[$key]['width'] * $packages[$key]['height'] !== $package['volume']){
+                        $packages[$key]['height'] = 2;
+                        $packages[$key]['width'] = $package['volume']/2;
+                        $packages[$key]['length'] = 1;
+                    }
+                }
             }else{
                 $packages=[
                     1=>[
@@ -157,7 +173,7 @@ class CalculatorController extends Controller
             $ship_city = $request->ship_city;
         }
         $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $ship_city))
-            ->with('terminal')
+            ->with('terminal','kladr')
             ->orderBy('name')
             ->get();
         return view('v1.pages.calculator.parts.destination-cities')->with(compact('destinationCities'));
@@ -190,6 +206,7 @@ class CalculatorController extends Controller
     }
 
     public function getTariff(Request $request, $packages = null, $ship_city_id = null, $dest_city_id = null, $route_id = null) {
+
         $formData = null;
         if(isset($request->formData)){
             $formData = array();

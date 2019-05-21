@@ -53,13 +53,13 @@ class NewsController extends Controller {
         return view('v1.pages.news.list.list')->with(compact('posts', 'cityTags', 'newsTerms', 'request'));
     }
 
-    public function showSingleNews($id){
+    public function showSingleNews($slug){
         $args = [
             'category' => ['novosti'],
             'type' => 'post',
+            'slug' => $slug,
         ];
         $post = CMSHelper::getQueryBuilder($args)
-            ->whereId($id)
             ->whereStatus('published')
             ->with(
                 [
