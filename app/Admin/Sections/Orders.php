@@ -119,11 +119,11 @@ class Orders extends Section {
                 FormField::input('sender_name', 'Имя отправителя'),
                 FormField::input('sender_phone', 'Телефон отправителя'),
 
-                FormField::select('recepient_id', 'Получатель(зарегестрированный)')
+                FormField::select('recipient_id', 'Получатель(зарегестрированный)')
                     ->setModelForOptions(User::class)
                     ->setDisplay('full_name'),
-                FormField::input('recepient_name', 'Имя получателя'),
-                FormField::input('recepient_phone', 'Телефон получателя'),
+                FormField::input('recipient_name', 'Имя получателя'),
+                FormField::input('recipient_phone', 'Телефон получателя'),
 
                 FormField::select('payer_id', 'Плательщик(зарегестрированный)')
                     ->setModelForOptions(User::class)

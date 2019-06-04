@@ -8,6 +8,7 @@ use App\Order;
 use App\Oversize;
 use App\Route;
 use App\Service;
+use App\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -101,6 +102,7 @@ class CalculatorController extends Controller
         $tariff = json_decode($this->getTariff($request, $packages, $selectedShipCity,$selectedDestCity)->content());
 
         $services = Service::get();
+        $userTypes = Type::where('class', 'UserType')->get();
 
         return view('v1.pages.calculator.calculator-show.calculator-show')
             ->with(compact(
@@ -112,7 +114,8 @@ class CalculatorController extends Controller
                 'services',
                 'selectedShipCity',
                 'selectedDestCity',
-                'order'
+                'order',
+                'userTypes'
             ));
 
     }
