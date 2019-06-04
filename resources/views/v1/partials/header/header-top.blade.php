@@ -170,6 +170,11 @@
                             @else
                                 <form action="{{ route('phone-confirmation') }}" method="post">
                                     @csrf
+                                    @if(session('success'))
+                                        <div class="row dropdown-menu__row justify-content-center">
+                                            <span class="text-success">{{session('success')}}</span>
+                                        </div>
+                                    @endif
                                     <div class="row dropdown-menu__row justify-content-center">
                                         <span class="dropdown-menu__title">Подтверждение регистрации</span>
                                     </div>
@@ -184,10 +189,13 @@
                                         </div>
                                     @endif
                                     <div class="row dropdown-menu__row justify-content-center">
-                                        <span class="annotation-text">Код отправлен на номер +{{ \Illuminate\Support\Facades\Auth::user()->phone }}</span>
+                                        <span class="annotation-text">
+                                            Код отправлен на номер +{{ \Illuminate\Support\Facades\Auth::user()->phone }}
+                                            <a href="{{ route('profile-data-show') }}">(ред.)</a>
+                                        </span>
                                     </div>
                                     <div class="d-flex">
-                                        <a href="##" class="link-style">Запросить код еще раз</a>
+                                        <a href="{{ route('resend-phone-confirm-code') }}" class="link-style">Запросить код еще раз</a>
                                     </div>
                                     <div class="d-flex dropdown-menu__row">
                                         <button type="submit" class="btn btn-block btn-danger">Подтвердить регистрацию</button>

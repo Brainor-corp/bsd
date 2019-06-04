@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\SMSHelper;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller {
 
@@ -24,34 +26,57 @@ class ProfileController extends Controller {
 
     public function edit(Request $request) {
         $user = User::where('id', Auth::user()->id)->firstOrFail();
+        $currentPhone = $user->phone;
+        $request->merge(['phone' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->phone)]);
 
-        if (Hash::check($request->old_password, $user->password)) {
-            User::where('id', $request->user_id)->update(
-                [
-                    'name' => $request->name,
-                    'surname' => $request->surname,
-                    'patronomic' => $request->patronomic,
-                    'phone' => $request->phone,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                ]
-            );
-            $message = [
-                'type' => 'alert-success',
-                'data' => 'Данные успешно обновлены'
-            ];
-        }
-        else {
-            $message = [
-                'type' => 'alert-warning',
-                'data' => 'Старый пароль введен неверно'
-            ];
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'surname' => ['nullable', 'string', 'max:255'],
+            'patronomic' => ['nullable', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', "unique:users,email,$user->id"],
+            'password' => ['nullable', 'string', 'min:8'],
+            'phone' => ['required', "unique:users,phone,$user->id", 'regex:/\d{11}/'],
+        ]);
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator->errors());
         }
 
-        return redirect()->back()->with($message['type'], $message['data']);
+        $redirectData = [];
+        $toUpdate = [
+            'name' => $request->name,
+            'surname' => $request->surname,
+            'patronomic' => $request->patronomic,
+            'phone' => $request->phone,
+            'email' => $request->email,
+        ];
+
+        if(!empty($request->password)) {
+            if (!Hash::check($request->old_password, $user->password)) {
+                return redirect()->back()->withErrors(['Старый пароль введен неверно']);
+            }
+
+            $toUpdate['password'] = Hash::make($request->password);
+        }
+
+        // Если поменялся номер телефона, то вышлем код повторно
+        // и пометим пользователя как неподтвержденного
+        if($currentPhone != $request->phone) {
+            $smsCode = rand(100000, 999999);
+
+            $toUpdate['phone_verification_code'] = $smsCode;
+            $toUpdate['verified'] = 0;
+
+            SMSHelper::sendSms($user->phone, strval($smsCode));
+            $redirectData = ['cn=1'];
+        }
+
+        $user->update($toUpdate);
+
+        return redirect(route('profile-data-show', $redirectData))->withSuccess('Данные успешно обновлены');
     }
 
-    public function PhoneConfirm(Request $request) {
+    public function phoneConfirm(Request $request) {
         $user = User::where('id', Auth::user()->id)->firstOrFail();
 
         if($user->verified) {
@@ -65,6 +90,21 @@ class ProfileController extends Controller {
         }
 
         return redirect(route('index', ['cn=1']))->withErrors(["code" => ["Код подтверждения ввёден неверно"]]);
+    }
+
+    public function resendPhoneConfirmCode() {
+        $user = User::where('id', Auth::user()->id)->firstOrFail();
+
+        if($user->verified) {
+            return redirect(route('index'));
+        }
+
+        $user->phone_verification_code = rand(100000, 999999);
+        $user->update();
+
+        SMSHelper::sendSms($user->phone, $user->phone_verification_code);
+
+        return redirect(route('index', ['cn=1']))->withSuccess("Код подтверждения отправлен повторно");
     }
 
 }

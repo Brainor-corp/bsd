@@ -16,7 +16,7 @@ class SmsConfirm
      */
     public function handle($request, Closure $next)
     {
-        if(!Auth::user()->verified) {
+        if(Auth::check() && !Auth::user()->verified) {
             return redirect(route('index', ['cn=1'])); // cn -- confirm need
         }
 

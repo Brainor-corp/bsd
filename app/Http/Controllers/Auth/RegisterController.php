@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Helpers\StreamSMSHelper;
+use App\Http\Helpers\SMSHelper;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -76,26 +76,10 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'phone' => $data['phone'],
             'phone_verification_code' => $smsCode,
+            'verified' => 0,
         ]);
 
-        $server = 'http://gateway.api.sc/rest/';
-        $login = env('SMS_SERVER_LOGIN');
-        $password = env('SMS_SERVER_PASSWORD');
-
-        $sms =  new StreamSMSHelper();
-        $smsSession = $sms->GetSessionId_Post($server,$login,$password);
-
-        $sourceAddress = 'TK-BSD.COM';
-        $destinationAddress = $user->phone;
-
-        $smsSend = $sms->SendSms(
-            $server,
-            $smsSession,
-            $sourceAddress,
-            $destinationAddress,
-            strval($smsCode),
-            1440
-        );
+        SMSHelper::sendSms($user->phone, strval($smsCode));
 
         return $user;
     }
