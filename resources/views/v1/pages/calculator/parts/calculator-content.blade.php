@@ -283,114 +283,45 @@
     {{--</div>--}}
     {{--</div>--}}
     <div class="calc__title">Отправитель</div>
-    {{--<div class="custom-control custom-radio">--}}
-    {{--<input type="radio" class="custom-control-input" id="sender-legally" name="sender" required />--}}
-    {{--<label class="custom-control-label" for="sender-legally">Юридическое лицо</label>--}}
-    {{--</div>--}}
-    {{--<div class="custom-control custom-radio">--}}
-    {{--<input type="radio" class="custom-control-input" id="sender-private" name="sender" required />--}}
-    {{--<label class="custom-control-label" for="sender-private">Физическое лицо</label>--}}
-    {{--</div>--}}
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">Правовая форма*</label>--}}
-    {{--<div class="col calc__inpgrp"><input type="text" class="form-control" placeholder="ИП, ООО, АО" required /></div>--}}
-    {{--</div>--}}
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">Название организации*</label>--}}
-    {{--<div class="col"><input type="text" class="form-control" required /></div>--}}
-    {{--</div>--}}
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">Юридический адрес*</label>--}}
-    {{--<div class="col">--}}
-    {{--<input type="text" class="form-control form-item"  placeholder="Город" required/>--}}
-    {{--<input type="text" class="form-control form-item"  placeholder="Улица" required/>--}}
-    {{--<div class="input-group">--}}
-    {{--<input type="text" class="form-control text-center form-item" placeholder="Дом" />--}}
-    {{--<input type="text" class="form-control text-center form-item" placeholder="Корп." />--}}
-    {{--<input type="text" class="form-control text-center form-item" placeholder="Стр." />--}}
-    {{--<input type="text" class="form-control text-center" placeholder="Кв./оф." />--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">ИНН*</label>--}}
-    {{--<div class="col calc__inpgrp"><input type="text" class="form-control" /></div>--}}
-    {{--</div>--}}
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">КПП*</label>--}}
-    {{--<div class="col calc__inpgrp"><input type="text" class="form-control" /></div>--}}
-    {{--</div>--}}
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">Контактная лицо*</label>--}}
-    {{--<div class="col calc__inpgrp"><input type="text" class="form-control" /></div>--}}
-    {{--</div>--}}
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">Телефон*</label>--}}
-    {{--<div class="col calc__inpgrp"><input type="text" class="form-control" /></div>--}}
-    {{--</div>--}}
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">Дополнительная информация</label>--}}
-    {{--<div class="col"><input type="text" class="form-control" /></div>--}}
-    {{--</div>--}}
-
-    <div class="form-item row align-items-center">
-        <label class="col-auto calc__label">ФИО*</label>
-        <div class="col"><input type="text" class="form-control" name="sender_name" value="{{ $order->sender_name ?? '' }}" required /></div>
-    </div>
-    <div class="form-item row align-items-center">
-        <label class="col-auto calc__label">Телефон*</label>
-        <div class="col calc__inpgrp"><input type="text" class="form-control" name="sender_phone" value="{{ $order->sender_phone ?? '' }}" required/></div>
+    @foreach($userTypes as $userType)
+        <div class="custom-control custom-radio">
+            <input type="radio" data-slug="{{ $userType->slug }}" class="custom-control-input" @if(isset($order) && $order->sender_type_id == $userType->id) checked @endif id="sender_type_{{ $userType->slug }}" value="{{ $userType->id }}" name="sender_type_id" required />
+            <label class="custom-control-label" for="sender_type_{{ $userType->slug }}">{{ $userType->name }}</label>
+        </div>
+    @endforeach
+    <div class="sender-forms">
+        <div class="legal"
+             @if(isset($order) && $order->sender_type->slug == 'yuridicheskoe-lico') style="display: block" @else style="display: none" @endif
+        >
+            @include('v1.partials.calculator.sender-forms.legal-type-form')
+        </div>
+        <div class="individual"
+             @if(isset($order) && $order->sender_type->slug == 'fizicheskoe-lico') style="display: block" @else style="display: none" @endif
+        >
+            @include('v1.partials.calculator.sender-forms.individual-type-form')
+        </div>
     </div>
 
     <div class="calc__title">Получатель</div>
-    {{--<div class="custom-control custom-radio">--}}
-    {{--<input type="radio" class="custom-control-input" id="recipient-legally" name="recipient" required>--}}
-    {{--<label class="custom-control-label" for="recipient-legally">Юридическое лицо</label>--}}
-    {{--</div>--}}
-    {{--<div class="custom-control custom-radio">--}}
-    {{--<input type="radio" class="custom-control-input" id="recipient-private" name="recipient" required>--}}
-    {{--<label class="custom-control-label" for="recipient-private">Физическое лицо</label>--}}
-    {{--</div>--}}
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">Страна*</label>--}}
-    {{--<div class="col">--}}
-    {{--<div class="relative">--}}
-    {{--<i class="dropdown-toggle fa-icon"></i>--}}
-    {{--<select class="custom-select">--}}
-    {{--<option disabled selected>Выберите из списка</option>--}}
-    {{--<option>Россия</option>--}}
-    {{--<option>Казахстан</option>--}}
-    {{--<option>Грузия</option>--}}
-    {{--<option>Индия</option>--}}
-    {{--</select>--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    <div class="form-item row align-items-center">
-        <label class="col-auto calc__label">ФИО*</label>
-        <div class="col"><input type="text" class="form-control" name="recepient_name" value="{{ $order->recepient_name ?? '' }}" required /></div>
+    @foreach($userTypes as $userType)
+        <div class="custom-control custom-radio">
+            <input type="radio" data-slug="{{ $userType->slug }}" class="custom-control-input" id="recipient_type_{{ $userType->slug }}" @if(isset($order) && $order->recipient_type_id == $userType->id) checked @endif value="{{ $userType->id }}" name="recipient_type_id" required />
+            <label class="custom-control-label" for="recipient_type_{{ $userType->slug }}">{{ $userType->name }}</label>
+        </div>
+    @endforeach
+    <div class="recipient-forms">
+        <div class="legal"
+             @if(isset($order) && $order->recipient_type->slug == 'yuridicheskoe-lico') style="display: block" @else style="display: none" @endif
+        >
+            @include('v1.partials.calculator.recipient-forms.legal-type-form')
+        </div>
+        <div class="individual"
+             @if(isset($order) && $order->recipient_type->slug == 'fizicheskoe-lico') style="display: block" @else style="display: none" @endif
+        >
+            @include('v1.partials.calculator.recipient-forms.individual-type-form')
+        </div>
     </div>
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">Паспорт*</label>--}}
-    {{--<div class="col calc__inpgrp">--}}
-    {{--<div class="input-group">--}}
-    {{--<input type="text" class="form-control text-center form-item" placeholder="Серия" required />--}}
-    {{--<input type="text" class="form-control text-center form-item" placeholder="Номер" required />--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">Контактное лицо*</label>--}}
-    {{--<div class="col calc__inpgrp"><input type="text" class="form-control" required/></div>--}}
-    {{--</div>--}}
-    <div class="form-item row align-items-center">
-        <label class="col-auto calc__label">Телефон*</label>
-        <div class="col calc__inpgrp"><input type="text" class="form-control" name="recepient_phone" value="{{ $order->recepient_phone ?? '' }}" required/></div>
-    </div>
-    {{--<div class="form-item row align-items-center">--}}
-    {{--<label class="col-auto calc__label">Дополнительная информация</label>--}}
-    {{--<div class="col"><input type="text" class="form-control" /></div>--}}
-    {{--</div>--}}
+
     <div class="calc__title">Данные плательщика</div>
     <div class="custom-control custom-radio">
         <input type="radio" @if(isset($order) && $order->payer->slug === 'otpravitel') checked @endif class="custom-control-input" id="sender" name="payer_type" value="otpravitel" required />
@@ -405,15 +336,26 @@
         <label class="custom-control-label" for="3rd-person">3-е лицо</label>
     </div>
     <div id="3rd-person-payer"  @if(!isset($order) || $order->payer->slug !== '3-e-lico') style="display: none" @endif>
-        <div class="form-item row align-items-center">
-            <label class="col-auto calc__label">ФИО</label>
-            <div class="col calc__inpgrp"><input type="text" value="{{ $order->payer_name ?? '' }}" class="form-control" name="payer_name"/></div>
-        </div>
-        <div class="form-item row align-items-center">
-            <label class="col-auto calc__label">Телефон</label>
-            <div class="col calc__inpgrp"><input type="text" value="{{ $order->payer_phone ?? '' }}" class="form-control" name="payer_phone"/></div>
+        @foreach($userTypes as $userType)
+            <div class="custom-control custom-radio">
+                <input type="radio" data-slug="{{ $userType->slug }}" class="custom-control-input req" id="payer_type_{{ $userType->slug }}" @if(isset($order) && $order->payer_form_type_id == $userType->id) checked @endif value="{{ $userType->id }}" name="payer_form_type_id" required />
+                <label class="custom-control-label" for="payer_type_{{ $userType->slug }}">{{ $userType->name }}</label>
+            </div>
+        @endforeach
+        <div class="payer-forms">
+            <div class="legal"
+                 @if(isset($order) && $order->payer_form_type->slug == 'yuridicheskoe-lico') style="display: block" @else style="display: none" @endif
+            >
+                @include('v1.partials.calculator.payer-forms.legal-type-form')
+            </div>
+            <div class="individual"
+                 @if(isset($order) && $order->payer_form_type->slug == 'fizicheskoe-lico') style="display: block" @else style="display: none" @endif
+            >
+                @include('v1.partials.calculator.payer-forms.individual-type-form')
+            </div>
         </div>
     </div>
+
     <div class="calc__title">Форма оплаты</div>
     <div class="custom-control custom-radio">
         <input type="radio" class="custom-control-input" id="available" value="nalichnyy-raschet" @if(isset($order) && $order->payment->slug === 'nalichnyy-raschet') checked @endif name="payment" required />

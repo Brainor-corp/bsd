@@ -12,7 +12,7 @@ class Order extends Model
         'take_time', 'take_price', 'delivery_need', 'delivery_in_city', 'delivery_address',
         'delivery_distance', 'delivery_point', 'delivery_price', 'delivery_time', 'delivered_in',
         'total_price', 'sender_id', 'sender_name', 'sender_phone', 'recipient_id',
-        'recepient_name', 'recepient_phone', 'payer_id', 'payer_name', 'payer_phone',
+        'recipient_name', 'recipient_phone', 'payer_id', 'payer_name', 'payer_phone',
         'payment_type', 'code_1c', 'manager_id', 'operator_id', 'order_date',
         'order_finish_date', 'discount', 'discount_amount', 'insurance', 'insurance_amount', 'estimated_delivery_date'
     ];
@@ -20,12 +20,27 @@ class Order extends Model
     public function status(){
         return $this->belongsTo(Type::class, 'status_id');
     }
+
+    public function recipient_type(){
+        return $this->belongsTo(Type::class, 'recipient_type_id');
+    }
+
+    public function sender_type(){
+        return $this->belongsTo(Type::class, 'sender_type_id');
+    }
+
+    public function payer_form_type(){
+        return $this->belongsTo(Type::class, 'payer_form_type_id');
+    }
+
     public function payment(){
         return $this->belongsTo(Type::class, 'payment_type');
     }
+
     public function payer(){
         return $this->belongsTo(Type::class, 'payer_type');
     }
+
     public function user(){
         return $this->belongsTo(User::class);
     }

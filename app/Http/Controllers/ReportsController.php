@@ -7,6 +7,7 @@ use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use App\Http\Helpers\DocumentHelper;
 use App\Order;
+use App\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -48,7 +49,9 @@ class ReportsController extends Controller
             })
             ->firstOrFail();
 
-        return View::make('v1.pages.profile.profile-inner.report-show-page')->with(compact('order'))->render();
+        $userTypes = Type::where('class', 'UserType')->get();
+
+        return View::make('v1.pages.profile.profile-inner.report-show-page')->with(compact('order', 'userTypes'))->render();
     }
 
     public function actionDownloadReports(Request $request) {
@@ -112,7 +115,7 @@ class ReportsController extends Controller
             $sheet->setCellValue('D' . ($key + 2), $order->ship_city_name ?? $order->ship_city->name ?? '-');
             $sheet->setCellValue('E' . ($key + 2), $order->dest_city_name ?? $order->dest_city->name ?? '-');
             $sheet->setCellValue('F' . ($key + 2), $order->sender_name ?? '-');
-            $sheet->setCellValue('G' . ($key + 2), $order->recepient_name ?? '-');
+            $sheet->setCellValue('G' . ($key + 2), $order->recipient_name ?? '-');
             $sheet->setCellValue('H' . ($key + 2), $order->total_price . 'р');
             $sheet->setCellValue('I' . ($key + 2), $order->status->name);
         }

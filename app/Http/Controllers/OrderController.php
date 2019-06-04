@@ -128,6 +128,7 @@ class OrderController extends Controller
             ['ship_city_id', $shipCity->id],
             ['dest_city_id', $destCity->id],
         ])->firstOrFail();
+        $userTypes = Type::where('class', 'UserType')->get();
 
         if(!isset($order)) {
             $order = new Order;
@@ -144,19 +145,98 @@ class OrderController extends Controller
         $order->dest_city_name = $destCity->name;
         $order->take_need = $request->get('need-to-take') === "on"; // Нужен ли забор груза
         $order->delivery_need = $request->get('need-to-bring') === "on"; // Нужна ли доставка груза
+
+        // Получатель ///////////////////////////////////////////////////////////////////////////
+        $senderType = $userTypes->where('id', $request->get('sender_type_id'))->first();
+
         $order->sender_name = $request->get('sender_name');
         $order->sender_phone = $request->get('sender_phone');
-        $order->recepient_name = $request->get('recepient_name');
-        $order->recepient_phone = $request->get('recepient_phone');
+        $order->sender_addition_info = $request->get('sender_addition_info');
+        $order->sender_type_id = $senderType->id;
+
+        if($senderType->slug === 'fizicheskoe-lico') {
+            $order->sender_passport_series = $request->get('sender_passport_series');
+            $order->sender_passport_number = $request->get('sender_passport_number');
+        } elseif($senderType->slug === 'yuridicheskoe-lico') {
+            $order->sender_legal_form = $request->get('sender_legal_form');
+            $order->sender_company_name = $request->get('sender_company_name');
+            $order->sender_legal_address_city = $request->get('sender_legal_address_city');
+            $order->sender_legal_address_street = $request->get('sender_legal_address_street');
+            $order->sender_legal_address_house = $request->get('sender_legal_address_house');
+            $order->sender_legal_address_block = $request->get('sender_legal_address_block');
+            $order->sender_legal_address_building = $request->get('sender_legal_address_building');
+            $order->sender_legal_address_apartment = $request->get('sender_legal_address_apartment');
+            $order->sender_contact_person = $request->get('sender_contact_person');
+            $order->sender_inn = $request->get('sender_inn');
+            $order->sender_kpp = $request->get('sender_kpp');
+        } else {
+            abort(500);
+        }
+
+        // Отправитель //////////////////////////////////////////////////////////////////////////
+        $recipientType = $userTypes->where('id', $request->get('recipient_type_id'))->first();
+
+        $order->recipient_name = $request->get('recipient_name');
+        $order->recipient_phone = $request->get('recipient_phone');
+        $order->recipient_addition_info = $request->get('recipient_addition_info');
+        $order->recipient_type_id = $recipientType->id;
+
+        if($recipientType->slug === 'fizicheskoe-lico') {
+            $order->recipient_passport_series = $request->get('recipient_passport_series');
+            $order->recipient_passport_number = $request->get('recipient_passport_number');
+        } elseif($recipientType->slug === 'yuridicheskoe-lico') {
+            $order->recipient_legal_form = $request->get('recipient_legal_form');
+            $order->recipient_company_name = $request->get('recipient_company_name');
+            $order->recipient_legal_address_city = $request->get('recipient_legal_address_city');
+            $order->recipient_legal_address_street = $request->get('recipient_legal_address_street');
+            $order->recipient_legal_address_house = $request->get('recipient_legal_address_house');
+            $order->recipient_legal_address_block = $request->get('recipient_legal_address_block');
+            $order->recipient_legal_address_building = $request->get('recipient_legal_address_building');
+            $order->recipient_legal_address_apartment = $request->get('recipient_legal_address_apartment');
+            $order->recipient_contact_person = $request->get('recipient_contact_person');
+            $order->recipient_inn = $request->get('recipient_inn');
+            $order->recipient_kpp = $request->get('recipient_kpp');
+        } else {
+            abort(500);
+        }
+
+        // Плательщик ///////////////////////////////////////////////////////////////////////////
+        $payerFormType = $userTypes->where('id', $request->get('payer_form_type_id'))->first();
+
+        $order->payer_type = $payerType->id;
+
+        if($payerType->slug === '3-e-lico') {
+            $order->payer_name = $request->get('payer_name');
+            $order->payer_phone = $request->get('payer_phone');
+            $order->payer_addition_info = $request->get('payer_addition_info');
+            $order->payer_form_type_id = $payerFormType->id;
+
+            if($payerFormType->slug === 'fizicheskoe-lico') {
+                $order->payer_passport_series = $request->get('payer_passport_series');
+                $order->payer_passport_number = $request->get('payer_passport_number');
+            } elseif($payerFormType->slug === 'yuridicheskoe-lico') {
+                $order->payer_legal_form = $request->get('payer_legal_form');
+                $order->payer_company_name = $request->get('payer_company_name');
+                $order->payer_legal_address_city = $request->get('payer_legal_address_city');
+                $order->payer_legal_address_street = $request->get('payer_legal_address_street');
+                $order->payer_legal_address_house = $request->get('payer_legal_address_house');
+                $order->payer_legal_address_block = $request->get('payer_legal_address_block');
+                $order->payer_legal_address_building = $request->get('payer_legal_address_building');
+                $order->payer_legal_address_apartment = $request->get('payer_legal_address_apartment');
+                $order->payer_contact_person = $request->get('payer_contact_person');
+                $order->payer_inn = $request->get('payer_inn');
+                $order->payer_kpp = $request->get('payer_kpp');
+            } else {
+                abort(500);
+            }
+        }
+
         $order->discount = $request->get('discount');
         $order->discount_amount = $calculatedData['discount'] ?? 0;
         $order->insurance = $request->get('insurance_amount');
         $order->insurance_amount = end($calculatedData['services'])['total'] ?? 0;
         $order->user_id = Auth::user()->id ?? null;
         $order->enter_id = $_COOKIE['enter_id'];
-        $order->payer_type = $payerType->id;
-        $order->payer_name = $request->get('payer_name');
-        $order->payer_phone = $request->get('payer_phone');
         $order->payment_type = $paymentType->id;
         $order->status_id = $orderStatus->id;
         $order->order_date = Carbon::now();

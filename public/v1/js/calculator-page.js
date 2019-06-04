@@ -69,6 +69,7 @@
             $("#3rd-person-payer").show('slow');
         }else{
             $("#3rd-person-payer").hide('slow');
+            $('input[name="payer_form_type_id"]').removeAttr('required');
         }
     });
 
@@ -356,6 +357,63 @@
 
     $(document).on('change', '#bring-to-point', function () {
         getAllCalculatedData();
+    });
+
+    $('.req').removeAttr('required');
+
+    $(document).on('change', 'input[name="sender_type_id"]', function () {
+        let currentSlug = $('input[name="sender_type_id"]:checked').data('slug');
+
+        if(currentSlug === 'fizicheskoe-lico') {
+            $('.sender-forms .legal').hide();
+            $('.sender-forms .legal .req').removeAttr('required');
+
+            $('.sender-forms .individual .req').attr('required', 'required');
+            $('.sender-forms .individual').show();
+        } else if(currentSlug === 'yuridicheskoe-lico') {
+            $('.sender-forms .legal').show();
+            $('.sender-forms .legal .req').attr('required', 'required');
+
+            $('.sender-forms .individual').hide();
+            $('.sender-forms .individual .req').removeAttr('required');
+        }
+    });
+
+    $(document).on('change', 'input[name="recipient_type_id"]', function () {
+        let currentSlug = $('input[name="recipient_type_id"]:checked').data('slug');
+
+        if(currentSlug === 'fizicheskoe-lico') {
+            $('.recipient-forms .legal').hide();
+            $('.recipient-forms .legal .req').removeAttr('required');
+
+            $('.recipient-forms .individual .req').attr('required', 'required');
+            $('.recipient-forms .individual').show();
+        } else if(currentSlug === 'yuridicheskoe-lico') {
+            $('.recipient-forms .legal').show();
+            $('.recipient-forms .legal .req').attr('required', 'required');
+            
+            $('.recipient-forms .individual').hide();
+            $('.recipient-forms .individual .req').removeAttr('required');
+        }
+    });
+
+    $(document).on('change', 'input[name="payer_form_type_id"]', function () {
+        let currentSlug = $('input[name="payer_form_type_id"]:checked').data('slug');
+        $('input[name="payer_form_type_id"]').attr('required', 'required');
+
+        if(currentSlug === 'fizicheskoe-lico') {
+            $('.payer-forms .legal').hide();
+            $('.payer-forms .legal .req').removeAttr('required');
+
+            $('.payer-forms .individual .req').attr('required', 'required');
+            $('.payer-forms .individual').show();
+        } else if(currentSlug === 'yuridicheskoe-lico') {
+            $('.payer-forms .legal').show();
+            $('.payer-forms .legal .req').attr('required', 'required');
+
+            $('.payer-forms .individual').hide();
+            $('.payer-forms .individual .req').removeAttr('required');
+        }
     });
 });
 
