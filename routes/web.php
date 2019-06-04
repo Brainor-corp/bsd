@@ -10,6 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+
 Route::group(['middleware' => ['password_reset']], function () {
 
     Auth::routes();
@@ -87,4 +90,8 @@ Route::group(['middleware' => ['auth']], function () {
     // Профиль пользователя
     Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
     Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
+
+
+    //Tests
+    Route::get('/test-1', 'TestController@test1')->name('test1');
 });

@@ -5,5 +5,6 @@
 <script src="{{ asset('packages/selectize/selectize.min.js') }}@include('v1.partials.versions.jsVersion')"></script>
 <script src="{{ asset('v1/js/general.js') }}@include('v1.partials.versions.jsVersion')"></script>
 <script src="{{ asset('v1/js/tooltip.js') }}@include('v1.partials.versions.jsVersion')"></script>
+<script src="{{ asset('v1/js/lightbox.js') }}@include('v1.partials.versions.jsVersion')"></script>
 
 @yield('footerScripts')
