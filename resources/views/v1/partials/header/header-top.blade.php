@@ -89,7 +89,7 @@
                 <div class="header__top_userpick">Л</div>
                 <div class="dropdown">
                     <a
-                            class="dropdown-toggle header__myaccount_link"
+                            class="dropdown-toggle header__myaccount_link {{ (\Illuminate\Support\Facades\Auth::check() && !\Illuminate\Support\Facades\Auth::user()->verified) ? 'cn' : '' }}"
                             href="#" role="button"
                             data-toggle="dropdown"
                             aria-haspopup="true"
@@ -160,31 +160,55 @@
                     </div> -->
                     @if(\Illuminate\Support\Facades\Auth::check())
                         <div class="dropdown-menu dropdown-menu__personal-account">
-                            <div class="d-flex dropdown-menu__row justify-content-center">
-                                <a href="{{ route('profile-data-show') }}" class="link-style">Кабинет</a>
-                            </div>
-                            <div class="d-flex dropdown-menu__row justify-content-center">
-                                <a href="{{ route('logout') }}" class="link-style">Выйти</a>
-                            </div>
-                            {{--<div class="row dropdown-menu__row justify-content-center">--}}
-                                {{--<span class="dropdown-menu__title">Подтверждение регистрации</span>--}}
-                            {{--</div>--}}
-                            {{--<div class="d-flex dropdown-menu__row">--}}
-                                {{--<input type="text" class="form-control" placeholder="Код подтверждения">--}}
-                            {{--</div>--}}
-                            {{--<div class="row dropdown-menu__row justify-content-center">--}}
-                                {{--<span class="annotation-text">Код отправлен на номер +7 (000) 000-00-00</span>--}}
-                            {{--</div>--}}
-                            {{--<div class="d-flex">--}}
-                                {{--<a href="##" class="link-style">Запросить код еще раз</a>--}}
-                            {{--</div>--}}
-                            {{--<div class="d-flex dropdown-menu__row">--}}
-                                {{--<button class="btn btn-block btn-danger">Подтвердить регистрацию</button>--}}
-                            {{--</div>--}}
-                            {{--<div class="separator-hr"></div>--}}
-                            {{--<div class="d-flex dropdown-menu__row justify-content-center">--}}
-                                {{--<a href="##" class="link-style">Вернуться</a>--}}
-                            {{--</div>--}}
+                            @if(\Illuminate\Support\Facades\Auth::user()->verified)
+                                <div class="d-flex dropdown-menu__row justify-content-center">
+                                    <a href="{{ route('profile-data-show') }}" class="link-style">Кабинет</a>
+                                </div>
+                                <div class="d-flex dropdown-menu__row justify-content-center">
+                                    <a href="{{ route('logout') }}" class="link-style">Выйти</a>
+                                </div>
+                            @else
+                                <form action="{{ route('phone-confirmation') }}" method="post">
+                                    @csrf
+                                    @if(session('success'))
+                                        <div class="row dropdown-menu__row justify-content-center">
+                                            <span class="text-success">{{session('success')}}</span>
+                                        </div>
+                                    @endif
+                                    <div class="row dropdown-menu__row justify-content-center">
+                                        <span class="dropdown-menu__title">Подтверждение регистрации</span>
+                                    </div>
+                                    <div class="d-flex dropdown-menu__row">
+                                        <input name="code" class="form-control sms-code-mask {{ $errors->has('code') ? ' is-invalid' : '' }}" placeholder="Код подтверждения" required>
+                                    </div>
+                                    @if ($errors->has('code'))
+                                        <div class="d-flex dropdown-menu__row">
+                                            <span class="invalid-feedback d-block" role="alert">
+                                                <strong>{{ $errors->first('code') }}</strong>
+                                            </span>
+                                        </div>
+                                    @endif
+                                    <div class="row dropdown-menu__row justify-content-center">
+                                        <span class="annotation-text">
+                                            Код отправлен на номер +{{ \Illuminate\Support\Facades\Auth::user()->phone }}
+                                            <a href="{{ route('profile-data-show') }}">(ред.)</a>
+                                        </span>
+                                    </div>
+                                    <div class="d-flex">
+                                        <a href="{{ route('resend-phone-confirm-code') }}" class="link-style">Запросить код еще раз</a>
+                                    </div>
+                                    <div class="d-flex dropdown-menu__row">
+                                        <button type="submit" class="btn btn-block btn-danger">Подтвердить регистрацию</button>
+                                    </div>
+                                    <div class="separator-hr"></div>
+                                    <div class="d-flex dropdown-menu__row justify-content-center">
+                                        <a href="##" class="link-style">Вернуться</a>
+                                    </div>
+                                    <div class="d-flex dropdown-menu__row justify-content-center">
+                                        <a href="{{ route('logout') }}" class="link-style">Выйти</a>
+                                    </div>
+                                </form>
+                            @endif
                         </div>
                     @else
                         <div class="dropdown-menu dropdown-menu__personal-account">

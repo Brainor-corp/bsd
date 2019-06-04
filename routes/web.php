@@ -45,22 +45,24 @@ Route::group(['middleware' => ['password_reset']], function () {
     Route::any('/calculator-show/{id?}', 'CalculatorController@calculatorShow')->name('calculator-show');
     Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
 
-    // Для сохранения заказа написан middleware 'order.save'.
-    // Он позволяет сохранять черновики без авторизации,
-    // но не даёт без авторизации оформить заказ.
-    Route::post('/order-save', 'OrderController@orderSave')
-        ->middleware('order.save')
-        ->name('order-save-action');
+    Route::group(['middleware' => 'sms-confirm'], function () {
+        // Для сохранения заказа написан middleware 'order.save'.
+        // Он позволяет сохранять черновики без авторизации,
+        // но не даёт без авторизации оформить заказ.
+        Route::post('/order-save', 'OrderController@orderSave')
+            ->middleware('order.save')
+            ->name('order-save-action');
 
-    // Страница со списком отчётов доступна всем пользователям.
-    // Если пользователь не авторизован, то выводятся отчёты с текущим enter_id.
-    // Если пользователь авторизован, то выводятся отчёты с текущим enter_id или с текущим user_id.
-    Route::get('/klientam/report-list', 'ReportsController@showReportListPage')->name('report-list');
-    Route::get('/klientam/orders', 'ReportsController@showReportListPage')->name('orders-list');
-    Route::post('/download-reports', 'ReportsController@actionDownloadReports')->name('download-reports');
-    Route::post('/search-orders', 'OrderController@searchOrders')->name('search-orders');
-    Route::post('/get-order-items', 'OrderController@actionGetOrderItems')->name('get-order-items');
-    Route::post('/get-order-search-input', 'OrderController@actionGetOrderSearchInput')->name('get-order-search-input');
+        // Страница со списком отчётов доступна всем пользователям.
+        // Если пользователь не авторизован, то выводятся отчёты с текущим enter_id.
+        // Если пользователь авторизован, то выводятся отчёты с текущим enter_id или с текущим user_id.
+        Route::get('/klientam/report-list', 'ReportsController@showReportListPage')->name('report-list');
+        Route::get('/klientam/orders', 'ReportsController@showReportListPage')->name('orders-list');
+        Route::post('/download-reports', 'ReportsController@actionDownloadReports')->name('download-reports');
+        Route::post('/search-orders', 'OrderController@searchOrders')->name('search-orders');
+        Route::post('/get-order-items', 'OrderController@actionGetOrderItems')->name('get-order-items');
+        Route::post('/get-order-search-input', 'OrderController@actionGetOrderSearchInput')->name('get-order-search-input');
+    });
 
     Route::get('/download-document-request', 'ReportsController@actionDownloadDocumentRequest')->name('download-document-request');
     Route::get('/download-document-invoice', 'ReportsController@actionDownloadDocumentInvoice')->name('download-document-invoice');
@@ -76,22 +78,32 @@ Route::group(['middleware' => ['password_reset']], function () {
     Route::any('/shipment-search', 'OrderController@shipmentSearch')->name('shipment-search');
 
     Route::group(['middleware' => ['auth']], function () {
-        // Оформленные заказы могут смотреть только авторизованные пользователи,
-        // т.к. оформить заказ можно только будучи авторизованным.
-        Route::get('/klientam/report/{id}', 'ReportsController@showReportPage')->name('report-show');
+        // Подтверждение регистрации по СМС
+        Route::post('/phone-confirmation', 'ProfileController@phoneConfirm')->name('phone-confirmation');
+        Route::any('/resend-phone-confirm-code', 'ProfileController@resendPhoneConfirmCode')->name('resend-phone-confirm-code');
 
-        // Работа с оповещениями доступна только авторизованным пользователям.
-        Route::get('/event-list', 'EventsController@showEventListPage')->name('event-list');
-        Route::post('/event-hide', 'EventsController@actionHideEvent')->name('event-hide');
+        // Профиль пользователя
+        Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
+        Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
+
+        Route::group(['middleware' => ['sms-confirm']], function () {
+            // Оформленные заказы могут смотреть только авторизованные пользователи,
+            // т.к. оформить заказ можно только будучи авторизованным.
+            Route::get('/klientam/report/{id}', 'ReportsController@showReportPage')->name('report-show');
+
+            // Работа с оповещениями доступна только авторизованным пользователям.
+            Route::get('/event-list', 'EventsController@showEventListPage')->name('event-list');
+            Route::post('/event-hide', 'EventsController@actionHideEvent')->name('event-hide');
+        });
     });
 });
 
-Route::group(['middleware' => ['auth']], function () {
-    // Профиль пользователя
-    Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
-    Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
-
-
-    //Tests
-    Route::get('/test-1', 'TestController@test1')->name('test1');
-});
+//Route::group(['middleware' => ['auth']], function () {
+//    // Профиль пользователя
+//    Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
+//    Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
+//
+//
+//    //Tests
+//    Route::get('/test-1', 'TestController@test1')->name('test1');
+//});
