@@ -31,7 +31,29 @@
                         @endif
                         <div class="col-4">
 
-                            @include('v1.partials.messages.alertMessage')
+                            <div class="row">
+                                @if (count($errors) > 0)
+                                    <div class="col-12 pt-2">
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                @if(session('success'))
+                                    <div class="col-12 pt-2">
+                                        <div class="alert alert-success">
+                                            <ul>
+                                                <li>{{session('success')}}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
 
                             <form method="post" action="{{ route('edit-profile-data') }}">
                                 <input type="hidden" hidden="hidden" name="user_id" value="{{ auth()->user()->id}}">
@@ -56,14 +78,14 @@
                                 <div class="form-group row">
                                     <label class="col-auto profile__label">Телефон</label>
                                     <div class="col">
-                                        <input type="text" class="form-control form-group" name="phone" value="{{ auth()->user()->phone ?? '' }}" placeholder="Телефон">
+                                        <input type="text" class="form-control form-group phone-mask" name="phone" value="{{ auth()->user()->phone ?? '' }}" placeholder="Телефон">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <label class="col-auto profile__label">Пароль</label>
                                     <div class="col">
-                                        <input type="text" class="form-control form-group" name="old_password" placeholder="Старый пароль">
-                                        <input type="text" class="form-control form-group" name="password" placeholder="Новый пароль">
+                                        <input type="password" class="form-control form-group" name="old_password" placeholder="Старый пароль">
+                                        <input type="password" class="form-control form-group" name="password" placeholder="Новый пароль">
                                     </div>
                                 </div>
                                 <button class="footer-btn btn margin-item btn-danger">Сохранить изменения</button>
