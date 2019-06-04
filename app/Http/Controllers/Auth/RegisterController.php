@@ -85,10 +85,12 @@ class RegisterController extends Controller
         $sms =  new StreamSMSHelper();
         $smsSession = $sms->GetSessionId_Post($server,$login,$password);
 
+        dd($smsSession);
+
         $sourceAddress = 'TK-BSD.COM';
         $destinationAddress = $user->phone;
 
-        $smsSend = $sms->SendSms($server,$smsSession,$sourceAddress,$destinationAddress,$smsCode,1440);
+        $smsSend = $sms->SendSms($server,$smsSession,$sourceAddress,$destinationAddress,strval($smsCode),1440);
 
         return $user;
     }
