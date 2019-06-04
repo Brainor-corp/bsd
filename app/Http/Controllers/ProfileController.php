@@ -67,7 +67,7 @@ class ProfileController extends Controller {
             $toUpdate['phone_verification_code'] = $smsCode;
             $toUpdate['verified'] = 0;
 
-            SMSHelper::sendSms($user->phone, strval($smsCode));
+            SMSHelper::sendSms($request->phone, strval($smsCode));
             $redirectData = ['cn=1'];
         }
 
