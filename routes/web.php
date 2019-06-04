@@ -76,9 +76,16 @@ Route::group(['middleware' => ['password_reset']], function () {
     Route::any('/shipment-search', 'OrderController@shipmentSearch')->name('shipment-search');
 
     Route::group(['middleware' => ['auth']], function () {
+        Route::post('/phone-confirmation', 'ProfileController@PhoneConfirm')->name('phone-confirmation');
+
+
         // Оформленные заказы могут смотреть только авторизованные пользователи,
         // т.к. оформить заказ можно только будучи авторизованным.
         Route::get('/klientam/report/{id}', 'ReportsController@showReportPage')->name('report-show');
+
+        // Профиль пользователя
+        Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
+        Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
 
         // Работа с оповещениями доступна только авторизованным пользователям.
         Route::get('/event-list', 'EventsController@showEventListPage')->name('event-list');
@@ -86,12 +93,12 @@ Route::group(['middleware' => ['password_reset']], function () {
     });
 });
 
-Route::group(['middleware' => ['auth']], function () {
-    // Профиль пользователя
-    Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
-    Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
-
-
-    //Tests
-    Route::get('/test-1', 'TestController@test1')->name('test1');
-});
+//Route::group(['middleware' => ['auth']], function () {
+//    // Профиль пользователя
+//    Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
+//    Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
+//
+//
+//    //Tests
+//    Route::get('/test-1', 'TestController@test1')->name('test1');
+//});

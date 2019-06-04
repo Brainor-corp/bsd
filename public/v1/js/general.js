@@ -43,5 +43,13 @@ $(document).ready(function () {
                 window.location.replace($('#changeCityGlobal').data('redirect').toString() + '/' + value);
             }
         }
-    })
+    });
+
+    $('.phone-mask').mask('+0 (000) 000-00-00');
+    $('.sms-code-mask').mask('000000');
+
+    let searchParams = new URLSearchParams(window.location.search);
+    if(searchParams.has('cn') && $('.header__myaccount_link').hasClass('cn')) {
+        $('.header__myaccount_link').dropdown('toggle')
+    }
 });

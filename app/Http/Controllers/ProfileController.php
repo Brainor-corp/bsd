@@ -51,4 +51,20 @@ class ProfileController extends Controller {
         return redirect()->back()->with($message['type'], $message['data']);
     }
 
+    public function PhoneConfirm(Request $request) {
+        $user = User::where('id', Auth::user()->id)->firstOrFail();
+
+        if($user->verified) {
+            return redirect()->back();
+        }
+
+        if($user->phone_verification_code == $request->get('code')) {
+            $user->verified = true;
+            $user->save();
+            return redirect()->back();
+        }
+
+        return redirect(route('index', ['cn=1']))->withErrors(["code" => ["Код подтверждения ввёден неверно"]]);
+    }
+
 }

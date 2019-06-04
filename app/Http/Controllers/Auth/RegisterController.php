@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\StreamSMSHelper;
+use App\User;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\Request;
 
 class RegisterController extends Controller
 {
@@ -29,7 +29,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/?cn=1'; // Покажем окно подтверждения телефона
 
     /**
      * Create a new controller instance.
@@ -49,10 +49,13 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        $data['phone'] = str_replace(array('+', ' ', '(' , ')', '-'), '', $data['phone']);
+
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => ['required', 'unique:users', 'regex:/\d{11}/'],
         ]);
     }
 
@@ -64,10 +67,29 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $data['phone'] = str_replace(array('+', ' ', '(' , ')', '-'), '', $data['phone']);
+        $smsCode = rand(100000, 999999);
+
+        $user =  User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'phone' => $data['phone'],
+            'phone_verification_code' => $smsCode,
         ]);
+
+        $server = 'http://gateway.api.sc/rest/';
+        $login = env('SMS_SERVER_LOGIN');
+        $password = env('SMS_SERVER_PASSWORD');
+
+        $sms =  new StreamSMSHelper();
+        $smsSession = $sms->GetSessionId_Post($server,$login,$password);
+
+        $sourceAddress = 'TK-BSD.COM';
+        $destinationAddress = $user->phone;
+
+        $smsSend = $sms->SendSms($server,$smsSession,$sourceAddress,$destinationAddress,$smsCode,1440);
+
+        return $user;
     }
 }
