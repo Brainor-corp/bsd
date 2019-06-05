@@ -1,35 +1,35 @@
-<form id="filter-form" action="">
-    <div id="news-page__filter-block" class="sort__block d-flex align-items-center">
-        <span class="sort__label margin-item">Фильтровать по:</span>
-        <div class="input-group d-flex margin-item">
-            <div class="input-group__item relative">
-                <select name="categories[]" id="category_select"
-                        class="filter-select" title="Категории" data-value="{{ json_encode($request->categories) }}"
-                        data-selected-text-format="static" data-style="custom-select"
-                        multiple>
-                    @foreach($newsTerms as $term)
-                        <option @if(isset($request->categories) && in_array($term->id, $request->categories)) selected @endif value="{{ $term->id }}">{{ $term->title }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="input-group__item relative">
-                <input class="custom-select" type="text" autocomplete="off" name="daterange"
-                       value="{{ $request->daterange }}" placeholder="Дата"/>
-            </div>
-            <div class="input-group__item relative">
-                <i class="dropdown-toggle fa-icon"></i>
-                <select name="cities[]" id="city_select"
-                        class="filter-select" title="Город" data-value="{{ json_encode($request->cities) }}"
-                        data-selected-text-format="static" data-style="custom-select"
-                        multiple>
-                    @foreach($cityTags as $city)
-                        <option @if(isset($request->cities) && in_array($city->id, $request->cities)) selected @endif value="{{ $city->id }}">{{ $city->title }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-    </div>
-</form>
+{{--<form id="filter-form" action="">--}}
+    {{--<div id="news-page__filter-block" class="sort__block d-flex align-items-center">--}}
+        {{--<span class="sort__label margin-item">Фильтровать по:</span>--}}
+        {{--<div class="input-group d-flex margin-item">--}}
+            {{--<div class="input-group__item relative">--}}
+                {{--<select name="categories[]" id="category_select"--}}
+                        {{--class="filter-select" title="Категории" data-value="{{ json_encode($request->categories) }}"--}}
+                        {{--data-selected-text-format="static" data-style="custom-select"--}}
+                        {{--multiple>--}}
+                    {{--@foreach($newsTerms as $term)--}}
+                        {{--<option @if(isset($request->categories) && in_array($term->id, $request->categories)) selected @endif value="{{ $term->id }}">{{ $term->title }}</option>--}}
+                    {{--@endforeach--}}
+                {{--</select>--}}
+            {{--</div>--}}
+            {{--<div class="input-group__item relative">--}}
+                {{--<input class="custom-select" type="text" autocomplete="off" name="daterange"--}}
+                       {{--value="{{ $request->daterange }}" placeholder="Дата"/>--}}
+            {{--</div>--}}
+            {{--<div class="input-group__item relative">--}}
+                {{--<i class="dropdown-toggle fa-icon"></i>--}}
+                {{--<select name="cities[]" id="city_select"--}}
+                        {{--class="filter-select" title="Город" data-value="{{ json_encode($request->cities) }}"--}}
+                        {{--data-selected-text-format="static" data-style="custom-select"--}}
+                        {{--multiple>--}}
+                    {{--@foreach($cityTags as $city)--}}
+                        {{--<option @if(isset($request->cities) && in_array($city->id, $request->cities)) selected @endif value="{{ $city->id }}">{{ $city->title }}</option>--}}
+                    {{--@endforeach--}}
+                {{--</select>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+{{--</form>--}}
 <div id="tag-label-wrapper" class="selected-list flex-wrap d-flex">
     @if(isset($request->daterange))
         <div class="selected-item d-flex align-items-center margin-item">
@@ -62,8 +62,7 @@
 </div>
 <div class="news__block">
     @forelse($posts as $post)
-        <div class="news__item d-flex flex-column">
-            <div>
+        <a href="{{ route('news-single-show', ['slug' => $post->slug]) }}" class="news__item d-flex flex-column">            <div>
                 <span class="news__title">{{ $post->title }}</span>
             </div>
             <span class="news__content">{{ $post->description }}</span>
@@ -75,7 +74,7 @@
                     @endforeach
                 </span>
             </span>
-        </div>
+        </a>
     @empty
         <span>Записи отсутствуют</span>
     @endforelse
