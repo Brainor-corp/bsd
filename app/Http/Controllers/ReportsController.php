@@ -24,30 +24,31 @@ class ReportsController extends Controller
         $orders = Order::with('status', 'ship_city', 'dest_city')
             ->where(function ($ordersQuery) {
                 return Auth::check() ? $ordersQuery
-                    ->where('user_id', Auth::user()->id)
+                    ->where('user_id', Auth::id())
                     ->orWhere('enter_id', $_COOKIE['enter_id']) :
                     $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
-            })
-            ->get();
+            })->get();
 
         return View::make('v1.pages.profile.profile-inner.report-list-page')->with(compact('orders'));
     }
 
     public function showReportPage($id) {
-        $order = Order::where('user_id', Auth::user()->id)
-            ->where('id', $id)
-            ->with([
+        $order = Order::where('id', $id)
+            ->where(function ($ordersQuery) {
+                return Auth::check() ? $ordersQuery
+                    ->where('user_id', Auth::id())
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
+            })->with([
                 'status',
                 'order_items',
                 'payment',
                 'order_services' => function ($services) {
                     return $services->withPivot('price');
                 }
-            ])
-            ->whereDoesntHave('status', function ($statusQuery) {
+            ])->whereDoesntHave('status', function ($statusQuery) {
                 return $statusQuery->where('slug', 'chernovik');
-            })
-            ->firstOrFail();
+            })->firstOrFail();
 
         $userTypes = Type::where('class', 'UserType')->get();
 
