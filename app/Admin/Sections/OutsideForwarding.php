@@ -6,13 +6,13 @@ use App\City;
 use App\ForwardThreshold;
 use App\Point;
 use App\Region;
-use Bradmin\Section;
-use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
-use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Bradmin\SectionBuilder\Filter\Types\BaseType\FilterType;
-use Bradmin\SectionBuilder\Form\BaseForm\Form;
-use Bradmin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
-use Bradmin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
+use Zeus\Admin\Section;
+use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
+use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
+use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
+use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
+use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
+use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 use Illuminate\Http\Request;
 
 
