@@ -21,17 +21,23 @@ $(document).ready(function () {
 
 });
 
+var currentRequest = null;
 function sendForm() {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    $.ajax({
+    currentRequest = $.ajax({
         type: 'post',
         url: '/news-filter',
         data: $('#filter-form').serialize(),
         cache: false,
+        beforeSend : function()    {
+            if(currentRequest != null) {
+                currentRequest.abort();
+            }
+        },
         success: function (data) {
             $('#filter-wrapper').html(data);
             init();
@@ -99,14 +105,14 @@ function init() {
     $('#category_select').selectpicker();
     $('#city_select').selectpicker();
 
-    $('#category_select').on('hidden.bs.select', function (e) {
+    $('#category_select').on('changed.bs.select', function (e) {
         if ($(this).val() != $(this).data('value')) {
             sendForm();
         }
         $(this).data('value', $(this).val());
     });
 
-    $('#city_select').on('hidden.bs.select', function (e) {
+    $('#city_select').on('changed.bs.select', function (e) {
         if ($(this).val() != $(this).data('value')) {
             sendForm();
         }
