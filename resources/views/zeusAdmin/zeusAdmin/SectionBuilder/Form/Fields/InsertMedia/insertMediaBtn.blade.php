@@ -1,0 +1,1 @@
+<button type="button" class="btn btn-default insert-media-btn" data-toggle="modal" data-target="#insertMediaModal">Вставить медиа</button>

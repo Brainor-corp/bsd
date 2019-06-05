@@ -170,7 +170,7 @@ return [
          * Application Service Providers...
          */
 
-        Bradmin\Providers\BrAdminServiceProvider::class,
+//        Bradmin\Providers\BrAdminServiceProvider::class,
 
 
         App\Providers\AppServiceProvider::class,
