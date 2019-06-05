@@ -6,12 +6,12 @@ use App\City;
 use App\Order;
 use App\Type;
 use App\User;
-use Bradmin\Section;
-use Bradmin\SectionBuilder\Display\BaseDisplay\Display;
-use Bradmin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Bradmin\SectionBuilder\Form\BaseForm\Form;
-use Bradmin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
-use Bradmin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
+use Zeus\Admin\Section;
+use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
+use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
+use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
+use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
+use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -119,11 +119,11 @@ class Orders extends Section {
                 FormField::input('sender_name', 'Имя отправителя'),
                 FormField::input('sender_phone', 'Телефон отправителя'),
 
-                FormField::select('recipient_id', 'Получатель(зарегестрированный)')
+                FormField::select('recepient_id', 'Получатель(зарегестрированный)')
                     ->setModelForOptions(User::class)
                     ->setDisplay('full_name'),
-                FormField::input('recipient_name', 'Имя получателя'),
-                FormField::input('recipient_phone', 'Телефон получателя'),
+                FormField::input('recepient_name', 'Имя получателя'),
+                FormField::input('recepient_phone', 'Телефон получателя'),
 
                 FormField::select('payer_id', 'Плательщик(зарегестрированный)')
                     ->setModelForOptions(User::class)
