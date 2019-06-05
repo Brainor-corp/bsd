@@ -155,6 +155,12 @@ class CalculatorHelper
                             } else {
                                 $tariff = $tariff->$key;
                                 foreach ($packages as $package) {
+                                    $oversizeRation = self::oversize_ratio($route->oversizes_id, $package);
+                                    if($oversizeRation === false) {
+                                        $total = "Договорная";
+                                        break;
+                                    }
+
                                     $total += $package[$key] * ($packages['quantity'] ?? 1) * $tariff *
                                         (1 + self::oversize_ratio($route->oversizes_id, $package) ?? 1);
                                 }
@@ -199,8 +205,8 @@ class CalculatorHelper
                     'name'          =>          $currentService->name,
                     'slug'          =>          $currentService->slug,
                     'description'   =>          $currentService->description,
-                    'price'         =>          $currentService->price,
-                    'total'         =>          $currentServicePrice,
+                    'price'         =>          round($currentService->price, 2),
+                    'total'         =>          round($currentServicePrice, 2),
                 ];
             }
         }
@@ -216,8 +222,8 @@ class CalculatorHelper
             'name'          => 'Страховка',
             'slug'          => '',
             'description'   => '',
-            'price'         => $insurancePrice,
-            'total'         => $insurancePrice,
+            'price'         => round($insurancePrice, 2),
+            'total'         => round($insurancePrice, 2),
         ];
 
         return $usedServices;
@@ -238,7 +244,7 @@ class CalculatorHelper
         $query = $query->first();
 
 //        dd($query);
-        return $query->markup / 100;
+        return isset($query) ? $query->markup / 100 : false;
     }
 
     public static function getTotalPrice($base_price, $services, $totalVolume, $insuranceAmount = null, $discount = null, $take_price = null, $bring_price = null) {
