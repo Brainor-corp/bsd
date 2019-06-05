@@ -202,18 +202,18 @@
                                 <div class="calc__title">Отправитель</div>
                                 @foreach($userTypes as $userType)
                                     <div class="custom-control custom-radio">
-                                        <input type="radio" data-slug="{{ $userType->slug }}" class="custom-control-input" @if(isset($order) && $order->sender_type_id == $userType->id) checked @endif id="sender_type_{{ $userType->slug }}" value="{{ $userType->id }}" name="sender_type_id" disabled />
+                                        <input type="radio" data-slug="{{ $userType->slug }}" class="custom-control-input" @if(isset($order->sender_type) && $order->sender_type_id == $userType->id) checked @endif id="sender_type_{{ $userType->slug }}" value="{{ $userType->id }}" name="sender_type_id" disabled />
                                         <label class="custom-control-label" for="sender_type_{{ $userType->slug }}">{{ $userType->name }}</label>
                                     </div>
                                 @endforeach
                                 <div class="sender-forms">
                                     <div class="legal"
-                                         @if(isset($order) && $order->sender_type->slug == 'yuridicheskoe-lico') style="display: block" @else style="display: none" @endif
+                                         @if(isset($order->sender_type) && $order->sender_type->slug == 'yuridicheskoe-lico') style="display: block" @else style="display: none" @endif
                                     >
                                         @include('v1.partials.calculator.sender-forms.legal-type-form', ['disabled' => true])
                                     </div>
                                     <div class="individual"
-                                         @if(isset($order) && $order->sender_type->slug == 'fizicheskoe-lico') style="display: block" @else style="display: none" @endif
+                                         @if(isset($order->sender_type) && $order->sender_type->slug == 'fizicheskoe-lico') style="display: block" @else style="display: none" @endif
                                     >
                                         @include('v1.partials.calculator.sender-forms.individual-type-form', ['disabled' => true])
                                     </div>
@@ -222,18 +222,18 @@
                                 <div class="calc__title">Получатель</div>
                                 @foreach($userTypes as $userType)
                                     <div class="custom-control custom-radio">
-                                        <input type="radio" data-slug="{{ $userType->slug }}" class="custom-control-input" id="recipient_type_{{ $userType->slug }}" @if(isset($order) && $order->recipient_type_id == $userType->id) checked @endif value="{{ $userType->id }}" name="recipient_type_id" disabled />
+                                        <input type="radio" data-slug="{{ $userType->slug }}" class="custom-control-input" id="recipient_type_{{ $userType->slug }}" @if(isset($order->recipient_type) && $order->recipient_type_id == $userType->id) checked @endif value="{{ $userType->id }}" name="recipient_type_id" disabled />
                                         <label class="custom-control-label" for="recipient_type_{{ $userType->slug }}">{{ $userType->name }}</label>
                                     </div>
                                 @endforeach
                                 <div class="recipient-forms">
                                     <div class="legal"
-                                         @if(isset($order) && $order->recipient_type->slug == 'yuridicheskoe-lico') style="display: block" @else style="display: none" @endif
+                                         @if(isset($order->recipient_type) && $order->recipient_type->slug == 'yuridicheskoe-lico') style="display: block" @else style="display: none" @endif
                                     >
                                         @include('v1.partials.calculator.recipient-forms.legal-type-form', ['disabled' => true])
                                     </div>
                                     <div class="individual"
-                                         @if(isset($order) && $order->recipient_type->slug == 'fizicheskoe-lico') style="display: block" @else style="display: none" @endif
+                                         @if(isset($order->recipient_type) && $order->recipient_type->slug == 'fizicheskoe-lico') style="display: block" @else style="display: none" @endif
                                     >
                                         @include('v1.partials.calculator.recipient-forms.individual-type-form', ['disabled' => true])
                                     </div>
@@ -241,32 +241,32 @@
 
                                 <div class="calc__title">Данные плательщика</div>
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" @if(isset($order) && $order->payer->slug === 'otpravitel') checked @endif class="custom-control-input" id="sender" name="payer_type" value="otpravitel" disabled />
+                                    <input type="radio" @if(isset($order->payer) && $order->payer->slug === 'otpravitel') checked @endif class="custom-control-input" id="sender" name="payer_type" value="otpravitel" disabled />
                                     <label class="custom-control-label" for="sender">Отправитель</label>
                                 </div>
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" @if(isset($order) && $order->payer->slug === 'poluchatel') checked @endif class="custom-control-input" id="recipient" name="payer_type" value="poluchatel" disabled />
+                                    <input type="radio" @if(isset($order->payer) && $order->payer->slug === 'poluchatel') checked @endif class="custom-control-input" id="recipient" name="payer_type" value="poluchatel" disabled />
                                     <label class="custom-control-label" for="recipient">Получатель</label>
                                 </div>
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" @if(isset($order) && $order->payer->slug === '3-e-lico') checked @endif class="custom-control-input" id="3rd-person" name="payer_type" value="3-e-lico" disabled />
+                                    <input type="radio" @if(isset($order->payer) && $order->payer->slug === '3-e-lico') checked @endif class="custom-control-input" id="3rd-person" name="payer_type" value="3-e-lico" disabled />
                                     <label class="custom-control-label" for="3rd-person">3-е лицо</label>
                                 </div>
-                                <div id="3rd-person-payer"  @if(!isset($order) || $order->payer->slug !== '3-e-lico') style="display: none" @endif>
+                                <div id="3rd-person-payer"  @if(!isset($order->payer) || $order->payer->slug !== '3-e-lico') style="display: none" @endif>
                                     @foreach($userTypes as $userType)
                                         <div class="custom-control custom-radio">
-                                            <input type="radio" data-slug="{{ $userType->slug }}" class="custom-control-input req" id="payer_type_{{ $userType->slug }}" @if(isset($order) && $order->payer_form_type_id == $userType->id) checked @endif value="{{ $userType->id }}" name="payer_form_type_id" disabled />
+                                            <input type="radio" data-slug="{{ $userType->slug }}" class="custom-control-input req" id="payer_type_{{ $userType->slug }}" @if(isset($order->payer_form_type) && $order->payer_form_type_id == $userType->id) checked @endif value="{{ $userType->id }}" name="payer_form_type_id" disabled />
                                             <label class="custom-control-label" for="payer_type_{{ $userType->slug }}">{{ $userType->name }}</label>
                                         </div>
                                     @endforeach
                                     <div class="payer-forms">
                                         <div class="legal"
-                                             @if(isset($order) && $order->payer_form_type->slug == 'yuridicheskoe-lico') style="display: block" @else style="display: none" @endif
+                                             @if(isset($order->payer_form_type) && $order->payer_form_type->slug == 'yuridicheskoe-lico') style="display: block" @else style="display: none" @endif
                                         >
                                             @include('v1.partials.calculator.payer-forms.legal-type-form', ['disabled' => true])
                                         </div>
                                         <div class="individual"
-                                             @if(isset($order) && $order->payer_form_type->slug == 'fizicheskoe-lico') style="display: block" @else style="display: none" @endif
+                                             @if(isset($order->payer_form_type) && $order->payer_form_type->slug == 'fizicheskoe-lico') style="display: block" @else style="display: none" @endif
                                         >
                                             @include('v1.partials.calculator.payer-forms.individual-type-form', ['disabled' => true])
                                         </div>

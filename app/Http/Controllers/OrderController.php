@@ -148,16 +148,21 @@ class OrderController extends Controller
 
         // Получатель ///////////////////////////////////////////////////////////////////////////
         $senderType = $userTypes->where('id', $request->get('sender_type_id'))->first();
-
-        $order->sender_name = $request->get('sender_name');
-        $order->sender_phone = $request->get('sender_phone');
-        $order->sender_addition_info = $request->get('sender_addition_info');
         $order->sender_type_id = $senderType->id;
 
         if($senderType->slug === 'fizicheskoe-lico') {
+            $order->sender_name = $request->get('sender_name_individual');
+            $order->sender_phone = $request->get('sender_phone_individual');
+            $order->sender_addition_info = $request->get('sender_addition_info_individual');
+            $order->sender_contact_person = $request->get('sender_contact_person_individual');
+
             $order->sender_passport_series = $request->get('sender_passport_series');
             $order->sender_passport_number = $request->get('sender_passport_number');
         } elseif($senderType->slug === 'yuridicheskoe-lico') {
+            $order->sender_name = $request->get('sender_name_legal');
+            $order->sender_phone = $request->get('sender_phone_legal');
+            $order->sender_addition_info = $request->get('sender_addition_info_legal');
+
             $order->sender_legal_form = $request->get('sender_legal_form');
             $order->sender_company_name = $request->get('sender_company_name');
             $order->sender_legal_address_city = $request->get('sender_legal_address_city');
@@ -166,7 +171,7 @@ class OrderController extends Controller
             $order->sender_legal_address_block = $request->get('sender_legal_address_block');
             $order->sender_legal_address_building = $request->get('sender_legal_address_building');
             $order->sender_legal_address_apartment = $request->get('sender_legal_address_apartment');
-            $order->sender_contact_person = $request->get('sender_contact_person');
+            $order->sender_contact_person = $request->get('sender_contact_person_legal');
             $order->sender_inn = $request->get('sender_inn');
             $order->sender_kpp = $request->get('sender_kpp');
         } else {
@@ -175,16 +180,21 @@ class OrderController extends Controller
 
         // Отправитель //////////////////////////////////////////////////////////////////////////
         $recipientType = $userTypes->where('id', $request->get('recipient_type_id'))->first();
-
-        $order->recipient_name = $request->get('recipient_name');
-        $order->recipient_phone = $request->get('recipient_phone');
-        $order->recipient_addition_info = $request->get('recipient_addition_info');
         $order->recipient_type_id = $recipientType->id;
 
         if($recipientType->slug === 'fizicheskoe-lico') {
+            $order->recipient_name = $request->get('recipient_name_individual');
+            $order->recipient_phone = $request->get('recipient_phone_individual');
+            $order->recipient_addition_info = $request->get('recipient_addition_info_individual');
+            $order->recipient_contact_person = $request->get('recipient_contact_person_individual');
+
             $order->recipient_passport_series = $request->get('recipient_passport_series');
             $order->recipient_passport_number = $request->get('recipient_passport_number');
         } elseif($recipientType->slug === 'yuridicheskoe-lico') {
+            $order->recipient_name = $request->get('recipient_name_legal');
+            $order->recipient_phone = $request->get('recipient_phone_legal');
+            $order->recipient_addition_info = $request->get('recipient_addition_info_legal');
+
             $order->recipient_legal_form = $request->get('recipient_legal_form');
             $order->recipient_company_name = $request->get('recipient_company_name');
             $order->recipient_legal_address_city = $request->get('recipient_legal_address_city');
@@ -193,7 +203,7 @@ class OrderController extends Controller
             $order->recipient_legal_address_block = $request->get('recipient_legal_address_block');
             $order->recipient_legal_address_building = $request->get('recipient_legal_address_building');
             $order->recipient_legal_address_apartment = $request->get('recipient_legal_address_apartment');
-            $order->recipient_contact_person = $request->get('recipient_contact_person');
+            $order->recipient_contact_person = $request->get('recipient_contact_person_legal');
             $order->recipient_inn = $request->get('recipient_inn');
             $order->recipient_kpp = $request->get('recipient_kpp');
         } else {
@@ -201,20 +211,25 @@ class OrderController extends Controller
         }
 
         // Плательщик ///////////////////////////////////////////////////////////////////////////
-        $payerFormType = $userTypes->where('id', $request->get('payer_form_type_id'))->first();
-
         $order->payer_type = $payerType->id;
 
         if($payerType->slug === '3-e-lico') {
-            $order->payer_name = $request->get('payer_name');
-            $order->payer_phone = $request->get('payer_phone');
-            $order->payer_addition_info = $request->get('payer_addition_info');
+            $payerFormType = $userTypes->where('id', $request->get('payer_form_type_id'))->first();
             $order->payer_form_type_id = $payerFormType->id;
 
             if($payerFormType->slug === 'fizicheskoe-lico') {
+                $order->payer_name = $request->get('payer_name_individual');
+                $order->payer_phone = $request->get('payer_phone_individual');
+                $order->payer_addition_info = $request->get('payer_addition_info_individual');
+                $order->payer_contact_person = $request->get('payer_contact_person_individual');
+
                 $order->payer_passport_series = $request->get('payer_passport_series');
                 $order->payer_passport_number = $request->get('payer_passport_number');
             } elseif($payerFormType->slug === 'yuridicheskoe-lico') {
+                $order->payer_name = $request->get('payer_name_legal');
+                $order->payer_phone = $request->get('payer_phone_legal');
+                $order->payer_addition_info = $request->get('payer_addition_info_legal');
+
                 $order->payer_legal_form = $request->get('payer_legal_form');
                 $order->payer_company_name = $request->get('payer_company_name');
                 $order->payer_legal_address_city = $request->get('payer_legal_address_city');
@@ -223,12 +238,28 @@ class OrderController extends Controller
                 $order->payer_legal_address_block = $request->get('payer_legal_address_block');
                 $order->payer_legal_address_building = $request->get('payer_legal_address_building');
                 $order->payer_legal_address_apartment = $request->get('payer_legal_address_apartment');
-                $order->payer_contact_person = $request->get('payer_contact_person');
+                $order->payer_contact_person = $request->get('payer_contact_person_legal');
                 $order->payer_inn = $request->get('payer_inn');
                 $order->payer_kpp = $request->get('payer_kpp');
             } else {
                 abort(500);
             }
+        } else { // Если плательщик -- отправитель/получатель, то занулим его данные.
+            $order->payer_name = null;
+            $order->payer_phone = null;
+            $order->payer_addition_info = null;
+            $order->payer_contact_person = null;
+            $order->payer_legal_form = null;
+            $order->payer_company_name = null;
+            $order->payer_legal_address_city = null;
+            $order->payer_legal_address_street = null;
+            $order->payer_legal_address_house = null;
+            $order->payer_legal_address_block = null;
+            $order->payer_legal_address_building = null;
+            $order->payer_legal_address_apartment = null;
+            $order->payer_contact_person = null;
+            $order->payer_inn = null;
+            $order->payer_kpp = null;
         }
 
         $order->discount = $request->get('discount');

@@ -1,6 +1,6 @@
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label">ФИО*</label>
-    <div class="col"><input type="text" class="form-control req" name="recipient_name" value="{{ $order->recipient_name ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }} /></div>
+    <div class="col"><input type="text" class="form-control req" name="recipient_name_individual" value="{{ $order->recipient_name ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }} /></div>
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label">Паспорт*</label>
@@ -12,14 +12,14 @@
     </div>
 </div>
 <div class="form-item row align-items-center">
-    <label class="col-auto calc__label">Контактное лицо*</label>
-    <div class="col calc__inpgrp"><input type="text" class="form-control req" name="recipient_name" value="{{ $order->recipient_name ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <label class="col-auto calc__label" for="recipient_contact_person_individual">Контактное лицо*</label>
+    <div class="col calc__inpgrp"><input type="text" class="form-control req" name="recipient_contact_person_individual" id="recipient_contact_person_individual" value="{{ $order->recipient_contact_person ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
-    <label class="col-auto calc__label" for="recipient_phone">Телефон*</label>
-    <div class="col calc__inpgrp"><input type="text" class="form-control req" name="recipient_phone" id="recipient_phone" value="{{ $order->recipient_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <label class="col-auto calc__label" for="recipient_phone_individual">Телефон*</label>
+    <div class="col calc__inpgrp"><input type="text" class="form-control req" name="recipient_phone_individual" id="recipient_phone_individual" value="{{ $order->recipient_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
-    <label class="col-auto calc__label" for="recipient_addition_info">Дополнительная информация</label>
-    <div class="col"><input type="text" id="recipient_addition_info" name="recipient_addition_info" value="{{ $order->recipient_addition_info ?? '' }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
+    <label class="col-auto calc__label" for="recipient_addition_info_individual">Дополнительная информация</label>
+    <div class="col"><input type="text" id="recipient_addition_info_individual" name="recipient_addition_info_individual" value="{{ $order->recipient_addition_info ?? '' }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
 </div>

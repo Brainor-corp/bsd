@@ -28,14 +28,14 @@
     <div class="col calc__inpgrp"><input type="text" id="sender_kpp" name="sender_kpp" value="{{ $order->sender_kpp ?? '' }}" class="form-control req" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
-    <label class="col-auto calc__label" for="sender_name">Контактноя лицо*</label>
-    <div class="col calc__inpgrp"><input type="text" id="sender_name" class="form-control req" name="sender_name" value="{{ $order->sender_name ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <label class="col-auto calc__label" for="sender_contact_person_legal">Контактноя лицо*</label>
+    <div class="col calc__inpgrp"><input type="text" id="sender_contact_person_legal" class="form-control req" name="sender_contact_person_legal" value="{{ $order->sender_contact_person ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
-    <label class="col-auto calc__label" for="sender_phone">Телефон*</label>
-    <div class="col calc__inpgrp"><input type="text" class="form-control req" id="sender_phone" name="sender_phone" value="{{ $order->sender_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <label class="col-auto calc__label" for="sender_phone_legal">Телефон*</label>
+    <div class="col calc__inpgrp"><input type="text" class="form-control req" id="sender_phone_legal" name="sender_phone_legal" value="{{ $order->sender_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
-    <label class="col-auto calc__label" for="sender_addition_info">Дополнительная информация</label>
-    <div class="col"><input type="text" id="sender_addition_info" name="sender_addition_info" value="{{ $order->sender_addition_info ?? '' }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
+    <label class="col-auto calc__label" for="sender_addition_info_legal">Дополнительная информация</label>
+    <div class="col"><input type="text" id="sender_addition_info_legal" name="sender_addition_info_legal" value="{{ $order->sender_addition_info ?? '' }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
 </div>

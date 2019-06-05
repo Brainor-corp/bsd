@@ -28,14 +28,14 @@
     <div class="col calc__inpgrp"><input type="text" id="payer_kpp" name="payer_kpp" value="{{ $order->payer_kpp ?? '' }}" class="form-control req" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
-    <label class="col-auto calc__label" for="payer_name">Контактноя лицо*</label>
-    <div class="col calc__inpgrp"><input type="text" id="payer_name" class="form-control req" name="payer_name" value="{{ $order->payer_name ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <label class="col-auto calc__label" for="payer_contact_person_legal">Контактноя лицо*</label>
+    <div class="col calc__inpgrp"><input type="text" id="payer_contact_person_legal" class="form-control req" name="payer_contact_person_legal" value="{{ $order->payer_contact_person ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
-    <label class="col-auto calc__label" for="payer_phone">Телефон*</label>
-    <div class="col calc__inpgrp"><input type="text" class="form-control req" id="payer_phone" name="payer_phone" value="{{ $order->payer_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <label class="col-auto calc__label" for="payer_phone_legal">Телефон*</label>
+    <div class="col calc__inpgrp"><input type="text" class="form-control req" id="payer_phone_legal" name="payer_phone_legal" value="{{ $order->payer_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
-    <label class="col-auto calc__label" for="payer_addition_info">Дополнительная информация</label>
-    <div class="col"><input type="text" id="payer_addition_info" name="payer_addition_info" value="{{ $order->payer_addition_info ?? '' }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
+    <label class="col-auto calc__label" for="payer_addition_info_legal">Дополнительная информация</label>
+    <div class="col"><input type="text" id="payer_addition_info_legal" name="payer_addition_info_legal" value="{{ $order->payer_addition_info ?? '' }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
 </div>
