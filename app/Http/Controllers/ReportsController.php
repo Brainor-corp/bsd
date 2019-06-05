@@ -134,7 +134,7 @@ class ReportsController extends Controller
         $writer = new Xlsx($spreadsheet);
 
         $name = md5('Отчеты bsd' . time()) . '.xlsx';
-        $path = storage_path('app\public\reports\\');
+        $path = storage_path('app/public/reports/');
 
         File::makeDirectory($path, $mode = 0777, true, true);
         $writer->save($path . $name);
