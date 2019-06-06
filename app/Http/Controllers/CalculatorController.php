@@ -182,7 +182,7 @@ class CalculatorController extends Controller
         return view('v1.pages.calculator.parts.destination-cities')->with(compact('destinationCities'));
     }
 
-    public function getRoute(Request $request, $ship_city = null, $dest_city = null) {
+    public function getRoute(Request $request = null, $ship_city = null, $dest_city = null) {
 
         if($ship_city == null){
             $ship_city = $request->ship_city;
