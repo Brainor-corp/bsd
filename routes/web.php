@@ -40,6 +40,10 @@ Route::group(['middleware' => ['password_reset']], function () {
     Route::get('/klientam/reviews', 'ReviewsController@showReviews')->name('reviews');
     Route::post('/save-review', 'ReviewsController@saveReview')->name('save-review');
 
+    //Цены
+    Route::get('/prices', 'PricesController@pricesPage')->name('pricesPage');
+
+
     // Первично калькулятор доступен всем. Если в калькулятор передан id,
     // калькулятор подцепит по id черновик и проставит все его значения
     Route::any('/calculator-show/{id?}', 'CalculatorController@calculatorShow')->name('calculator-show');
