@@ -1,3 +1,3 @@
-This site is protected by reCAPTCHA and the Google
-<a href="https://policies.google.com/privacy">Privacy Policy</a> and
-<a href="https://policies.google.com/terms">Terms of Service</a> apply.
+Сайт защищен с помощью reCAPTCHA.
+Используя его, вы соглашаетесь с <a href="https://policies.google.com/privacy" class="ftr_link">Политика конфиденциальности</a> и
+<a href="https://policies.google.com/terms" class="ftr_link">Условия использования</a>.
