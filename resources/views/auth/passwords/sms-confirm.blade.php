@@ -18,17 +18,21 @@
                         @csrf
                         <input type="hidden" name="q" value="{{ $encryptedPhone }}">
 
-                        @if($errors->count() > 0)
+                        @if($errors->has('error'))
                             <div class="row">
                                 <div class="col-12 text-center">
                                     <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                                <li>
-                                                    <strong>{{ $error }}</strong>
-                                                </li>
-                                            @endforeach
-                                        </ul>
+                                        <strong>{{ $errors->first('error') }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($errors->has('gToken'))
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="alert alert-danger">
+                                        {{ $errors->first('gToken') }}
                                     </div>
                                 </div>
                             </div>

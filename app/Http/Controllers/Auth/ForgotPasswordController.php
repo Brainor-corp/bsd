@@ -38,7 +38,7 @@ class ForgotPasswordController extends Controller
     public function resetMethodRedirect(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'gToken' => new GoogleReCaptchaV3()
+            'gToken' => ['required', new GoogleReCaptchaV3()]
         ]);
 
         if($validator->fails()){
