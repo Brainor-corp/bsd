@@ -58,6 +58,10 @@
                                         <strong>{{ $errors->first('password') }}</strong>
                                     </span>
                                 @endif
+
+                                <small id="passwordHelpBlock" class="form-text text-muted">
+                                    Не менее 8 символов, минимум 1 буква, минимум 1 цифра.
+                                </small>
                             </div>
                         </div>
 
