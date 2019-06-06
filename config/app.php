@@ -123,6 +123,8 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'g_captcha_min_score' => 0.2,
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
