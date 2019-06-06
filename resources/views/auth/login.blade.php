@@ -11,6 +11,18 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
+                        @if(session('success'))
+                            <div class="row">
+                                <div class="col-12 pt-2">
+                                    <div class="alert alert-success">
+                                        <ul>
+                                            <li>{{session('success')}}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail') }}</label>
 

@@ -34,7 +34,14 @@ class ProfileController extends Controller {
             'surname' => ['nullable', 'string', 'max:255'],
             'patronomic' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', "unique:users,email,$user->id"],
-            'password' => ['nullable', 'string', 'min:8'],
+            'password' => [
+                'required',
+                'string',
+                'min:8', // По тз: Не менее 8 символов
+                'confirmed',
+                'regex:/[a-zA-Zа-яА-Я]/', // По тз: Как минимум одна буква
+                'regex:/[0-9]/' // По тз: Как минимум одна цифра
+            ],
             'phone' => ['required', "unique:users,phone,$user->id", 'regex:/\d{11}/'],
         ]);
 
