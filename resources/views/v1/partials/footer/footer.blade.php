@@ -69,7 +69,13 @@
             </div>
         </div>
         <div class="row darkTxtColor justify-content-between footer-info">
-            <div class="col-12 col-xl footer-item">© 2010-2019  Балтийская Служба Доставки</div>
+            <div class="col-12 col-xl footer-item">
+                © 2010-2019  Балтийская Служба Доставки
+                <br>
+                <small>
+                    @include('v1.partials.google-recaptcha.terms')
+                </small>
+            </div>
             <div class="col-12 col-xl footer-item"><a class="ftr_link" href="{{ url('/politika-konfidencialnosti') }}">Политика конфиденциальности</a></div>
             <div class="col-12 col-xl footer-item d-flex justify-content-xl-end">
                 <span class="">Сайт разработала студия</span>
