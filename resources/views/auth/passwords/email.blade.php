@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('password.email') }}">
+                    <form method="POST" action="{{ route('password.method-redirect') }}">
                         @csrf
 
                         @if($errors->has('error'))

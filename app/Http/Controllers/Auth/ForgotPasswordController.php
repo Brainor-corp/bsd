@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\SMSHelper;
 use App\PasswordResetsPhone;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 
 class ForgotPasswordController extends Controller
@@ -25,8 +25,9 @@ class ForgotPasswordController extends Controller
 
     use SendsPasswordResetEmails;
 
-    // Время жизни кода СМС (в минутах)
-    private $smsCodeLifeTime = 15;
+    private $smsCodeLifeTime = 20; // Время жизни кода СМС (в минутах)
+    private $sendTimeLimit = 3; // Минимальный срок для повторной отправки СМС
+    private $sendTimeLimitText = "Отправка повторного СМС на указанный номер будет доступна через: ";
 
     /**
      * Create a new controller instance.
@@ -38,47 +39,53 @@ class ForgotPasswordController extends Controller
         $this->middleware('guest');
     }
 
-    /**
-     * Send a reset link to the given user.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
-     */
-    public function sendResetLinkEmail(Request $request)
-    {
-        if(!empty($request->get('phone'))) { // Восстановление пароля по СМС
-            $request->merge(['phone' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->phone)]);
-            $validator = $this->validatePhone($request);
+    public function sendResetSmsCode(Request $request) {
+        $request->merge(['phone' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->phone)]);
+        $validator = $this->validatePhone($request);
 
-            if($validator->fails()){
-                return redirect()->back()->withErrors($validator->errors())->withInput();
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator->errors())->withInput();
+        }
+
+        // Пробуем найти существующий запрос на восстановление пароля по указанному номеру
+        $existsPRP = PasswordResetsPhone::where('phone', $request->get('phone'))->first();
+        if(isset($existsPRP)) { // Если нашли
+            $now = Carbon::now();
+
+            // Если с существующего запроса не прошло времени, требуемого для повторной отправки СМС
+            if($now->lt($existsPRP->created_at->addMinutes($this->sendTimeLimit))) {
+                $timeLimit = Carbon::now()->diffForHumans($existsPRP->created_at->addMinutes($this->sendTimeLimit), true);
+
+                // Говорим пользователю, чтобы подождал
+                return redirect()->back()->withErrors(['error' => $this->sendTimeLimitText . $timeLimit])->withInput();
             }
 
-            PasswordResetsPhone::where('phone', $request->get('phone'))->delete();
+            // Если уже можно отправить новый код СМС, удаляем существующий запрос
+            $existsPRP->delete();
+        }
 
-            $smsCode = rand(100000, 999999);
-            $passwordResetPhone = new PasswordResetsPhone;
-            $passwordResetPhone->phone = $request->get('phone');
-            $passwordResetPhone->code = $smsCode;
-            $passwordResetPhone->save();
+        // Генерируем и отправляем код по СМС.
+        // Добавляем запрос в базу.
+        $smsCode = rand(100000, 999999);
+        $passwordResetPhoneRow = new PasswordResetsPhone;
+        $passwordResetPhoneRow->phone = $request->get('phone');
+        $passwordResetPhoneRow->code = $smsCode;
+        $passwordResetPhoneRow->token = md5(rand(1, 10) . microtime());
+        $passwordResetPhoneRow->save();
 
-            // todo Проверка времени (3 мин)
-            SMSHelper::sendSms($request->get('phone'), $smsCode);
+        SMSHelper::sendSms($request->get('phone'), $passwordResetPhoneRow->code);
 
-            return redirect(route(''));
+        // Направляем пользователя на страницу с вводом кода подтверждения.
+        return redirect(route('restore-phone-confirm', ['phone' => $passwordResetPhoneRow->phone]));
+    }
+
+
+    public function resetMethodRedirect(Request $request)
+    {
+        if(!empty($request->get('phone'))) { // Восстановление пароля по СМС
+            return self::sendResetSmsCode($request);
         } elseif(!empty($request->get('email'))) { // Восстановление пароля по номеру телефона
-            $this->validateEmail($request);
-
-            // We will send the password reset link to this user. Once we have attempted
-            // to send the link, we will examine the response then see the message we
-            // need to show to the user. Finally, we'll send out a proper response.
-            $response = $this->broker()->sendResetLink(
-                $this->credentials($request)
-            );
-
-            return $response == Password::RESET_LINK_SENT
-                ? $this->sendResetLinkResponse($request, $response)
-                : $this->sendResetLinkFailedResponse($request, $response);
+            return self::sendResetLinkEmail($request);
         }
 
         return redirect()->back()->withErrors(['error' => 'Укажите E-Mail или Телефон']);
@@ -93,5 +100,18 @@ class ForgotPasswordController extends Controller
         ]);
 
         return $validator;
+    }
+
+    public function restorePhoneConfirmShow($request) {
+        $phone = $request->get('phone');
+
+        if(
+            empty($phone) ||
+            !PasswordResetsPhone::where('phone', $phone)->exists()
+        ) {
+            return abort(404);
+        }
+
+        return view('')->with(compact('phone'));
     }
 }

@@ -16,6 +16,7 @@
 Route::group(['middleware' => ['password_reset']], function () {
 
     Auth::routes();
+    Route::post('/password-method-redirect', 'Auth\ForgotPasswordController@resetMethodRedirect')->name('password.method-redirect');
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
     // Главная
