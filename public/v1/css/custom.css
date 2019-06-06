@@ -63,3 +63,5 @@
     width: auto!important;
 }
 /*Конец Кладр*/
+
+.grecaptcha-badge { visibility: hidden; }

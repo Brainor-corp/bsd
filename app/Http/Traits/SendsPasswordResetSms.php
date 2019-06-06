@@ -10,6 +10,7 @@ namespace App\Http\Traits;
 
 use App\Http\Helpers\SMSHelper;
 use App\PasswordResetsPhone;
+use App\Rules\GoogleReCaptchaV3;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -108,6 +109,14 @@ trait SendsPasswordResetSms
     }
 
     protected function restorePhoneConfirmAction(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'gToken' => new GoogleReCaptchaV3()
+        ]);
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator->errors())->withInput();
+        }
+
         $encryptedPhone = $request->get('q');
 
         try {
