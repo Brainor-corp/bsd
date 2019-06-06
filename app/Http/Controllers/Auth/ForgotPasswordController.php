@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Traits\SendsPasswordResetSms;
+use App\Rules\GoogleReCaptchaV3;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ForgotPasswordController extends Controller
 {
@@ -35,6 +37,14 @@ class ForgotPasswordController extends Controller
 
     public function resetMethodRedirect(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'gToken' => new GoogleReCaptchaV3()
+        ]);
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator->errors())->withInput();
+        }
+
         if(!empty($request->get('phone'))) { // Восстановление пароля по СМС
             return self::sendResetSmsCode($request);
         } elseif(!empty($request->get('email'))) { // Восстановление пароля по номеру телефона
