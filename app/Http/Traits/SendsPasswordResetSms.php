@@ -110,7 +110,7 @@ trait SendsPasswordResetSms
 
     protected function restorePhoneConfirmAction(Request $request) {
         $validator = Validator::make($request->all(), [
-            'gToken' => new GoogleReCaptchaV3()
+            'gToken' => ['required', new GoogleReCaptchaV3()]
         ]);
 
         if($validator->fails()){

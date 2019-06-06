@@ -8,8 +8,18 @@
                 <div class="card-header">{{ __('Регистрация') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
+                    <form method="POST" action="{{ route('register') }}" id="registerForm">
                         @csrf
+
+                        @if($errors->has('gToken'))
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="alert alert-danger">
+                                        {{ $errors->first('gToken') }}
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Имя') }}</label>
@@ -73,6 +83,12 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <div class="col-md-6 offset-md-4">
+                                @include('v1.partials.google-recaptcha.terms')
+                            </div>
+                        </div>
+
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
@@ -86,4 +102,14 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('footScripts')
+    <script>
+        grecaptcha.ready(function() {
+            grecaptcha.execute('{{ env('GOOGLE_CAPTCHA_KEY') }}', {action: 'feedbackForm'}).then(function(token) {
+                $('#registerForm').append('<input type="hidden" name="gToken" value="'+token+'">')
+            });
+        });
+    </script>
 @endsection
