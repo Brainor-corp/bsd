@@ -16,6 +16,12 @@
 Route::group(['middleware' => ['password_reset']], function () {
 
     Auth::routes();
+    Route::post('/password-method-redirect', 'Auth\ForgotPasswordController@resetMethodRedirect')->name('password.method-redirect');
+    Route::get('/restore-phone-confirm', 'Auth\ForgotPasswordController@restorePhoneConfirmShow')->name('password.restore-phone-confirm');
+    Route::post('/restore-phone-confirm-action', 'Auth\ForgotPasswordController@restorePhoneConfirmAction')->name('password.restore-phone-confirm-action');
+    Route::get('/reset-by-phone/{token}', 'Auth\ForgotPasswordController@resetByPhonePage')->name('password.reset-by-phone');
+    Route::post('/reset-by-phone-action', 'Auth\ForgotPasswordController@resetByPhoneAction')->name('password.reset-by-phone-action');
+    Route::get('/resend-sms-code', 'Auth\ForgotPasswordController@resendSmsCode')->name('password.resend-sms-code');
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
     // Главная

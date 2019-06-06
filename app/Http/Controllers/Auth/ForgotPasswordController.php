@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\SendsPasswordResetSms;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Http\Request;
 
 class ForgotPasswordController extends Controller
 {
@@ -19,6 +21,7 @@ class ForgotPasswordController extends Controller
     */
 
     use SendsPasswordResetEmails;
+    use SendsPasswordResetSms;
 
     /**
      * Create a new controller instance.
@@ -29,4 +32,17 @@ class ForgotPasswordController extends Controller
     {
         $this->middleware('guest');
     }
+
+    public function resetMethodRedirect(Request $request)
+    {
+        if(!empty($request->get('phone'))) { // Восстановление пароля по СМС
+            return self::sendResetSmsCode($request);
+        } elseif(!empty($request->get('email'))) { // Восстановление пароля по номеру телефона
+            return self::sendResetLinkEmail($request);
+        }
+
+        return redirect()->back()->withErrors(['error' => 'Укажите E-Mail или Телефон']);
+    }
+
+
 }

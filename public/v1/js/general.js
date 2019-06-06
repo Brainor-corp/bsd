@@ -45,7 +45,7 @@ $(document).ready(function () {
         }
     });
 
-    $('.phone-mask').mask('+0 (000) 000-00-00');
+    $('.phone-mask').mask('+7 (000) 000-00-00');
     $('.sms-code-mask').mask('000000');
 
     let searchParams = new URLSearchParams(window.location.search);
