@@ -45,10 +45,10 @@ class ForgotPasswordController extends Controller
             return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
-        if(!empty($request->get('phone'))) { // Восстановление пароля по СМС
-            return self::sendResetSmsCode($request);
-        } elseif(!empty($request->get('email'))) { // Восстановление пароля по номеру телефона
+        if(!empty($request->get('email'))) { // Восстановление пароля по EMAIL
             return self::sendResetLinkEmail($request);
+        } elseif(!empty($request->get('phone'))) { // Восстановление пароля по СМС
+            return self::sendResetSmsCode($request);
         }
 
         return redirect()->back()->withErrors(['error' => 'Укажите E-Mail или Телефон']);
