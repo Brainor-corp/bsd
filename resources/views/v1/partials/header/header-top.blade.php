@@ -184,7 +184,7 @@
                                     @if ($errors->has('code'))
                                         <div class="d-flex dropdown-menu__row">
                                             <span class="invalid-feedback d-block" role="alert">
-                                                <strong>{{ $errors->first('code') }}</strong>
+                                                <strong class="white-space-normal">{{ $errors->first('code') }}</strong>
                                             </span>
                                         </div>
                                     @endif

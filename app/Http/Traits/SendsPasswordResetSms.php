@@ -191,7 +191,7 @@ trait SendsPasswordResetSms
 
         // Если с существующего запроса не прошло времени, требуемого для повторной отправки СМС
         if($now->lt($existsPRP->created_at->addMinutes($this->sendTimeLimit))) {
-            $timeLimit = Carbon::now()->diffForHumans($existsPRP->created_at->addMinutes($this->sendTimeLimit), true);
+            $timeLimit = $now->diffForHumans($existsPRP->created_at->addMinutes($this->sendTimeLimit), true);
 
             // Направляем пользователя на страницу с вводом кода, который отправляли ранее
             return redirect(route('password.restore-phone-confirm', ['q' => $encryptedPhone]))
