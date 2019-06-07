@@ -64,4 +64,10 @@
 }
 /*Конец Кладр*/
 
-.grecaptcha-badge { visibility: hidden; }
+.grecaptcha-badge {
+    visibility: hidden;
+}
+
+.white-space-normal {
+    white-space: normal;
+}

@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\SMSHelper;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller {
+
+    private $smsTimeLimit = 3; // минимальный период до повторной отправки сми (в минутах)
+    protected $sendTimeLimitText = "Отправка повторного СМС на указанный номер будет доступна через: ";
 
     public function profileData() {
 	    $user = User::whereId(Auth::user()->id)->firstOrFail();
@@ -35,7 +39,7 @@ class ProfileController extends Controller {
             'patronomic' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', "unique:users,email,$user->id"],
             'password' => [
-                'required',
+                'nullable',
                 'string',
                 'min:8', // По тз: Не менее 8 символов
                 'confirmed',
@@ -54,7 +58,6 @@ class ProfileController extends Controller {
             'name' => $request->name,
             'surname' => $request->surname,
             'patronomic' => $request->patronomic,
-            'phone' => $request->phone,
             'email' => $request->email,
         ];
 
@@ -66,21 +69,33 @@ class ProfileController extends Controller {
             $toUpdate['password'] = Hash::make($request->password);
         }
 
+        $errors = [];
         // Если поменялся номер телефона, то вышлем код повторно
         // и пометим пользователя как неподтвержденного
         if($currentPhone != $request->phone) {
-            $smsCode = rand(100000, 999999);
+            $now = Carbon::now();
+            if(!empty($user->code_send_at) && $now->lt($user->code_send_at->addMinutes($this->smsTimeLimit))) {
+                $timeLimit = $now->diffForHumans($user->code_send_at->addMinutes($this->smsTimeLimit), true);
 
-            $toUpdate['phone_verification_code'] = $smsCode;
-            $toUpdate['verified'] = 0;
+                $errors[] = "Сменить номер телефона можно будет через: $timeLimit";
+            } else {
+                $smsCode = rand(100000, 999999);
 
-            SMSHelper::sendSms($request->phone, strval($smsCode));
-            $redirectData = ['cn=1'];
+                $toUpdate['phone_verification_code'] = $smsCode;
+                $toUpdate['phone'] = $request->phone;
+                $toUpdate['code_send_at'] = $now;
+                $toUpdate['verified'] = 0;
+
+                SMSHelper::sendSms($request->phone, strval($smsCode));
+                $redirectData = ['cn=1'];
+            }
         }
 
         $user->update($toUpdate);
 
-        return redirect(route('profile-data-show', $redirectData))->withSuccess('Данные успешно обновлены');
+        return redirect(route('profile-data-show', $redirectData))
+            ->withSuccess('Данные успешно обновлены')
+            ->withErrors($errors);
     }
 
     public function phoneConfirm(Request $request) {
@@ -106,7 +121,16 @@ class ProfileController extends Controller {
             return redirect(route('index'));
         }
 
+        $now = Carbon::now();
+
+        if(!empty($user->code_send_at) && $now->lt($user->code_send_at->addMinutes($this->smsTimeLimit))) {
+            $timeLimit = $now->diffForHumans($user->code_send_at->addMinutes($this->smsTimeLimit), true);
+
+            return redirect(route('index', ['cn=1']))->withErrors(['code' => $this->sendTimeLimitText . $timeLimit]);
+        }
+
         $user->phone_verification_code = rand(100000, 999999);
+        $user->code_send_at = $now;
         $user->update();
 
         SMSHelper::sendSms($user->phone, $user->phone_verification_code);
