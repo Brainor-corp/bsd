@@ -4,7 +4,18 @@
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="sender_company_name">Название организации*</label>
-    <div class="col"><input type="text" id="sender_company_name" name="sender_company_name" value="{{ $order->sender_company_name ?? '' }}" class="form-control req" {{ isset($disabled) ? 'disabled' : 'required' }} /></div>
+    <div class="col">
+        <input type="text"
+               id="sender_company_name"
+               name="sender_company_name"
+               autocomplete="off"
+               data-field="company_name"
+               data-source="{{ route('getCounterparties', ['type_id' => isset($userTypes) ? $userTypes->where('slug', 'yuridicheskoe-lico')->first->id : '']) }}"
+               value="{{ $order->sender_company_name ?? '' }}"
+               class="form-control req autocomplete"
+                {{ isset($disabled) ? 'disabled' : 'required' }}
+        />
+    </div>
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label">Юридический адрес*</label>
