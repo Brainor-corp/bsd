@@ -441,7 +441,7 @@
                 let result = [];
                 $(data).each(function (key, el) {
                     result.push({
-                        label: el['name'],
+                        label: el['name'] + " (" + el['passport_series'] + el['passport_number'] + ")",
                         passport_number: el['passport_number'],
                         passport_series: el['passport_series'],
                         phone: el['phone'],
@@ -474,7 +474,7 @@
                 let result = [];
                 $(data).each(function (key, el) {
                     result.push({
-                        label: el['company_name'],
+                        label: el['company_name'] + " (" + el['inn'] + ")",
                         phone: el['phone'],
                         contact_person: el['contact_person'],
                         addition_info: el['addition_info'],
