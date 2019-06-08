@@ -335,7 +335,7 @@ class OrderController extends Controller
                     ])->exists()
                 ) {
                     $counterparty = new Counterparty;
-                    $counterparty->type_id = $payerType->id;
+                    $counterparty->type_id = $payerFormType->id;
                     $counterparty->user_id = Auth::id();
 
                     $counterparty->phone = $request->get('payer_phone_individual');
@@ -372,7 +372,7 @@ class OrderController extends Controller
                     ])->exists()
                 ) {
                     $counterparty = new Counterparty;
-                    $counterparty->type_id = $payerType->id;
+                    $counterparty->type_id = $payerFormType->id;
                     $counterparty->user_id = Auth::id();
 
                     $counterparty->phone = $request->get('payer_phone_legal');

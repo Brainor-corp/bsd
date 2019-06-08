@@ -431,6 +431,83 @@
             });
         }
     });
+
+    $(".individual input.autocomplete").autocomplete({
+        source: function (request, response) {
+            jQuery.get($(this.element).data('source'), {
+                term: request.term,
+                field: $(this.element).data('field')
+            }, function (data) {
+                let result = [];
+                $(data).each(function (key, el) {
+                    result.push({
+                        label: el['name'],
+                        passport_number: el['passport_number'],
+                        passport_series: el['passport_series'],
+                        phone: el['phone'],
+                        contact_person: el['contact_person'],
+                        addition_info: el['addition_info'],
+                    });
+                });
+                response(result);
+            });
+        },
+        select: function( event, ui ) {
+            let currentBlock = $(event.target).closest('.individual');
+            currentBlock.find("input[name$='name_individual']").val(ui.item["name"]);
+            currentBlock.find("input[name$='passport_series']").val(ui.item["passport_series"]);
+            currentBlock.find("input[name$='passport_number']").val(ui.item["passport_number"]);
+            currentBlock.find("input[name$='phone_individual']").val(ui.item["phone"]);
+            currentBlock.find("input[name$='contact_person_individual']").val(ui.item["contact_person"]);
+            currentBlock.find("input[name$='addition_info_individual']").val(ui.item["addition_info"]);
+
+            console.log(ui.item);
+        }
+    });
+
+    $(".legal input.autocomplete").autocomplete({
+        source: function (request, response) {
+            jQuery.get($(this.element).data('source'), {
+                term: request.term,
+                field: $(this.element).data('field')
+            }, function (data) {
+                let result = [];
+                $(data).each(function (key, el) {
+                    result.push({
+                        label: el['company_name'],
+                        phone: el['phone'],
+                        contact_person: el['contact_person'],
+                        addition_info: el['addition_info'],
+                        address_city: el['legal_address_city'],
+                        address_street: el['legal_address_street'],
+                        address_house: el['legal_address_house'],
+                        address_block: el['legal_address_block'],
+                        address_building: el['legal_address_building'],
+                        address_apartment: el['legal_address_apartment'],
+                        legal_form: el['legal_form'],
+                        inn: el['inn'],
+                        kpp: el['kpp'],
+                    });
+                });
+                response(result);
+            });
+        },
+        select: function( event, ui ) {
+            let currentBlock = $(event.target).closest('.legal');
+            currentBlock.find("input[name$='phone_legal']").val(ui.item["phone"]);
+            currentBlock.find("input[name$='contact_person_legal']").val(ui.item["contact_person"]);
+            currentBlock.find("input[name$='addition_info_legal']").val(ui.item["addition_info"]);
+            currentBlock.find("input[name$='legal_form']").val(ui.item["legal_form"]);
+            currentBlock.find("input[name$='address_city']").val(ui.item["address_city"]);
+            currentBlock.find("input[name$='address_street']").val(ui.item["address_street"]);
+            currentBlock.find("input[name$='address_house']").val(ui.item["address_house"]);
+            currentBlock.find("input[name$='address_block']").val(ui.item["address_block"]);
+            currentBlock.find("input[name$='address_building']").val(ui.item["address_building"]);
+            currentBlock.find("input[name$='address_apartment']").val(ui.item["address_apartment"]);
+            currentBlock.find("input[name$='inn']").val(ui.item["inn"]);
+            currentBlock.find("input[name$='kpp']").val(ui.item["kpp"]);
+        }
+    });
 });
 
 function getAllCalculatedData() {
