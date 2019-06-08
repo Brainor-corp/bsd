@@ -38,6 +38,11 @@ class NavigationList
                         'text' => 'Акции'
                     ],
                     [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Counterparties',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Контрагенты'
+                    ],
+                    [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Types',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Типы'
