@@ -1,8 +1,7 @@
 @extends('v1.layouts.innerPageLayout')
 
 @section('headerStyles')
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
+    <link rel="stylesheet" href="{{ asset('packages/jquery-ui/jquery-ui.css') }}">
 @endsection
 
 @section('footerScripts')
@@ -17,7 +16,7 @@
     </script>
     {{--<script src="{{ asset('v1/js/jquery.kladr.js') }}@include('v1.partials.versions.jsVersion')"></script>--}}
     {{--<script src="{{ asset('v1/js/calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>--}}
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="{{ asset('packages/jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('v1/js/calculator-page.js') }}@include('v1.partials.versions.jsVersion')"></script>
 
 @endsection

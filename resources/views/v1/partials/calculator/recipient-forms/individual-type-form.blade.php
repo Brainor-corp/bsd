@@ -1,6 +1,16 @@
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label">ФИО*</label>
-    <div class="col"><input type="text" class="form-control req" name="recipient_name_individual" value="{{ $order->recipient_name ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }} /></div>
+    <div class="col">
+        <input type="text"
+               class="form-control req autocomplete"
+               name="recipient_name_individual"
+               autocomplete="off"
+               data-field="name"
+               data-source="{{ route('getCounterparties', ['type_id' => isset($userTypes) ? $userTypes->where('slug', 'fizicheskoe-lico')->first->id : '']) }}"
+               value="{{ $order->recipient_name ?? '' }}"
+               {{ isset($disabled) ? 'disabled' : 'required' }}
+        />
+    </div>
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label">Паспорт*</label>
