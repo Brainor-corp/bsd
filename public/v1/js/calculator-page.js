@@ -441,7 +441,8 @@
                 let result = [];
                 $(data).each(function (key, el) {
                     result.push({
-                        label: el['name'] + " (" + el['passport_series'] + el['passport_number'] + ")",
+                        label: el['name'] + " (Паспорт: " + el['passport_series'] + el['passport_number'] + ")",
+                        name: el['name'],
                         passport_number: el['passport_number'],
                         passport_series: el['passport_series'],
                         phone: el['phone'],
@@ -453,6 +454,8 @@
             });
         },
         select: function( event, ui ) {
+            event.preventDefault();
+
             let currentBlock = $(event.target).closest('.individual');
             currentBlock.find("input[name$='name_individual']").val(ui.item["name"]);
             currentBlock.find("input[name$='passport_series']").val(ui.item["passport_series"]);
@@ -474,8 +477,9 @@
                 let result = [];
                 $(data).each(function (key, el) {
                     result.push({
-                        label: el['company_name'] + " (" + el['inn'] + ")",
+                        label: el['company_name'] + " (ИНН: " + el['inn'] + ")",
                         phone: el['phone'],
+                        company_name: el['company_name'],
                         contact_person: el['contact_person'],
                         addition_info: el['addition_info'],
                         address_city: el['legal_address_city'],
@@ -493,8 +497,11 @@
             });
         },
         select: function( event, ui ) {
+            event.preventDefault();
+
             let currentBlock = $(event.target).closest('.legal');
             currentBlock.find("input[name$='phone_legal']").val(ui.item["phone"]);
+            currentBlock.find("input[name$='company_name']").val(ui.item["company_name"]);
             currentBlock.find("input[name$='contact_person_legal']").val(ui.item["contact_person"]);
             currentBlock.find("input[name$='addition_info_legal']").val(ui.item["addition_info"]);
             currentBlock.find("input[name$='legal_form']").val(ui.item["legal_form"]);
