@@ -118,16 +118,16 @@
         },
         {
             "name": "brainor-rus/zeus-admin",
-            "version": "1.0.5",
+            "version": "1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brainor-rus/zeus-admin.git",
-                "reference": "68ce6825eb96e7cd84f5ed6e7ea9ac7bfd6553d7"
+                "reference": "7c907a9d2647cc4f717958fce5651fd829abd577"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brainor-rus/zeus-admin/zipball/68ce6825eb96e7cd84f5ed6e7ea9ac7bfd6553d7",
-                "reference": "68ce6825eb96e7cd84f5ed6e7ea9ac7bfd6553d7",
+                "url": "https://api.github.com/repos/brainor-rus/zeus-admin/zipball/7c907a9d2647cc4f717958fce5651fd829abd577",
+                "reference": "7c907a9d2647cc4f717958fce5651fd829abd577",
                 "shasum": ""
             },
             "require": {
@@ -167,7 +167,7 @@
                 "laravel admin",
                 "zeus"
             ],
-            "time": "2019-06-04T12:47:38+00:00"
+            "time": "2019-06-08T04:15:07+00:00"
         },
         {
             "name": "cocur/slugify",
@@ -2973,7 +2973,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
+                    "email": "backendtea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
