@@ -118,16 +118,16 @@
         },
         {
             "name": "brainor-rus/zeus-admin",
-            "version": "1.0.6",
+            "version": "1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brainor-rus/zeus-admin.git",
-                "reference": "7c907a9d2647cc4f717958fce5651fd829abd577"
+                "reference": "6d5eccbeb0a50100e1b975dac36349ab3b3df4b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brainor-rus/zeus-admin/zipball/7c907a9d2647cc4f717958fce5651fd829abd577",
-                "reference": "7c907a9d2647cc4f717958fce5651fd829abd577",
+                "url": "https://api.github.com/repos/brainor-rus/zeus-admin/zipball/6d5eccbeb0a50100e1b975dac36349ab3b3df4b5",
+                "reference": "6d5eccbeb0a50100e1b975dac36349ab3b3df4b5",
                 "shasum": ""
             },
             "require": {
@@ -167,7 +167,7 @@
                 "laravel admin",
                 "zeus"
             ],
-            "time": "2019-06-08T04:15:07+00:00"
+            "time": "2019-06-08T05:44:14+00:00"
         },
         {
             "name": "cocur/slugify",
