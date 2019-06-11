@@ -2,32 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
+use App\City;
+use App\InsideForwarding;
 use App\Route;
-use App\RouteTariff;
+use Illuminate\Http\Request;
 
 class PricesController extends Controller {
 
-    public function pricesPage() {
-        $shipCity = '53';
-        $destCity = '78';
+    public function pricesPage(Request $request) {
+        $shipCityId = $request->get('ship_city') ?? 53;
+        $destCityId = $request->get('dest_city') ?? 78;
 
-        $route = app('App\Http\Controllers\CalculatorController')->getRoute(null,$shipCity,$destCity);
+        $route = Route::where([
+            ['ship_city_id', $shipCityId],
+            ['dest_city_id', $destCityId]
+        ])->with('route_tariffs.rate', 'route_tariffs.threshold')->first();
 
-        if(null !== $route->base_route){
-            $baseRoute = Route::where('id', $route->base_route)->first();
-        }
-        $routeTariffs = RouteTariff::with('rate','threshold')
-            ->where('route_id', $route->id)
-            ->orderBy('price', 'ASC')
-            ->get()
-            ->groupBy('rate_id');
+        $insideForwardings = InsideForwarding::with('forwardThreshold', 'city')
+            ->has('forwardThreshold')
+            ->whereIn('city_id', [$shipCityId, $destCityId])
+            ->get();
 
+        $shipCities = City::where('is_ship', true)->get();
+        $destCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $shipCityId))->get();
 
-//        dd($routeTariffs);
-
-	    return view('v1.pages.prices.prices-page')->with(compact('route','routeTariffs', 'baseRoute'));
+	    return view('v1.pages.prices.prices-page')
+            ->with(compact('route','insideForwardings', 'shipCities', 'destCities', 'shipCityId', 'destCityId'));
     }
 
 }
