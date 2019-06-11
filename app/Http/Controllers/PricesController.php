@@ -23,10 +23,11 @@ class PricesController extends Controller {
             ->whereIn('city_id', [$shipCityId, $destCityId])
             ->get();
 
-        $shipCities = City::where('is_ship', true)->with('terminal','kladr')->get();
+        $shipCities = City::where('is_ship', true)->get();
+        $destCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $shipCityId))->get();
 
 	    return view('v1.pages.prices.prices-page')
-            ->with(compact('route','insideForwardings', 'shipCities', 'shipCityId', 'destCityId'));
+            ->with(compact('route','insideForwardings', 'shipCities', 'destCities', 'shipCityId', 'destCityId'));
     }
 
 }
