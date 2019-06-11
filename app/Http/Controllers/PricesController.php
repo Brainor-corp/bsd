@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
+use App\InsideForwarding;
 use App\Route;
-use App\RouteTariff;
 
 class PricesController extends Controller {
 
@@ -13,21 +11,18 @@ class PricesController extends Controller {
         $shipCity = '53';
         $destCity = '78';
 
-        $route = app('App\Http\Controllers\CalculatorController')->getRoute(null,$shipCity,$destCity);
+        $route = Route::where([
+            ['ship_city_id', $shipCity],
+            ['dest_city_id', $destCity]
+        ])->with('route_tariffs.rate', 'route_tariffs.threshold')->first();
 
-        if(null !== $route->base_route){
-            $baseRoute = Route::where('id', $route->base_route)->first();
-        }
-        $routeTariffs = RouteTariff::with('rate','threshold')
-            ->where('route_id', $route->id)
-            ->orderBy('price', 'ASC')
-            ->get()
-            ->groupBy('rate_id');
+        $insideForwardings = InsideForwarding::with('forwardThreshold', 'city')
+            ->has('forwardThreshold')
+            ->whereIn('city_id', [$shipCity, $destCity])
+            ->get();
 
-
-//        dd($routeTariffs);
-
-	    return view('v1.pages.prices.prices-page')->with(compact('route','routeTariffs', 'baseRoute'));
+	    return view('v1.pages.prices.prices-page')
+            ->with(compact('route','insideForwardings', 'baseRoute'));
     }
 
 }

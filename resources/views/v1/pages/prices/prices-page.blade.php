@@ -67,7 +67,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($routeTariffs as $routeTariffType)
+                                @foreach($route->route_tariffs->groupBy('rate_id') as $routeTariffType)
                                     @foreach($routeTariffType as $routeTariff)
                                         <tr>
                                             <td>{{ $routeTariff->rate->name }}</td>
@@ -78,6 +78,59 @@
                                 @endforeach
                                 </tbody>
                             </table>
+                            <h5>Стоимость экспедирования в черте города</h5>
+                            @forelse($insideForwardings->groupBy('city_id') as $insideForwardingsCities)
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Город</th>
+                                            @foreach($insideForwardingsCities as $insideForwarding)
+                                                <th>
+                                                    {{ $insideForwarding->forwardThreshold->name }}
+                                                </th>
+                                            @endforeach
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>{{ $insideForwardingsCities->first()->city->name }}</td>
+                                            @foreach($insideForwardingsCities as $insideForwarding)
+                                                <td>
+                                                    {{ $insideForwarding->tariff }}
+                                                </td>
+                                            @endforeach
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @foreach($insideForwardingsCities as $insideForwarding)
+
+                                @endforeach
+                            @empty
+                                <span>Информация отсутствует</span>
+                            @endforelse
+                            {{--<table class="table table-bordered">--}}
+                                {{--<thead>--}}
+                                {{--<tr>--}}
+                                    {{--<td>Город</td>--}}
+                                    {{--@foreach($insideForwardings->pluck('forwardThreshold')->unique() as $forwardThreshold)--}}
+                                        {{--<td>{{ $forwardThreshold->name }}</td>--}}
+                                    {{--@endforeach--}}
+                                {{--</tr>--}}
+                                {{--</thead>--}}
+                                {{--<tbody>--}}
+                                {{--@foreach($insideForwardings->groupBy('city_id') as $insideForwardingCities)--}}
+                                    {{--<tr>--}}
+                                        {{--<td>{{ $insideForwardingCities->first()->city->name }}</td>--}}
+                                        {{--@foreach($insideForwardings->pluck('forwardThreshold')->unique() as $forwardThreshold)--}}
+                                            {{--@php($forward = $insideForwardingCities->where('forwardThreshold.id', $forwardThreshold->id)->first())--}}
+                                            {{--<td>{{ isset($forward) ? $forward->tariff : "" }}</td>--}}
+                                        {{--@endforeach--}}
+                                    {{--</tr>--}}
+                                {{--@endforeach--}}
+                                {{--</tbody>--}}
+                            {{--</table>--}}
                             {{--<form action="{{ route('show-prices') }}" method="post" class="reports__header row align-items-center">--}}
                                 {{--@csrf--}}
                                 {{--<span class="reports__header-label margin-md-item">Поиск:</span>--}}
