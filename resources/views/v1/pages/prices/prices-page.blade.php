@@ -1,5 +1,9 @@
 @extends('v1.layouts.innerPageLayout')
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('v1/css/custom.css') }}@include('v1.partials.versions.cssVersion')">
+@endsection
+
 @section('content')
     <div class="breadcrumb__list d-flex">
         <div class="container">
@@ -7,121 +11,134 @@
             <span class="breadcrumb__item">Цены</span>
         </div>
     </div>
-    <section class="wrapper">
+    <section class="wrapper prices-page-wrapper">
         <div class="container">
             <div class="row">
                 <div class="col-12">
                     <header class="wrapper__header">
                         <h1>Цены</h1>
                     </header>
+                    <form action="{{ route('pricesPage') }}" method="get">
+                        <div class="row align-items-end">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="ship_city">Город отправления:</label>
+                                    <select id="ship_city" class="form-control point-select" name="ship_city" placeholder="Выберите город" data-height="100%" required>
+                                        @foreach($shipCities as $shipCity)
+                                            <option value="{{ $shipCity->id }}" @if($shipCityId == $shipCity->id) selected @endif>{{ $shipCity->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="dest_city">Город назначения:</label>
+                                    <select id="dest_city" class="form-control point-select" name="dest_city" placeholder="Выберите город" data-height="100%" required>
+                                        @foreach($destCities as $destCity)
+                                            <option value="{{ $destCity->id }}" @if($destCityId == $destCity->id) selected @endif>{{ $destCity->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-group">
+                                    <button type="submit" class="btn margin-item btn-danger sbmt-btn">Показать</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                     <div class="row">
                         <div class="col-12">
-                            <h5>Данные маршрута</h5>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <td>Маршрут</td>
-                                        <td>Срок доставки</td>
-                                        <td>Минимальная цена</td>
-                                        <td>Цена бандероли</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>{{ $route->name }}</td>
-                                        <td>{{ $route->delivery_time }}</td>
-                                        <td>{{ $route->min_cost }}</td>
-                                        <td>{{ $route->wrapper_tariff }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            @if(isset($route))
+                                <h5>Тарифы на грузоперевозки маршрута <strong>{{ $route->name }}</strong></h5>
 
-                            @if(isset($baseRoute))
-                                <h5>Данные базового маршрута</h5>
-                                <table class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <td>Маршрут</td>
-                                        <td>Срок доставки</td>
-                                        <td>Минимальная цена</td>
-                                        <td>Цена бандероли</td>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>{{ $baseRoute->name }}</td>
-                                        <td>{{ $baseRoute->delivery_time }}</td>
-                                        <td>{{ $baseRoute->min_cost }}</td>
-                                        <td>{{ $baseRoute->wrapper_tariff }}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            @endif
-                            <h5>Тарифы маршрута</h5>
-                            <table class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <td>Единица оценки</td>
-                                    <td>Предел</td>
-                                    <td>Цена</td>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($routeTariffs as $routeTariffType)
-                                    @foreach($routeTariffType as $routeTariff)
+                                <div class="table-responsive mb-3">
+                                    <table class="table table-bordered text-center">
+                                        <thead>
                                         <tr>
-                                            <td>{{ $routeTariff->rate->name }}</td>
-                                            <td>{{ $routeTariff->threshold->value }}</td>
-                                            <td>{{ $routeTariff->price }}</td>
+                                            <th rowspan="2" class="align-middle">
+                                                <span>Бандероль до 0,01 м3 до 2 кг</span>
+                                            </th>
+                                            <th rowspan="2" class="align-middle">
+                                                <span>мин. стоимость руб.</span>
+                                            </th>
+                                            @if($route->route_tariffs->where('rate.slug', 'ves')->count() > 0)
+                                                <th colspan="{{ $route->route_tariffs->where('rate.slug', 'ves')->count() }}">стоимость за 1кг руб.</th>
+                                            @endif
+                                            @if($route->route_tariffs->where('rate.slug', 'obem')->count() > 0)
+                                                <th colspan="{{ $route->route_tariffs->where('rate.slug', 'obem')->count() }}">стоимость за 1м3 руб.</th>
+                                            @endif
+                                            <th rowspan="2" class="align-middle">
+                                                <span>мин. срок доставки*</span>
+                                            </th>
                                         </tr>
+                                        <tr>
+                                            @foreach($route->route_tariffs->where('rate.slug', 'ves') as $routeTariff)
+                                                <th class="align-middle">До {{ $routeTariff->threshold->value }}кг</th>
+                                            @endforeach
+                                            @foreach($route->route_tariffs->where('rate.slug', 'obem') as $routeTariff)
+                                                <th class="align-middle">
+                                                    До {{ $routeTariff->threshold->value }}м<sup>3</sup>
+                                                </th>
+                                            @endforeach
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="align-middle">
+                                                {{ $route->wrapper_tariff }}
+                                            </td>
+                                            <td class="align-middle">
+                                                {{ $route->min_cost }}
+                                            </td>
+                                            @foreach($route->route_tariffs->where('rate.slug', 'ves') as $routeTariff)
+                                                <td class="align-middle">{{ $routeTariff->price }}</td>
+                                            @endforeach
+                                            @foreach($route->route_tariffs->where('rate.slug', 'obem') as $routeTariff)
+                                                <td class="align-middle">{{ $routeTariff->price }}</td>
+                                            @endforeach
+                                            <td class="align-middle">
+                                                {{ $route->delivery_time }}
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <h5>Стоимость экспедирования в черте города</h5>
+                                @forelse($insideForwardings->groupBy('city_id') as $insideForwardingsCities)
+                                    <div class="table-responsive mb-3">
+                                        <table class="table table-bordered text-center">
+                                            <thead>
+                                            <tr>
+                                                <th class="align-middle">Город</th>
+                                                @foreach($insideForwardingsCities as $insideForwarding)
+                                                    <th class="align-middle">
+                                                        {{ $insideForwarding->forwardThreshold->name }}
+                                                    </th>
+                                                @endforeach
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="align-middle">{{ $insideForwardingsCities->first()->city->name }}</td>
+                                                @foreach($insideForwardingsCities as $insideForwarding)
+                                                    <td class="align-middle">
+                                                        {{ $insideForwarding->tariff }}
+                                                    </td>
+                                                @endforeach
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    @foreach($insideForwardingsCities as $insideForwarding)
+
                                     @endforeach
-                                @endforeach
-                                </tbody>
-                            </table>
-                            {{--<form action="{{ route('show-prices') }}" method="post" class="reports__header row align-items-center">--}}
-                                {{--@csrf--}}
-                                {{--<span class="reports__header-label margin-md-item">Поиск:</span>--}}
-                                {{--<div id="search-wrapper" class="margin-md-item d-flex flex-wrap control-group">--}}
-                                    {{--<select id="search-type-select" class="custom-select">--}}
-                                        {{--<option disabled value="" selected>Выберите из списка</option>--}}
-                                        {{--<option selected value="id">По номеру</option>--}}
-                                        {{--<option value="status">По типу</option>--}}
-                                    {{--</select>--}}
-                                    {{--<input name="id" id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">--}}
-                                {{--</div>--}}
-                                {{--<div id="cb-input" class="custom-control custom-checkbox">--}}
-                                    {{--<input name="finished" value="true" type="checkbox" class="custom-control-input" id="finished-cb">--}}
-                                    {{--<label class="custom-control-label" for="finished-cb">Только завершенные</label>--}}
-                                {{--</div>--}}
-                                {{--<button type="submit" class="btn btn-dotted ml-auto d-flex align-items-center">--}}
-                                    {{--<i class="icons excel-icon margin-item"></i>--}}
-                                    {{--<span class="btn-label margin-item">Выгрузить в excel</span>--}}
-                                {{--</button>--}}
-                            {{--</form>--}}
-                            {{--<div class="row">--}}
-                                {{--<div class="table-responsive">--}}
-                                    {{--<table class="table table-bordered">--}}
-                                        {{--<thead>--}}
-                                        {{--<tr>--}}
-                                            {{--<th>№</th>--}}
-                                            {{--<th>Дата</th>--}}
-                                            {{--<th>Параметры груза</th>--}}
-                                            {{--<th>Город отправителя</th>--}}
-                                            {{--<th>Город получателя</th>--}}
-                                            {{--<th>Отправитель</th>--}}
-                                            {{--<th>Получатель</th>--}}
-                                            {{--<th>Стоимость</th>--}}
-                                            {{--<th>Статус заказа</th>--}}
-                                            {{--<th style="width: 120px">Доступные документы</th>--}}
-                                            {{--<th>&nbsp;</th>--}}
-                                        {{--</tr>--}}
-                                        {{--</thead>--}}
-                                        {{--<tbody id="orders-table-body">--}}
-                                        {{--@include('v1.partials.profile.orders')--}}
-                                        {{--</tbody>--}}
-                                    {{--</table>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
+                                @empty
+                                    <span>Информация отсутствует</span>
+                                @endforelse
+                            @else
+                                <span>Выберите город отправления и город назначения</span>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -131,5 +148,5 @@
 @endsection
 
 @section('footScripts')
-    <script src="{{ asset('v1/js/profile.js') }}"></script>
+    <script src="{{ asset('v1/js/prices-page.js') }}"></script>
 @endsection

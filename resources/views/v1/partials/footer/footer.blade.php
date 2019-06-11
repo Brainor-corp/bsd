@@ -20,7 +20,7 @@
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ route('reviews') }}">Отзывы</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/o-kompanii/dokumenty-i-sertifikaty') }}">Документы</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/dopolnitelnye-uslugi') }}">Дополнительные услуги</a></li>
-                    <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/prays-list') }}">Прайс лист</a></li>
+                    <li class="ftr_list-item"><a class="ftr_link" href="{{ route('pricesPage') }}">Прайс лист</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/garantiya') }}">Гарантия</a></li>
                     <li class="ftr_list-item"><a class="ftr_link" href="{{ url('/klientam/napravleniya') }}">Направления</a></li>
                 </ul>
