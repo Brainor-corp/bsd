@@ -3,6 +3,21 @@
 namespace App\Http\Helpers;
 
 class PayKeeperHelper {
+    /**
+     * Генерирует ссылку для совершения платежа.
+     * В случае успеха возвращает ссылку.
+     * В случае ошибки возвращает false.
+     *
+     * @param $payment_data = array (
+            "pay_amount" => 45.5,
+            "clientid" => "Иванов Иван Иванович",
+            "orderid" => "Заказ № 10",
+            "client_email" => "test@example.com",
+            "service_name" => "Услуга",
+            "client_phone" => "8 (910) 123-45-67"
+        )
+     * @return bool|string
+     */
     public static function getPaymentUrl($payment_data) {
         # Логин и пароль от личного кабинета PayKeeper
         $user = env('PAYKEEPER_LOGIN');

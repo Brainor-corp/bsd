@@ -8,7 +8,7 @@
                     @csrf
                     <div class="form-group">
                         <label for="sum">Сумма:</label>
-                        <input type="number" name="sum" id="sum" class="form-control">
+                        <input type="number" name="sum" id="sum" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-secondary">Оплатить</button>
