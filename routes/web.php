@@ -24,6 +24,10 @@ Route::group(['middleware' => ['password_reset']], function () {
     Route::get('/resend-sms-code', 'Auth\ForgotPasswordController@resendSmsCode')->name('password.resend-sms-code');
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
+    // Платежи
+    Route::get('/test-payment', 'PaymentController@testPaymentPage')->name('test-payment');
+    Route::post('/make-payment', 'PaymentController@makePayment')->name('make-payment');
+
     // Главная
     Route::get('/', 'MainPageController@index')->name('index');
 
