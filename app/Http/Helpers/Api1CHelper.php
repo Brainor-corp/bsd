@@ -5,7 +5,7 @@ namespace App\Http\Helpers;
 class Api1CHelper {
     private static $host = "http://s4.tkbsd.ru/copy/hs/rest/";
 
-    protected static function post($action, $params) {
+    public static function post($action, $params) {
         $url = self::$host . $action;
         $content = json_encode($params);
 
@@ -17,16 +17,16 @@ class Api1CHelper {
         curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
 
         $json_response = curl_exec($curl);
-//        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-//        if ($status != 201) {
-//            return false;
-//        }
+        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
-        return json_decode($json_response, true);
+        return [
+            'status' => $status,
+            'response' => json_decode($json_response, true)
+        ];
     }
 
-    protected static function get($action, $params) {
+    public static function get($action, $params) {
         $url = self::$host . $action;
 
         $paramsQuery = '';
@@ -45,12 +45,12 @@ class Api1CHelper {
         curl_setopt($curl, CURLOPT_HEADER, 0);
 
         $json_response = curl_exec($curl);
-//        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-//        if ($status != 201) {
-//            return false;
-//        }
+        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
-        return json_decode($json_response, true);
+        return [
+            'status' => $status,
+            'response' => json_decode($json_response, true)
+        ];
     }
 }
