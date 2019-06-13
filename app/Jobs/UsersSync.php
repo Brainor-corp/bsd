@@ -14,10 +14,11 @@ class UsersSync implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 1;
+
     /**
      * Create a new job instance.
      *
-     * @return void
      */
     public function __construct()
     {
