@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\Api1CHelper;
 use App\Http\Helpers\SMSHelper;
 use App\Rules\GoogleReCaptchaV3;
 use App\User;
@@ -80,7 +81,7 @@ class RegisterController extends Controller
         $data['phone'] = str_replace(array('+', ' ', '(' , ')', '-'), '', $data['phone']);
         $smsCode = rand(100000, 999999);
 
-        $user =  User::create([
+        $toCreate = [
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
@@ -88,7 +89,10 @@ class RegisterController extends Controller
             'phone_verification_code' => $smsCode,
             'code_send_at' => Carbon::now(),
             'verified' => 0,
-        ]);
+            'sync_need' => 1,
+        ];
+
+        $user =  User::create($toCreate);
 
         SMSHelper::sendSms($user->phone, strval($smsCode));
 
