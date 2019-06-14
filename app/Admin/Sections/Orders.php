@@ -66,31 +66,38 @@ class Orders extends Section {
         $form = Form::panel([
             FormColumn::column([
                 FormField::custom('<h4>Основное</h4><hr>'),
-                FormField::input('shipping_name', 'Название груза'),
+                FormField::input('shipping_name', 'Название груза')->setRequired(1),
                 FormField::datepicker('order_date', 'Дата заказа')
                     ->setTodayBtn(true)
                     ->setFormat('yyyy-mm-dd hh:ii:ss')
                     ->setLanguage('ru')
-                    ->setClearBtn(true),
+                    ->setClearBtn(true)
+                    ->setRequired(1),
                 FormField::select('status_id', 'Статус заказа')
+                    ->setRequired(1)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query){
                         return $query->where('class', 'order_status');
                     })->setDisplay('name'),
                 FormField::custom(View::make('admin.orders.order-user')->with(compact('order'))->render()),
                 FormField::select('ship_city_id', 'Город отправления')
+                    ->setRequired(1)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
                 FormField::select('dest_city_id', 'Город доставки')
+                    ->setRequired(1)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
-                FormField::input('total_weight', 'Общий вес')->setType('number'),
-                FormField::input('total_price', 'Итоговая цена')->setType('number'),
-                FormField::input('base_price', 'Цена маршрута')->setType('number'),
+                FormField::input('total_weight', 'Общий вес')->setType('number')->setRequired(1),
+                FormField::input('total_price', 'Итоговая цена')->setType('number')->setRequired(1),
+                FormField::input('base_price', 'Цена маршрута')->setType('number')->setRequired(1),
+                FormField::select('sync_need', 'Нужна ли синхронизация с 1с')
+                    ->setRequired(1)
+                    ->setOptions([0=>'Нет', 1=>'Да']),
 
                 FormField::custom('<h4>Страховка</h4><hr>'),
-                FormField::input('insurance', 'Страховая сумма')->setType('number'),
-                FormField::input('insurance_amount', 'Цена страховки')->setType('number'),
+                FormField::input('insurance', 'Страховая сумма')->setType('number')->setRequired(1),
+                FormField::input('insurance_amount', 'Цена страховки')->setType('number')->setRequired(1),
 
                 FormField::custom('<h4>Скидка</h4><hr>'),
                 FormField::input('discount', 'Процент')->setType('number'),
@@ -142,6 +149,7 @@ class Orders extends Section {
             FormColumn::column([
                 FormField::custom('<h4>Отправитель</h4><hr>'),
                 FormField::select('sender_type_id', 'Тип')
+                    ->setRequired(1)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query) {
                         return $query->where('class', 'UserType');
@@ -167,6 +175,7 @@ class Orders extends Section {
 
                 FormField::custom('<h4>Получатель</h4><hr>'),
                 FormField::select('recipient_type_id', 'Тип')
+                    ->setRequired(1)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query) {
                         return $query->where('class', 'UserType');
@@ -192,6 +201,7 @@ class Orders extends Section {
 
                 FormField::custom('<h4>Плательщик</h4><hr>'),
                 FormField::select('payer_type', 'Лицо')
+                    ->setRequired(1)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query) {
                         return $query->where('class', 'payer_type');
