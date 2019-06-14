@@ -67,6 +67,11 @@ class Orders extends Section {
             FormColumn::column([
                 FormField::custom('<h4>Основное</h4><hr>'),
                 FormField::input('shipping_name', 'Название груза'),
+                FormField::datepicker('order_date', 'Дата заказа')
+                    ->setTodayBtn(true)
+                    ->setFormat('yyyy-mm-dd hh:ii:ss')
+                    ->setLanguage('ru')
+                    ->setClearBtn(true),
                 FormField::select('status_id', 'Статус заказа')
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query){
@@ -114,7 +119,29 @@ class Orders extends Section {
                 FormField::select('delivery_point', 'Точный забор')
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::input('delivery_price', 'Цена доставки')->setType('number'),
-
+                FormField::custom('<strong>Габариты</strong><hr>'),
+                FormField::custom(View::make('admin.orders.order-items')->with(compact('order'))->render()),
+                FormField::custom('<strong>Услуги</strong><hr>'),
+                FormField::custom(View::make('admin.orders.order-services')->with(compact('order'))->render()),
+//                FormField::custom('<strong>Управление</strong><hr>'),
+//                FormField::select('manager_id', 'Менеджер')
+//                    ->setModelForOptions(User::class)
+//                    ->setQueryFunctionForModel(function ($user){
+//                        return $user->whereHas('roles', function ($role){
+//                            return $role->where('slug', 'menedzher');// todo нормальные слаги ролей
+//                        });
+//                    })
+//                    ->setDisplay('full_name'),
+//                FormField::select('operator_id', 'Оператор')
+//                    ->setModelForOptions(User::class)
+//                    ->setQueryFunctionForModel(function ($user){
+//                        return $user->whereHas('roles', function ($role){
+//                            return $role->where('slug', 'operator');// todo нормальные слаги ролей
+//                        });
+//                    })
+//                    ->setDisplay('full_name'),
+            ]),
+            FormColumn::column([
                 FormField::custom('<h4>Отправитель</h4><hr>'),
                 FormField::select('sender_type_id', 'Тип')
                     ->setModelForOptions(Type::class)
