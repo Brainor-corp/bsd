@@ -1,10 +1,5 @@
 @if(isset($order))
-    <div class="row mt-4">
-        <div class="col-12">
-            <h3>
-                Список услуг
-            </h3>
-        </div>
+    <div class="row mb-3">
         @if($order->order_services->count())
             @foreach($order->order_services as $service)
                 <div class="col-4">
@@ -36,7 +31,7 @@
             @endforeach
         @else
             <div class="col-12">
-                <h5>Список услуг пуст</h5>
+                <span>Список услуг пуст</span>
             </div>
         @endif
     </div>
