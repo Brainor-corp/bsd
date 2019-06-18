@@ -9,6 +9,7 @@ use App\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Bradmin\Cms\Helpers\CMSHelper;
 
 class MainPageController extends Controller
 {
@@ -50,6 +51,27 @@ class MainPageController extends Controller
 
         $services = Service::get();
 
+        //news
+        $args = [
+            'category' => ['novosti'],
+            'type' => 'post',
+        ];
+        $news = CMSHelper::getQueryBuilder($args)->limit(3)->get();
+
+//        dd($news);
+
+        //services
+        $args = [
+            'type' => 'page',
+        ];
+        $services = CMSHelper::getQueryBuilder($args)
+//            ->whereHas('tags', function ($tags) use ($request) {
+//                    return $tags->where('slug', ['main-page-services']);
+//                })
+//            ->limit(4)
+            ->where('id',17)
+            ->get();
+//        dd($services);
         return view('v1.pages.index.index')
             ->with(compact(
                 'packages',
@@ -59,7 +81,8 @@ class MainPageController extends Controller
                 'tariff',
                 'services',
                 'selectedShipCity',
-                'selectedDestCity'
+                'selectedDestCity',
+                'news'
             ));
     }
 }
