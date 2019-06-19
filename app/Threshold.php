@@ -16,6 +16,14 @@ class Threshold extends Model
     }
 
     public function getThresholdRateValueAttribute(){
-        return $this->rate->name . ' - ' . $this->value;
+        $rate = '';
+
+        switch($this->rate->slug) {
+            case "ves": $rate = 'кг'; break;
+            case "obem": $rate = 'куб. м.'; break;
+            case "lineynyy-razmer": $rate = '(лин. размер)'; break;
+        }
+
+        return "$this->value $rate";
     }
 }

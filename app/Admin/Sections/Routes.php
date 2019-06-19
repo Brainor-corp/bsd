@@ -4,6 +4,10 @@ namespace App\Admin\Sections;
 
 use App\City;
 use App\Oversize;
+use App\RouteTariff;
+use App\Threshold;
+use App\Type;
+use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -11,7 +15,6 @@ use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Http\Request;
 
 //use Illuminate\Support\Facades\Request;
 
@@ -70,7 +73,7 @@ class Routes extends Section
     {
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('name', 'Название')->setRequired(true),
+                FormField::hidden('name', 'Название')->setValue('-'),
                 FormField::select('ship_city_id', 'Город отправки')
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
@@ -90,10 +93,29 @@ class Routes extends Section
                     ->setRequired(true)
                     ->setModelForOptions(Oversize::class)
                     ->setDisplay('name'),
+                FormField::related('route_tariffs', 'Тарифы', RouteTariff::class, [
+                    FormField::select('threshold_id', 'Предел')
+                        ->setRequired(true)
+                        ->setModelForOptions(Threshold::class)
+                        ->setDisplay('threshold_rate_value'),
+                    FormField::input('price', 'Тариф')->setType('number'),
+                    FormField::select('rate_id', 'Мера')
+                        ->setModelForOptions(Type::class)
+                        ->setQueryFunctionForModel(function ($query) {
+                            return $query->where('class', 'rates');
+                        })
+                        ->setDisplay('name'),
+                ])
             ])
         ]);
 
         return $form;
+    }
+
+    public function afterSave(Request $request, $model = null)
+    {
+        $model->name = $model->shipCity->name . ' → ' . $model->destinationCity->name;
+        $model->save();
     }
 
 }
