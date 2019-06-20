@@ -2,26 +2,16 @@
 
 namespace App\Admin\Sections;
 
-use App\City;
-use App\Oversize;
-use App\Region;
-use App\Route;
-use App\RouteTariff;
-use App\Threshold;
 use App\Type;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Zeus\Admin\SectionBuilder\Display\Table\DisplayTable;
 use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
+
 //use Illuminate\Support\Facades\Request;
-use Zeus\Admin\SectionBuilder\Meta\Meta;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
-use Illuminate\Http\Request;
 
 
 class Supports extends Section {
@@ -63,7 +53,10 @@ class Supports extends Section {
                 FormField::input('company_name', 'Название компании'),
                 FormField::input('phone', 'Телефон')->setRequired(true),
                 FormField::textarea('text', 'Текст'),
-                FormField::select('subject_id', 'Тип обращения')
+                FormField::bselect('subject_id', 'Тип обращения')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query){
                         return $query->where('class', 'support_type');

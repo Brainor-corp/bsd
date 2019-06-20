@@ -4,6 +4,11 @@ namespace App\Admin\Sections;
 
 use App\City;
 use App\Oversize;
+use App\Route;
+use App\RouteTariff;
+use App\Threshold;
+use App\Type;
+use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -11,7 +16,6 @@ use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Http\Request;
 
 //use Illuminate\Support\Facades\Request;
 
@@ -70,30 +74,75 @@ class Routes extends Section
     {
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('name', 'Название')->setRequired(true),
-                FormField::select('ship_city_id', 'Город отправки')
+                FormField::hidden('name', 'Название')->setValue('-'),
+                FormField::bselect('ship_city_id', 'Город отправки')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
-                FormField::select('dest_city_id', 'Город назначения')
+                FormField::bselect('dest_city_id', 'Город назначения')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
                 FormField::input('min_cost', 'Мин. стоимость')->setType('number'),
                 FormField::input('delivery_time', 'Время доставки')->setType('number'),
-                FormField::input('base_route', 'Базовый маршрут')->setType('number'),
+                FormField::bselect('base_route', 'Базовый маршрут')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
+                    ->setModelForOptions(Route::class)
+                    ->setDisplay('name'),
                 FormField::input('addition', 'Доп.')->setType('number'),
                 FormField::input('wrapper_tariff', 'Оберточный тариф')->setType('number')->setRequired(true),
-                FormField::input('fixed_tariffs', 'Фикс. тариф')->setType('number')->setRequired(true),
+                FormField::bselect('fixed_tariffs', 'Фикс. тариф')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
+                    ->setOptions([0 => 'Нет', 1 => 'Да'])
+                    ->setRequired(true),
                 FormField::input('coefficient', 'Коэфф.')->setType('number')->setRequired(true),
-                FormField::select('oversizes_id', 'Перегрузка')
+                FormField::bselect('oversizes_id', 'Перегрузка')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(Oversize::class)
                     ->setDisplay('name'),
+                FormField::related('route_tariffs', 'Тарифы', RouteTariff::class, [
+                    FormField::bselect('threshold_id', 'Предел')
+                        ->setDataAttributes([
+                            'data-live-search="true"'
+                        ])
+                        ->setRequired(true)
+                        ->setModelForOptions(Threshold::class)
+                        ->setDisplay('threshold_rate_value'),
+                    FormField::input('price', 'Тариф')->setType('number'),
+                    FormField::bselect('rate_id', 'Мера')
+                        ->setDataAttributes([
+                            'data-live-search="true"'
+                        ])
+                        ->setRequired(true)
+                        ->setModelForOptions(Type::class)
+                        ->setQueryFunctionForModel(function ($query) {
+                            return $query->where('class', 'rates');
+                        })
+                        ->setDisplay('name'),
+                ])
             ])
         ]);
 
         return $form;
+    }
+
+    public function afterSave(Request $request, $model = null)
+    {
+        $model->name = $model->shipCity->name . ' → ' . $model->destinationCity->name;
+        $model->save();
     }
 
 }

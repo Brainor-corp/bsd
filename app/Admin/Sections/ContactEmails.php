@@ -2,13 +2,13 @@
 
 namespace App\Admin\Sections;
 
+use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Http\Request;
 
 
 class ContactEmails extends Section
@@ -36,7 +36,7 @@ class ContactEmails extends Section
             FormColumn::column([
                 FormField::input('email', 'Email')->setType('email')->setRequired(true),
                 FormField::textarea('description', 'Описание'),
-                FormField::select('active', 'Активный')
+                FormField::bselect('active', 'Активный')
                 ->setOptions([0 => 'Нет', 1 => 'Да']),
             ])
         ]);
