@@ -1431,32 +1431,32 @@ ul.icons_list li:after {
 	display:block;
 	height:100%;
 }
-.service__mini-block.mezhter{
+.service__mini-block.mezhter, .service__mini-block.mezh-terminalnaya-perevozka{
 	background: url('../../images/img/icons.png') no-repeat;
 	background-position: 0 0;
 }
-.service__mini-block.mezhter:hover{
+.service__mini-block.mezhter:hover, .service__mini-block.mezh-terminalnaya-perevozka:hover{
 	background-position: 0 -130px;
 }
-.service__mini-block.aviap{
+.service__mini-block.aviap, .service__mini-block.aviaperevozka{
 	background: url('../../images/img/icons.png') no-repeat;
 	background-position: -129px 0;
 }
-.service__mini-block.aviap:hover{
+.service__mini-block.aviap:hover, .service__mini-block.aviaperevozka:hover{
 	background-position: -129px -130px;
 }
-.service__mini-block.perevozkadoc{
+.service__mini-block.perevozkadoc,  .service__block.dostavka-dokumentov{
 	background: url('../../images/img/icons.png') no-repeat;
 	background-position: -258px 0;
 }
-.service__mini-block.perevozkadoc:hover{
+.service__mini-block.perevozkadoc:hover,.service__mini-block.dostavka-dokumentov:hover{
 	background-position: -258px -130px;
 }
-.service__mini-block.dostavkavgip{
+.service__mini-block.dostavkavgip, .service__mini-block.dostavka-v-gipermarkety{
 	background: url('../../images/img/icons.png') no-repeat;
 	background-position: -388px 0;
 }
-.service__mini-block.dostavkavgip:hover{
+.service__mini-block.dostavkavgip:hover, .service__mini-block.dostavka-v-gipermarkety:hover{
 	background-position: -387px -130px;
 }
 @media (max-width:991px) {
@@ -1560,32 +1560,32 @@ ul.icons_list li:after {
     margin-right: -18%;
 	transition:all ease 1s;
 }
-.service__block.mezhter{
+.service__block.mezhter, .service__block.mezh-terminalnaya-perevozka{
 	background: url('../../images/img/services.png') no-repeat;
 	background-position: 0 0;
 }
-.service__block.mezhter:hover{
+.service__block.mezhter:hover, .service__block.mezh-terminalnaya-perevozka:hover{
 	background-position: 0 -359px;
 }
-.service__block.aviap{
+.service__block.aviap, .service__block.aviaperevozka{
 	background: url('../../images/img/services.png') no-repeat;
 	background-position: 0 -718px;
 }
-.service__block.aviap:hover{
+.service__block.aviap:hover, .service__block.aviaperevozka:hover{
 	background-position: 0 -1077px;
 }
-.service__block.perevozkadoc{
+.service__block.perevozkadoc, .service__block.dostavka-dokumentov{
 	background: url('../../images/img/services.png') no-repeat;
 	background-position: 0 -1436px;
 }
-.service__block.perevozkadoc:hover{
+.service__block.perevozkadoc:hover, .service__block.dostavka-dokumentov:hover{
 	background-position: 0 -1795px;
 }
-.service__block.dostavkavgip{
+.service__block.dostavkavgip, .service__block.dostavka-v-gipermarkety{
 	background: url('../../images/img/services.png') no-repeat;
 	background-position: 0 -2154px;
 }
-.service__block.dostavkavgip:hover{
+.service__block.dostavkavgip:hover, .service__block.dostavka-v-gipermarkety:hover{
 	background-position: 0 -2513px;
 }
 .service__block_body {

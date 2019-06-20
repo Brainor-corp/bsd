@@ -9,7 +9,8 @@ use App\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Bradmin\Cms\Helpers\CMSHelper;
+use Zeus\Admin\Cms\Helpers\CMSHelper;
+use Zeus\Admin\Cms\Models\ZeusAdminPost;
 
 class MainPageController extends Controller
 {
@@ -63,15 +64,20 @@ class MainPageController extends Controller
         //services
         $args = [
             'type' => 'page',
+            'tags' => ['main-page-services'],
+            'order_by' => ['published_at','ASC'],
         ];
-        $services = CMSHelper::getQueryBuilder($args)
-//            ->whereHas('tags', function ($tags) use ($request) {
-//                    return $tags->where('slug', ['main-page-services']);
-//                })
-//            ->limit(4)
-            ->where('id',17)
-            ->get();
-//        dd($services);
+        $servicesPostsChunk = CMSHelper::getQueryBuilder($args)
+            ->limit(4)
+            ->get()
+            ->chunk(2);
+
+        $args = [
+            'type' => 'page',
+            'slug' => 'glavnaya-o-kompanii'
+        ];
+        $aboutPage = CMSHelper::getQueryBuilder($args)
+            ->first();
         return view('v1.pages.index.index')
             ->with(compact(
                 'packages',
@@ -82,7 +88,9 @@ class MainPageController extends Controller
                 'services',
                 'selectedShipCity',
                 'selectedDestCity',
-                'news'
+                'news',
+                'servicesPostsChunk',
+                'aboutPage'
             ));
     }
 }
