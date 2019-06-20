@@ -3,25 +3,17 @@
 namespace App\Admin\Sections;
 
 use App\City;
-use App\Oversize;
-use App\Region;
 use App\ReviewFile;
-use App\Route;
-use App\RouteTariff;
-use App\Threshold;
-use App\Type;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Zeus\Admin\SectionBuilder\Display\Table\DisplayTable;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
+
 //use Illuminate\Support\Facades\Request;
-use Zeus\Admin\SectionBuilder\Meta\Meta;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
-use Illuminate\Http\Request;
 
 
 class Reviews extends Section {
@@ -52,11 +44,17 @@ class Reviews extends Section {
                 FormField::input('email', 'Email'),
                 FormField::input('phone', 'Телефон')->setRequired(true),
                 FormField::textarea('text', 'Текст отзыва'),
-                FormField::select('city_id', 'Город')
+                FormField::bselect('city_id', 'Город')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setModelForOptions(City::class)
                     ->setDisplay('name')
                     ->setRequired(true),
-                FormField::select('moderate', 'Прошел модерацию?')
+                FormField::bselect('moderate', 'Прошел модерацию?')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setOptions([0 => 'Нет', 1 => 'Да'])
                     ->setRequired(true),
                 FormField::custom(View::make('admin.reviews-section.reviews-file-field')->with(compact('file'))),

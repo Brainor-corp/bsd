@@ -4,6 +4,7 @@ namespace App\Admin\Sections;
 
 use App\Oversize;
 use App\Type;
+use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -11,7 +12,6 @@ use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Http\Request;
 
 //use Illuminate\Support\Facades\Request;
 
@@ -55,11 +55,17 @@ class OversizeMarkups extends Section {
 
         $form = Form::panel([
             FormColumn::column([
-                FormField::select('oversize_id', 'Компания')
+                FormField::bselect('oversize_id', 'Компания')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(Oversize::class)
                     ->setDisplay('name'),
-                FormField::select('rate_id', 'Мера')
+                FormField::bselect('rate_id', 'Мера')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query){

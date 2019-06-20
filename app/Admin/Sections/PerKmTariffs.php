@@ -4,6 +4,7 @@ namespace App\Admin\Sections;
 
 use App\ForwardThreshold;
 use App\Type;
+use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -11,7 +12,6 @@ use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Http\Request;
 
 //use Illuminate\Support\Facades\Request;
 
@@ -55,14 +55,20 @@ class PerKmTariffs extends Section {
 
         $form = Form::panel([
             FormColumn::column([
-                FormField::select('tariff_zone_id', 'Тарифная зона')
+                FormField::bselect('tariff_zone_id', 'Тарифная зона')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query){
                         return $query->where('class', 'tariff_zones');
                     })
                     ->setDisplay('name'),
-                FormField::select('forward_threshold_id', 'Предельный порог')
+                FormField::bselect('forward_threshold_id', 'Предельный порог')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(ForwardThreshold::class)
                     ->setDisplay('name'),
