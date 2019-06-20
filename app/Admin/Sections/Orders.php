@@ -19,7 +19,7 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 
 
 class Orders extends Section {
-    protected $title = 'Заказы';
+    protected $title = 'Заявки';
 
     public static function onDisplay(Request $request) {
         $display = Display::table([

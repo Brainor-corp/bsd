@@ -75,7 +75,8 @@ class Routes extends Section
         $form = Form::panel([
             FormColumn::column([
                 FormField::hidden('name', 'Название')->setValue('-'),
-                FormField::bselect('ship_city_id', 'Город отправки')
+                FormField::bselect('ship_city_id', 'Город отправления')
+                    ->setHelpBlock("<small class='text-muted'>Город отправления груза</small>")
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
@@ -83,36 +84,46 @@ class Routes extends Section
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
                 FormField::bselect('dest_city_id', 'Город назначения')
+                    ->setHelpBlock("<small class='text-muted'>Город назначения груза</small>")
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
-                FormField::input('min_cost', 'Мин. стоимость')->setType('number'),
-                FormField::input('delivery_time', 'Время доставки')->setType('number'),
-                FormField::bselect('base_route', 'Базовый маршрут')
+                FormField::bselect('base_route', 'Базовый тариф')
+                    ->setHelpBlock("<small class='text-muted'>К базовому тарифу прибавляются фиксированные надбавки данного тарифа</small>")
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
                     ->setModelForOptions(Route::class)
                     ->setDisplay('name'),
-                FormField::input('addition', 'Доп.')->setType('number'),
-                FormField::input('wrapper_tariff', 'Оберточный тариф')->setType('number')->setRequired(true),
-                FormField::bselect('fixed_tariffs', 'Фикс. тариф')
-                    ->setDataAttributes([
-                        'data-live-search="true"'
-                    ])
-                    ->setOptions([0 => 'Нет', 1 => 'Да'])
+                FormField::input('min_cost', 'Минимальная стоимость стоимость')
+                    ->setHelpBlock("<small class='text-muted'>Минимальная стоимость доставки</small>")
+                    ->setType('number'),
+                FormField::input('wrapper_tariff', 'Тариф для бандероли')
+                    ->setHelpBlock("<small class='text-muted'>Посылка не больше 2 кг по весу и 0,01 куб. м. по объёму</small>")
+                    ->setType('number')
                     ->setRequired(true),
-                FormField::input('coefficient', 'Коэфф.')->setType('number')->setRequired(true),
-                FormField::bselect('oversizes_id', 'Перегрузка')
+                FormField::input('delivery_time', 'Срок доставки')
+                    ->setHelpBlock("<small class='text-muted'>Срок доставки в сутках</small>")
+                    ->setType('number'),
+                FormField::input('addition', 'Постоянная надбавка')
+                    ->setHelpBlock("<small class='text-muted'>Не зависящая от характеристик груза (например, оформление документов на паром)</small>")
+                    ->setType('number'),
+                FormField::bselect('oversizes_id', 'Группа негабаритов')
+                    ->setHelpBlock("<small class='text-muted'>Группа негабаритов для маршрута</small>")
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
                     ->setRequired(true)
                     ->setModelForOptions(Oversize::class)
                     ->setDisplay('name'),
+                FormField::bselect('fixed_tariffs', 'Фиксированные тарифы')
+                    ->setHelpBlock("<small class='text-muted'>Например, для Гарант-Логистики</small>")
+                    ->setOptions([0 => 'Нет', 1 => 'Да'])
+                    ->setRequired(true),
+                FormField::input('coefficient', 'Коэфф.')->setType('number')->setRequired(true),
                 FormField::related('route_tariffs', 'Тарифы', RouteTariff::class, [
                     FormField::bselect('threshold_id', 'Предел')
                         ->setDataAttributes([
@@ -137,6 +148,11 @@ class Routes extends Section
         ]);
 
         return $form;
+    }
+
+    public function beforeDelete(Request $request, $id = null)
+    {
+        RouteTariff::where('route_id', $id)->delete();
     }
 
     public function afterSave(Request $request, $model = null)
