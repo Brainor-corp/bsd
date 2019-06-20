@@ -4,6 +4,7 @@ namespace App\Admin\Sections;
 
 use App\City;
 use App\Oversize;
+use App\Route;
 use App\RouteTariff;
 use App\Threshold;
 use App\Type;
@@ -90,7 +91,12 @@ class Routes extends Section
                     ->setDisplay('name'),
                 FormField::input('min_cost', 'Мин. стоимость')->setType('number'),
                 FormField::input('delivery_time', 'Время доставки')->setType('number'),
-                FormField::input('base_route', 'Базовый маршрут')->setType('number'),
+                FormField::bselect('base_route', 'Базовый маршрут')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
+                    ->setModelForOptions(Route::class)
+                    ->setDisplay('name'),
                 FormField::input('addition', 'Доп.')->setType('number'),
                 FormField::input('wrapper_tariff', 'Оберточный тариф')->setType('number')->setRequired(true),
                 FormField::input('fixed_tariffs', 'Фикс. тариф')->setType('number')->setRequired(true),

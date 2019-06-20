@@ -64,7 +64,7 @@ class Users extends Section
                 FormField::input('phone', 'Телефон'),
                 FormField::bselect('roles', 'Роли')
                     ->setDataAttributes([
-                        'data-live-search="true"'
+                        'multiple', 'data-live-search="true"'
                     ])
                     ->setModelForOptions(Role::class)
                     ->setDisplay('name'),
