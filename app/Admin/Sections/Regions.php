@@ -70,28 +70,21 @@ class Regions extends Section
     {
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('name', 'Название')->setRequired(true),
-                FormField::input('code', 'Код')->setRequired(true),
-                FormField::input('fixed_tariff', 'Фикс. тариф')->setType('number')->setRequired(true),
-                FormField::input('dist_tariff', 'Дист. тариф')->setType('number')->setRequired(true),
-                FormField::input('inside_tariff', 'Внут. тариф')->setType('number')->setRequired(true),
+                FormField::input('code', 'Код')
+                    ->setHelpBlock("<small class='text-muted'>Номер записи в базе данных</small>")
+                    ->setRequired(true),
+                FormField::input('name', 'Наименование')
+                    ->setHelpBlock("<small class='text-muted'>Наименование региона</small>")
+                    ->setRequired(true),
                 FormField::bselect('dest_city_id', 'Город назначения')
+                    ->setHelpBlock("<small class='text-muted'>Город назначения груза</small>")
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
-                FormField::bselect('tariff_zone_id', 'Тарифная зона')
-                    ->setDataAttributes([
-                        'data-live-search="true"'
-                    ])
-                    ->setRequired(true)
-                    ->setModelForOptions(Type::class)
-                    ->setQueryFunctionForModel(function ($query){
-                        return $query->where('class', 'tariff_zones');
-                    })
-                    ->setDisplay('name'),
-                FormField::bselect('threshold_group_id', 'Группа отправных пунктов')
+                FormField::bselect('threshold_group_id', 'Группа пределов')
+                    ->setHelpBlock("<small class='text-muted'>Группа пределов внешней экспедиции</small>")
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
@@ -101,6 +94,29 @@ class Regions extends Section
                         return $query->where('class', 'threshold_groups');
                     })
                     ->setDisplay('name'),
+                FormField::bselect('tariff_zone_id', 'Тарифная зона')
+                    ->setHelpBlock("<small class='text-muted'>Тарифная зона внешней экспедиции</small>")
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
+                    ->setRequired(true)
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($query){
+                        return $query->where('class', 'tariff_zones');
+                    })
+                    ->setDisplay('name'),
+                FormField::bselect('fixed_tariff', 'Фиксированный тариф')
+                    ->setHelpBlock("<small class='text-muted'>Применяется фиксированный тариф</small>")
+                    ->setOptions([0 => 'Нет', 1 => 'Да'])
+                    ->setRequired(true),
+                FormField::bselect('dist_tariff', 'Тариф по расстоянию')
+                    ->setHelpBlock("<small class='text-muted'>Применяется тариф по расстоянию</small>")
+                    ->setOptions([0 => 'Нет', 1 => 'Да'])
+                    ->setRequired(true),
+                FormField::bselect('inside_tariff', 'Добавить внутренний тариф')
+                    ->setHelpBlock("<small class='text-muted'>При рассчете стоимости добавить внутренний тариф</small>")
+                    ->setOptions([0 => 'Нет', 1 => 'Да'])
+                    ->setRequired(true),
             ])
         ]);
 

@@ -16,12 +16,12 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 
 
 class Thresholds extends Section {
-    protected $title = 'Пределы';
+    protected $title = 'Маршрутные пределы';
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::text('rate.name', 'Мера'),
-            Column::text('value', 'Значение'),
+            Column::text('rate.name', 'Показатель'),
+            Column::text('value', 'Величина'),
         ])
             ->setFilter([
                 FilterType::select('rate_id')
@@ -45,7 +45,7 @@ class Thresholds extends Section {
 
         $form = Form::panel([
             FormColumn::column([
-                FormField::bselect('rate_id', 'Мера')
+                FormField::bselect('rate_id', 'Показатель')
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
@@ -55,7 +55,7 @@ class Thresholds extends Section {
                         return $query->where('class', 'rates');
                     })
                     ->setDisplay('name'),
-                FormField::input('value', 'Значение')->setRequired(true)->setType('number'),
+                FormField::input('value', 'Величина')->setRequired(true)->setType('number'),
             ])
         ]);
 

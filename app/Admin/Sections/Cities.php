@@ -52,17 +52,26 @@ class Cities extends Section
     {
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('name', 'Название')->setRequired(true),
-                FormField::input('message', 'Сообщение')->setType('number'),
-                FormField::bselect('is_ship', 'Можно доставить')
+                FormField::input('name', 'Наименование')
+                    ->setRequired(true),
+                FormField::bselect('is_ship', 'Отправка')
+                    ->setHelpBlock("<small class='text-muted'>Это город отправления</small>")
                     ->setOptions([0=>'Нет', 1=>'Да']),
-                FormField::bselect('is_filial', 'Является филиалом')
+                FormField::bselect('is_filial', 'Филиал')
+                    ->setHelpBlock("<small class='text-muted'>Это филиал</small>")
                     ->setOptions([0=>'Нет', 1=>'Да']),
-                FormField::bselect('doorstep', 'Доставка до двери')
-                    ->setOptions([0=>'Нет', 1=>'Да']),
-                FormField::bselect('is_popular', 'Показывать в популярных городах')
+                FormField::bselect('message', 'Сообщение')
+                    ->setHelpBlock("<small class='text-muted'>Стандартное сообщение, если нет адреса и телефона</small>")
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($query) {
+                        return $query->where('class', 'system_message');
+                    })
+                    ->setDisplay('name'),
+                FormField::bselect('doorstep', 'До двери')
+                    ->setHelpBlock("<small class='text-muted'>В этом городе доставка осуществляется в обязательном режиме \"До двери\"</small>")
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::bselect('tariff_zone_id', 'Тарифная зона')
+                    ->setHelpBlock("<small class='text-muted'>Тарифная зона внешней экспедиции</small>")
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
@@ -72,7 +81,8 @@ class Cities extends Section
                         return $query->where('class', 'tariff_zones');
                     })
                     ->setDisplay('name'),
-                FormField::bselect('threshold_group_id', 'Группа отправных пунктов')
+                FormField::bselect('threshold_group_id', 'Группа пределов')
+                    ->setHelpBlock("<small class='text-muted'>Группа пределов</small>")
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
@@ -82,6 +92,8 @@ class Cities extends Section
                         return $query->where('class', 'threshold_groups');
                     })
                     ->setDisplay('name'),
+                FormField::bselect('is_popular', 'Показывать в популярных городах')
+                    ->setOptions([0=>'Нет', 1=>'Да'])
             ])
         ]);
 

@@ -2,6 +2,7 @@
 
 namespace App\Admin\Sections;
 
+use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -9,28 +10,27 @@ use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Http\Request;
 
 //use Illuminate\Support\Facades\Request;
 
 
 class Oversizes extends Section {
-    protected $title = 'Перегруз';
+    protected $title = 'Группы негабаритов';
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::text('id', '#'),
-            Column::text('name', 'Название'),
-            Column::text('length', 'Длина'),
-            Column::text('width', 'Ширина'),
-            Column::text('height', 'Высота'),
-            Column::text('volume', 'Обьем'),
-            Column::text('weight', 'Вес'),
-            Column::text('ratio', 'Пропорция'),
+            Column::text('name', 'Наименование'),
+            Column::text('length', 'По длине'),
+            Column::text('width', 'По ширине'),
+            Column::text('height', 'По высоте'),
+            Column::text('volume', 'По объёму'),
+            Column::text('weight', 'По весу'),
+            Column::text('ratio', 'Коэффициент, %'),
         ])
             ->setFilter([
                 null,
-                FilterType::text('name', 'Название'),
+                FilterType::text('name', 'Наименование'),
                 null,
                 null,
                 null,
@@ -51,13 +51,27 @@ class Oversizes extends Section {
 
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('name', 'Название')->setRequired(true),
-                FormField::input('length', 'Длина')->setType('number')->setRequired(true),
-                FormField::input('width', 'Ширина')->setType('number')->setRequired(true),
-                FormField::input('height', 'Высота')->setType('number')->setRequired(true),
-                FormField::input('volume', 'Обьем')->setType('number')->setRequired(true),
-                FormField::input('weight', 'Вес')->setType('number')->setRequired(true),
-                FormField::input('ratio', 'Пропорция')->setType('number')->setRequired(true),
+                FormField::input('name', 'Наименование')
+                     ->setHelpBlock("<small class='text-muted'>Наименование группы негабаритов</small>")
+                    ->setRequired(true),
+                FormField::input('length', 'По длине')
+                     ->setHelpBlock("<small class='text-muted'>Негабаритный размер по длине</small>")
+                    ->setType('number')->setRequired(true),
+                FormField::input('width', 'По ширине')
+                     ->setHelpBlock("<small class='text-muted'>Негабаритный размер по ширине</small>")
+                    ->setType('number')->setRequired(true),
+                FormField::input('height', 'По высоте')
+                     ->setHelpBlock("<small class='text-muted'>Негабаритный размер по высоте</small>")
+                    ->setType('number')->setRequired(true),
+                FormField::input('volume', 'По объёму')
+                     ->setHelpBlock("<small class='text-muted'>Негабаритный размер по объёму</small>")
+                    ->setType('number')->setRequired(true),
+                FormField::input('weight', 'По весу')
+                     ->setHelpBlock("<small class='text-muted'>Негабаритный размер по весу</small>")
+                    ->setType('number')->setRequired(true),
+                FormField::input('ratio', 'Коэффициент, %')
+                     ->setHelpBlock("<small class='text-muted'>Коэффициент надбавки за негабаритность в процентах</small>")
+                    ->setType('number')->setRequired(true),
             ])
         ]);
 
