@@ -27,6 +27,49 @@ class NavigationList
                 ]
             ],
             [
+                'url' => '/'.config('zeusAdmin.admin_url').'/calc',
+                'icon' => 'fas fa-calculator',
+                'text' => 'Калькулятор',
+                'noDirect' => true,
+                'nodes' => [
+                    [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Regions',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Регионы'
+                    ],
+                    [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Cities',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Города'
+                    ],
+                    [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Points',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Особые нас. пункты'
+                    ],
+                    [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Routes',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Маршруты'
+                    ],
+                    [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Thresholds',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Маршрутные пределы'
+                    ],
+                    [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Oversizes',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Группы негабаритов'
+                    ],
+                    [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Orders',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Заявки'
+                    ],
+                ]
+            ],
+            [
                 'url' => '/'.config('zeusAdmin.admin_url').'/db',
                 'icon' => 'fas fa-users',
                 'text' => 'Данные таблиц',
@@ -48,26 +91,6 @@ class NavigationList
                         'text' => 'Типы'
                     ],
                     [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/Cities',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Города'
-                    ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/Points',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Пункты'
-                    ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/Regions',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Регионы'
-                    ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/Routes',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Маршруты'
-                    ],
-                    [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/RouteTariffs',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Тарифы маршрутов'
@@ -76,16 +99,6 @@ class NavigationList
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Terminals',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Терминалы'
-                    ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/Orders',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Заказы'
-                    ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/Oversizes',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Перегруз'
                     ],
                     [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/ForwardThresholds',
@@ -111,11 +124,6 @@ class NavigationList
                         'url' => '/' . config('zeusAdmin.admin_url') . '/OversizeMarkups',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Множитель перегруза'
-                    ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/Thresholds',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Пределы'
                     ],
                     [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Reviews',
