@@ -9,6 +9,8 @@ use App\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Zeus\Admin\Cms\Helpers\CMSHelper;
+use Zeus\Admin\Cms\Models\ZeusAdminPost;
 
 class MainPageController extends Controller
 {
@@ -50,6 +52,32 @@ class MainPageController extends Controller
 
         $services = Service::get();
 
+        //news
+        $args = [
+            'category' => ['novosti'],
+            'type' => 'post',
+        ];
+        $news = CMSHelper::getQueryBuilder($args)->limit(3)->get();
+
+//        dd($news);
+
+        //services
+        $args = [
+            'type' => 'page',
+            'tags' => ['main-page-services'],
+            'order_by' => ['published_at','ASC'],
+        ];
+        $servicesPostsChunk = CMSHelper::getQueryBuilder($args)
+            ->limit(4)
+            ->get()
+            ->chunk(2);
+
+        $args = [
+            'type' => 'page',
+            'slug' => 'glavnaya-o-kompanii'
+        ];
+        $aboutPage = CMSHelper::getQueryBuilder($args)
+            ->first();
         return view('v1.pages.index.index')
             ->with(compact(
                 'packages',
@@ -59,7 +87,10 @@ class MainPageController extends Controller
                 'tariff',
                 'services',
                 'selectedShipCity',
-                'selectedDestCity'
+                'selectedDestCity',
+                'news',
+                'servicesPostsChunk',
+                'aboutPage'
             ));
     }
 }
