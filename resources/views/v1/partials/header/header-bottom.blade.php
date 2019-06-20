@@ -70,29 +70,17 @@
         </form>
     </div>
 </div>
-<div class="row event-feed__list">
-    <div class="event-feed__item col-lg-4 d-flex align-items-center">
-        <div class="event-feed__icon">
-            <i class="fa fa-exclamation-circle"></i>
-        </div>
-        <div class="event-feed__info">
-            <span>С 01.01.2019 мы меняем плотность груза, а также стоимость услуг по некоторым направлениям</span>
-        </div>
+@if(count($news)>0)
+    <div class="row event-feed__list">
+        @foreach($news as $new)
+            <div class="event-feed__item col-lg-4 d-flex align-items-center">
+                <div class="event-feed__icon">
+                    <i class="fa fa-exclamation-circle"></i>
+                </div>
+                <div class="event-feed__info">
+                    <span>{{ $new->description }}</span>
+                </div>
+            </div>
+        @endforeach
     </div>
-    <div class="event-feed__item col-lg-4 d-flex align-items-center">
-        <div class="event-feed__icon">
-            <i class="fa fa-star"></i>
-        </div>
-        <div class="event-feed__info">
-            <span>С 01.01.2019 мы меняем плотность груза, а также стоимость услуг по некоторым направлениям</span>
-        </div>
-    </div>
-    <div class="event-feed__item col-lg-4 d-flex align-items-center">
-        <div class="event-feed__icon">
-            <i class="fa fa-star"></i>
-        </div>
-        <div class="event-feed__info">
-            <span>С 01.01.2019 мы меняем плотность груза, а также стоимость услуг по некоторым направлениям</span>
-        </div>
-    </div>
-</div>
+@endif
