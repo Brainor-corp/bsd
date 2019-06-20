@@ -5,7 +5,8 @@ namespace App\Admin\Sections;
 use App\City;
 use App\Order;
 use App\Type;
-use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -13,8 +14,6 @@ use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
 
 //use Illuminate\Support\Facades\Request;
 
@@ -73,25 +72,34 @@ class Orders extends Section {
                     ->setLanguage('ru')
                     ->setClearBtn(true)
                     ->setRequired(1),
-                FormField::select('status_id', 'Статус заказа')
+                FormField::bselect('status_id', 'Статус заказа')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(1)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query){
                         return $query->where('class', 'order_status');
                     })->setDisplay('name'),
                 FormField::custom(View::make('admin.orders.order-user')->with(compact('order'))->render()),
-                FormField::select('ship_city_id', 'Город отправления')
+                FormField::bselect('ship_city_id', 'Город отправления')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(1)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
-                FormField::select('dest_city_id', 'Город доставки')
+                FormField::bselect('dest_city_id', 'Город доставки')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(1)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
                 FormField::input('total_weight', 'Общий вес')->setType('number')->setRequired(1),
                 FormField::input('total_price', 'Итоговая цена')->setType('number')->setRequired(1),
                 FormField::input('base_price', 'Цена маршрута')->setType('number')->setRequired(1),
-                FormField::select('sync_need', 'Нужна ли синхронизация с 1с')
+                FormField::bselect('sync_need', 'Нужна ли синхронизация с 1с')
                     ->setRequired(1)
                     ->setOptions([0=>'Нет', 1=>'Да']),
 
@@ -104,24 +112,24 @@ class Orders extends Section {
                 FormField::input('discount_amount', 'Сумма')->setType('number'),
 
                 FormField::custom('<h4>Забор груза</h4><hr>'),
-                FormField::select('take_need', 'Нужно забрать')
+                FormField::bselect('take_need', 'Нужно забрать')
                     ->setOptions([0=>'Нет', 1=>'Да']),
-                FormField::select('take_in_city', 'Забор в пределах города')
+                FormField::bselect('take_in_city', 'Забор в пределах города')
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::input('take_address', 'Адрес забора'),
                 FormField::input('take_distance', 'Расстояние забора (км)')->setType('number'),
-                FormField::select('take_point', 'Точный забор')
+                FormField::bselect('take_point', 'Точный забор')
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::input('take_price', 'Цена забора')->setType('number'),
 
                 FormField::custom('<h4>Доставка груза</h4><hr>'),
-                FormField::select('delivery_need', 'Нужно забрать')
+                FormField::bselect('delivery_need', 'Нужно забрать')
                     ->setOptions([0=>'Нет', 1=>'Да']),
-                FormField::select('delivery_in_city', 'Забор в пределах города')
+                FormField::bselect('delivery_in_city', 'Забор в пределах города')
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::input('delivery_address', 'Адрес забора'),
                 FormField::input('delivery_distance', 'Расстояние забора (км)')->setType('number'),
-                FormField::select('delivery_point', 'Точный забор')
+                FormField::bselect('delivery_point', 'Точный забор')
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::input('delivery_price', 'Цена доставки')->setType('number'),
                 FormField::custom('<strong>Габариты</strong><hr>'),
@@ -129,7 +137,7 @@ class Orders extends Section {
                 FormField::custom('<strong>Услуги</strong><hr>'),
                 FormField::custom(View::make('admin.orders.order-services')->with(compact('order'))->render()),
 //                FormField::custom('<strong>Управление</strong><hr>'),
-//                FormField::select('manager_id', 'Менеджер')
+//                FormField::bselect('manager_id', 'Менеджер')
 //                    ->setModelForOptions(User::class)
 //                    ->setQueryFunctionForModel(function ($user){
 //                        return $user->whereHas('roles', function ($role){
@@ -137,7 +145,7 @@ class Orders extends Section {
 //                        });
 //                    })
 //                    ->setDisplay('full_name'),
-//                FormField::select('operator_id', 'Оператор')
+//                FormField::bselect('operator_id', 'Оператор')
 //                    ->setModelForOptions(User::class)
 //                    ->setQueryFunctionForModel(function ($user){
 //                        return $user->whereHas('roles', function ($role){
@@ -148,7 +156,10 @@ class Orders extends Section {
             ]),
             FormColumn::column([
                 FormField::custom('<h4>Отправитель</h4><hr>'),
-                FormField::select('sender_type_id', 'Тип')
+                FormField::bselect('sender_type_id', 'Тип')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(1)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query) {
@@ -174,7 +185,10 @@ class Orders extends Section {
                 FormField::input('sender_legal_address_apartment', 'Квартира/офис'),
 
                 FormField::custom('<h4>Получатель</h4><hr>'),
-                FormField::select('recipient_type_id', 'Тип')
+                FormField::bselect('recipient_type_id', 'Тип')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(1)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query) {
@@ -200,14 +214,20 @@ class Orders extends Section {
                 FormField::input('recipient_legal_address_apartment', 'Квартира/офис'),
 
                 FormField::custom('<h4>Плательщик</h4><hr>'),
-                FormField::select('payer_type', 'Лицо')
+                FormField::bselect('payer_type', 'Лицо')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(1)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query) {
                         return $query->where('class', 'payer_type');
                     })
                     ->setDisplay('name'),
-                FormField::select('payer_form_type_id', 'Тип')
+                FormField::bselect('payer_form_type_id', 'Тип')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query) {
                         return $query->where('class', 'UserType');

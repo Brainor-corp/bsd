@@ -62,13 +62,13 @@ class Counterparties extends Section
             case 'fizicheskoe-lico':
                 $form = Form::panel([
                     FormColumn::column([
-                        FormField::select('active', 'Активность')
+                        FormField::bselect('active', 'Активность')
                             ->setOptions([
                                 0 => "Не активен",
                                 1 => "Активен"
                             ])
                             ->setRequired(true),
-                        FormField::select('type_id', 'Тип')
+                        FormField::bselect('type_id', 'Тип')
                             ->setModelForOptions(Type::class)
                             ->setField('id')
                             ->setQueryFunctionForModel(function ($q) {
@@ -76,7 +76,7 @@ class Counterparties extends Section
                             })
                             ->setDisplay('name')
                             ->setRequired(true),
-                        FormField::select('user_id', 'Пользователь')
+                        FormField::bselect('user_id', 'Пользователь')
                             ->setModelForOptions(User::class)
                             ->setField('id')
                             ->setDisplay('full_name')
@@ -95,13 +95,13 @@ class Counterparties extends Section
             case 'yuridicheskoe-lico':
                 $form = Form::panel([
                     FormColumn::column([
-                        FormField::select('active', 'Активность')
+                        FormField::bselect('active', 'Активность')
                             ->setOptions([
                                 0 => "Не активен",
                                 1 => "Активен"
                             ])
                             ->setRequired(true),
-                        FormField::select('type_id', 'Тип')
+                        FormField::bselect('type_id', 'Тип')
                             ->setModelForOptions(Type::class)
                             ->setField('id')
                             ->setQueryFunctionForModel(function ($q) {
@@ -109,7 +109,7 @@ class Counterparties extends Section
                             })
                             ->setDisplay('name')
                             ->setRequired(true),
-                        FormField::select('user_id', 'Пользователь')
+                        FormField::bselect('user_id', 'Пользователь')
                             ->setModelForOptions(User::class)
                             ->setField('id')
                             ->setDisplay('full_name')

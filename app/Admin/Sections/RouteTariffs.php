@@ -6,6 +6,7 @@ use App\Route;
 use App\RouteTariff;
 use App\Threshold;
 use App\Type;
+use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -14,7 +15,6 @@ use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 use Zeus\Admin\SectionBuilder\Meta\Meta;
-use Illuminate\Http\Request;
 
 //use Illuminate\Support\Facades\Request;
 
@@ -72,16 +72,22 @@ class RouteTariffs extends Section {
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('price', 'Цена')->setType('number'),
-                FormField::select('route_id', 'Маршрут')
+                FormField::bselect('route_id', 'Маршрут')
                     ->setModelForOptions(Route::class)
                     ->setDisplay('name'),
-                FormField::select('rate_id', 'Мера')
+                FormField::bselect('rate_id', 'Мера')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query) {
                         return $query->where('class', 'rates');
                     })
                     ->setDisplay('name'),
-                FormField::select('threshold_id', 'Значение')
+                FormField::bselect('threshold_id', 'Значение')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(Threshold::class)
                     ->setQueryFunctionForModel(function ($query) use ($rate){

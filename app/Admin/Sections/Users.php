@@ -4,14 +4,14 @@ namespace App\Admin\Sections;
 
 use App\Role;
 use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class Users extends Section
 {
@@ -62,7 +62,10 @@ class Users extends Section
                 FormField::input('patronomic', 'Отчество')->setRequired(true),
                 FormField::input('email', 'EMail')->setRequired(true),
                 FormField::input('phone', 'Телефон'),
-                FormField::multiselect('roles', 'Роли')
+                FormField::bselect('roles', 'Роли')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setModelForOptions(Role::class)
                     ->setDisplay('name'),
             ]),

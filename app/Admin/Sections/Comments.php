@@ -2,25 +2,15 @@
 
 namespace App\Admin\Sections;
 
-use App\City;
-use App\Oversize;
-use App\Region;
-use App\Route;
-use App\RouteTariff;
-use App\Threshold;
-use App\Type;
+use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
-use Zeus\Admin\SectionBuilder\Display\Table\DisplayTable;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
+
 //use Illuminate\Support\Facades\Request;
-use Zeus\Admin\SectionBuilder\Meta\Meta;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
-use Illuminate\Http\Request;
 
 
 class Comments extends Section {
@@ -54,10 +44,10 @@ class Comments extends Section {
                 FormField::input('ip', 'ip пользователя')->setReadonly(true)->setRequired(true),
                 FormField::textarea('text', 'Текст отзыва')->setReadonly(true),
                 FormField::input('rating', 'Рейтинг отзыва')->setReadonly(true)->setRequired(true),
-                FormField::select('visible', 'Отображать отзыв')
+                FormField::bselect('visible', 'Отображать отзыв')
                     ->setRequired(true)
                     ->setOptions([0=>'Нет', 1=>'Да']),
-                FormField::select('moderate', 'На модерации')
+                FormField::bselect('moderate', 'На модерации')
                     ->setRequired(true)
                     ->setOptions([0=>'Нет', 1=>'Да']),
             ])

@@ -4,6 +4,7 @@ namespace App\Admin\Sections;
 
 use App\City;
 use App\Region;
+use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -11,7 +12,6 @@ use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Http\Request;
 
 
 class Points extends Section
@@ -56,12 +56,15 @@ class Points extends Section
             FormColumn::column([
                 FormField::input('name', 'Название')->setRequired(true),
 //                FormField::input('region_code', 'Код региона')->setRequired(true),
-                FormField::select('region_code', 'Регион')
+                FormField::bselect('region_code', 'Регион')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(Region::class)
                     ->setField('code')
                     ->setDisplay('name'),
-                FormField::select('city_id', 'Город')
+                FormField::bselect('city_id', 'Город')
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),

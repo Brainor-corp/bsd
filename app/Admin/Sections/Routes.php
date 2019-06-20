@@ -74,11 +74,17 @@ class Routes extends Section
         $form = Form::panel([
             FormColumn::column([
                 FormField::hidden('name', 'Название')->setValue('-'),
-                FormField::select('ship_city_id', 'Город отправки')
+                FormField::bselect('ship_city_id', 'Город отправки')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
-                FormField::select('dest_city_id', 'Город назначения')
+                FormField::bselect('dest_city_id', 'Город назначения')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
@@ -89,17 +95,26 @@ class Routes extends Section
                 FormField::input('wrapper_tariff', 'Оберточный тариф')->setType('number')->setRequired(true),
                 FormField::input('fixed_tariffs', 'Фикс. тариф')->setType('number')->setRequired(true),
                 FormField::input('coefficient', 'Коэфф.')->setType('number')->setRequired(true),
-                FormField::select('oversizes_id', 'Перегрузка')
+                FormField::bselect('oversizes_id', 'Перегрузка')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(Oversize::class)
                     ->setDisplay('name'),
                 FormField::related('route_tariffs', 'Тарифы', RouteTariff::class, [
-                    FormField::select('threshold_id', 'Предел')
+                    FormField::bselect('threshold_id', 'Предел')
+                        ->setDataAttributes([
+                            'data-live-search="true"'
+                        ])
                         ->setRequired(true)
                         ->setModelForOptions(Threshold::class)
                         ->setDisplay('threshold_rate_value'),
                     FormField::input('price', 'Тариф')->setType('number'),
-                    FormField::select('rate_id', 'Мера')
+                    FormField::bselect('rate_id', 'Мера')
+                        ->setDataAttributes([
+                            'data-live-search="true"'
+                        ])
                         ->setModelForOptions(Type::class)
                         ->setQueryFunctionForModel(function ($query) {
                             return $query->where('class', 'rates');

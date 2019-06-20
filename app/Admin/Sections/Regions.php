@@ -4,6 +4,7 @@ namespace App\Admin\Sections;
 
 use App\City;
 use App\Type;
+use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -11,7 +12,6 @@ use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Http\Request;
 
 //use Illuminate\Support\Facades\Request;
 
@@ -75,17 +75,26 @@ class Regions extends Section
                 FormField::input('fixed_tariff', 'Фикс. тариф')->setType('number')->setRequired(true),
                 FormField::input('dist_tariff', 'Дист. тариф')->setType('number')->setRequired(true),
                 FormField::input('inside_tariff', 'Внут. тариф')->setType('number')->setRequired(true),
-                FormField::select('dest_city_id', 'Город назначения')
+                FormField::bselect('dest_city_id', 'Город назначения')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
-                FormField::select('tariff_zone_id', 'Тарифная зона')
+                FormField::bselect('tariff_zone_id', 'Тарифная зона')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query){
                         return $query->where('class', 'tariff_zones');
                     })
                     ->setDisplay('name'),
-                FormField::select('threshold_group_id', 'Группа отправных пунктов')
+                FormField::bselect('threshold_group_id', 'Группа отправных пунктов')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setRequired(true)
                     ->setModelForOptions(Type::class)
                     ->setQueryFunctionForModel(function ($query){
