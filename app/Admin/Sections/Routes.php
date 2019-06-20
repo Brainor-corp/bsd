@@ -99,7 +99,12 @@ class Routes extends Section
                     ->setDisplay('name'),
                 FormField::input('addition', 'Доп.')->setType('number'),
                 FormField::input('wrapper_tariff', 'Оберточный тариф')->setType('number')->setRequired(true),
-                FormField::input('fixed_tariffs', 'Фикс. тариф')->setType('number')->setRequired(true),
+                FormField::bselect('fixed_tariffs', 'Фикс. тариф')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
+                    ->setOptions([0 => 'Нет', 1 => 'Да'])
+                    ->setRequired(true),
                 FormField::input('coefficient', 'Коэфф.')->setType('number')->setRequired(true),
                 FormField::bselect('oversizes_id', 'Перегрузка')
                     ->setDataAttributes([
@@ -121,6 +126,7 @@ class Routes extends Section
                         ->setDataAttributes([
                             'data-live-search="true"'
                         ])
+                        ->setRequired(true)
                         ->setModelForOptions(Type::class)
                         ->setQueryFunctionForModel(function ($query) {
                             return $query->where('class', 'rates');
