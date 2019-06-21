@@ -22,8 +22,8 @@ class Terminals extends Section {
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::text('id', '#'),
-            Column::text('name', 'Название'),
-            Column::text('short_name', 'Кор. название'),
+            Column::text('name', 'Наименование'),
+            Column::text('short_name', 'Короткое  наименование'),
             Column::text('region.name', 'Регион'),
             Column::text('city.name', 'Город'),
             Column::text('street', 'Улица'),
@@ -58,8 +58,9 @@ class Terminals extends Section {
 
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('name', 'Название')->setRequired(true),
-                FormField::input('short_name', 'Кор. название')->setRequired(true),
+                FormField::input('name', 'Наименование')->setRequired(true),
+                FormField::input('address', 'Адрес')->setRequired(true),
+                FormField::input('phone', 'Телефон')->setRequired(true),
                 FormField::bselect('region_code', 'Регион')
                     ->setDataAttributes([
                         'data-live-search="true"'
@@ -75,9 +76,7 @@ class Terminals extends Section {
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
-                FormField::input('street', 'Улица')->setRequired(true),
-                FormField::input('house', 'Дом')->setRequired(true),
-                FormField::input('geo_point', 'Гео. точка (x.xxx, y.yyy)')
+                FormField::input('geo_point', 'Геокоординаты  (x.xxx, y.yyy)')
                 ->setPattern("(\d+\.\d+|\d+),\s(\d+\.\d+|\d+)"),
             ])
         ]);
