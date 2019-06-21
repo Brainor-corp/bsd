@@ -2,16 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\City;
 use Bradmin\Cms\Helpers\CMSHelper;
-use Bradmin\Cms\Models\BRPost;
-use Bradmin\Cms\Models\BRTag;
-use Bradmin\Cms\Models\BRTerm;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use Zeus\Admin\Cms\Models\ZeusAdminTag;
+use Zeus\Admin\Cms\Models\ZeusAdminTerm;
 
 class NewsController extends Controller {
     public function showList(Request $request) {
+        if(empty($request->get('cities'))) {
+            $currentCityName = null;
+
+            if(Session::has('current_city')) {
+                $sessionCity = Session::get('current_city');
+                if(isset($sessionCity['name'])) {
+                    $currentCityName = $sessionCity['name'];
+                }
+            }
+
+            if(!isset($currentCityName)) {
+                $currentCityName = City::where('slug', 'sankt-peterburg')->firstOrFail()->name;
+            }
+
+            $cityTag = ZeusAdminTag::where('title', $currentCityName)->first();
+            if(isset($cityTag)) {
+                $request->merge(['cities' => [$cityTag->id]]);
+            }
+        }
+
         $args = [
             'category' => ['novosti'],
             'type' => 'post',
@@ -44,11 +65,11 @@ class NewsController extends Controller {
                 ]
             )->paginate(10);
 
-        $cityRootTag = BRTag::where([['type', 'tag'], ['slug', 'gorod']])->first();
-        $cityTags = BRTag::whereDescendantOf($cityRootTag)->get();
+        $cityRootTag = ZeusAdminTag::where([['type', 'tag'], ['slug', 'gorod']])->first();
+        $cityTags = ZeusAdminTag::whereDescendantOf($cityRootTag)->get();
 
-        $newsRootTerm = BRTerm::where([['type', 'category'], ['slug', 'novosti']])->first();
-        $newsTerms = BRTerm::whereDescendantOf($newsRootTerm)->get();
+        $newsRootTerm = ZeusAdminTerm::where([['type', 'category'], ['slug', 'novosti']])->first();
+        $newsTerms = ZeusAdminTerm::whereDescendantOf($newsRootTerm)->get();
 
         return view('v1.pages.news.list.list')->with(compact('posts', 'cityTags', 'newsTerms', 'request'));
     }
@@ -108,11 +129,11 @@ class NewsController extends Controller {
                 ]
             )->paginate(10);
 
-        $cityRootTag = BRTag::where([['type', 'tag'], ['slug', 'gorod']])->first();
-        $cityTags = BRTag::whereDescendantOf($cityRootTag)->get();
+        $cityRootTag = ZeusAdminTag::where([['type', 'tag'], ['slug', 'gorod']])->first();
+        $cityTags = ZeusAdminTag::whereDescendantOf($cityRootTag)->get();
 
-        $newsRootTerm = BRTerm::where([['type', 'category'], ['slug', 'novosti']])->first();
-        $newsTerms = BRTerm::whereDescendantOf($newsRootTerm)->get();
+        $newsRootTerm = ZeusAdminTerm::where([['type', 'category'], ['slug', 'novosti']])->first();
+        $newsTerms = ZeusAdminTerm::whereDescendantOf($newsRootTerm)->get();
 
         $posts->setPath('news-list');
 
