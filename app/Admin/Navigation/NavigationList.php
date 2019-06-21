@@ -70,6 +70,19 @@ class NavigationList
                 ]
             ],
             [
+                'url' => '/'.config('zeusAdmin.admin_url').'/settings',
+                'icon' => 'fas fa-cogs',
+                'text' => 'Настройки',
+                'noDirect' => true,
+                'nodes' => [
+                    [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/CitiesClosestTerminalUpdater',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Ближайшие терминалы'
+                    ],
+                ]
+            ],
+            [
                 'url' => '/'.config('zeusAdmin.admin_url').'/db',
                 'icon' => 'fas fa-users',
                 'text' => 'Данные таблиц',

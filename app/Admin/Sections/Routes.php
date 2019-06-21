@@ -123,7 +123,6 @@ class Routes extends Section
                     ->setHelpBlock("<small class='text-muted'>Например, для Гарант-Логистики</small>")
                     ->setOptions([0 => 'Нет', 1 => 'Да'])
                     ->setRequired(true),
-                FormField::input('coefficient', 'Коэфф.')->setType('number')->setRequired(true),
                 FormField::related('route_tariffs', 'Тарифы', RouteTariff::class, [
                     FormField::bselect('threshold_id', 'Предел')
                         ->setDataAttributes([

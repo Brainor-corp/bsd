@@ -99,6 +99,19 @@ class Cities extends Section
                     })
                     ->setDisplay('name'),
                 FormField::bselect('is_popular', 'Показывать в популярных городах')
+                    ->setHelpBlock("<small class='text-muted'>Популярные города выводятся в окне выбора города в шапке сайта</small>")
+                    ->setRequired(1)
+                    ->setOptions([0=>'Нет', 1=>'Да']),
+                FormField::bselect('closest_terminal_id', 'Ближайший терминал')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
+                    ->setHelpBlock("<small class='text-muted'>Терминал, расположенный к городу ближе прочих. В шапке сайта выводится телефон ближайшего терминала выбранного города.</small>")
+                    ->setModelForOptions(Terminal::class)
+                    ->setDisplay('name')
+                    ->setRequired(1),
+                FormField::bselect('update_closest_terminal', 'Обновлять ближайший терминал')
+                    ->setHelpBlock("<small class='text-muted'>Указывает, обновлять ли ближайший терминал для текущего города в автоматическом режиме</small>")
                     ->setRequired(1)
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::related('insideForwarding', 'Тарифы', \App\InsideForwarding::class, [

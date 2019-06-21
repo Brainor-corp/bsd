@@ -31,9 +31,9 @@ class GeoIpCheck
                     ->first();
 
                 $cookieValue = [
-                    'name'          =>   $city->name ?? '',
-                    'id'            =>   $city->id ?? '',
-                    'confirmed'     =>   false
+                    'name'                  =>   $city->name ?? '',
+                    'id'                    =>   $city->id ?? '',
+                    'confirmed'             =>   false
                 ];
                 setcookie(
                     "current_city",
