@@ -5,12 +5,9 @@ namespace App\Http\Controllers;
 use App\City;
 use App\Route;
 use App\Service;
-use App\User;
-
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Zeus\Admin\Cms\Helpers\CMSHelper;
-use Zeus\Admin\Cms\Models\ZeusAdminPost;
 
 class MainPageController extends Controller
 {
@@ -52,14 +49,42 @@ class MainPageController extends Controller
 
         $services = Service::get();
 
+        $currentCityName = null;
+
+        if(Session::has('current_city')) {
+            $sessionCity = Session::get('current_city');
+            if(isset($sessionCity['name'])) {
+                $currentCityName = $sessionCity['name'];
+            }
+        }
+
+        if(!isset($currentCityName)) {
+            $currentCityName = City::where('slug', 'sankt-peterburg')->firstOrFail()->name;
+        }
+
         //news
         $args = [
             'category' => ['novosti'],
             'type' => 'post',
         ];
-        $news = CMSHelper::getQueryBuilder($args)->limit(3)->get();
+        $news = CMSHelper::getQueryBuilder($args)
+            ->whereHas('terms', function ($promotionsQ) use ($currentCityName) {
+                return $promotionsQ->where('title', 'like',  "%$currentCityName%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
 
-//        dd($news);
+        // Если для текущего города новостей нет, выведем новости для Питера
+        if(!$news->count()) {
+            $news = CMSHelper::getQueryBuilder($args)
+                ->whereHas('terms', function ($promotionsQ) use ($currentCityName) {
+                    return $promotionsQ->where('title', 'like',  "Санкт-Петербург");
+                })
+                ->orderBy('created_at', 'desc')
+                ->limit(3)
+                ->get();
+        }
 
         //services
         $args = [
@@ -78,6 +103,7 @@ class MainPageController extends Controller
         ];
         $aboutPage = CMSHelper::getQueryBuilder($args)
             ->first();
+
         return view('v1.pages.index.index')
             ->with(compact(
                 'packages',
