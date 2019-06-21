@@ -16,18 +16,24 @@ class CitiesController extends Controller
             ->get();
     }
 
-    public function changeCity($city_id) {
+    public function changeCity($city_id, Request $request) {
         $city = City::where('id', $city_id)
             ->orWhere('slug', 'sankt-peterburg')
-            ->select('id', 'slug')
-            ->get();
+            ->select('id', 'slug', 'name')
+            ->first();
 
+        $cookieValue = [
+            'name'          =>   $city->name ?? '',
+            'id'            =>   $city->id ?? '',
+            'confirmed'     =>   true
+        ];
         setcookie(
             "current_city",
-            $city->where('id', $city_id)->first()->id ?? $city->where('slug', 'sankt-peterburg')->first()->id ?? '',
+            serialize($cookieValue),
             time() + (10 * 365 * 24 * 60 * 60),
             "/"
         );
+        $request->session()->put('current_city', $cookieValue);
 
         return redirect()->back();
     }
