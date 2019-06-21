@@ -2,13 +2,14 @@
 
 namespace App\Admin\Sections;
 
+use Illuminate\Http\Request;
+use Zeus\Admin\Cms\Models\ZeusAdminTerm;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
-use Illuminate\Http\Request;
 
 //use Illuminate\Support\Facades\Request;
 
@@ -42,6 +43,12 @@ class Promotions extends Section
                 FormField::input('title', 'Название')->setRequired(true),
                 FormField::textarea('text', 'Текст'),
                 FormField::input('amount', 'Скидка (%)')->setType('number'),
+                FormField::bselect('terms', 'Метки')
+                    ->setDataAttributes([
+                        'multiple', 'data-live-search="true"'
+                    ])
+                    ->setModelForOptions(ZeusAdminTerm::class)
+                    ->setDisplay('title'),
                 FormField::datepicker('start_at', 'Начало акции')
                     ->setLanguage('ru')
                     ->setMinuteStep(10),

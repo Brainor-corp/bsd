@@ -2,9 +2,9 @@
 
 namespace App;
 
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Cviebrock\EloquentSluggable\Sluggable;
 
 class Promotion extends Model
 {
@@ -21,6 +21,10 @@ class Promotion extends Model
                 'source' => 'title'
             ]
         ];
+    }
+
+    public function terms() {
+        return $this->morphToMany('Zeus\Admin\Cms\Models\ZeusAdminTerm', 'zeus_admin_termable', 'zeus_admin_termables', 'zeus_admin_termable_id', 'zeus_admin_term_id');
     }
 
     public function getCStartAtAttribute()
