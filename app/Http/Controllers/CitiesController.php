@@ -18,9 +18,14 @@ class CitiesController extends Controller
 
     public function changeCity($city_id, Request $request) {
         $city = City::where('id', $city_id)
-            ->orWhere('slug', 'sankt-peterburg')
             ->select('id', 'slug', 'name')
             ->first();
+
+        if(!isset($city)) {
+            $city = City::where('id', $city_id)
+                ->where('slug', 'sankt-peterburg')
+                ->firstOrFail();
+        }
 
         $cookieValue = [
             'name'          =>   $city->name ?? '',
