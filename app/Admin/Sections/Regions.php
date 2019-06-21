@@ -23,7 +23,7 @@ class Regions extends Section
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('code', 'Код'),
-            Column::text('name', 'Название'),
+            Column::link('name', 'Название'),
             Column::text('fixed_tariff', 'Фикс. тариф'),
             Column::text('dist_tariff', 'Дист. тариф'),
             Column::text('inside_tariff', 'Внут. тариф'),

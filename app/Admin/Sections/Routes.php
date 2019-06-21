@@ -27,7 +27,7 @@ class Routes extends Section
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('id', '#'),
-            Column::text('name', 'Название'),
+            Column::link('name', 'Название'),
             Column::text('shipCity.name', 'Город отправки'),
             Column::text('destinationCity.name', 'Город назначения'),
             Column::text('min_cost', 'Мин. стоимость'),
@@ -131,7 +131,8 @@ class Routes extends Section
                         ->setRequired(true)
                         ->setModelForOptions(Threshold::class)
                         ->setDisplay('threshold_rate_value'),
-                    FormField::input('price', 'Тариф')->setType('number'),
+                    FormField::input('price', 'Тариф')
+                        ->setType('number'),
                     FormField::bselect('rate_id', 'Мера')
                         ->setDataAttributes([
                             'data-live-search="true"'
