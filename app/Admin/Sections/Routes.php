@@ -132,6 +132,10 @@ class Routes extends Section
                         ->setModelForOptions(Threshold::class)
                         ->setDisplay('threshold_rate_value'),
                     FormField::input('price', 'Тариф')
+                        ->setDataAttributes([
+                            'step=any',
+                            'min=0'
+                        ])
                         ->setType('number'),
                     FormField::bselect('rate_id', 'Мера')
                         ->setDataAttributes([

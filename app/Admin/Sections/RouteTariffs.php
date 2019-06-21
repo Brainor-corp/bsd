@@ -71,7 +71,12 @@ class RouteTariffs extends Section {
 
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('price', 'Цена')->setType('number'),
+                FormField::input('price', 'Цена')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])
+                    ->setType('number'),
                 FormField::bselect('route_id', 'Маршрут')
                     ->setModelForOptions(Route::class)
                     ->setDisplay('name'),

@@ -122,7 +122,13 @@ class Cities extends Section
                         ->setRequired(true)
                         ->setModelForOptions(ForwardThreshold::class)
                         ->setDisplay('name'),
-                    FormField::input('tariff', 'Тариф')->setType('number')->setRequired(true),
+                    FormField::input('tariff', 'Тариф')
+                        ->setDataAttributes([
+                            'step=any',
+                            'min=0'
+                        ])
+                        ->setType('number')
+                        ->setRequired(true),
                 ]),
                 FormField::related('terminals', 'Терминалы', Terminal::class, [
                     FormField::input('name', 'Наименование')->setRequired(true),
