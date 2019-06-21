@@ -17,7 +17,7 @@ class City extends Model
         'threshold_group_id',
         'message',
         'closest_terminal_id',
-        'custom_closest_terminal'
+        'update_closest_terminal'
     ];
 
     use Sluggable;

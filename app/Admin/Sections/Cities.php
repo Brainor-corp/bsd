@@ -110,7 +110,7 @@ class Cities extends Section
                     ->setModelForOptions(Terminal::class)
                     ->setDisplay('name')
                     ->setRequired(1),
-                FormField::bselect('custom_closest_terminal', 'Обновлять ближайший терминал')
+                FormField::bselect('update_closest_terminal', 'Обновлять ближайший терминал')
                     ->setHelpBlock("<small class='text-muted'>Указывает, обновлять ли ближайший терминал для текущего города в автоматическом режиме</small>")
                     ->setRequired(1)
                     ->setOptions([0=>'Нет', 1=>'Да']),
