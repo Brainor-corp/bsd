@@ -55,23 +55,53 @@ class Oversizes extends Section {
                      ->setHelpBlock("<small class='text-muted'>Наименование группы негабаритов</small>")
                     ->setRequired(true),
                 FormField::input('length', 'По длине')
-                     ->setHelpBlock("<small class='text-muted'>Негабаритный размер по длине</small>")
-                    ->setType('number')->setRequired(true),
+                    ->setHelpBlock("<small class='text-muted'>Негабаритный размер по длине</small>")
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])
+                    ->setType('number')
+                    ->setRequired(true),
                 FormField::input('width', 'По ширине')
-                     ->setHelpBlock("<small class='text-muted'>Негабаритный размер по ширине</small>")
-                    ->setType('number')->setRequired(true),
+                    ->setHelpBlock("<small class='text-muted'>Негабаритный размер по ширине</small>")
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])
+                    ->setType('number')
+                    ->setRequired(true),
                 FormField::input('height', 'По высоте')
-                     ->setHelpBlock("<small class='text-muted'>Негабаритный размер по высоте</small>")
-                    ->setType('number')->setRequired(true),
+                    ->setHelpBlock("<small class='text-muted'>Негабаритный размер по высоте</small>")
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])
+                    ->setType('number')
+                    ->setRequired(true),
                 FormField::input('volume', 'По объёму')
-                     ->setHelpBlock("<small class='text-muted'>Негабаритный размер по объёму</small>")
-                    ->setType('number')->setRequired(true),
+                    ->setHelpBlock("<small class='text-muted'>Негабаритный размер по объёму</small>")
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])
+                    ->setType('number')
+                    ->setRequired(true),
                 FormField::input('weight', 'По весу')
-                     ->setHelpBlock("<small class='text-muted'>Негабаритный размер по весу</small>")
-                    ->setType('number')->setRequired(true),
+                    ->setHelpBlock("<small class='text-muted'>Негабаритный размер по весу</small>")
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])
+                    ->setType('number')
+                    ->setRequired(true),
                 FormField::input('ratio', 'Коэффициент, %')
-                     ->setHelpBlock("<small class='text-muted'>Коэффициент надбавки за негабаритность в процентах</small>")
-                    ->setType('number')->setRequired(true),
+                    ->setHelpBlock("<small class='text-muted'>Коэффициент надбавки за негабаритность в процентах</small>")
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])
+                    ->setType('number')
+                    ->setRequired(true),
             ])
         ]);
 
