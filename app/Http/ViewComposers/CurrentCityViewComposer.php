@@ -10,14 +10,25 @@ namespace App\Http\ViewComposers;
 
 use App\City;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Request;
 
 
 class CurrentCityViewComposer
 {
     public function compose(View $view) {
-        $city = (object)\Session::get('current_city');
+        $sessionCity = (object)\Session::get('current_city');
 
-        $view->with(compact('city'));
+        $city = null;
+
+        if(isset($sessionCity->id)) {
+            $city = City::where('id', $sessionCity->id)->with('closestTerminal')->first();
+        }
+
+        if(!isset($city)) {
+            $city = City::where('slug', 'sankt-peterburg')->with('closestTerminal')->first();
+        }
+
+        $closestTerminal = $city->closestTerminal;
+
+        $view->with(compact('city', 'closestTerminal'));
     }
 }

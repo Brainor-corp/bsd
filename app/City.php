@@ -8,7 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class City extends Model
 {
     protected $fillable = [
-        'name', 'is_ship', 'is_filial', 'is_popular', 'doorstep', 'tariff_zone_id', 'threshold_group_id', 'message'
+        'name',
+        'is_ship',
+        'is_filial',
+        'is_popular',
+        'doorstep',
+        'tariff_zone_id',
+        'threshold_group_id',
+        'message',
+        'closest_terminal_id',
+        'update_closest_terminal'
     ];
 
     use Sluggable;
@@ -49,6 +58,10 @@ class City extends Model
 
     public function terminals() {
         return $this->hasMany(Terminal::class);
+    }
+
+    public function closestTerminal() {
+        return $this->hasOne(Terminal::class, 'id', 'closest_terminal_id');
     }
 
     public function kladr() {
