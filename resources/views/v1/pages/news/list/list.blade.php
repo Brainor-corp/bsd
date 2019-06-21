@@ -47,7 +47,7 @@
                                                     data-selected-text-format="static" data-style="custom-select"
                                                     multiple>
                                                 @foreach($cityTags as $city)
-                                                    <option @if(isset($request->cities) && in_array($term->id, $request->cities)) selected @endif value="{{ $city->id }}">{{ $city->title }}</option>
+                                                    <option @if(isset($request->cities) && in_array($city->id, $request->cities)) selected @endif value="{{ $city->id }}">{{ $city->title }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -67,7 +67,7 @@
                                     @if(isset($request->cities))
                                         @foreach($request->cities as $cityId)
                                             <div class="selected-item d-flex align-items-center margin-item">
-                                                <span class="selected-item__name">{{ $cityTags->where('id', $cityId)->first()->title }}</span>
+                                                <span class="selected-item__name">{{ $cityTags->where('id', $cityId)->first()->title ?? '' }}</span>
                                                 <a class="delete-tag" href="#" data-type="city_select" data-value="{{ $cityId }}">
                                                     <i class="fa fa-close"></i>
                                                 </a>
