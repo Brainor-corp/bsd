@@ -72,7 +72,12 @@ class PerKmTariffs extends Section {
                     ->setRequired(true)
                     ->setModelForOptions(ForwardThreshold::class)
                     ->setDisplay('name'),
-                FormField::input('tariff', 'Тариф'),
+                FormField::input('tariff', 'Тариф')
+                    ->setType('input')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ]),
             ])
         ]);
 
