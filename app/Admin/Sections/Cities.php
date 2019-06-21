@@ -25,7 +25,7 @@ class Cities extends Section
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('id', '#'),
-            Column::text('name', 'Название'),
+            Column::link('name', 'Название'),
             Column::text('comprehensive_is_ship', 'Можно доставить'),
             Column::text('comprehensive_is_filial', 'Является филиалом'),
             Column::text('comprehensive_doorstep', 'Доставка до двери'),

@@ -22,7 +22,7 @@ class Points extends Section
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('id', '#'),
-            Column::text('name', 'Название'),
+            Column::link('name', 'Название'),
             Column::text('region.name', 'Регион'),
             Column::text('city.name', 'Город'),
             Column::text('distance', 'Расстояние'),

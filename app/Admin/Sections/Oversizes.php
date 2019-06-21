@@ -20,7 +20,7 @@ class Oversizes extends Section {
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::text('id', '#'),
-            Column::text('name', 'Наименование'),
+            Column::link('name', 'Наименование'),
             Column::text('length', 'По длине'),
             Column::text('width', 'По ширине'),
             Column::text('height', 'По высоте'),
