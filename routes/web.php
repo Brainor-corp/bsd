@@ -13,7 +13,7 @@
 
 
 
-Route::group(['middleware' => ['password_reset']], function () {
+Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
 
     Auth::routes();
     Route::post('/password-method-redirect', 'Auth\ForgotPasswordController@resetMethodRedirect')->name('password.method-redirect');

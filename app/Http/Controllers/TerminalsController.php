@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 
 use App\City;
 use App\Terminal;
+use Illuminate\Http\Request;
 
 class TerminalsController extends Controller
 {
-    public function showAddresses() {
+    public function showAddresses(Request $request) {
         $currentCity = null;
 
-        if(isset($_COOKIE['current_city'])) {
-            $currentCity = City::where('id', $_COOKIE['current_city'])->first();
+        if($request->session()->has('current_city')) {
+            $sessionCity = $request->session()->get('current_city');
+            if(isset($sessionCity['id']) && is_numeric($sessionCity['id'])) {
+                $currentCity = City::where('id', $sessionCity['id'])->first();
+            }
         }
 
         if(!isset($currentCity)) {
