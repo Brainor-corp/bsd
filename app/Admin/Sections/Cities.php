@@ -2,6 +2,9 @@
 
 namespace App\Admin\Sections;
 
+use App\ForwardThreshold;
+use App\Region;
+use App\Terminal;
 use App\Type;
 use Illuminate\Http\Request;
 use Zeus\Admin\Section;
@@ -56,9 +59,11 @@ class Cities extends Section
                     ->setRequired(true),
                 FormField::bselect('is_ship', 'Отправка')
                     ->setHelpBlock("<small class='text-muted'>Это город отправления</small>")
+                    ->setRequired(1)
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::bselect('is_filial', 'Филиал')
                     ->setHelpBlock("<small class='text-muted'>Это филиал</small>")
+                    ->setRequired(1)
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::bselect('message', 'Сообщение')
                     ->setHelpBlock("<small class='text-muted'>Стандартное сообщение, если нет адреса и телефона</small>")
@@ -69,6 +74,7 @@ class Cities extends Section
                     ->setDisplay('name'),
                 FormField::bselect('doorstep', 'До двери')
                     ->setHelpBlock("<small class='text-muted'>В этом городе доставка осуществляется в обязательном режиме \"До двери\"</small>")
+                    ->setRequired(1)
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::bselect('tariff_zone_id', 'Тарифная зона')
                     ->setHelpBlock("<small class='text-muted'>Тарифная зона внешней экспедиции</small>")
@@ -93,12 +99,42 @@ class Cities extends Section
                     })
                     ->setDisplay('name'),
                 FormField::bselect('is_popular', 'Показывать в популярных городах')
-                    ->setOptions([0=>'Нет', 1=>'Да'])
+                    ->setRequired(1)
+                    ->setOptions([0=>'Нет', 1=>'Да']),
+                FormField::related('insideForwarding', 'Тарифы', \App\InsideForwarding::class, [
+                    FormField::bselect('forward_threshold_id', 'Предел')
+                        ->setDataAttributes([
+                            'data-live-search="true"'
+                        ])
+                        ->setRequired(true)
+                        ->setModelForOptions(ForwardThreshold::class)
+                        ->setDisplay('name'),
+                    FormField::input('tariff', 'Тариф')->setType('number')->setRequired(true),
+                ]),
+                FormField::related('terminals', 'Терминалы', Terminal::class, [
+                    FormField::input('name', 'Наименование')->setRequired(true),
+                    FormField::input('address', 'Адрес')->setRequired(true),
+                    FormField::input('phone', 'Телефон')->setRequired(true),
+                    FormField::bselect('region_code', 'Регион')
+                        ->setDataAttributes([
+                            'data-live-search="true"'
+                        ])
+                        ->setRequired(true)
+                        ->setModelForOptions(Region::class)
+                        ->setField('code')
+                        ->setDisplay('name'),
+                    FormField::input('geo_point', 'Геокоординаты  (x.xxx, y.yyy)')
+                        ->setPattern("(\d+\.\d+|\d+),\s(\d+\.\d+|\d+)"),
+                ])
             ])
         ]);
 
         return $form;
     }
 
-
+    public function beforeDelete(Request $request, $id = null)
+    {
+        \App\InsideForwarding::where('city_id', $id)->delete();
+        Terminal::where('city_id', $id)->delete();
+    }
 }

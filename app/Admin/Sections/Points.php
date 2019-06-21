@@ -3,6 +3,7 @@
 namespace App\Admin\Sections;
 
 use App\City;
+use App\ForwardThreshold;
 use App\Region;
 use Illuminate\Http\Request;
 use Zeus\Admin\Section;
@@ -74,12 +75,25 @@ class Points extends Section
                 FormField::input('distance', 'Расстояние')
                     ->setHelpBlock("<small class='text-muted'>Фиксированное расстояние, если 0 -- расчитывается через Яндекс.Карты</small>")
                     ->setType('number')
-                    ->setRequired(true)
+                    ->setRequired(true),
+                FormField::related('outsideForwarding', 'Тарифы', \App\OutsideForwarding::class, [
+                    FormField::bselect('forward_threshold_id', 'Предел')
+                        ->setDataAttributes([
+                            'data-live-search="true"'
+                        ])
+                        ->setRequired(true)
+                        ->setModelForOptions(ForwardThreshold::class)
+                        ->setDisplay('name'),
+                    FormField::input('tariff', 'Тариф')->setType('number')->setRequired(true),
+                ]),
             ])
         ]);
 
         return $form;
     }
 
-
+    public function beforeDelete(Request $request, $id = null)
+    {
+        \App\OutsideForwarding::where('point', $id)->delete();
+    }
 }

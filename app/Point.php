@@ -20,6 +20,10 @@ class Point extends Model
 //        return $this->hasOne(ForwardThreshold::class, 'code','region_code');
 //    }
 
+    public function outsideForwarding() {
+        return $this->hasMany(OutsideForwarding::class, 'point', 'id');
+    }
+
     public function region(){
         return $this->hasOne(Region::class, 'code', 'region_code');
     }

@@ -24,7 +24,7 @@ class InsideForwarding extends Section {
         $display = Display::table([
             Column::text('id', '#'),
             Column::text('city.name', 'Город'),
-            Column::text('forwardThreshold.name', 'Группа предельных порогов'),
+            Column::text('forwardThreshold.name', 'Предел'),
             Column::text('tariff', 'Тариф'),
         ])
             ->setFilter([
@@ -58,7 +58,7 @@ class InsideForwarding extends Section {
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
-                FormField::bselect('forward_threshold_id', 'Группа предельных порогов')
+                FormField::bselect('forward_threshold_id', 'Предел')
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
