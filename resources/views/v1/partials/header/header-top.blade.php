@@ -14,7 +14,12 @@
                            data-target="#selection-city">{{ $city->name }}</a>
                     </div>
                     <div class="phones d-flex flex-column flex-md-row justify-content-center">
-                        <a href="tel:8 (812) 644-67-77">8 (812) 644-67-77</a>
+                        @if(isset($closestTerminal->phone))
+                            @php
+                                $phones = explode(';', str_replace(' ', '', $closestTerminal->phone));
+                            @endphp
+                            <a href="tel:{{ $phones[0] }}">{{ $phones[0] }}</a>
+                        @endif
                         <a href="tel:8 (800) 000-00-00">8 (800) 000-00-00</a>
                     </div>
                 </div>
