@@ -31,8 +31,12 @@ class City extends Model
 //        return $this->hasMany(City::class, 'dest_city_id','id');
 //    }
 
-    public function thresholdGroup(){
+    public function thresholdGroup() {
         return $this->hasOne(Type::class, 'id', 'threshold_group_id');
+    }
+
+    public function insideForwarding() {
+        return $this->hasMany(InsideForwarding::class);
     }
 
     public function tariffZone(){
@@ -40,11 +44,15 @@ class City extends Model
     }
 
     public function terminal() {
-        return$this->hasOne(Terminal::class, 'city_id', 'id');
+        return $this->hasOne(Terminal::class, 'city_id', 'id');
+    }
+
+    public function terminals() {
+        return $this->hasMany(Terminal::class);
     }
 
     public function kladr() {
-        return$this->hasOne(Kladr::class, 'id', 'kladr_id');
+        return $this->hasOne(Kladr::class, 'id', 'kladr_id');
     }
 
     public function getComprehensiveIsShipAttribute(){
