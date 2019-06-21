@@ -23,7 +23,7 @@ class Orders extends Section {
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::text('id', '#')->setSortable(1),
+            Column::link('id', '#')->setSortable(1),
             Column::text('real_status', 'Статус'),
             Column::text('ship_city_name', 'Город отправки'),
             Column::text('dest_city_name', 'Город доставки'),
