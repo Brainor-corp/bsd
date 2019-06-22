@@ -16,9 +16,11 @@
                     <div class="phones d-flex flex-column flex-md-row justify-content-center">
                         @if(isset($closestTerminal->phone))
                             @php
-                                $phones = explode(';', str_replace(' ', '', $closestTerminal->phone));
+                                $phones = preg_split("/(;|,)/", str_replace(' ', '', $closestTerminal->phone));
                             @endphp
-                            <a href="tel:{{ $phones[0] }}">{{ $phones[0] }}</a>
+                            @if(!empty($phones[0]))
+                                <a href="tel:{{ $phones[0] }}">{{ $phones[0] }}</a>
+                            @endif
                         @endif
                         <a href="tel:8 (800) 000-00-00">8 (800) 000-00-00</a>
                     </div>

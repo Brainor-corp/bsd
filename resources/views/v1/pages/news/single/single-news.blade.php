@@ -28,10 +28,10 @@
                                 <span class="news__info-date">{{ \Carbon\Carbon::createFromTimeString($post->published_at)->format('d.m.Y') }}</span>
                                 <span class="news__info-category">
                                     @foreach($post->terms->where('type', 'category') as $category)
-                                        <a href="{{ route('news-list-show', ['categories' => [$category->id]]) }}">{{ $category->title . ($post->terms->where('type', 'tag')->count() ? ', ' : '') }}</a>
+                                        <a href="{{ route('news-list-show', ['categories' => [$category->id]]) }}">{{ $category->title . ($post->terminals->count() ? ', ' : '') }}</a>
                                     @endforeach
-                                    @foreach($post->terms->where('type', 'tag') as $tag)
-                                        <a href="{{ route('news-list-show', ['cities' => [$tag->id]]) }}">{{ $tag->title . ($loop->last ? '' : ', ') }}</a>
+                                    @foreach($post->terminals as $terminal)
+                                        <a href="{{ route('news-list-show', ['cities' => [$terminal->city->id]]) }}">{{ $terminal->city->name . ($loop->last ? '' : ', ') }}</a>
                                     @endforeach
                                 </span>
                             </div>
