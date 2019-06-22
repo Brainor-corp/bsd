@@ -22,7 +22,7 @@ class PerKmTariffs extends Section {
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('tariffZone.name', 'Тарифная зона'),
             Column::text('forwardThreshold.name', 'Предельный порог'),
             Column::text('tariff', 'Тариф'),

@@ -21,7 +21,7 @@ class ForwardThresholds extends Section {
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('thresholdGroup.name', 'Группа отправных пунктов'),
             Column::text('name', 'Название'),
             Column::text('weight', 'Вес'),

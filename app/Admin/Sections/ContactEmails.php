@@ -18,7 +18,7 @@ class ContactEmails extends Section
 
     public static function onDisplay(Request $request){
         $display = Display::table([
-            Column::text('email', 'Email'),
+            Column::link('email', 'Email'),
             Column::text('description', 'Описание'),
             Column::text('comprehensible_active', 'Активный'),
         ])->setPagination(10);

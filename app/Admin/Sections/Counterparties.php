@@ -22,7 +22,7 @@ class Counterparties extends Section
 
     public static function onDisplay(){
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('type.name', 'Тип'),
             Column::text('user.full_name', 'Пользователь'),
             Column::text('title', 'Название'),

@@ -20,7 +20,7 @@ class OutsideForwarding extends Section {
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('point_relation.name', 'Пункт'),
             Column::text('forwardThreshold.name', 'Группа предельных порогов'),
             Column::text('tariff', 'Тариф'),

@@ -19,7 +19,7 @@ class Contacts extends Section {
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('real_type', 'Тип контакта'),
             Column::text('name', 'Наименование'),
             Column::text('value', 'Данные'),

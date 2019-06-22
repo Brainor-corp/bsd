@@ -20,7 +20,7 @@ class Thresholds extends Section {
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::text('rate.name', 'Показатель'),
+            Column::link('rate.name', 'Показатель'),
             Column::text('value', 'Величина'),
         ])
             ->setFilter([
