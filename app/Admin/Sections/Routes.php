@@ -28,15 +28,10 @@ class Routes extends Section
         $display = Display::table([
             Column::text('id', '#'),
             Column::link('name', 'Название'),
-            Column::text('shipCity.name', 'Город отправки'),
+            Column::text('shipCity.name', 'Город отправления'),
             Column::text('destinationCity.name', 'Город назначения'),
             Column::text('min_cost', 'Мин. стоимость'),
-            Column::text('delivery_time', 'Время доставки'),
-            Column::text('addition', 'Доп.'),
-            Column::text('oversize.name', 'Перегрузка'),
-            Column::text('wrapper_tariff', 'Оберточный тариф'),
-            Column::text('fixed_tariffs', 'Фикс. тариф'),
-            Column::text('coefficient', 'Коэфф.'),
+            Column::text('delivery_time', 'Срок доставки'),
         ])
             ->setFilter([
                 null,
@@ -49,14 +44,6 @@ class Routes extends Section
                     ->setIsLike(false)
                     ->setModelForOptions(City::class)
                     ->setDisplay("name"),
-                null,
-                null,
-                null,
-                FilterType::select('oversizes_id')
-                    ->setIsLike(false)
-                    ->setModelForOptions(Oversize::class)
-                    ->setDisplay("name"),
-                null,
                 null,
                 null,
             ])

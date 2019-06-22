@@ -23,16 +23,12 @@ class Terminals extends Section {
         $display = Display::table([
             Column::text('id', '#'),
             Column::text('name', 'Наименование'),
-            Column::text('short_name', 'Короткое  наименование'),
             Column::text('region.name', 'Регион'),
             Column::text('city.name', 'Город'),
-            Column::text('street', 'Улица'),
-            Column::text('house', 'Дом'),
         ])
             ->setFilter([
                 null,
                 FilterType::text('name', 'Название'),
-                null,
                 FilterType::select('region_code')
                     ->setIsLike(false)
                     ->setModelForOptions(Region::class)
@@ -42,8 +38,6 @@ class Terminals extends Section {
                     ->setIsLike(false)
                     ->setModelForOptions(City::class)
                     ->setDisplay("name"),
-                null,
-                null,
             ])
             ->setPagination(10);
 
