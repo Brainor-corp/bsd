@@ -66,17 +66,7 @@ class MainPageController extends Controller
         }
 
         //news
-        $args = [
-            'category' => ['novosti'],
-            'type' => 'news',
-        ];
-        $news = CmsBoosterPost::whereHas(
-                'terms',
-                function ($term) use ($args) {
-                    $term->categories()->whereIn('slug', $args['category']);
-                }
-            )
-            ->when(
+        $news = CmsBoosterPost::when(
                 isset($currentCity->closest_terminal_id),
                 function ($newsQ) use ($currentCity) {
                     return $newsQ->whereHas('terminals', function ($terminalsQ) use ($currentCity) {
@@ -85,7 +75,7 @@ class MainPageController extends Controller
                 }
             )
             ->where([
-                ['type', $args['type']],
+                ['type', 'news'],
                 ['status', 'published'],
             ])
             ->orderBy('created_at', 'desc')
@@ -94,19 +84,13 @@ class MainPageController extends Controller
 
         // Если для текущего города новостей нет, и текущий город -- не Питер, выведем новости для Питера
         if(!$news->count() && $currentCity->slug !== 'sankt-peterburg') {
-            $news = CmsBoosterPost::whereHas(
-                    'terms',
-                    function ($term) use ($args) {
-                        $term->categories()->whereIn('slug', $args['category']);
-                    }
-                )
-                ->whereHas('terminals', function ($terminalsQ) use ($currentCity) {
+            $news = CmsBoosterPost::whereHas('terminals', function ($terminalsQ) use ($currentCity) {
                     $terminalsQ->whereHas('city', function ($cityQ) {
                         return $cityQ->where('slug', 'sankt-peterburg');
                     });
                 })
                 ->where([
-                    ['type', $args['type']],
+                    ['type', 'news'],
                     ['status', 'published'],
                 ])
                 ->orderBy('created_at', 'desc')
