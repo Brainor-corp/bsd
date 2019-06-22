@@ -11,22 +11,26 @@ use Illuminate\Support\Facades\View;
 class PromotionsController extends Controller
 {
     public function showList() {
-        $currentCityName = null;
+        $currentCity = null;
 
         if(Session::has('current_city')) {
             $sessionCity = Session::get('current_city');
-            if(isset($sessionCity['name'])) {
-                $currentCityName = $sessionCity['name'];
+            if(isset($sessionCity['id'])) {
+                $currentCity = City::where('id', $sessionCity['id'])
+                    ->with('closestTerminal')
+                    ->first();
             }
         }
 
-        if(!isset($currentCityName)) {
-            $currentCityName = City::where('slug', 'sankt-peterburg')->firstOrFail()->name;
+        if(!isset($currentCity)) {
+            $currentCity = City::where('slug', 'sankt-peterburg')
+                ->with('closestTerminal')
+                ->firstOrFail();
         }
 
         $promotions = Promotion::where('end_at', '>', Carbon::now())
-            ->whereHas('terms', function ($promotionsQ) use ($currentCityName) {
-                return $promotionsQ->where('title', 'like',  "%$currentCityName%");
+            ->whereHas('terminals', function ($terminalsQ) use ($currentCity) {
+                return $terminalsQ->where('id', $currentCity->closest_terminal_id);
             })
             ->get();
 

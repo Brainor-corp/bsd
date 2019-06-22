@@ -27,6 +27,10 @@ class Promotion extends Model
         return $this->morphToMany('Zeus\Admin\Cms\Models\ZeusAdminTerm', 'zeus_admin_termable', 'zeus_admin_termables', 'zeus_admin_termable_id', 'zeus_admin_term_id');
     }
 
+    public function terminals() {
+        return $this->belongsToMany(Terminal::class);
+    }
+
     public function getCStartAtAttribute()
     {
         return Carbon::parse($this->start_at);
