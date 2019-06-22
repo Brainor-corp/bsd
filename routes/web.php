@@ -112,6 +112,18 @@ Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
     });
 });
 
+Route::get('/1c/test/new-user', function () {
+    $response1c = \App\Http\Helpers\Api1CHelper::post(
+        'new_user',
+        [
+            'email' => 'abegunov@mail.ru',
+            'phone' => 79817397557
+        ]
+    );
+
+    dd($response1c);
+});
+
 //Route::group(['middleware' => ['auth']], function () {
 //    // Профиль пользователя
 //    Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
