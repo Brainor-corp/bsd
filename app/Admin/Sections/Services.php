@@ -3,6 +3,7 @@
 namespace App\Admin\Sections;
 
 use App\Service;
+use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -11,7 +12,6 @@ use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 use Zeus\Admin\SectionBuilder\Meta\Meta;
-use Illuminate\Http\Request;
 
 //use Illuminate\Support\Facades\Request;
 
@@ -22,7 +22,7 @@ class Services extends Section
 
     public static function onDisplay(Request $request){
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('name', 'Название'),
             Column::text('slug', 'Ярлык'),
             Column::text('price', 'Цена'),

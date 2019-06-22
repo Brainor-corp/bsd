@@ -22,7 +22,7 @@ class OversizeMarkups extends Section {
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::text('oversize.real_name', 'Компания'),
+            Column::link('oversize.real_name', 'Компания'),
             Column::text('rate.name', 'Мера'),
             Column::text('value', 'Значение'),
             Column::text('threshold', 'Предел'),

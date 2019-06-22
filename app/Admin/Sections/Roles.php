@@ -15,7 +15,7 @@ class Roles extends Section
 
     public static function onDisplay(){
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('name', 'Название'),
         ]);
 

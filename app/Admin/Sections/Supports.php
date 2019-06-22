@@ -19,7 +19,7 @@ class Supports extends Section {
 
     public static function onDisplay() {
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('fio', 'ФИО'),
             Column::text('company_name', 'Название компании'),
             Column::text('subject.name', 'Тип обращения'),
