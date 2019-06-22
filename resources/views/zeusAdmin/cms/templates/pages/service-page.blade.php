@@ -1,7 +1,7 @@
 <?php
 /**
- * class: BRPageTemplate
- * title: Шаблон страницы-услуги-список
+ * class: ZeusAdminPageTemplate
+ * title: Шаблон устраницы-услуги-одна
  */
 ?>
 

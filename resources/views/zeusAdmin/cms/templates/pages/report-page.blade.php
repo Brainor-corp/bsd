@@ -1,7 +1,7 @@
 <?php
 /**
- * class: BRPageTemplate
- * title: Шаблон страницы "Документация"
+ * class: ZeusAdminPageTemplate
+ * title: Шаблон Отчетов
  */
 ?>
 
@@ -24,7 +24,22 @@
             @endforeach
         </div>
     </div>
-    {!! html_entity_decode($page->content) !!}
+    <section class="wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <header class="wrapper__header">
+                        <h1>{{ $page->title }}</h1>
+                    </header>
+                    <div class="row">
+                        <div class="col-12">
+                            {!! html_entity_decode($page->content) !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 
 @endsection
