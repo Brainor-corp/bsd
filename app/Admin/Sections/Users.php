@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
+use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
@@ -23,7 +24,16 @@ class Users extends Section
             Column::text('name', 'Имя'),
             Column::text('email', 'EMail'),
             Column::text('phone', 'Телефон'),
-        ])->setPagination(10);
+            Column::text('guid', '1c ID'),
+        ])
+            ->setFilter([
+                FilterType::text('id', '#'),
+                FilterType::text('name', 'Имя'),
+                FilterType::text('email', 'EMail'),
+                FilterType::text('phone', 'Телефон'),
+                FilterType::text('guid', '1c ID')
+            ])
+            ->setPagination(10);
 
         return $display;
     }
@@ -35,6 +45,12 @@ class Users extends Section
                 FormField::input('name', 'Имя')->setRequired(true),
                 FormField::input('surname', 'Фамилия'),
                 FormField::input('patronomic', 'Отчество'),
+                FormField::input('guid', '1c ID')
+                    ->setHelpBlock("<small class='text-muted'>Идентификатор пользователя в 1c</small>"),
+                FormField::bselect('sync_need', 'Нужна синхронизация с 1с')
+                    ->setHelpBlock("<small class='text-muted'>Указывает, требуется ли синхронизация с 1c</small>")
+                    ->setOptions([0 => 'Нет', 1 => 'Да'])
+                    ->setRequired(true),
                 FormField::hidden('verified')->setValue(0),
                 FormField::hidden('need_password_reset')->setValue(true),
                 FormField::input('email', 'EMail')->setRequired(true)
@@ -60,6 +76,12 @@ class Users extends Section
                 FormField::input('name', 'Имя')->setRequired(true),
                 FormField::input('surname', 'Фамилия')->setRequired(true),
                 FormField::input('patronomic', 'Отчество')->setRequired(true),
+                FormField::input('guid', '1c ID')
+                    ->setHelpBlock("<small class='text-muted'>Идентификатор пользователя в 1c</small>"),
+                FormField::bselect('sync_need', 'Нужна синхронизация с 1с')
+                    ->setHelpBlock("<small class='text-muted'>Указывает, требуется ли синхронизация с 1c</small>")
+                    ->setOptions([0 => 'Нет', 1 => 'Да'])
+                    ->setRequired(true),
                 FormField::input('email', 'EMail')->setRequired(true),
                 FormField::input('phone', 'Телефон'),
                 FormField::bselect('roles', 'Роли')
