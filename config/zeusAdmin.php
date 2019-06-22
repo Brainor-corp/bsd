@@ -38,6 +38,9 @@ return [
     'cms_page_prefix' => 'page',
     'cms_post_prefix' => 'post',
 
+//    'page_model' => 'App\\CmsBoosterPost',
+//    'post_model' => 'App\\CmsBoosterPost',
+
     /*
     |--------------------------------------------------------------------------
     | Title
