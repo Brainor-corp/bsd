@@ -2,6 +2,7 @@
 
 namespace App\Admin\Sections;
 
+use App\Terminal;
 use Illuminate\Http\Request;
 use Zeus\Admin\Cms\Models\ZeusAdminTerm;
 use Zeus\Admin\Section;
@@ -21,7 +22,7 @@ class Promotions extends Section
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('id', '#'),
-            Column::text('title', 'Название'),
+            Column::link('title', 'Название'),
             Column::text('amount', 'Скидка (%)'),
             Column::text('start_at', 'Начало акции'),
             Column::text('end_at', 'Окончание акции'),
@@ -43,6 +44,12 @@ class Promotions extends Section
                 FormField::input('title', 'Название')->setRequired(true),
                 FormField::textarea('text', 'Текст'),
                 FormField::input('amount', 'Скидка (%)')->setType('number'),
+                FormField::bselect('terminals', 'Терминалы')
+                    ->setDataAttributes([
+                        'multiple', 'data-live-search="true"'
+                    ])
+                    ->setModelForOptions(Terminal::class)
+                    ->setDisplay('name_with_city'),
                 FormField::bselect('terms', 'Метки')
                     ->setDataAttributes([
                         'multiple', 'data-live-search="true"'
