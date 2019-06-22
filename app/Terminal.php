@@ -89,4 +89,7 @@ class Terminal extends Model
         return $this->belongsTo(Region::class, 'region_code', 'code');
     }
 
+    public function getNameWithCityAttribute() {
+        return $this->name . ' (г. ' . ($this->city->name ?? '') . ')';
+    }
 }

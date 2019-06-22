@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\CmsBoosterPost;
 use App\Route;
 use App\Service;
 use Illuminate\Http\Request;
@@ -49,38 +50,49 @@ class MainPageController extends Controller
 
         $services = Service::get();
 
-        $currentCityName = null;
+        $currentCity = null;
 
         if(Session::has('current_city')) {
             $sessionCity = Session::get('current_city');
-            if(isset($sessionCity['name'])) {
-                $currentCityName = $sessionCity['name'];
+            if(isset($sessionCity['id'])) {
+                $currentCity = City::where('id', $sessionCity['id'])
+                    ->first();
             }
         }
 
-        if(!isset($currentCityName)) {
-            $currentCityName = City::where('slug', 'sankt-peterburg')->firstOrFail()->name;
+        if(!isset($currentCity->closest_terminal_id)) {
+            $currentCity = City::where('slug', 'sankt-peterburg')
+                ->firstOrFail();
         }
 
         //news
-        $args = [
-            'category' => ['novosti'],
-            'type' => 'post',
-        ];
-        $news = CMSHelper::getQueryBuilder($args)
-            ->whereHas('terms', function ($promotionsQ) use ($currentCityName) {
-                return $promotionsQ->where('title', 'like',  "%$currentCityName%");
-            })
+        $news = CmsBoosterPost::when(
+                isset($currentCity->closest_terminal_id),
+                function ($newsQ) use ($currentCity) {
+                    return $newsQ->whereHas('terminals', function ($terminalsQ) use ($currentCity) {
+                        $terminalsQ->where('id', $currentCity->closest_terminal_id);
+                    });
+                }
+            )
+            ->where([
+                ['type', 'news'],
+                ['status', 'published'],
+            ])
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
 
-        // Если для текущего города новостей нет, выведем новости для Питера
-        if(!$news->count()) {
-            $news = CMSHelper::getQueryBuilder($args)
-                ->whereHas('terms', function ($promotionsQ) use ($currentCityName) {
-                    return $promotionsQ->where('title', 'like',  "Санкт-Петербург");
+        // Если для текущего города новостей нет, и текущий город -- не Питер, выведем новости для Питера
+        if(!$news->count() && $currentCity->slug !== 'sankt-peterburg') {
+            $news = CmsBoosterPost::whereHas('terminals', function ($terminalsQ) use ($currentCity) {
+                    $terminalsQ->whereHas('city', function ($cityQ) {
+                        return $cityQ->where('slug', 'sankt-peterburg');
+                    });
                 })
+                ->where([
+                    ['type', 'news'],
+                    ['status', 'published'],
+                ])
                 ->orderBy('created_at', 'desc')
                 ->limit(3)
                 ->get();
