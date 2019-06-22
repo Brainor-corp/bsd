@@ -19,7 +19,7 @@ class Notes extends Section {
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('real_type', 'Тип заметки'),
             Column::text('text', 'Текст заметки'),
             Column::text('option', 'Наименование'),

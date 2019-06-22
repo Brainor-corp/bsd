@@ -22,7 +22,7 @@ class InsideForwarding extends Section {
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('city.name', 'Город'),
             Column::text('forwardThreshold.name', 'Предел'),
             Column::text('tariff', 'Тариф'),

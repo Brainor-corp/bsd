@@ -19,7 +19,7 @@ class Users extends Section
 
     public static function onDisplay(){
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('name', 'Имя'),
             Column::text('email', 'EMail'),
             Column::text('phone', 'Телефон'),

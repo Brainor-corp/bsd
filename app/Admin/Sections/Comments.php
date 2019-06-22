@@ -18,7 +18,7 @@ class Comments extends Section {
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::text('id', '#'),
+            Column::link('id', '#'),
             Column::text('user_id', 'id пользователя'),
             Column::text('email', 'Email'),
             Column::text('fio', 'ФИО'),
