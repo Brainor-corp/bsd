@@ -1,7 +1,7 @@
 <?php
 /**
- * class: BRPageTemplate
- * title: Шаблон устраницы-услуги-одна
+ * class: ZeusAdminPageTemplate
+ * title: Шаблон страницы-faq
  */
 ?>
 
@@ -39,16 +39,11 @@
                             <div class="sidebar__title">Услуги</div>
                             <nav class="section">
                                 <ul class="sidebar__menu">
-                                    <li class="sidebar__item"><a href="##">Меж-терминальная перевозка</a></li>
-                                    <li class="sidebar__item"><a href="##">Авиаперевозка</a></li>
-                                    <li class="sidebar__item"><a href="##">Доставка документов</a></li>
-                                    <li class="sidebar__item"><a href="##">Доставка в гипермаркеты</a></li>
-                                    <li class="sidebar__item"><a href="##">Контейнерные перевозки</a></li>
-                                    <li class="sidebar__item"><a href="##">Прямая машина</a></li>
-                                    <li class="sidebar__item"><a href="##">Упаковка</a></li>
-                                    <li class="sidebar__item active"><a href="##">Страхование</a></li>
-                                    <li class="sidebar__item"><a href="##">Погрузо-разгрузочные работы</a></li>
-                                    <li class="sidebar__item"><a href="##">Доставка к точному времени</a></li>
+                                    <li class="sidebar__item active"><a href="##">Отправка груза</a></li>
+                                    <li class="sidebar__item"><a href="##">Работа с заказом</a></li>
+                                    <li class="sidebar__item"><a href="##">Получение груза</a></li>
+                                    <li class="sidebar__item"><a href="##">Другие вопросы</a></li>
+                                    <li class="sidebar__item"><a href="##">Ограничения</a></li>
                                 </ul>
                             </nav>
                             <section class="section">

@@ -1,7 +1,7 @@
 <?php
 /**
- * class: BRPostTemplate
- * title: Шаблон поста
+ * class: ZeusAdminPostTemplate
+ * title: Шаблон отзыва
  */
 ?>
 
@@ -28,21 +28,18 @@
                     <div class="text-justify">
                         <div class="text-justify">
                             <div class="mb-5 fs-breadcrumbs decoration-links">
-                                @php
-                                    foreach ($post->ancestors as $ancestor)
-                                    {
-                                        $ancestors[] = $ancestor;
-                                    }
-                                    $ancestors[] = $post;
-                                @endphp
+
                                 <a href="/"><i class="fas fa-home"></i></a>
-                                @foreach($ancestors as $ancestor)
-                                    /<a href="{{ url($ancestor->url) }}">{{ $ancestor->title }}</a>
-                                @endforeach
+                                /<a href="/otzyvy">Отзывы</a>
+                                /<a href="{{ url($post->url) }}">{{ $post->title }}</a>
+
                             </div>
                             <div class="my-5"><h1>{{ $post->title }}</h1></div>
                             <div class="fs-text-post">
                                 {!! html_entity_decode($post->content) !!}
+                            </div>
+                            <div>
+                                {!! html_entity_decode($post->description) !!}
                             </div>
                         </div>
                     </div>
