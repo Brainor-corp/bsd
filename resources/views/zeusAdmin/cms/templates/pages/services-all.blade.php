@@ -1,6 +1,6 @@
 <?php
 /**
- * class: BRPageTemplate
+ * class: ZeusAdminPageTemplate
  * title: Шаблон страницы-все-услуги
  */
 ?>
