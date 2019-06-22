@@ -5,10 +5,10 @@ namespace App\Jobs;
 use App\Http\Helpers\Api1CHelper;
 use App\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class UsersSync implements ShouldQueue
 {
@@ -38,7 +38,7 @@ class UsersSync implements ShouldQueue
                 'new_user',
                 [
                     'email' => $notSynchronizedUser->email,
-                    'tel' => $notSynchronizedUser->phone
+                    'tel' => intval($notSynchronizedUser->phone) // Для Api важно, чтобы номер был цифрой
                 ]
             );
 
