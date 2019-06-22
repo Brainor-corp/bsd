@@ -84,21 +84,35 @@ class MainPageController extends Controller
                     });
                 }
             )
-            ->where('type', $args['type'])
+            ->where([
+                ['type', $args['type']],
+                ['status', 'published'],
+            ])
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
 
-        // Если для текущего города новостей нет, выведем новости для Питера
-//        if(!$news->count()) {
-//            $news = CMSHelper::getQueryBuilder($args)
-//                ->whereHas('terms', function ($promotionsQ) use ($currentCityName) {
-//                    return $promotionsQ->where('title', 'like',  "Санкт-Петербург");
-//                })
-//                ->orderBy('created_at', 'desc')
-//                ->limit(3)
-//                ->get();
-//        }
+        // Если для текущего города новостей нет, и текущий город -- не Питер, выведем новости для Питера
+        if(!$news->count() && $currentCity->slug !== 'sankt-peterburg') {
+            $news = CmsBoosterPost::whereHas(
+                    'terms',
+                    function ($term) use ($args) {
+                        $term->categories()->whereIn('slug', $args['category']);
+                    }
+                )
+                ->whereHas('terminals', function ($terminalsQ) use ($currentCity) {
+                    $terminalsQ->whereHas('city', function ($cityQ) {
+                        return $cityQ->where('slug', 'sankt-peterburg');
+                    });
+                })
+                ->where([
+                    ['type', $args['type']],
+                    ['status', 'published'],
+                ])
+                ->orderBy('created_at', 'desc')
+                ->limit(3)
+                ->get();
+        }
 
         //services
         $args = [
