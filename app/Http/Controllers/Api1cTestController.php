@@ -305,9 +305,9 @@ class Api1cTestController extends Controller
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'document/id',
             [
-                "user_id" => "e9795c33-97f7-11e8-a972-000d3a28f168",
-                "document_id" => "22345200-abe8-4f60-90c8-0d43c5f6c0f6",
-                "type" => 1,
+                "user_id" => "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
+                "document_id" => "f22b5b40-3c29-11e9-80f7-000d3a396ad2",
+                "type" => 5,
                 "empty_fields" => true
             ]
         );
