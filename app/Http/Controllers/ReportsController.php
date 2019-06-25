@@ -55,6 +55,26 @@ class ReportsController extends Controller
         return View::make('v1.pages.profile.profile-inner.report-show-page')->with(compact('order', 'userTypes'))->render();
     }
 
+    public function getAvailableDocumentsList(Request $request) {
+//        $docs = \App\Http\Helpers\Api1CHelper::post(
+//            'document_list',
+//            [
+//                "id" => "e9795c33-97f7-11e8-a972-000d3a28f168",
+//                "start_date" => "21.01.2019",
+//                "end_date" => "21.01.2019"
+//            ]
+//        )['response'];
+
+        // todo Временно, пока не работает API
+        return [
+            [
+                'name' => 'Счет на оплату',
+                'id' => 'f22b5b40-3c29-11e9-80f7-000d3a396ad2',
+                'type_id' => '5',
+            ]
+        ];
+    }
+
     public function actionDownloadReports(Request $request) {
         $orders = Order::with('status', 'ship_city', 'dest_city')
             ->where(function ($orderQuery) {
