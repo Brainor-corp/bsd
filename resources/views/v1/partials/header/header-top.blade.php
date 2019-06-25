@@ -43,46 +43,6 @@
                         <ul class="nav navbar-nav d-flex nav_top m-0">
                             @php($headerMenu = \Zeus\Admin\Cms\Helpers\MenuHelper::getMenuTreeBySlug('shapka-sayta'))
                             @include('v1.partials.header.header-menu', ['nodeTree' => $headerMenu])
-
-                            {{--<li class="dropdown">--}}
-                                {{--<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Услуги</a>--}}
-                                {{--<div role="menu" class="dropdown-menu">--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/uslugi/mezh-terminalnaya-perevozka') }}">Меж-терминальная перевозка</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/uslugi/aviaperevozka') }}">Авиаперевозка</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/uslugi/dostavka-dokumentov') }}">Доставка документов</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/uslugi/dostavka-v-gipermarkety') }}">Доставка в гипермаркеты</a>--}}
-                                {{--</div>--}}
-                            {{--</li>--}}
-                            {{--<li class="dropdown">--}}
-                                {{--<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Клиентам</a>--}}
-                                {{--<div role="menu" class="dropdown-menu">--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/klientam/dopolnitelnye-uslugi') }}">Дополнительные услуги</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/klientam/faq') }}">FAQ</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ route('event-list') }}">Лента событий</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/klientam/napravleniya') }}">Направления</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ route('orders-list') }}">Мои заказы</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ route('reviews') }}">Отзывы</a>--}}
-                                {{--</div>--}}
-                            {{--</li>--}}
-                            {{--<li class="dropdown">--}}
-                                {{--<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">О компании</a>--}}
-                                {{--<div role="menu" class="dropdown-menu">--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/o-kompanii') }}">О компании</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ route('news-list-show') }}">Новости</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ route('promotion-list-show') }}">Акции</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/o-kompanii/reklamodatelyam') }}">Рекламодателям</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ route('terminals-addresses-show') }}">Адреса терминалов</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/o-kompanii/dokumenty-i-sertifikaty') }}">Документы и сертификаты</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/partnery') }}">Партнеры</a>--}}
-                                    {{--<a class="dropdown-item" href="{{ url('/o-kompanii/sotrudniki') }}">Сотрудники</a>--}}
-                                {{--</div>--}}
-                            {{--</li>--}}
-                            {{--<li class="dropdown">--}}
-                                {{--<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Контакты</a>--}}
-                                {{--<div role="menu" class="dropdown-menu">--}}
-                                    {{--<a class="dropdown-item" href="{{ route('terminals-addresses-show') }}">Адрес терминалов</a>--}}
-                                {{--</div>--}}
-                            {{--</li>--}}
                         </ul>
                     </div>
                 </nav>
