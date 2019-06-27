@@ -36,11 +36,17 @@ class Routes extends Section
             ->setFilter([
                 null,
                 FilterType::text('name', 'Название'),
-                FilterType::select('ship_city_id')
+                FilterType::bselect('ship_city_id')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setIsLike(false)
                     ->setModelForOptions(City::class)
                     ->setDisplay("name"),
-                FilterType::select('dest_city_id')
+                FilterType::bselect('dest_city_id')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
                     ->setIsLike(false)
                     ->setModelForOptions(City::class)
                     ->setDisplay("name"),
