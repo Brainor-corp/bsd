@@ -292,9 +292,8 @@ class Api1cTestController extends Controller
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'document_list',
             [
-                "id" => "e9795c33-97f7-11e8-a972-000d3a28f168",
-                "start_date" => "21.01.2019",
-                "end_date" => "21.01.2019"
+                "user_id" => "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
+                "order_id" => "f22b5b40-3c29-11e9-80f7-000d3a396ad2"
             ]
         );
 
