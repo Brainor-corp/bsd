@@ -78,7 +78,7 @@
                     <i class="fa fa-exclamation-circle"></i>
                 </div>
                 <div class="event-feed__info">
-                    <span>{{ $new->description }}</span>
+                    <span><a href="{{ route('news-single-show', ['slug' => $new->slug]) }}">{{ $new->description }}</a></span>
                 </div>
             </div>
         @endforeach
