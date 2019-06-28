@@ -135,6 +135,12 @@
                                     <a href="{{ route('profile-data-show') }}" class="link-style">Кабинет</a>
                                 </div>
                                 <div class="d-flex dropdown-menu__row justify-content-center">
+                                    <a href="{{ route('orders-list') }}" class="link-style">Мои заказы</a>
+                                </div>
+                                <div class="d-flex dropdown-menu__row justify-content-center">
+                                    <a href="{{ route('counterparty-list') }}" class="link-style">Мои контрагенты</a>
+                                </div>
+                                <div class="d-flex dropdown-menu__row justify-content-center">
                                     <a href="{{ route('logout') }}" class="link-style">Выйти</a>
                                 </div>
                             @else

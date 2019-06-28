@@ -78,3 +78,10 @@
     height: 38px !important;
     margin-bottom: 6px;
 }
+
+.event-feed__info span a{
+    color:#ffffff;
+}
+.event-feed__item:hover .event-feed__info span a{
+    color: #ef402f;
+}

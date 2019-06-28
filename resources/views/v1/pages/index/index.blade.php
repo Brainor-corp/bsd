@@ -47,6 +47,10 @@
         @if($aboutPage)
             {!! $aboutPage->content !!}
         @endif
+        <br><br>
+        @if($textBlock)
+            {!! $textBlock->content !!}
+        @endif
     </div>
 </section>
 @endsection

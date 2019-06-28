@@ -661,7 +661,7 @@ function drawDelivery(delivery) {
             '<div class="block__itogo_item d-flex">'+
             '<div class="d-flex flex-wrap">'+
             '<span class="block__itogo_value">' +
-            'Забор груза: ' + delivery.bring.city_name
+            'Доставка груза: ' + delivery.bring.city_name
             +
             (typeof delivery.bring.distance !== "undefined" ? ('<small> (' + delivery.bring.distance + ' км) </small>') : '')
             +

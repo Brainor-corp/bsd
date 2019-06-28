@@ -116,6 +116,13 @@ class MainPageController extends Controller
         $aboutPage = CMSHelper::getQueryBuilder($args)
             ->first();
 
+        $args = [
+            'type' => 'page',
+            'slug' => 'glavnaya-tekstovyy-blok'
+        ];
+        $textBlock = CMSHelper::getQueryBuilder($args)
+            ->first();
+
         return view('v1.pages.index.index')
             ->with(compact(
                 'packages',
@@ -128,7 +135,8 @@ class MainPageController extends Controller
                 'selectedDestCity',
                 'news',
                 'servicesPostsChunk',
-                'aboutPage'
+                'aboutPage',
+                'textBlock'
             ));
     }
 }
