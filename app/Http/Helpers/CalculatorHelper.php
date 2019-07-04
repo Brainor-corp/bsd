@@ -17,20 +17,19 @@ class CalculatorHelper
         $route = null;
 
         if(isset($route_id)) {
-            $route = Route::where('id', $route_id)->firstOrFail();
+            $route = Route::where('id', $route_id)->with('oversize')->firstOrFail();
         } elseif (isset($shipCity) && isset($destCity)) {
             $route = Route::where([
                 ['ship_city_id', $shipCity->id],
                 ['dest_city_id', $destCity->id]
-            ])->firstOrFail();
+            ])->with('oversize')->firstOrFail();
         }
-
 
         $route_id = $route->id;
         $weight = 0;
         $volume = 0;
         $oversizes = [];
-        $oversize = Oversize::where('id', 1)->first();
+        $oversize = Oversize::where('id', $route->oversizes_id)->first();
 
         foreach ($packages as $key => $package) {
 
@@ -96,8 +95,6 @@ class CalculatorHelper
         $totalVolume = $volume;
 
         $tariff = new \stdClass();
-
-        $route = Route::with('oversize')->where('id', $route_id)->first();
 
         if ($weight <= 2 && $volume <= 0.01) {
             if ($route->wrapper_tariff > 0) {
@@ -171,7 +168,7 @@ class CalculatorHelper
                                     }
 
                                     $total += $package[$key] * ($packages['quantity'] ?? 1) * $tariff *
-                                        (1 + $oversizeRation ?? 1);
+                                        ($oversizeRation ?? 1);
                                 }
                             }
                         } else {
@@ -430,9 +427,7 @@ class CalculatorHelper
         $per_km_tariff = floatval($per_km_tariff->tariff);
 
         // Стоимость доставки по городу + кол-во километров * 2 * стоимость из таблицы Тарифной зоны
-        $price +=
-//            $fixed_tariff +
-            intval($distance) * 2 * $per_km_tariff;
+        $price += $fixed_tariff + intval($distance) * 2 * $per_km_tariff;
         if($x2) { // Умножим цену на 2, если нужна точная доставка
             $price *= 2;
         }
