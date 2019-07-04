@@ -56,6 +56,7 @@
         onChange: function(value) {// при изменении города назначения
             // Вызываем тригер изменения пункта самовывоза, чтобы пересчитать дистанцию
             $('#dest_point').trigger('change');
+            getAllCalculatedData();
             kladrInitialize();
         }
     });
@@ -518,6 +519,7 @@
 });
 
 function getAllCalculatedData() {
+    console.log('here');
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -533,7 +535,7 @@ function getAllCalculatedData() {
             console.log('calculate..');
         },
         success: function(data){
-            // console.table(data);
+            console.log(data);
             renderCalendar(data);
         },
         error: function(data){
