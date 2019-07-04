@@ -519,7 +519,6 @@
 });
 
 function getAllCalculatedData() {
-    console.log('here');
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -532,14 +531,11 @@ function getAllCalculatedData() {
         dataType: "json",
         cache: false,
         beforeSend: function() {
-            console.log('calculate..');
         },
         success: function(data){
-            console.log(data);
             renderCalendar(data);
         },
         error: function(data){
-            console.log(data)
         }
     });
 }
