@@ -244,7 +244,14 @@ class CalculatorController extends Controller
         $services = null;
         if(isset($formData['service'])){$services = $formData['service'];}
 
-        $resultData = CalculatorHelper::getTariff($packages, $route_id, $services);
+        $routeData = CalculatorHelper::getRouteData(null, null, $packages, $route_id);
+        $totalData = CalculatorHelper::getTotalPrice($routeData['price'], $services, $routeData['totalVolume']);
+        $resultData = [
+            'base_price' => $routeData['price'],
+            'total_volume' => $routeData['totalVolume'],
+            'route' => $routeData['model'],
+            'total_data' => $totalData,
+        ];
 
         return response()->json($resultData);
     }

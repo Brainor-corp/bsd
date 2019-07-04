@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\City;
 use App\CmsBoosterPost;
+use App\Http\Helpers\CalculatorHelper;
 use App\Route;
 use App\Service;
 use Illuminate\Http\Request;
@@ -45,8 +46,18 @@ class MainPageController extends Controller
         }else{
             $selectedDestCity = 78;
         }
-        $route = app('App\Http\Controllers\CalculatorController')->getRoute($request, $selectedShipCity,$selectedDestCity);
-        $tariff = json_decode(app('App\Http\Controllers\CalculatorController')->getTariff($request, $packages, $selectedShipCity,$selectedDestCity)->content());
+
+        $shipCity = City::where('id', $selectedShipCity)->firstOrFail();
+        $destCity = City::where('id', $selectedDestCity)->firstOrFail();
+
+        $routeData = CalculatorHelper::getRouteData($shipCity, $destCity, $packages);
+        $tariff = [
+            'base_price' => $routeData['price'],
+            'total_volume' => $routeData['totalVolume'],
+            'route' => $routeData['model'],
+        ];
+
+        $route = $routeData['model'];
 
         $services = Service::get();
 
