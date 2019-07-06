@@ -94,4 +94,8 @@ class City extends Model
 
         return $result;
     }
+
+    public function requisites() {
+        return $this->hasMany(Requisite::class, 'city_id', 'id');
+    }
 }
