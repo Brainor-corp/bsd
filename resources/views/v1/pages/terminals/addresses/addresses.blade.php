@@ -9,7 +9,7 @@
     <div class="breadcrumb__list d-flex">
         <div class="container">
             <span class="breadcrumb__item"><a href="/" class="">Главная</a></span>
-            <span class="breadcrumb__item">Адрес терминалов</span>
+            <span class="breadcrumb__item">Адреса терминалов</span>
         </div>
     </div>
     <section class="wrapper">
@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="col-12">
                     <header class="wrapper__header">
-                        <h1>Адрес терминалов</h1>
+                        <h1>Адреса терминалов</h1>
                     </header>
                 </div>
             </div>
@@ -65,5 +65,20 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="container">
+        @foreach($currentCity->requisites->sortBy('sort') as $requisite)
+            <div class="row my-4">
+                <div class="col-12">
+                    <h3>{{ $requisite->name }}</h3>
+                    @foreach($requisite->requisiteParts as $requisitePart)
+                        <p class="mb-2">
+                            <span class="font-weight-bold">{{ $requisitePart->name }}:</span>
+                            <span>{{ $requisitePart->value }}</span>
+                        </p>
+                    @endforeach
+                </div>
+            </div>
+        @endforeach
     </div>
 @endsection
