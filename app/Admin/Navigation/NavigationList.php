@@ -99,6 +99,11 @@ class NavigationList
                         'text' => 'Контрагенты'
                     ],
                     [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Requisites',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Реквизиты'
+                    ],
+                    [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Types',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Типы'
