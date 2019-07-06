@@ -21,10 +21,12 @@ class Requisites extends Section
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('id', '#'),
-            Column::link('city.name', 'Город'),
+            Column::link('name', 'Наименование'),
+            Column::text('city.name', 'Город'),
         ])
             ->setFilter([
                 null,
+                FilterType::text('name', 'Наименование'),
                 FilterType::bselect('city_id', 'Город')
                     ->setDataAttributes([
                         'data-live-search="true"'
@@ -40,13 +42,16 @@ class Requisites extends Section
 
     public static function onCreate()
     {
-        return self::onEdit(null);
+        return self::onEdit();
     }
 
     public static function onEdit()
     {
         $form = Form::panel([
             FormColumn::column([
+                FormField::input('name', 'Наименование')
+                    ->setHelpBlock("<small class='text-muted'>Наименование. Прим.: Банковские реквизиты.</small>")
+                    ->setRequired(1),
                 FormField::bselect('city_id', 'Город')
                     ->setDataAttributes([
                         'data-live-search="true"'
@@ -54,6 +59,11 @@ class Requisites extends Section
                     ->setHelpBlock("<small class='text-muted'>Город, к которому привязаны реквизиты</small>")
                     ->setModelForOptions(City::class)
                     ->setDisplay('name')
+                    ->setRequired(1),
+                FormField::input('sort', 'Порядок вывода')
+                    ->setType('number')
+                    ->setHelpBlock("<small class='text-muted'>Определяет порядок вывода, если выводится несколько реквизитов</small>")
+                    ->setValue(1)
                     ->setRequired(1),
                 FormField::related('requisiteParts', 'Реквизиты', RequisitePart::class, [
                     FormField::input('name', 'Наименование')->setRequired(1),

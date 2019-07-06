@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Requisite extends Model
 {
     protected $fillable = [
-        'city_id'
+        'name', 'city_id', 'sort'
     ];
 
     public function city() {
