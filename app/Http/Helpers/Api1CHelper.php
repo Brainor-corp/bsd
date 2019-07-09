@@ -28,6 +28,30 @@ class Api1CHelper {
         ];
     }
 
+    public static function post1($action, $params) {
+        $url = self::$host . $action;
+        $content = json_encode($params);
+
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($content))
+        );
+
+        $json_response = curl_exec($curl);
+        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+        return [
+            'status' => $status,
+            'response' => json_decode($json_response, true),
+            'info' => curl_getinfo($curl)
+        ];
+    }
+
     public static function get($action, $params) {
         $url = self::$host . $action;
 
