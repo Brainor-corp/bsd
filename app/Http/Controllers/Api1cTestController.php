@@ -204,9 +204,12 @@ class Api1cTestController extends Controller
                     'code_1c' => $response1c['status']['id'],
                     'sync_need' => false
                 ]);
-                dd($response1c);
             }
-            dd($order);
+
+            dd([
+                'send' => $order,
+                'response' => $response1c
+            ]);
         }
     }
 
