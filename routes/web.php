@@ -79,13 +79,15 @@ Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
 
         Route::get('/cabinet/counterparty-list', 'CounterpartyController@showCounterpartyListPage')->name('counterparty-list');
 
-    });
+        Route::post('/get-download-documents-modal', 'ReportsController@getDownloadDocumentsModal')->name('get-download-documents-modal');
+        Route::post('/download-document/{order_id_1c}/{document_id_1c}/{document_type_id_1c}')->name('download-document');
 
-    Route::get('/download-document-request', 'ReportsController@actionDownloadDocumentRequest')->name('download-document-request');
-    Route::get('/download-document-invoice', 'ReportsController@actionDownloadDocumentInvoice')->name('download-document-invoice');
-    Route::get('/download-document-transfer', 'ReportsController@actionDownloadDocumentTransfer')->name('download-document-transfer');
-    Route::get('/download-document-contract', 'ReportsController@actionDownloadDocumentContract')->name('download-document-contract');
-    Route::get('/download-document-receipt', 'ReportsController@actionDownloadDocumentReceipt')->name('download-document-receipt');
+        Route::get('/download-document-request', 'ReportsController@actionDownloadDocumentRequest')->name('download-document-request');
+        Route::get('/download-document-invoice', 'ReportsController@actionDownloadDocumentInvoice')->name('download-document-invoice');
+        Route::get('/download-document-transfer', 'ReportsController@actionDownloadDocumentTransfer')->name('download-document-transfer');
+        Route::get('/download-document-contract', 'ReportsController@actionDownloadDocumentContract')->name('download-document-contract');
+        Route::get('/download-document-receipt', 'ReportsController@actionDownloadDocumentReceipt')->name('download-document-receipt');
+    });
 
     // Партнёры
     Route::get('/partners', 'PartnersController@showPartnersPage')->name('partners-page');

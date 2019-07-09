@@ -39,7 +39,7 @@
                             </form>
                             <div class="row">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered reports-table" data-documents-modal-url="{{ route('get-download-documents-modal') }}">
                                         <thead>
                                         <tr>
                                             <th>№</th>
@@ -93,24 +93,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <ul>
-{{--                        <li>--}}
-{{--                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-request') }}">Заявка</a>--}}
-{{--                        </li>--}}
-                        <li>
-                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-invoice') }}">Счет на оплату</a>
-                        </li>
-                        <li>
-                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-transfer') }}">УПД</a>
-                        </li>
-                        <li>
-                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-contract') }}">Договор</a>
-                        </li>
-                        <li>
-                            <a class="btn-link document-link text-info" href="#" data-href="{{ route('download-document-receipt') }}">Экспедиторская расписка</a>
-                        </li>
-                    </ul>
+                <div class="modal-body documents-container">
+
                 </div>
                 <div class="modal-footer"></div>
             </div>

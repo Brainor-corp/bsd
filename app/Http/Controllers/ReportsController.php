@@ -55,6 +55,64 @@ class ReportsController extends Controller
         return View::make('v1.pages.profile.profile-inner.report-show-page')->with(compact('order', 'userTypes'))->render();
     }
 
+    public function getDownloadDocumentsModal(Request $request) {
+        $order = Order::where('id', $request->get('order_id'))
+            ->where(function ($ordersQuery) {
+                return Auth::check() ? $ordersQuery
+                    ->where('user_id', Auth::id())
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
+            })->firstOrFail();
+
+        //$code1c = $order->user->guid;
+        $user_1c = "f008aa7f-29d6-11e9-80c7-000d3a396ad2"; // todo Временно
+
+        //$code1c = $order->code_1c;
+        $code1c = "2ef09a62-8dbb-11e9-a688-001c4208e0b2"; // todo Временно
+
+        $response1c = \App\Http\Helpers\Api1CHelper::post(
+            'document_list',
+            [
+                "user_id" => $user_1c,
+                "order_id" => $code1c
+            ]
+        );
+
+        $documents = [];
+        if($response1c['status'] == 'success') {
+            $documents = $response1c['documents'] ?? [];
+        }
+
+        return view('v1.partials.reports.download-documents-modal-content')
+            ->with(compact('documents'));
+    }
+
+    public function downloadOrderDocument($order_id_1c, $document_id_1c, $document_type_id_1c) {
+        switch ($document_type_id_1c) {
+            case 1:
+                // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
+                break;
+            case 2:
+                // Экспедиторская расписка
+                break;
+            case 3:
+                // Заявка на экспедирование
+                break;
+            case 4:
+                // Счет-фактура
+                break;
+            case 5:
+                // Счет на оплату
+                break;
+            case 6:
+                // ???
+                break;
+            default: break;
+        }
+
+
+    }
+
     public function actionDownloadReports(Request $request) {
         $orders = Order::with('status', 'ship_city', 'dest_city')
             ->where(function ($orderQuery) {
