@@ -79,8 +79,8 @@ class ReportsController extends Controller
         );
 
         $documents = [];
-        if($response1c['status'] == 'success') {
-            $documents = $response1c['documents'] ?? [];
+        if($response1c['response']['status'] == 'success') {
+            $documents = $response1c['response']['documents'] ?? [];
         }
 
         return view('v1.partials.reports.download-documents-modal-content')
