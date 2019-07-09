@@ -40,7 +40,7 @@
                                     <tbody>
                                         @foreach($counterparties as $counterparty)
                                             <tr>
-                                                <td class="align-middle">{{ $counterparty->active ?? ''}}</td>
+                                                <td class="align-middle">{{ $counterparty->active ? 'Да' : 'Нет'}}</td>
                                                 <td class="align-middle">{{ $counterparty->legal_form  ?? ''}}</td>
                                                 <td class="align-middle">{{ $counterparty->company_name  ?? ''}}</td>
                                                 <td class="align-middle">
@@ -54,6 +54,7 @@
                                                 <td class="align-middle">{{ $counterparty->inn  ?? ''}}</td>
                                                 <td class="align-middle">{{ $counterparty->kpp  ?? ''}}</td>
                                                 <td class="align-middle">{{ $counterparty->phone  ?? ''}}</td>
+                                                <td class="align-middle">{{ $counterparty->name  ?? ''}}</td>
                                                 <td class="align-middle">{{ $counterparty->passport_series  ?? ''}} {{ $counterparty->passport_number  ?? ''}}</td>
                                                 <td class="align-middle">{{ $counterparty->addition_info  ?? ''}}</td>
                                                 <td class="align-middle">{{ $counterparty->contact_person  ?? ''}}</td>
