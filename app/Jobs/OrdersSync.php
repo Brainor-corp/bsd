@@ -60,17 +60,17 @@ class OrdersSync implements ShouldQueue
             $mapOrder['Название_груза'] = $order['shipping_name'];
             $mapOrder['Общий_вес'] = floatval($order['total_weight']);
             $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_date'])->format('Y-m-d');
-            $mapOrder['Итоговая_цена'] = is_numeric($order['total_price']) ? floatval($order['total_price']) : 0;
-            $mapOrder['Базовая_цена_маршрута'] = is_numeric($order['base_price']) ? floatval($order['base_price']) : 0;
+            $mapOrder['Итоговая_цена'] = is_numeric($order['total_price']) ? intval($order['total_price']) : 0;
+            $mapOrder['Базовая_цена_маршрута'] = is_numeric($order['base_price']) ? intval($order['base_price']) : 0;
 
             $mapOrder['Страховка'] = [
-                'Сумма_страховки' => is_numeric($order['insurance']) ? floatval($order['insurance']) : 0,
-                'Цена_страхования' => is_numeric($order['insurance_amount']) ? floatval($order['insurance_amount']) : 0,
+                'Сумма_страховки' => is_numeric($order['insurance']) ? intval($order['insurance']) : 0,
+                'Цена_страхования' => is_numeric($order['insurance_amount']) ? intval($order['insurance_amount']) : 0,
             ];
 
             $mapOrder['Скидка'] = [
                 'Процент_скидки' => is_numeric($order['discount']) ? intval($order['discount']) : 0,
-                'Сумма_скидки' => is_numeric($order['discount_amount']) ? floatval($order['discount_amount']) : 0,
+                'Сумма_скидки' => is_numeric($order['discount_amount']) ? intval($order['discount_amount']) : 0,
             ];
 
             $mapOrder['Идентификатор_пользователя_на_сайте'] = intval($order['user_id']);
@@ -92,7 +92,7 @@ class OrdersSync implements ShouldQueue
                     'Строение' => $order['payer_legal_address_building'],
                     'Квартира_офис' => $order['payer_legal_address_apartment'],
                 ],
-                'ИНН' => strval($order['payer_inn']),
+                'ИНН' => intval($order['payer_inn']) >= 100000000000 && intval($order['payer_inn']) <= 999999999999 ? intval($order['payer_inn']) : null,
                 'КПП' => intval($order['payer_kpp']) >= 10000000 && intval($order['payer_kpp']) <= 99999999 ? intval($order['payer_kpp']) : null,
                 'Имя' => $order['payer_name'],
                 'Контактное_лицо' => $order['payer_contact_person'],
@@ -106,7 +106,7 @@ class OrdersSync implements ShouldQueue
                 return [
                     'Идентификатор_на_сайте' => $order_service['id'],
                     'Название' => $order_service['name'],
-                    'Просчитанная_цена' => is_numeric($order_service['pivot']['price']) ? floatval($order_service['pivot']['price']) : 0,
+                    'Просчитанная_цена' => is_numeric($order_service['pivot']['price']) ? intval($order_service['pivot']['price']) : 0,
                 ];
             }, $order['order_services']);
 
@@ -140,7 +140,7 @@ class OrdersSync implements ShouldQueue
                 'Адрес_забора' => $order['delivery_address'],
                 'Дистанция_забора' => $order['delivery_distance'],
                 'Точный_забор' => intval($order['delivery_point']),
-                'Просчитанная_цена' => is_numeric($order['delivery_price']) ? floatval($order['delivery_price']) : 0,
+                'Просчитанная_цена' => is_numeric($order['delivery_price']) ? intval($order['delivery_price']) : 0,
                 'Название_города_забора' => $order['delivery_city_name'],
             ];
 
