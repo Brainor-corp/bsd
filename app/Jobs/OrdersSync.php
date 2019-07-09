@@ -56,7 +56,7 @@ class OrdersSync implements ShouldQueue
         $orders = array_map(function ($order) {
             $mapOrder = [];
 
-            $mapOrder['Идентификатор_на_сайте'] = $order['id'];
+            $mapOrder['Идентификатор_на_сайте'] = intval($order['id']);
             $mapOrder['Название_груза'] = $order['shipping_name'];
             $mapOrder['Общий_вес'] = floatval($order['total_weight']);
             $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_date'])->format('Y-m-d');
@@ -73,7 +73,7 @@ class OrdersSync implements ShouldQueue
                 'Сумма_скидки' => is_numeric($order['discount_amount']) ? floatval($order['discount_amount']) : 0,
             ];
 
-            $mapOrder['Идентификатор_пользователя_на_сайте'] = $order['user_id'];
+            $mapOrder['Идентификатор_пользователя_на_сайте'] = intval($order['user_id']);
             $mapOrder['Способ_оплаты'] = $order['payment']['name'];
             $mapOrder['Идентификатор_1С'] = $order['code_1c'];
             $mapOrder['Дата_и_время_создания_заказа'] = $order['created_at'];
@@ -113,7 +113,7 @@ class OrdersSync implements ShouldQueue
             $mapOrder['Услуги'] = count($mapOrder['Услуги']) ? $mapOrder['Услуги'] : null;
 
             $mapOrder['Город_отправления'] = [
-                'Идентификатор_на_сайте' => $order['ship_city']['id'],
+                'Идентификатор_на_сайте' => intval($order['ship_city']['id']),
                 'Название' => $order['ship_city']['name']
             ];
 
@@ -125,21 +125,21 @@ class OrdersSync implements ShouldQueue
             $mapOrder['Статус_заказа'] = $order['status']['name'];
 
             $mapOrder['Забор_груза'] = [
-                'Флаг_необходимости_забора' => $order['take_need'],
-                'Забор_в_пределах_города' => $order['take_in_city'],
+                'Флаг_необходимости_забора' => intval($order['take_need']),
+                'Забор_в_пределах_города' => intval($order['take_in_city']),
                 'Адрес_забора' => $order['take_address'],
                 'Дистанция_забора' => strval($order['take_distance']),
-                'Точный_забор' => $order['take_point'],
+                'Точный_забор' => intval($order['take_point']),
                 'Просчитанная_цена' => is_numeric($order['take_price']) ? floatval($order['take_price']) : 0,
                 'Название_города_забора' => $order['take_city_name'],
             ];
 
             $mapOrder['Доставка_груза'] = [
-                'Флаг_необходимости_забора' => $order['delivery_need'],
-                'Забор_в_пределах_города' => $order['delivery_in_city'],
+                'Флаг_необходимости_забора' => intval($order['delivery_need']),
+                'Забор_в_пределах_города' => intval($order['delivery_in_city']),
                 'Адрес_забора' => $order['delivery_address'],
                 'Дистанция_забора' => $order['delivery_distance'],
-                'Точный_забор' => $order['delivery_point'],
+                'Точный_забор' => intval($order['delivery_point']),
                 'Просчитанная_цена' => is_numeric($order['delivery_price']) ? floatval($order['delivery_price']) : 0,
                 'Название_города_забора' => $order['delivery_city_name'],
             ];
