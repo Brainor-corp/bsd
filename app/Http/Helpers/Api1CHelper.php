@@ -38,7 +38,7 @@ class Api1CHelper {
         return [
             'status' => $status,
             'response' => json_decode($json_response, true),
-            'headers' => $headers
+//            'headers' => $headers
         ];
     }
 
