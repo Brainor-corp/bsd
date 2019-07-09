@@ -206,6 +206,7 @@ class Api1cTestController extends Controller
                 ]);
                 dd($response1c);
             }
+            dd($order);
         }
     }
 
