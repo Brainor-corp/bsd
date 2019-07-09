@@ -45,10 +45,27 @@ class Api1CHelper {
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
+        $headers = [];
+        $output = rtrim($json_response);
+        $data = explode("\n",$output);
+        $headers['status'] = $data[0];
+        array_shift($data);
+
+        foreach($data as $part){
+
+            //some headers will contain ":" character (Location for example), and the part after ":" will be lost, Thanks to @Emanuele
+            $middle = explode(":",$part,2);
+
+            //Supress warning message if $middle[1] does not exist, Thanks to @crayons
+            if ( !isset($middle[1]) ) { $middle[1] = null; }
+
+            $headers[trim($middle[0])] = trim($middle[1]);
+        }
+
         return [
             'status' => $status,
             'response' => json_decode($json_response, true),
-            'info' => curl_getinfo($curl)
+            'headers' => $headers
         ];
     }
 
