@@ -4,11 +4,12 @@ namespace App\Jobs;
 
 use App\Http\Helpers\Api1CHelper;
 use App\Order;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 
 class OrdersSync implements ShouldQueue
@@ -16,99 +17,6 @@ class OrdersSync implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 1;
-
-    // Ключи, которые не нужно передавать в 1с
-    public $toUnset = [
-        'ship_city_id',
-        'ship_city_name',
-        'dest_city_id',
-        'dest_city_name',
-        'take_need',
-        'take_in_city',
-        'take_address',
-        'take_distance',
-        'take_point',
-        'take_price',
-        'take_city_name',
-        'delivery_need',
-        'delivery_in_city',
-        'delivery_address',
-        'delivery_distance',
-        'delivery_point',
-        'delivery_price',
-        'delivery_city_name',
-        'sender_type_id',
-        'sender_legal_form',
-        'sender_company_name',
-        'sender_legal_address_city',
-        'sender_legal_address_street',
-        'sender_legal_address_house',
-        'sender_legal_address_block',
-        'sender_legal_address_building',
-        'sender_legal_address_apartment',
-        'sender_inn',
-        'sender_kpp',
-        'sender_name',
-        'sender_contact_person',
-        'sender_phone',
-        'sender_addition_info',
-        'sender_passport_series',
-        'sender_passport_number',
-        'sender_type',
-        'recipient_type_id',
-        'recipient_legal_form',
-        'recipient_company_name',
-        'recipient_legal_address_city',
-        'recipient_legal_address_street',
-        'recipient_legal_address_house',
-        'recipient_legal_address_block',
-        'recipient_legal_address_building',
-        'recipient_legal_address_apartment',
-        'recipient_inn',
-        'recipient_kpp',
-        'recipient_name',
-        'recipient_contact_person',
-        'recipient_phone',
-        'recipient_addition_info',
-        'recipient_passport_series',
-        'recipient_passport_number',
-        'recipient_type',
-        'payer_type_id',
-        'payer_legal_form',
-        'payer_company_name',
-        'payer_legal_address_city',
-        'payer_legal_address_street',
-        'payer_legal_address_house',
-        'payer_legal_address_block',
-        'payer_legal_address_building',
-        'payer_legal_address_apartment',
-        'payer_inn',
-        'payer_kpp',
-        'payer_name',
-        'payer_contact_person',
-        'payer_phone',
-        'payer_addition_info',
-        'payer_passport_series',
-        'payer_passport_number',
-        'payer_form_type_id',
-        'payer_form_type',
-        'payer_type',
-        'manager_id',
-        'operator_id',
-        'order_id',
-        'payment',
-        'insurance_amount',
-        'discount_amount',
-        'delivered_in',
-        'delivery_time',
-        'order_items',
-        'status_id',
-        'created_at',
-        'updated_at',
-        'sync_need',
-        'take_time',
-        'enter_id',
-    ];
 
     /**
      * Create a new job instance.
@@ -146,143 +54,153 @@ class OrdersSync implements ShouldQueue
 
         // Преобразуем данные модели в вид, необходимый для отправки в 1с
         $orders = array_map(function ($order) {
-            $order['insurance'] = [
-                'sum' => $order['insurance'] ?? null,
-                'amount' => $order['insurance_amount'] ?? null
+            $mapOrder = [];
+
+            $mapOrder['Идентификатор_на_сайте'] = intval($order['id']);
+            $mapOrder['Название_груза'] = $order['shipping_name'];
+            $mapOrder['Общий_вес'] = floatval($order['total_weight']);
+            $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_date'])->format('Y-m-d');
+            $mapOrder['Итоговая_цена'] = is_numeric($order['total_price']) ? floatval($order['total_price']) : 0;
+            $mapOrder['Базовая_цена_маршрута'] = is_numeric($order['base_price']) ? floatval($order['base_price']) : 0;
+
+            $mapOrder['Страховка'] = [
+                'Сумма_страховки' => is_numeric($order['insurance']) ? floatval($order['insurance']) : 0,
+                'Цена_страхования' => is_numeric($order['insurance_amount']) ? floatval($order['insurance_amount']) : 0,
             ];
 
-            $order['discount'] = [
-                'percent' => $order['discount'] ?? null,
-                'amount' => $order['discount_amount'] ?? null
+            $mapOrder['Скидка'] = [
+                'Процент_скидки' => is_numeric($order['discount']) ? intval($order['discount']) : 0,
+                'Сумма_скидки' => is_numeric($order['discount_amount']) ? floatval($order['discount_amount']) : 0,
             ];
 
-            $order['take'] = [
-                'need' => $order['take_need'] ?? null,
-                'in_city' => $order['take_in_city'] ?? null,
-                'address' => $order['take_address'] ?? null,
-                'distance' => $order['take_distance'] ?? null,
-                'point' => $order['take_point'] ?? null,
-                'price' => $order['take_price'] ?? null,
-                'city_name' => $order['take_city_name'] ?? null,
+            $mapOrder['Идентификатор_пользователя_на_сайте'] = intval($order['user_id']);
+            $mapOrder['Способ_оплаты'] = $order['payment']['name'];
+            $mapOrder['Идентификатор_1С'] = $order['code_1c'];
+            $mapOrder['Дата_и_время_создания_заказа'] = $order['created_at'];
+            $mapOrder['Дата_и_время_завершения_заказа'] = $order['order_finish_date'];
+
+            $mapOrder['Плательщик'] = [
+                'Тип_плательщика' => $order['payer']['name'],
+                'Тип_контрагента' => $order['payer_form_type']['name'],
+                'Правовая_форма' => $order['payer_legal_form'],
+                'Название_компании' => $order['payer_company_name'],
+                'Адрес' => [
+                    'Город' => $order['payer_legal_address_city'],
+                    'Улица' => $order['payer_legal_address_street'],
+                    'Дом' => $order['payer_legal_address_house'],
+                    'Корпус' => $order['payer_legal_address_block'],
+                    'Строение' => $order['payer_legal_address_building'],
+                    'Квартира_офис' => $order['payer_legal_address_apartment'],
+                ],
+                'ИНН' => strval($order['payer_inn']),
+                'КПП' => intval($order['payer_kpp']) >= 10000000 && intval($order['payer_kpp']) <= 99999999 ? intval($order['payer_kpp']) : null,
+                'Имя' => $order['payer_name'],
+                'Контактное_лицо' => $order['payer_contact_person'],
+                'Телефон' => intval($order['payer_phone']) >= 70000000000 && intval($order['payer_phone']) <= 89999999999 ? intval($order['payer_phone']) : null,
+                'Дополнительная_информация' => $order['payer_addition_info'],
+                'Серия_паспорта' => intval($order['payer_passport_series']) >= 1000 && intval($order['payer_passport_series']) <= 9999 ? intval($order['payer_passport_series']) : null,
+                'Номер_паспорта' => intval($order['payer_passport_number']) >= 100000 && intval($order['payer_passport_number']) <= 999999 ? intval($order['payer_passport_number']) : null,
             ];
 
-            $order['delivery'] = [
-                'need' => $order['delivery_need'] ?? null,
-                'in_city' => $order['delivery_in_city'] ?? null,
-                'address' => $order['delivery_address'] ?? null,
-                'distance' => $order['delivery_distance'] ?? null,
-                'point' => $order['delivery_point'] ?? null,
-                'price' => $order['delivery_price'] ?? null,
-                'city_name' => $order['delivery_city_name'] ?? null,
-            ];
-
-            $order['ship_city'] = [
-                'id' => $order['ship_city']['id'] ?? null,
-                'name' => $order['ship_city']['name'] ?? null
-            ];
-
-            $order['dest_city'] = [
-                'id' => $order['dest_city']['id'] ?? null,
-                'name' => $order['dest_city']['name'] ?? null
-            ];
-
-            $order['status'] = $order['status']['slug'] ?? null;
-
-            $order['packages'] = array_map(function ($order_item) {
+            $mapOrder['Услуги'] = array_map(function ($order_service) {
                 return [
-                    "id" => $order_item['id'] ?? null,
-                    "length" => $order_item['length'] ?? null,
-                    "width" => $order_item['width'] ?? null,
-                    "height" => $order_item['height'] ?? null,
-                    "volume" => $order_item['volume'] ?? null,
-                    "weight" => $order_item['weight'] ?? null,
-                    "quantity" => $order_item['quantity'] ?? null,
-                ];
-            }, $order['order_items']);
-
-            $order['order_services'] = array_map(function ($order_service) {
-                return [
-                    'id' => $order_service['id'] ?? null,
-                    'name' => $order_service['name'] ?? null,
-                    'price' => $order_service['pivot']['price'] ?? null,
+                    'Идентификатор_на_сайте' => $order_service['id'],
+                    'Название' => $order_service['name'],
+                    'Просчитанная_цена' => is_numeric($order_service['pivot']['price']) ? floatval($order_service['pivot']['price']) : 0,
                 ];
             }, $order['order_services']);
 
-            $order['payment_type'] = $order['payment']['slug'] ?? null;
+            $mapOrder['Услуги'] = count($mapOrder['Услуги']) ? $mapOrder['Услуги'] : null;
 
-            $order['sender'] = [
-                'type' => $order['sender_type']['slug'] ?? null,
-                'legal_form' => $order['sender_legal_form'] ?? null,
-                'company_name' => $order['sender_company_name'] ?? null,
-                'legal_address' => [
-                    'city' => $order['sender_legal_address_city'] ?? null,
-                    'street' => $order['sender_legal_address_street'] ?? null,
-                    'house' => $order['sender_legal_address_house'] ?? null,
-                    'block' => $order['sender_legal_address_block'] ?? null,
-                    'building' => $order['sender_legal_address_building'] ?? null,
-                    'apartment' => $order['sender_legal_address_apartment'] ?? null,
-                ],
-                'inn' => $order['sender_inn'] ?? null,
-                'kpp' => $order['sender_kpp'] ?? null,
-                'name' => $order['sender_name'] ?? null,
-                'contact_person' => $order['sender_contact_person'] ?? null,
-                'phone' => $order['sender_phone'] ?? null,
-                'addition_info' => $order['sender_addition_info'] ?? null,
-                'passport_series' => $order['sender_passport_series'] ?? null,
-                'passport_number' => $order['sender_passport_number'] ?? null,
+            $mapOrder['Город_отправления'] = [
+                'Идентификатор_на_сайте' => intval($order['ship_city']['id']),
+                'Название' => $order['ship_city']['name']
             ];
 
-            $order['recipient'] = [
-                'type' => $order['recipient_type']['slug'] ?? null,
-                'legal_form' => $order['recipient_legal_form'] ?? null,
-                'company_name' => $order['recipient_company_name'] ?? null,
-                'legal_address' => [
-                    'city' => $order['recipient_legal_address_city'] ?? null,
-                    'street' => $order['recipient_legal_address_street'] ?? null,
-                    'house' => $order['recipient_legal_address_house'] ?? null,
-                    'block' => $order['recipient_legal_address_block'] ?? null,
-                    'building' => $order['recipient_legal_address_building'] ?? null,
-                    'apartment' => $order['recipient_legal_address_apartment'] ?? null,
-                ],
-                'inn' => $order['recipient_inn'] ?? null,
-                'kpp' => $order['recipient_kpp'] ?? null,
-                'name' => $order['recipient_name'] ?? null,
-                'contact_person' => $order['recipient_contact_person'] ?? null,
-                'phone' => $order['recipient_phone'] ?? null,
-                'addition_info' => $order['recipient_addition_info'] ?? null,
-                'passport_series' => $order['recipient_passport_series'] ?? null,
-                'passport_number' => $order['recipient_passport_number'] ?? null,
+            $mapOrder['Город_назначения'] = [
+                'Идентификатор_на_сайте' => $order['dest_city']['id'],
+                'Название' => $order['dest_city']['name']
             ];
 
-            $order['payer'] = [
-                'type' => $order['payer']['slug'] ?? null,
-                'form_type' => $order['payer_form_type']['slug'] ?? null,
-                'legal_form' => $order['payer_legal_form'] ?? null,
-                'company_name' => $order['payer_company_name'] ?? null,
-                'legal_address' => [
-                    'city' => $order['payer_legal_address_city'] ?? null,
-                    'street' => $order['payer_legal_address_street'] ?? null,
-                    'house' => $order['payer_legal_address_house'] ?? null,
-                    'block' => $order['payer_legal_address_block'] ?? null,
-                    'building' => $order['payer_legal_address_building'] ?? null,
-                    'apartment' => $order['payer_legal_address_apartment'] ?? null,
-                ],
-                'inn' => $order['payer_inn'] ?? null,
-                'kpp' => $order['payer_kpp'] ?? null,
-                'name' => $order['payer_name'] ?? null,
-                'contact_person' => $order['payer_contact_person'] ?? null,
-                'phone' => $order['payer_phone'] ?? null,
-                'addition_info' => $order['payer_addition_info'] ?? null,
-                'passport_series' => $order['payer_passport_series'] ?? null,
-                'passport_number' => $order['payer_passport_number'] ?? null,
+            $mapOrder['Статус_заказа'] = $order['status']['name'];
+
+            $mapOrder['Забор_груза'] = [
+                'Флаг_необходимости_забора' => intval($order['take_need']),
+                'Забор_в_пределах_города' => intval($order['take_in_city']),
+                'Адрес_забора' => $order['take_address'],
+                'Дистанция_забора' => strval($order['take_distance']),
+                'Точный_забор' => intval($order['take_point']),
+                'Просчитанная_цена' => is_numeric($order['take_price']) ? floatval($order['take_price']) : 0,
+                'Название_города_забора' => $order['take_city_name'],
             ];
 
-            // Убераем лишние поля
-            foreach($this->toUnset as $unsetKey) {
-                unset($order[$unsetKey]);
-            }
+            $mapOrder['Доставка_груза'] = [
+                'Флаг_необходимости_забора' => intval($order['delivery_need']),
+                'Забор_в_пределах_города' => intval($order['delivery_in_city']),
+                'Адрес_забора' => $order['delivery_address'],
+                'Дистанция_забора' => $order['delivery_distance'],
+                'Точный_забор' => intval($order['delivery_point']),
+                'Просчитанная_цена' => is_numeric($order['delivery_price']) ? floatval($order['delivery_price']) : 0,
+                'Название_города_забора' => $order['delivery_city_name'],
+            ];
 
-            return $order;
+            $mapOrder['Пакеты'] = array_map(function ($order_item) {
+                return [
+                    "Идентификатор_на_сайте" => $order_item['id'],
+                    "Длина" => floatval($order_item['length']),
+                    "Ширина" => floatval($order_item['width']),
+                    "Высота" => floatval($order_item['height']),
+                    "Объём" => floatval($order_item['volume']),
+                    "Вес" => floatval($order_item['weight']),
+                    "Количество" => intval($order_item['quantity']),
+                ];
+            }, $order['order_items']);
+
+            $mapOrder['Отправитель'] = [
+                'Тип_контрагента' => $order['sender_type']['name'],
+                'Правовая_форма' => $order['sender_legal_form'],
+                'Название_компании' => $order['sender_company_name'],
+                'Адрес' => [
+                    'Город' => $order['sender_legal_address_city'],
+                    'Улица' => $order['sender_legal_address_street'],
+                    'Дом' => $order['sender_legal_address_house'],
+                    'Корпус' => $order['sender_legal_address_block'],
+                    'Строение' => $order['sender_legal_address_building'],
+                    'Квартира_офис' => $order['sender_legal_address_apartment'],
+                ],
+                'ИНН' => intval($order['sender_inn']) >= 100000000000 && intval($order['sender_inn']) <= 999999999999 ? intval($order['sender_inn']) : null,
+                'КПП' => intval($order['sender_kpp']) >= 10000000 && intval($order['sender_kpp']) <= 99999999 ? intval($order['sender_kpp']) : null,
+                'Имя' => $order['sender_name'],
+                'Контактное_лицо' => $order['sender_contact_person'],
+                'Телефон' => intval($order['sender_phone']) >= 70000000000 && intval($order['sender_phone']) <= 89999999999 ? intval($order['sender_phone']) : null,
+                'Дополнительная_информация' => $order['sender_addition_info'],
+                'Серия_паспорта' => intval($order['sender_passport_series']) >= 1000 && intval($order['sender_passport_series']) <= 9999 ? intval($order['sender_passport_series']) : null,
+                'Номер_паспорта' => intval($order['sender_passport_number']) >= 100000 && intval($order['sender_passport_number']) <= 999999 ? intval($order['sender_passport_number']) : null,
+            ];
+
+            $mapOrder['Получатель'] = [
+                'Тип_контрагента' => $order['recipient_type']['name'],
+                'Правовая_форма' => $order['recipient_legal_form'],
+                'Название_компании' => $order['recipient_company_name'],
+                'Адрес' => [
+                    'Город' => $order['recipient_legal_address_city'],
+                    'Улица' => $order['recipient_legal_address_street'],
+                    'Дом' => $order['recipient_legal_address_house'],
+                    'Корпус' => $order['recipient_legal_address_block'],
+                    'Строение' => $order['recipient_legal_address_building'],
+                    'Квартира_офис' => $order['recipient_legal_address_apartment'],
+                ],
+                'ИНН' => intval($order['recipient_inn']) >= 100000000000 && intval($order['recipient_inn']) <= 999999999999 ? intval($order['recipient_inn']) : null,
+                'КПП' => intval($order['recipient_kpp']) >= 10000000 && intval($order['recipient_kpp']) <= 99999999 ? intval($order['recipient_kpp']) : null,
+                'Имя' => $order['recipient_name'],
+                'Контактное_лицо' => $order['recipient_contact_person'],
+                'Телефон' => intval($order['recipient_phone']) >= 70000000000 && intval($order['recipient_phone']) <= 89999999999 ? intval($order['recipient_phone']) : null,
+                'Дополнительная_информация' => $order['recipient_addition_info'],
+                'Серия_паспорта' => intval($order['recipient_passport_series']) >= 1000 && intval($order['recipient_passport_series']) <= 9999 ? intval($order['recipient_passport_series']) : null,
+                'Номер_паспорта' => intval($order['recipient_passport_number']) >= 100000 && intval($order['recipient_passport_number']) <= 999999 ? intval($order['recipient_passport_number']) : null,
+            ];
+
+            return $mapOrder;
         }, $orders);
 
         foreach($orders as $order) {
@@ -292,7 +210,7 @@ class OrdersSync implements ShouldQueue
                 $response1c['status']['status'] === 'success' &&
                 !empty($response1c['status']['id'])
             ) {
-                DB::table('orders')->where('id', $order['id'])->update([
+                DB::table('orders')->where('id', $order['Идентификатор_на_сайте'])->update([
                     'code_1c' => $response1c['status']['id'],
                     'sync_need' => false
                 ]);
