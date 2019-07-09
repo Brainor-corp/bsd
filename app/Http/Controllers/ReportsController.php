@@ -102,7 +102,7 @@ class ReportsController extends Controller
         );
 
         if($response1c['status'] !== 200) {
-            return redirect('report-list');
+            return redirect(route('report-list'));
         }
 
         $documentData = $response1c['response'] ?? [];
