@@ -88,6 +88,18 @@ class ReportsController extends Controller
     }
 
     public function downloadOrderDocument($order_id_1c, $document_id_1c, $document_type_id_1c) {
+        $user = Auth::user();
+
+        $response1c = \App\Http\Helpers\Api1CHelper::post(
+            'document/id',
+            [
+                "user_id" => $user->guid,
+                "document_id" => $document_id_1c,
+                "type" => $document_type_id_1c,
+                "empty_fields" => true
+            ]
+        );
+
         switch ($document_type_id_1c) {
             case 1:
                 // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
@@ -110,7 +122,7 @@ class ReportsController extends Controller
             default: break;
         }
 
-
+        dd($response1c);
     }
 
     public function actionDownloadReports(Request $request) {

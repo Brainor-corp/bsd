@@ -80,7 +80,7 @@ Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
         Route::get('/cabinet/counterparty-list', 'CounterpartyController@showCounterpartyListPage')->name('counterparty-list');
 
         Route::post('/get-download-documents-modal', 'ReportsController@getDownloadDocumentsModal')->name('get-download-documents-modal');
-        Route::get('/download-document/{document_id_1c}/{document_type_id_1c}')->name('download-document');
+        Route::get('/download-document/{document_id_1c}/{document_type_id_1c}', 'ReportsController@downloadOrderDocument')->name('download-document');
 
         Route::get('/download-document-request', 'ReportsController@actionDownloadDocumentRequest')->name('download-document-request');
         Route::get('/download-document-invoice', 'ReportsController@actionDownloadDocumentInvoice')->name('download-document-invoice');
