@@ -20,99 +20,6 @@ class Api1cTestController extends Controller
         dd($response1c);
     }
 
-    // Ключи, которые не нужно передавать в 1с
-    public $toUnset = [
-        'ship_city_id',
-        'ship_city_name',
-        'dest_city_id',
-        'dest_city_name',
-        'take_need',
-        'take_in_city',
-        'take_address',
-        'take_distance',
-        'take_point',
-        'take_price',
-        'take_city_name',
-        'delivery_need',
-        'delivery_in_city',
-        'delivery_address',
-        'delivery_distance',
-        'delivery_point',
-        'delivery_price',
-        'delivery_city_name',
-        'sender_type_id',
-        'sender_legal_form',
-        'sender_company_name',
-        'sender_legal_address_city',
-        'sender_legal_address_street',
-        'sender_legal_address_house',
-        'sender_legal_address_block',
-        'sender_legal_address_building',
-        'sender_legal_address_apartment',
-        'sender_inn',
-        'sender_kpp',
-        'sender_name',
-        'sender_contact_person',
-        'sender_phone',
-        'sender_addition_info',
-        'sender_passport_series',
-        'sender_passport_number',
-        'sender_type',
-        'recipient_type_id',
-        'recipient_legal_form',
-        'recipient_company_name',
-        'recipient_legal_address_city',
-        'recipient_legal_address_street',
-        'recipient_legal_address_house',
-        'recipient_legal_address_block',
-        'recipient_legal_address_building',
-        'recipient_legal_address_apartment',
-        'recipient_inn',
-        'recipient_kpp',
-        'recipient_name',
-        'recipient_contact_person',
-        'recipient_phone',
-        'recipient_addition_info',
-        'recipient_passport_series',
-        'recipient_passport_number',
-        'recipient_type',
-        'payer_type_id',
-        'payer_legal_form',
-        'payer_company_name',
-        'payer_legal_address_city',
-        'payer_legal_address_street',
-        'payer_legal_address_house',
-        'payer_legal_address_block',
-        'payer_legal_address_building',
-        'payer_legal_address_apartment',
-        'payer_inn',
-        'payer_kpp',
-        'payer_name',
-        'payer_contact_person',
-        'payer_phone',
-        'payer_addition_info',
-        'payer_passport_series',
-        'payer_passport_number',
-        'payer_form_type_id',
-        'payer_form_type',
-        'payer_type',
-        'manager_id',
-        'operator_id',
-        'order_id',
-        'payment',
-        'insurance_amount',
-        'discount_amount',
-        'delivered_in',
-        'delivery_time',
-        'order_items',
-        'status_id',
-        'created_at',
-        'updated_at',
-        'sync_need',
-        'take_time',
-        'enter_id',
-    ];
-
     public function createOrder() {
         $orders = Order::where('sync_need', true)
             ->whereHas('status', function ($statusQ) {
@@ -129,162 +36,170 @@ class Api1cTestController extends Controller
                 'dest_city',
                 'status',
                 'order_items'
-            )->limit(1)->get()->toArray();
+            )->get()->toArray();
 
         // Преобразуем данные модели в вид, необходимый для отправки в 1с
         $orders = array_map(function ($order) {
-            $order['insurance'] = [
-                'sum' => $order['insurance'] ?? null,
-                'amount' => $order['insurance_amount'] ?? null
+            $mapOrder = [];
+
+            $mapOrder['Идентификатор_на_сайте'] = $order['id'] ?? null;
+            $mapOrder['Название_груза'] = $order['shipping_name'] ?? null;
+            $mapOrder['Общий_вес'] = $order['total_weight'] ?? null;
+            $mapOrder['Время_доставки'] = $order['order_date'] ?? null;
+            $mapOrder['Итоговая_цена'] = $order['total_price'] ?? null;
+            $mapOrder['Базовая_цена_маршрута'] = $order['base_price'] ?? null;
+
+            $mapOrder['Страховка'] = [
+                'Сумма_страховки' => $order['insurance'] ?? null,
+                'Цена_страхования' => $order['insurance_amount'] ?? null
             ];
 
-            $order['discount'] = [
-                'percent' => $order['discount'] ?? null,
-                'amount' => $order['discount_amount'] ?? null
+            $mapOrder['Скидка'] = [
+                'Процент_скидки' => $order['discount'] ?? null,
+                'Сумма_скидки' => $order['discount_amount'] ?? null
             ];
 
-            $order['take'] = [
-                'need' => $order['take_need'] ?? null,
-                'in_city' => $order['take_in_city'] ?? null,
-                'address' => $order['take_address'] ?? null,
-                'distance' => $order['take_distance'] ?? null,
-                'point' => $order['take_point'] ?? null,
-                'price' => $order['take_price'] ?? null,
-                'city_name' => $order['take_city_name'] ?? null,
+            $mapOrder['Идентификатор_пользователя_на_сайте'] = $order['user_id'] ?? null;
+            $mapOrder['Способ_оплаты'] = $order['payment']['name'] ?? null;
+            $mapOrder['Идентификатор_1С'] = $order['code_1c'] ?? null;
+            $mapOrder['Дата_и_время_создания_заказа'] = $order['created_at'] ?? null;
+            $mapOrder['Дата_и_время_завершения_заказа'] = $order['order_finish_date'] ?? null;
+
+            $mapOrder['Плательщик'] = [
+                'Тип_плательщика' => $order['payer']['name'] ?? null,
+                'Тип_контрагента' => $order['payer_form_type']['name'] ?? null,
+                'Правовая_форма' => $order['payer_legal_form'] ?? null,
+                'Название_компании' => $order['payer_company_name'] ?? null,
+                'Адрес' => [
+                    'Город' => $order['payer_legal_address_city'] ?? null,
+                    'Улица' => $order['payer_legal_address_street'] ?? null,
+                    'Дом' => $order['payer_legal_address_house'] ?? null,
+                    'Корпус' => $order['payer_legal_address_block'] ?? null,
+                    'Строение' => $order['payer_legal_address_building'] ?? null,
+                    'Квартира_офис' => $order['payer_legal_address_apartment'] ?? null,
+                ],
+                'ИНН' => $order['payer_inn'] ?? null,
+                'КПП' => $order['payer_kpp'] ?? null,
+                'Имя' => $order['payer_name'] ?? null,
+                'Контактное_лицо' => $order['payer_contact_person'] ?? null,
+                'Телефон' => $order['payer_phone'] ?? null,
+                'Дополнительная_информация' => $order['payer_addition_info'] ?? null,
+                'Серия_паспорта' => $order['payer_passport_series'] ?? null,
+                'Номер_паспорта' => $order['payer_passport_number'] ?? null,
             ];
 
-            $order['delivery'] = [
-                'need' => $order['delivery_need'] ?? null,
-                'in_city' => $order['delivery_in_city'] ?? null,
-                'address' => $order['delivery_address'] ?? null,
-                'distance' => $order['delivery_distance'] ?? null,
-                'point' => $order['delivery_point'] ?? null,
-                'price' => $order['delivery_price'] ?? null,
-                'city_name' => $order['delivery_city_name'] ?? null,
-            ];
-
-            $order['ship_city'] = [
-                'id' => $order['ship_city']['id'] ?? null,
-                'name' => $order['ship_city']['name'] ?? null
-            ];
-
-            $order['dest_city'] = [
-                'id' => $order['dest_city']['id'] ?? null,
-                'name' => $order['dest_city']['name'] ?? null
-            ];
-
-            $order['status'] = $order['status']['slug'] ?? null;
-
-            $order['packages'] = array_map(function ($order_item) {
+            $mapOrder['Услуги'] = array_map(function ($order_service) {
                 return [
-                    "id" => $order_item['id'] ?? null,
-                    "length" => $order_item['length'] ?? null,
-                    "width" => $order_item['width'] ?? null,
-                    "height" => $order_item['height'] ?? null,
-                    "volume" => $order_item['volume'] ?? null,
-                    "weight" => $order_item['weight'] ?? null,
-                    "quantity" => $order_item['quantity'] ?? null,
-                ];
-            }, $order['order_items']);
-
-            $order['order_services'] = array_map(function ($order_service) {
-                return [
-                    'id' => $order_service['id'] ?? null,
-                    'name' => $order_service['name'] ?? null,
-                    'price' => $order_service['pivot']['price'] ?? null,
+                    'Идентификатор_на_сайте' => $order_service['id'] ?? null,
+                    'Название' => $order_service['name'] ?? null,
+                    'Просчитанная_цена' => $order_service['pivot']['price'] ?? null,
                 ];
             }, $order['order_services']);
 
-            $order['payment_type'] = $order['payment']['slug'] ?? null;
-
-            $order['sender'] = [
-                'type' => $order['sender_type']['slug'] ?? null,
-                'legal_form' => $order['sender_legal_form'] ?? null,
-                'company_name' => $order['sender_company_name'] ?? null,
-                'legal_address' => [
-                    'city' => $order['sender_legal_address_city'] ?? null,
-                    'street' => $order['sender_legal_address_street'] ?? null,
-                    'house' => $order['sender_legal_address_house'] ?? null,
-                    'block' => $order['sender_legal_address_block'] ?? null,
-                    'building' => $order['sender_legal_address_building'] ?? null,
-                    'apartment' => $order['sender_legal_address_apartment'] ?? null,
-                ],
-                'inn' => $order['sender_inn'] ?? null,
-                'kpp' => $order['sender_kpp'] ?? null,
-                'name' => $order['sender_name'] ?? null,
-                'contact_person' => $order['sender_contact_person'] ?? null,
-                'phone' => $order['sender_phone'] ?? null,
-                'addition_info' => $order['sender_addition_info'] ?? null,
-                'passport_series' => $order['sender_passport_series'] ?? null,
-                'passport_number' => $order['sender_passport_number'] ?? null,
+            $mapOrder['Город_отправления'] = [
+                'Идентификатор_на_сайте' => $order['ship_city']['id'] ?? null,
+                'Название' => $order['ship_city']['name'] ?? null
             ];
 
-            $order['recipient'] = [
-                'type' => $order['recipient_type']['slug'] ?? null,
-                'legal_form' => $order['recipient_legal_form'] ?? null,
-                'company_name' => $order['recipient_company_name'] ?? null,
-                'legal_address' => [
-                    'city' => $order['recipient_legal_address_city'] ?? null,
-                    'street' => $order['recipient_legal_address_street'] ?? null,
-                    'house' => $order['recipient_legal_address_house'] ?? null,
-                    'block' => $order['recipient_legal_address_block'] ?? null,
-                    'building' => $order['recipient_legal_address_building'] ?? null,
-                    'apartment' => $order['recipient_legal_address_apartment'] ?? null,
-                ],
-                'inn' => $order['recipient_inn'] ?? null,
-                'kpp' => $order['recipient_kpp'] ?? null,
-                'name' => $order['recipient_name'] ?? null,
-                'contact_person' => $order['recipient_contact_person'] ?? null,
-                'phone' => $order['recipient_phone'] ?? null,
-                'addition_info' => $order['recipient_addition_info'] ?? null,
-                'passport_series' => $order['recipient_passport_series'] ?? null,
-                'passport_number' => $order['recipient_passport_number'] ?? null,
+            $mapOrder['Город_назначения'] = [
+                'Идентификатор_на_сайте' => $order['dest_city']['id'] ?? null,
+                'Название' => $order['dest_city']['name'] ?? null
             ];
 
-            $order['payer'] = [
-                'type' => $order['payer']['slug'] ?? null,
-                'form_type' => $order['payer_form_type']['slug'] ?? null,
-                'legal_form' => $order['payer_legal_form'] ?? null,
-                'company_name' => $order['payer_company_name'] ?? null,
-                'legal_address' => [
-                    'city' => $order['payer_legal_address_city'] ?? null,
-                    'street' => $order['payer_legal_address_street'] ?? null,
-                    'house' => $order['payer_legal_address_house'] ?? null,
-                    'block' => $order['payer_legal_address_block'] ?? null,
-                    'building' => $order['payer_legal_address_building'] ?? null,
-                    'apartment' => $order['payer_legal_address_apartment'] ?? null,
-                ],
-                'inn' => $order['payer_inn'] ?? null,
-                'kpp' => $order['payer_kpp'] ?? null,
-                'name' => $order['payer_name'] ?? null,
-                'contact_person' => $order['payer_contact_person'] ?? null,
-                'phone' => $order['payer_phone'] ?? null,
-                'addition_info' => $order['payer_addition_info'] ?? null,
-                'passport_series' => $order['payer_passport_series'] ?? null,
-                'passport_number' => $order['payer_passport_number'] ?? null,
+            $mapOrder['Статус_заказа'] = $order['status']['name'] ?? null;
+
+            $mapOrder['Забор_груза'] = [
+                'Флаг_необходимости_забора' => $order['take_need'] ?? null,
+                'Забор_в_пределах_города' => $order['take_in_city'] ?? null,
+                'Адрес_забора' => $order['take_address'] ?? null,
+                'Дистанция_забора' => $order['take_distance'] ?? null,
+                'Точный_забор' => $order['take_point'] ?? null,
+                'Просчитанная_цена' => $order['take_price'] ?? null,
+                'Название_города_забора' => $order['take_city_name'] ?? null,
             ];
 
-            // Убераем лишние поля
-            foreach($this->toUnset as $unsetKey) {
-                unset($order[$unsetKey]);
-            }
+            $mapOrder['Доставка_груза'] = [
+                'Флаг_необходимости_забора' => $order['delivery_need'] ?? null,
+                'Забор_в_пределах_города' => $order['delivery_in_city'] ?? null,
+                'Адрес_забора' => $order['delivery_address'] ?? null,
+                'Дистанция_забора' => $order['delivery_distance'] ?? null,
+                'Точный_забор' => $order['delivery_point'] ?? null,
+                'Просчитанная_цена' => $order['delivery_price'] ?? null,
+                'Название_города_забора' => $order['delivery_city_name'] ?? null,
+            ];
 
-            return $order;
+            $mapOrder['Пакеты'] = array_map(function ($order_item) {
+                return [
+                    "Идентификатор_на_сайте" => $order_item['id'] ?? null,
+                    "Длина" => $order_item['length'] ?? null,
+                    "Ширина" => $order_item['width'] ?? null,
+                    "Высота" => $order_item['height'] ?? null,
+                    "Объём" => $order_item['volume'] ?? null,
+                    "Вес" => $order_item['weight'] ?? null,
+                    "Количество" => $order_item['quantity'] ?? null,
+                ];
+            }, $order['order_items']);
+
+            $mapOrder['Отправитель'] = [
+                'Тип_контрагента' => $order['sender_type']['name'] ?? null,
+                'Правовая_форма' => $order['sender_legal_form'] ?? null,
+                'Название_компании' => $order['sender_company_name'] ?? null,
+                'Адрес' => [
+                    'Город' => $order['sender_legal_address_city'] ?? null,
+                    'Улица' => $order['sender_legal_address_street'] ?? null,
+                    'Дом' => $order['sender_legal_address_house'] ?? null,
+                    'Корпус' => $order['sender_legal_address_block'] ?? null,
+                    'Строение' => $order['sender_legal_address_building'] ?? null,
+                    'Квартира_офис' => $order['sender_legal_address_apartment'] ?? null,
+                ],
+                'ИНН' => $order['sender_inn'] ?? null,
+                'КПП' => $order['sender_kpp'] ?? null,
+                'Имя' => $order['sender_name'] ?? null,
+                'Контактное_лицо' => $order['sender_contact_person'] ?? null,
+                'Телефон' => $order['sender_phone'] ?? null,
+                'Дополнительная_информация' => $order['sender_addition_info'] ?? null,
+                'Серия_паспорта' => $order['sender_passport_series'] ?? null,
+                'Номер_паспорта' => $order['sender_passport_number'] ?? null,
+            ];
+
+            $mapOrder['Получатель'] = [
+                'Тип_контрагента' => $order['recipient_type']['name'] ?? null,
+                'Правовая_форма' => $order['recipient_legal_form'] ?? null,
+                'Название_компании' => $order['recipient_company_name'] ?? null,
+                'Адрес' => [
+                    'Город' => $order['recipient_legal_address_city'] ?? null,
+                    'Улица' => $order['recipient_legal_address_street'] ?? null,
+                    'Дом' => $order['recipient_legal_address_house'] ?? null,
+                    'Корпус' => $order['recipient_legal_address_block'] ?? null,
+                    'Строение' => $order['recipient_legal_address_building'] ?? null,
+                    'Квартира_офис' => $order['recipient_legal_address_apartment'] ?? null,
+                ],
+                'ИНН' => $order['recipient_inn'] ?? null,
+                'КПП' => $order['recipient_kpp'] ?? null,
+                'Имя' => $order['recipient_name'] ?? null,
+                'Контактное_лицо' => $order['recipient_contact_person'] ?? null,
+                'Телефон' => $order['recipient_phone'] ?? null,
+                'Дополнительная_информация' => $order['recipient_addition_info'] ?? null,
+                'Серия_паспорта' => $order['recipient_passport_series'] ?? null,
+                'Номер_паспорта' => $order['recipient_passport_number'] ?? null,
+            ];
+
+            return $mapOrder;
         }, $orders);
 
         foreach($orders as $order) {
             $response1c = Api1CHelper::post('create_order', $order);
-            dd($response1c);
             if(
                 $response1c['status'] == 200 &&
                 $response1c['status']['status'] === 'success' &&
                 !empty($response1c['status']['id'])
             ) {
-                DB::table('orders')->where('id', $order['id'])->update([
+                DB::table('orders')->where('id', $order['Идентификатор_на_сайте'])->update([
                     'code_1c' => $response1c['status']['id'],
                     'sync_need' => false
                 ]);
             }
+            dd($response1c);
         }
     }
 
