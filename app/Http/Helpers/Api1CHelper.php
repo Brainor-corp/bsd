@@ -11,32 +11,9 @@ class Api1CHelper {
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($content))
-        );
-
-        $json_response = curl_exec($curl);
-        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
-        return [
-            'status' => $status,
-            'response' => json_decode($json_response, true)
-        ];
-    }
-
-    public static function post1($action, $params) {
-        $url = self::$host . $action;
-        $content = json_encode($params);
-
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HEADER, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($content))
@@ -53,13 +30,8 @@ class Api1CHelper {
         array_shift($data);
 
         foreach($data as $part){
-
-            //some headers will contain ":" character (Location for example), and the part after ":" will be lost, Thanks to @Emanuele
             $middle = explode(":",$part,2);
-
-            //Supress warning message if $middle[1] does not exist, Thanks to @crayons
             if ( !isset($middle[1]) ) { $middle[1] = null; }
-
             $headers[trim($middle[0])] = trim($middle[1]);
         }
 

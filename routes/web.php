@@ -117,7 +117,6 @@ Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
 
 Route::get('/1c/test/new-user', 'Api1cTestController@newUser');
 Route::get('/1c/test/create-order', 'Api1cTestController@createOrder');
-Route::get('/1c/test/create-order1', 'Api1cTestController@createOrder1');
 Route::get('/1c/test/document-list', 'Api1cTestController@documentList');
 Route::get('/1c/test/document/id', 'Api1cTestController@documentById');
 Route::get('/1c/test/document/number', 'Api1cTestController@documentByNumber');
