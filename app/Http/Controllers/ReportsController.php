@@ -101,6 +101,12 @@ class ReportsController extends Controller
             ]
         );
 
+        if($response1c['status'] !== 200) {
+            return redirect('report-list');
+        }
+
+        $documentData = $response1c['response'] ?? [];
+
         switch ($document_type_id_1c) {
             case 1:
                 // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
@@ -123,7 +129,7 @@ class ReportsController extends Controller
             default: break;
         }
 
-        dd($response1c);
+        dd($documentData);
     }
 
     public function actionDownloadReports(Request $request) {
