@@ -87,7 +87,7 @@ class ReportsController extends Controller
             ->with(compact('documents'));
     }
 
-    public function downloadOrderDocument($order_id_1c, $document_id_1c, $document_type_id_1c) {
+    public function downloadOrderDocument($document_id_1c, $document_type_id_1c) {
         $user = Auth::user();
 
         $response1c = \App\Http\Helpers\Api1CHelper::post(
