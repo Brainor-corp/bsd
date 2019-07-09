@@ -201,7 +201,7 @@ class Api1cTestController extends Controller
                 dd($response1c);
             }
         }
-        dd('No results');
+        dd($order);
     }
 
     public function documentList() {
