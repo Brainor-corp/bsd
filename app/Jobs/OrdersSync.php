@@ -98,8 +98,8 @@ class OrdersSync implements ShouldQueue
                 'Контактное_лицо' => $order['payer_contact_person'],
                 'Телефон' => intval($order['payer_phone']) >= 70000000000 && intval($order['payer_phone']) <= 89999999999 ? intval($order['payer_phone']) : null,
                 'Дополнительная_информация' => $order['payer_addition_info'],
-                'Серия_паспорта' => intval($order['payer_passport_series']) >= 1000 && intval($order['payer_passport_series']) <= 999999 ? intval($order['payer_passport_series']) : null,
-                'Номер_паспорта' => intval($order['payer_passport_number']) >= 1000 && intval($order['payer_passport_number']) <= 999999 ? intval($order['payer_passport_number']) : null,
+                'Серия_паспорта' => intval($order['payer_passport_series']) >= 1000 && intval($order['payer_passport_series']) <= 9999 ? intval($order['payer_passport_series']) : null,
+                'Номер_паспорта' => intval($order['payer_passport_number']) >= 100000 && intval($order['payer_passport_number']) <= 999999 ? intval($order['payer_passport_number']) : null,
             ];
 
             $mapOrder['Услуги'] = array_map(function ($order_service) {
@@ -147,12 +147,12 @@ class OrdersSync implements ShouldQueue
             $mapOrder['Пакеты'] = array_map(function ($order_item) {
                 return [
                     "Идентификатор_на_сайте" => $order_item['id'],
-                    "Длина" => $order_item['length'],
-                    "Ширина" => $order_item['width'],
-                    "Высота" => $order_item['height'],
-                    "Объём" => $order_item['volume'],
-                    "Вес" => $order_item['weight'],
-                    "Количество" => $order_item['quantity'],
+                    "Длина" => floatval($order_item['length']),
+                    "Ширина" => floatval($order_item['width']),
+                    "Высота" => floatval($order_item['height']),
+                    "Объём" => floatval($order_item['volume']),
+                    "Вес" => floatval($order_item['weight']),
+                    "Количество" => intval($order_item['quantity']),
                 ];
             }, $order['order_items']);
 
@@ -174,8 +174,8 @@ class OrdersSync implements ShouldQueue
                 'Контактное_лицо' => $order['sender_contact_person'],
                 'Телефон' => intval($order['sender_phone']) >= 70000000000 && intval($order['sender_phone']) <= 89999999999 ? intval($order['sender_phone']) : null,
                 'Дополнительная_информация' => $order['sender_addition_info'],
-                'Серия_паспорта' => intval($order['sender_passport_series']) >= 1000 && intval($order['sender_passport_series']) <= 999999 ? intval($order['sender_passport_series']) : null,
-                'Номер_паспорта' => intval($order['sender_passport_number']) >= 1000 && intval($order['sender_passport_number']) <= 999999 ? intval($order['sender_passport_number']) : null,
+                'Серия_паспорта' => intval($order['sender_passport_series']) >= 1000 && intval($order['sender_passport_series']) <= 9999 ? intval($order['sender_passport_series']) : null,
+                'Номер_паспорта' => intval($order['sender_passport_number']) >= 100000 && intval($order['sender_passport_number']) <= 999999 ? intval($order['sender_passport_number']) : null,
             ];
 
             $mapOrder['Получатель'] = [
@@ -196,8 +196,8 @@ class OrdersSync implements ShouldQueue
                 'Контактное_лицо' => $order['recipient_contact_person'],
                 'Телефон' => intval($order['recipient_phone']) >= 70000000000 && intval($order['recipient_phone']) <= 89999999999 ? intval($order['recipient_phone']) : null,
                 'Дополнительная_информация' => $order['recipient_addition_info'],
-                'Серия_паспорта' => intval($order['recipient_passport_series']) >= 1000 && intval($order['recipient_passport_series']) <= 999999 ? intval($order['recipient_passport_series']) : null,
-                'Номер_паспорта' => intval($order['recipient_passport_number']) >= 1000 && intval($order['recipient_passport_number']) <= 999999 ? intval($order['recipient_passport_number']) : null,
+                'Серия_паспорта' => intval($order['recipient_passport_series']) >= 1000 && intval($order['recipient_passport_series']) <= 9999 ? intval($order['recipient_passport_series']) : null,
+                'Номер_паспорта' => intval($order['recipient_passport_number']) >= 100000 && intval($order['recipient_passport_number']) <= 999999 ? intval($order['recipient_passport_number']) : null,
             ];
 
             return $mapOrder;
