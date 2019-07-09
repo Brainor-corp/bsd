@@ -89,16 +89,17 @@ class ReportsController extends Controller
 
     public function downloadOrderDocument($document_id_1c, $document_type_id_1c) {
         $user = Auth::user();
-
-        $response1c = \App\Http\Helpers\Api1CHelper::post(
-            'document/id',
-            [
+        $apiData = [
 //                "user_id" => $user->guid,
                 "user_id" => "f008aa7f-29d6-11e9-80c7-000d3a396ad2", // todo Временно
                 "document_id" => $document_id_1c,
-                "type" => $document_type_id_1c,
+                "type" => intval($document_type_id_1c),
                 "empty_fields" => true
-            ]
+        ];
+
+        $response1c = \App\Http\Helpers\Api1CHelper::post(
+            'document/id',
+            $apiData
         );
 
         switch ($document_type_id_1c) {
@@ -123,7 +124,10 @@ class ReportsController extends Controller
             default: break;
         }
 
-        dd($response1c);
+        dd([
+            'send' => $apiData,
+            'response' => $response1c
+        ]);
     }
 
     public function actionDownloadReports(Request $request) {
