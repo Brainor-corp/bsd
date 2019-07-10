@@ -47,7 +47,6 @@ class DocumentHelper {
             $newKey = "{" . $key . "}";
             $params[$newKey] = $documentData[$key];
         }
-        dd($params);
 
         $name = md5('docs bsd' . time()) . $documentExtension;
         $path = storage_path('app/public/documents/');
