@@ -117,7 +117,11 @@ class ReportsController extends Controller
                 break;
             case 2:
                 // Экспедиторская расписка
-                $file = DocumentHelper::generateForwardingReceipt($documentData);
+                $file = DocumentHelper::generatePETDocument(
+                    public_path('templates/ReceiptTemplate.xlsx'),
+                    "Экспедиторская расписка №" . $documentData['УникальныйИдентификатор'],
+                    '.xlsx',
+                    $documentData);
                 break;
             case 3:
                 // Заявка на экспедирование
@@ -127,6 +131,11 @@ class ReportsController extends Controller
                 break;
             case 5:
                 // Счет на оплату
+                $file = DocumentHelper::generatePETDocument(
+                    public_path('templates/InvoiceTemplate.xlsx'),
+                    "Счет на оплату № todo от todo",
+                    '.xlsx',
+                    $documentData);
                 break;
             case 6:
                 // ???
@@ -138,6 +147,8 @@ class ReportsController extends Controller
             return response()->download($file['tempFile'], $file['fileName'])
                 ->deleteFileAfterSend(true);
         }
+
+        dd($documentData);
 
         return redirect(route('report-list'));
     }
