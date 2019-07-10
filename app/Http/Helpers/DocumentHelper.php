@@ -41,7 +41,7 @@ class DocumentHelper {
         $documentExtension = '.xlsx';
 
         $documentData = [
-            'order_date' => 'test'
+            'test' => 'пум пум'
         ];
 
         $tempFile = DocumentHelper::generateTBSDocument($path, $documentExtension, $documentData);
