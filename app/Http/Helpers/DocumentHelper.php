@@ -41,7 +41,7 @@ class DocumentHelper {
         $documentExtension = '.xlsx';
 
         $documentData = [
-            '{УникальныйИдентификатор}' => 'пум пум'
+            '{test}' => 'пум пум'
         ];
 
         $tempFile = DocumentHelper::generateTBSDocument($path, $documentExtension, $documentData);
