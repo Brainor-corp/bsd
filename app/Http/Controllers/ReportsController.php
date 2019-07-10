@@ -70,17 +70,20 @@ class ReportsController extends Controller
         //$code1c = $order->code_1c;
         $code1c = "2ef09a62-8dbb-11e9-a688-001c4208e0b2"; // todo Временно
 
-        $response1c = \App\Http\Helpers\Api1CHelper::post(
-            'document_list',
-            [
-                "user_id" => $user_1c,
-                "order_id" => $code1c
-            ]
-        );
-
         $documents = [];
-        if($response1c['response']['status'] == 'success') {
-            $documents = $response1c['response']['documents'] ?? [];
+
+        if(!empty($user_1c) && !empty($code1c)) {
+            $response1c = \App\Http\Helpers\Api1CHelper::post(
+                'document_list',
+                [
+                    "user_id" => $user_1c,
+                    "order_id" => $code1c
+                ]
+            );
+
+            if($response1c['response']['status'] == 'success') {
+                $documents = $response1c['response']['documents'] ?? [];
+            }
         }
 
         return view('v1.partials.reports.download-documents-modal-content')
@@ -106,6 +109,7 @@ class ReportsController extends Controller
         }
 
         $documentData = $response1c['response'] ?? [];
+        $file = [];
 
         switch ($document_type_id_1c) {
             case 1:
@@ -113,6 +117,7 @@ class ReportsController extends Controller
                 break;
             case 2:
                 // Экспедиторская расписка
+                $file = DocumentHelper::generateForwardingReceipt($documentData);
                 break;
             case 3:
                 // Заявка на экспедирование
@@ -129,7 +134,12 @@ class ReportsController extends Controller
             default: break;
         }
 
-        dd($documentData);
+        if(isset($file['tempFile']) && isset($file['fileName'])) {
+            return response()->download($file['tempFile'], $file['fileName'])
+                ->deleteFileAfterSend(true);
+        }
+
+        return redirect(route('report-list'));
     }
 
     public function actionDownloadReports(Request $request) {

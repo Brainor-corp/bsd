@@ -34,4 +34,17 @@ class DocumentHelper {
         $TBS->Show(OPENTBS_FILE, $tempFile);
         return $tempFile;
     }
+
+    public static function generateForwardingReceipt($documentData) {
+        $path = public_path('templates\\ReceiptTemplate.xlsx');
+        $documentName = "Экспедиторская расписка № todo";
+        $documentExtension = '.xlsx';
+
+        $tempFile = DocumentHelper::generateDocument($path, $documentExtension, $documentData);
+
+        return [
+            'tempFile' => $tempFile,
+            'fileName' => $documentName . $documentExtension
+        ];
+    }
 }
