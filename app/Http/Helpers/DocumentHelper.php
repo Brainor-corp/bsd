@@ -40,6 +40,8 @@ class DocumentHelper {
         $documentName = "Экспедиторская расписка № todo";
         $documentExtension = '.xlsx';
 
+        dd($documentData);
+
         $tempFile = DocumentHelper::generateTBSDocument($path, $documentExtension, $documentData);
 
         return [
