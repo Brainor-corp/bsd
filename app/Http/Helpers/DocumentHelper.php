@@ -2,6 +2,7 @@
 
 namespace App\Http\Helpers;
 
+use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
 use Illuminate\Support\Facades\File;
 
 class DocumentHelper {
@@ -36,15 +37,23 @@ class DocumentHelper {
     }
 
     public static function generateForwardingReceipt($documentData) {
-        $path = public_path('templates/ReceiptTemplate.xlsx');
+        $templateFile = public_path('templates/ReceiptTemplate.xlsx');
         $documentName = "Экспедиторская расписка № todo";
         $documentExtension = '.xlsx';
 
-        $params = [
-            '{test}' => "asdf",
-        ];
+        $params = [];
+        $keys = array_keys($documentData);
+        foreach($keys as $key) {
+            $params["{$key}"] = $documentData[$key];
+        }
 
-        $tempFile = DocumentHelper::generateTBSDocument($path, $documentExtension, $params);
+        $name = md5('docs bsd' . time()) . $documentExtension;
+        $path = storage_path('app/public/documents/');
+
+        $tempFile = $path . $name;
+        File::makeDirectory($path, $mode = 0777, true, true);
+
+        PhpExcelTemplator::saveToFile($templateFile, $tempFile, $params);
 
         return [
             'tempFile' => $tempFile,
