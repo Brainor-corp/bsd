@@ -41,11 +41,11 @@ class DocumentHelper {
         $documentName = "Экспедиторская расписка № todo";
         $documentExtension = '.xlsx';
 
-        $params = [];
-        $keys = array_keys($documentData);
-        foreach($keys as $key) {
-            $params["{$key}"] = $documentData[$key];
-        }
+        $params = $documentData;
+//        $keys = array_keys($documentData);
+//        foreach($keys as $key) {
+//            $params["{$key}"] = $documentData[$key];
+//        }
 
         $name = md5('docs bsd' . time()) . $documentExtension;
         $path = storage_path('app/public/documents/');
