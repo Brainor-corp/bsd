@@ -44,7 +44,8 @@ class DocumentHelper {
         $params = [];
         $keys = array_keys($documentData);
         foreach($keys as $key) {
-            $params["\{$key\}"] = $documentData[$key];
+            $newKey = "{" . $key . "}";
+            $params[$newKey] = $documentData[$key];
         }
         dd($params);
 
