@@ -38,7 +38,7 @@ class DocumentHelper {
 
     public static function generateForwardingReceipt($documentData) {
         $templateFile = public_path('templates/ReceiptTemplate.xlsx');
-        $documentName = "Экспедиторская расписка № todo";
+        $documentName = "Экспедиторская расписка №" . $documentData['УникальныйИдентификатор'];
         $documentExtension = '.xlsx';
 
         $params = [];
