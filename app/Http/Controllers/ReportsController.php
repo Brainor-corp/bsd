@@ -131,11 +131,25 @@ class ReportsController extends Controller
                 break;
             case 5:
                 // Счет на оплату
+
+                $items['Товар_Номенклатура'] = array_column($documentData['Товары'], 'Номенклатура');
+                $items['Товар_Содержание'] = array_column($documentData['Товары'], 'Содержание');
+                $items['Товар_Количество'] = array_column($documentData['Товары'], 'Количество');
+                $items['Товар_Цена'] = array_column($documentData['Товары'], 'Цена');
+                $items['Товар_Сумма'] = array_column($documentData['Товары'], 'Сумма');
+                $items['Товар_ПроцентСкидки'] = array_column($documentData['Товары'], 'ПроцентСкидки');
+                $items['Товар_СуммаСкидки'] = array_column($documentData['Товары'], 'СуммаСкидки');
+                $items['Товар_СтавкаНДС'] = array_column($documentData['Товары'], 'СтавкаНДС');
+                $items['Товар_СуммаНДС'] = array_column($documentData['Товары'], 'СуммаНДС');
+                $items['Товар_ЭкспедиторскаяРасписка'] = array_column($documentData['Товары'], 'ЭкспедиторскаяРасписка');
+
+                dd($items);
+
                 $file = DocumentHelper::generatePETDocument(
                     public_path('templates/InvoiceTemplate.xlsx'),
                     "Счет на оплату № todo от todo",
                     '.xlsx',
-                    $documentData);
+                    array_merge($documentData, $items));
                 break;
             case 6:
                 // ???
