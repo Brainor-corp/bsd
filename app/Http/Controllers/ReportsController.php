@@ -55,6 +55,118 @@ class ReportsController extends Controller
         return View::make('v1.pages.profile.profile-inner.report-show-page')->with(compact('order', 'userTypes'))->render();
     }
 
+    public function getDownloadDocumentsModal(Request $request) {
+        $order = Order::where('id', $request->get('order_id'))
+            ->where(function ($ordersQuery) {
+                return Auth::check() ? $ordersQuery
+                    ->where('user_id', Auth::id())
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
+            })->firstOrFail();
+
+        //$code1c = $order->user->guid;
+        $user_1c = "f008aa7f-29d6-11e9-80c7-000d3a396ad2"; // todo Временно
+
+        //$code1c = $order->code_1c;
+        $code1c = "2ef09a62-8dbb-11e9-a688-001c4208e0b2"; // todo Временно
+
+        $documents = [];
+
+        if(!empty($user_1c) && !empty($code1c)) {
+            $response1c = \App\Http\Helpers\Api1CHelper::post(
+                'document_list',
+                [
+                    "user_id" => $user_1c,
+                    "order_id" => $code1c
+                ]
+            );
+
+            if($response1c['response']['status'] == 'success') {
+                $documents = $response1c['response']['documents'] ?? [];
+            }
+        }
+
+        return view('v1.partials.reports.download-documents-modal-content')
+            ->with(compact('documents'));
+    }
+
+    public function downloadOrderDocument($document_id_1c, $document_type_id_1c) {
+        $user = Auth::user();
+
+        $response1c = \App\Http\Helpers\Api1CHelper::post(
+            'document/id',
+            [
+//                "user_id" => $user->guid,
+                "user_id" => "f008aa7f-29d6-11e9-80c7-000d3a396ad2", // todo Временно
+                "document_id" => $document_id_1c,
+                "type" => intval($document_type_id_1c),
+                "empty_fields" => true
+            ]
+        );
+
+        if($response1c['status'] !== 200) {
+            return redirect(route('report-list'));
+        }
+
+        $documentData = $response1c['response'] ?? [];
+        $file = [];
+
+        switch ($document_type_id_1c) {
+            case 1:
+                // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
+                break;
+            case 2:
+                // Экспедиторская расписка
+                $file = DocumentHelper::generatePETDocument(
+                    public_path('templates/ReceiptTemplate.xlsx'),
+                    "Экспедиторская расписка №" . $documentData['УникальныйИдентификатор'],
+                    '.xlsx',
+                    $documentData);
+                break;
+            case 3:
+                // Заявка на экспедирование
+                break;
+            case 4:
+                // Счет-фактура
+                break;
+            case 5:
+                // Счет на оплату
+
+                $items['Товар_Номенклатура'] = array_column($documentData['Товары'], 'Номенклатура');
+                $items['Товар_Содержание'] = array_column($documentData['Товары'], 'Содержание');
+                $items['Товар_Количество'] = array_column($documentData['Товары'], 'Количество');
+                $items['Товар_Цена'] = array_column($documentData['Товары'], 'Цена');
+                $items['Товар_Сумма'] = array_column($documentData['Товары'], 'Сумма');
+                $items['Товар_ПроцентСкидки'] = array_column($documentData['Товары'], 'ПроцентСкидки');
+                $items['Товар_СуммаСкидки'] = array_column($documentData['Товары'], 'СуммаСкидки');
+                $items['Товар_СтавкаНДС'] = array_column($documentData['Товары'], 'СтавкаНДС');
+                $items['Товар_СуммаНДС'] = array_column($documentData['Товары'], 'СуммаНДС');
+                $items['Товар_ЭкспедиторскаяРасписка'] = array_column($documentData['Товары'], 'ЭкспедиторскаяРасписка');
+
+                dd($items);
+
+                $file = DocumentHelper::generatePETDocument(
+                    public_path('templates/InvoiceTemplate.xlsx'),
+                    "Счет на оплату № todo от todo",
+                    '.xlsx',
+                    array_merge($documentData, $items));
+                break;
+            case 6:
+                // ???
+                break;
+            default: break;
+        }
+
+        if(isset($file['tempFile']) && isset($file['fileName'])) {
+            return response()->download($file['tempFile'], $file['fileName'])
+                ->deleteFileAfterSend(true);
+        }
+
+        dd($documentData);
+
+        return redirect(route('report-list'));
+    }
+
     public function actionDownloadReports(Request $request) {
         $orders = Order::with('status', 'ship_city', 'dest_city')
             ->where(function ($orderQuery) {

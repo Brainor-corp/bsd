@@ -50,13 +50,33 @@ $(document).ready(function () {
     });
     $(document).on('click', '.show-order-documents', function (e) {
         e.preventDefault();
-        let modal = $('#orderDocumentsModal');
-        let link = $(this);
 
-        $.each(modal.find('.document-link'), function () {
-            $(this).attr('href', $(this).data('href') + '/?id=' + link.data('order-id') )
+        let button = $(this);
+        let table = $('.reports-table');
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
         });
-        modal.modal();
+        $.ajax({
+            type: 'post',
+            url: table.data('documents-modal-url'),
+            data: {
+                order_id: button.data('order-id')
+            },
+            cache: false,
+            beforeSend: function() {
+                $('#orderDocumentsModal .documents-container').html("Загрузка..");
+                $('#orderDocumentsModal').modal();
+            },
+            success: function (html) {
+                $('#orderDocumentsModal .documents-container').html(html);
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
     });
 
     $('#search-type-select').change(function () {
