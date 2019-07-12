@@ -317,7 +317,9 @@
                                                         <div class="block__itogo_item d-flex">
                                                             <div class="d-flex flex-wrap" id="services-total-names">
                                                                 <span class="block__itogo_value">
-                                                                    Забор груза: {{ $order->take_city_name }} @if($order->take_distance)<small> ({{ $order->take_distance }} км) </small>@endif
+                                                                    Забор груза: {{ $order->take_city_name }}
+                                                                    @if($order->take_distance)<small> ({{ $order->take_distance }} км) </small>@endif
+                                                                    @if($order->take_polygon) ({{ $order->take_polygon->name }})@endif
                                                                 </span>
                                                             </div>
                                                             <span class="block__itogo_price d-flex flex-nowrap" id="services-total-prices">
@@ -333,7 +335,9 @@
                                                     <div class="block__itogo_item d-flex">
                                                         <div class="d-flex flex-wrap" id="services-total-names">
                                                             <span class="block__itogo_value">
-                                                                Доставка груза: {{ $order->delivery_city_name }} @if($order->delivery_distance)<small> ({{ $order->delivery_distance }} км) </small>@endif
+                                                                Доставка груза: {{ $order->delivery_city_name }}
+                                                                @if($order->delivery_distance)<small> ({{ $order->delivery_distance }} км) </small>@endif
+                                                                @if($order->bring_polygon)({{ $order->bring_polygon->name }})@endif
                                                             </span>
                                                         </div>
                                                         <span class="block__itogo_price d-flex flex-nowrap" id="services-total-prices">
