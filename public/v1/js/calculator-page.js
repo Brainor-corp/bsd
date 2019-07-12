@@ -1,11 +1,13 @@
 ﻿let map;
 
-$(document).ready(function () {
+ymaps.ready(function () {
     map = new ymaps.Map ("hiddenMap", {
         center: [55.76, 37.64],
         zoom: 7
     });
+});
 
+$(document).ready(function () {
     totalWeigthRecount();
     totalVolumeRecount();
 
@@ -563,7 +565,6 @@ function getAllCalculatedData() {
         dataType: "json",
         cache: false,
         beforeSend: function() {
-
         },
         success: function (data) {
             console.log(data);
@@ -643,9 +644,11 @@ function calcTariffPrice(city, point, inCity) {
                 dataType: "json",
                 cache: false,
                 success: async function(data) {
-                    var isInPolygon;
+                    let isInPolygon;
+                    let polygonId = '';
 
                     for (const el of data) {
+                        console.log(el);
                         let findCoordinates = [];
                         let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
                         $(polygonCoordinates).each(function (pairKey, pairVal) {
@@ -659,13 +662,15 @@ function calcTariffPrice(city, point, inCity) {
                             ]);
                         });
 
-                        let address = $("#ship_point").val();
+                        console.log(point.attr('id'));
+                        let address = $("#" + point.attr('id')).val();
                         let polygon =  new ymaps.Polygon([findCoordinates]);
 
                         isInPolygon = await checkAddressInPolygon(address, polygon);
                         console.log(typeof isInPolygon);
                         if(isInPolygon) {
                             console.log(address + " содержится в " + el.name);
+                            polygonId = el.id;
                             break;
                         }
                     }
@@ -674,6 +679,16 @@ function calcTariffPrice(city, point, inCity) {
 
                     if(isInPolygon) {
                         console.log('Нужно поставить цену тарифа');
+
+                        let hiddenPolygonInputClass = '.take-polygon-hidden-input';
+                        if(point.attr('id') === 'dest_point') {
+                            hiddenPolygonInputClass = '.bring-polygon-hidden-input';
+                        }
+
+                        let hiddenPolygonInput = $(hiddenPolygonInputClass);
+                        hiddenPolygonInput.val(polygonId);
+
+                        getAllCalculatedData();
                     } else {
                         console.log('Не нужно ставить цену тарифа');
                         ymaps.route([city.point, fullName]).then(function (route) {
@@ -757,7 +772,7 @@ function drawDelivery(delivery) {
             '<div class="block__itogo_item d-flex">'+
             '<div class="d-flex flex-wrap">'+
             '<span class="block__itogo_value">' +
-            'Забор груза: ' + delivery.take.city_name
+            'Забор груза: ' + delivery.take.city_name + (delivery.take.polygon_name === undefined ? "" : (" (" + delivery.take.polygon_name) + ")")
             +
             (typeof delivery.take.distance !== "undefined" ? ('<small> (' + delivery.take.distance + ' км) </small>') : '')
             +
@@ -777,7 +792,7 @@ function drawDelivery(delivery) {
             '<div class="block__itogo_item d-flex">'+
             '<div class="d-flex flex-wrap">'+
             '<span class="block__itogo_value">' +
-            'Доставка груза: ' + delivery.bring.city_name
+            'Доставка груза: ' + delivery.bring.city_name + (delivery.bring.polygon_name === undefined ? "" : (" (" + delivery.bring.polygon_name + ")"))
             +
             (typeof delivery.bring.distance !== "undefined" ? ('<small> (' + delivery.bring.distance + ' км) </small>') : '')
             +

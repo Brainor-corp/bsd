@@ -6,6 +6,7 @@ use App\City;
 use App\Oversize;
 use App\OversizeMarkup;
 use App\Point;
+use App\Polygon;
 use App\Route;
 use App\RouteTariff;
 use App\Service;
@@ -338,7 +339,15 @@ class CalculatorHelper
         return $result;
     }
 
-    public static function getTariffPrice($cityName, $weight, $volume, $isWithinTheCity, $x2, $distance = null) {
+    public static function getTariffPrice(
+        $cityName,
+        $weight,
+        $volume,
+        $isWithinTheCity,
+        $x2,
+        $distance = null,
+        $polygonId = null
+    ) {
         $price = 0;
 
         // Изначально пытаемся получить город
@@ -397,6 +406,22 @@ class CalculatorHelper
                 'price' => $x2 ? floatval($fixed_tariff) * 2 : floatval($fixed_tariff),
                 'city_name' => $cityName
             ];
+        }
+
+        // Если есть полигон, то возвращаем его цену
+        if(!empty($polygonId)) {
+            $polygon = Polygon::where([
+                ['id', $polygonId],
+                ['city_id', $city->id]
+            ])->first();
+
+            if(isset($polygon)) {
+                return [
+                    'price' => $x2 ? $polygon->price * 2 : $polygon->price,
+                    'city_name' => "$cityName",
+                    'polygon_name' => $polygon->name
+                ];
+            }
         }
 
         // Если за пределами города, то ищем покилометровый тариф с учетом тарифной зоны города
@@ -505,9 +530,9 @@ class CalculatorHelper
                 $takeParams['volume'],
                 $takeParams['isWithinTheCity'],
                 $takeParams['x2'],
-                $takeParams['distance']
+                $takeParams['distance'],
+                $takeParams['polygonId']
             );
-            $takeData['polygons'] = $shipCity->polygons;
         }
 
         $bringData = null;
@@ -518,9 +543,9 @@ class CalculatorHelper
                 $bringParams['volume'],
                 $bringParams['isWithinTheCity'],
                 $bringParams['x2'],
-                $bringParams['distance']
+                $bringParams['distance'],
+                $bringParams['polygonId']
             );
-            $bringData['polygons'] = $destCity->polygons;
         }
 
         if(

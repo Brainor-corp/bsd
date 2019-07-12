@@ -156,7 +156,8 @@ class CalculatorController extends Controller
                 'volume' => $totalVolume,
                 'isWithinTheCity' => $request->get('need-to-take-type') === "in",
                 'x2' => $request->get('ship-from-point') === "on",
-                'distance' => $request->get('take_distance')
+                'distance' => $request->get('take_distance'),
+                'polygonId' => $request->get('take_polygon')
             ] : [],
             $request->get('need-to-bring') === "on" ?
             [
@@ -167,7 +168,8 @@ class CalculatorController extends Controller
                 'volume' => $totalVolume,
                 'isWithinTheCity' => $request->get('need-to-bring-type') === "in",
                 'x2' => $request->get('bring-to-point') === "on",
-                'distance' => $request->get('bring_distance')
+                'distance' => $request->get('bring_distance'),
+                'polygonId' => $request->get('bring_polygon')
             ] : [],
             $request->get('insurance_amount'),
             $request->get('discount')
@@ -306,7 +308,11 @@ class CalculatorController extends Controller
 
     public function getCityPolygons(Request $request) {
         $city = City::where('id', intval($request->get('city_id')))
-            ->with('polygons')->first();
+            ->with([
+                'polygons' => function ($polygonsQ) {
+                    return $polygonsQ->orderBy('priority');
+                }
+            ])->first();
 
         return $city->polygons ?? [];
     }

@@ -104,6 +104,7 @@
 
             <input type="hidden" name="take_city_name" value="{{ $order->take_city_name ?? '' }}">
             <input type="hidden" name="take_distance" value="{{ $order->take_distance ?? 0 }}" class="distance-hidden-input">
+            <input type="hidden" name="take_polygon" value="{{ $order->take_polygon_id ?? '' }}" class="take-polygon-hidden-input">
             <div class="form-item ininner">
                 <div class="relative">
                     <i class="dropdown-toggle fa-icon"></i>
@@ -164,6 +165,7 @@
 
             <input type="hidden" name="bring_city_name" value="{{ $order->delivery_city_name ?? '' }}">
             <input type="hidden" name="bring_distance" value="{{ $order->delivery_distance ?? 0 }}" class="distance-hidden-input">
+            <input type="hidden" name="bring_polygon" value="{{ $order->bring_polygon_id ?? 0 }}" class="bring-polygon-hidden-input">
             <div class="form-item ininner">
                 <div class="relative">
                     <i class="dropdown-toggle fa-icon"></i>
