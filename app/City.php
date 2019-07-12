@@ -64,6 +64,10 @@ class City extends Model
         return $this->hasOne(Terminal::class, 'id', 'closest_terminal_id');
     }
 
+    public function polygons() {
+        return $this->hasMany(Polygon::class);
+    }
+
     public function kladr() {
         return $this->hasOne(Kladr::class, 'id', 'kladr_id');
     }

@@ -14,7 +14,8 @@ class Order extends Model
         'total_price', 'sender_id', 'sender_name', 'sender_phone', 'recipient_id',
         'recipient_name', 'recipient_phone', 'payer_id', 'payer_name', 'payer_phone',
         'payment_type', 'code_1c', 'manager_id', 'operator_id', 'order_date',
-        'order_finish_date', 'discount', 'discount_amount', 'insurance', 'insurance_amount', 'estimated_delivery_date'
+        'order_finish_date', 'discount', 'discount_amount', 'insurance', 'insurance_amount', 'estimated_delivery_date',
+        'take_polygon_id', 'bring_polygon_id'
     ];
 
     public function status(){
@@ -58,6 +59,14 @@ class Order extends Model
     }
     public function dest_city(){
         return $this->belongsTo(City::class, 'dest_city_id');
+    }
+
+    public function take_polygon() {
+        return $this->belongsTo(Polygon::class, 'take_polygon_id', 'id');
+    }
+
+    public function bring_polygon() {
+        return $this->belongsTo(Polygon::class, 'bring_polygon_id', 'id');
     }
 
     public function getRealStatusAttribute(){

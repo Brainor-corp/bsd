@@ -1,4 +1,13 @@
-﻿$(document).ready(function () {
+﻿let map;
+
+ymaps.ready(function () {
+    map = new ymaps.Map ("hiddenMap", {
+        center: [55.76, 37.64],
+        zoom: 7
+    });
+});
+
+$(document).ready(function () {
     totalWeigthRecount();
     totalVolumeRecount();
 
@@ -280,7 +289,14 @@
             $('.need-to-take-input-address').attr('disabled', 'disabled');
         }
 
-        calcTariffPrice($('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal, $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in");
+        calcTariffPrice(
+            {
+                'value': $('#ship_city').val(),
+                'points': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
+            },
+            $('#ship_point'),
+            $('input[name="need-to-take-type"]:checked').val() == "in"
+        );
     });
 
     $(document).on('change', 'input[name="need-to-take-type"]', function () {
@@ -290,7 +306,13 @@
             $('.need-to-take-input-address').attr('disabled', 'disabled');
         }
 
-        calcTariffPrice($('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal, $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in");
+        calcTariffPrice(
+            {
+                'value': $('#ship_city').val(),
+                'point': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
+            },
+            $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in"
+        );
     });
 
     $(document).on('change', '#need-to-bring', function () {
@@ -305,7 +327,13 @@
         }
 
         if($('#dest_city').data().selectize.getValue() !== "") {
-            calcTariffPrice($('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal, $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in");
+            calcTariffPrice(
+                {
+                    'value': $('#dest_city').val(),
+                    'point': $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal
+                },
+                $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in"
+            );
         }
     });
 
@@ -317,7 +345,13 @@
         }
 
         if($('#dest_city').data().selectize.getValue() !== "") {
-            calcTariffPrice($('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal, $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in");
+            calcTariffPrice(
+                {
+                    'value': $('#dest_city').val(),
+                    'point': $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal
+                },
+                $('#dest_point'), $('input[name="need-to-bring-type"]:checked').val() == "in"
+            );
         }
     });
 
@@ -532,10 +566,12 @@ function getAllCalculatedData() {
         cache: false,
         beforeSend: function() {
         },
-        success: function(data){
+        success: function (data) {
+            console.log(data);
             renderCalendar(data);
         },
         error: function(data){
+            console.log(data);
         }
     });
 }
@@ -568,6 +604,21 @@ function totalWeigthRecount() {
     $("#total-weight-hidden").attr('data-total-weight', totalWeigth).attr('value', totalWeigth).val(totalWeigth);
 };
 
+async function checkAddressInPolygon(address, polygon) {
+    console.log('checking contains..');
+    return await ymaps.geocode(address).then(function (res) {
+        console.log('here!');
+        var newPoint = res.geoObjects.get(0);
+        map.geoObjects.removeAll().add(polygon);
+        map.geoObjects.add(newPoint);
+
+        let result = !!polygon.geometry.contains(newPoint.geometry.getCoordinates());
+        console.log(result ? "В функции +" : "В функции -");
+
+        return result;
+    });
+}
+
 // Базовая функция просчета цены для "Забрать из" и "Доставить"
 function calcTariffPrice(city, point, inCity) {
     if(inCity) { // Если работаем в пределах города
@@ -578,11 +629,79 @@ function calcTariffPrice(city, point, inCity) {
             return;
 
         if (city) {
-            ymaps.route([city, fullName]).then(function (route) {
-                console.log('От: ' + city + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
-                $(point.closest('.delivery-block')).find('.distance-hidden-input').val(Math.ceil(route.getLength() / 1000));
+            // Пробуем получить полигоны для выбранного города
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: 'post',
+                url: '/api/calculator/get-city-polygons',
+                data: {
+                    city_id: city.value
+                },
+                dataType: "json",
+                cache: false,
+                success: async function(data) {
+                    let isInPolygon;
+                    let polygonId = '';
 
-                getAllCalculatedData();
+                    for (const el of data) {
+                        console.log(el);
+                        let findCoordinates = [];
+                        let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
+                        $(polygonCoordinates).each(function (pairKey, pairVal) {
+                            pairVal = pairVal.replace(' ', '');
+                            pairVal = pairVal.replace('[', '');
+                            pairVal = pairVal.replace(']', '');
+                            let parts = pairVal.split(',');
+                            findCoordinates.push([
+                                parseFloat(parts[0]),
+                                parseFloat(parts[1])
+                            ]);
+                        });
+
+                        console.log(point.attr('id'));
+                        let address = $("#" + point.attr('id')).val();
+                        let polygon =  new ymaps.Polygon([findCoordinates]);
+
+                        isInPolygon = await checkAddressInPolygon(address, polygon);
+                        console.log(typeof isInPolygon);
+                        if(isInPolygon) {
+                            console.log(address + " содержится в " + el.name);
+                            polygonId = el.id;
+                            break;
+                        }
+                    }
+
+                    console.log('done');
+
+                    if(isInPolygon) {
+                        console.log('Нужно поставить цену тарифа');
+
+                        let hiddenPolygonInputClass = '.take-polygon-hidden-input';
+                        if(point.attr('id') === 'dest_point') {
+                            hiddenPolygonInputClass = '.bring-polygon-hidden-input';
+                        }
+
+                        let hiddenPolygonInput = $(hiddenPolygonInputClass);
+                        hiddenPolygonInput.val(polygonId);
+
+                        getAllCalculatedData();
+                    } else {
+                        console.log('Не нужно ставить цену тарифа');
+                        ymaps.route([city.point, fullName]).then(function (route) {
+                            console.log('От: ' + city.point + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
+                            $(point.closest('.delivery-block')).find('.distance-hidden-input').val(Math.ceil(route.getLength() / 1000));
+
+                            getAllCalculatedData();
+                        });
+                    }
+                },
+                error: function(data){
+                    console.log(data);
+                }
             });
         }
     }
@@ -607,17 +726,31 @@ function kladrChange(obj = null, point) {
     if(point.attr('id') === "ship_point") {
         if($('#ship_city').data().selectize.getValue() !== "") {
             $('input[name="take_city_name"]').val(point.data('name'));
-            calcTariffPrice($('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal, point, $('input[name="need-to-take-type"]:checked').val() == "in"); // вызываем просчет для "Забрать из"
+            calcTariffPrice(
+                {
+                    'value': $('#ship_city').val(),
+                    'point': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
+                },
+                point,
+                $('input[name="need-to-take-type"]:checked').val() == "in"
+            ); // вызываем просчет для "Забрать из"
         }
     } else {
         if($('#dest_city').data().selectize.getValue() !== "") {
             $('input[name="bring_city_name"]').val(point.data('name'));
-            calcTariffPrice($('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal, point, $('input[name="need-to-bring-type"]:checked').val() == "in"); // вызываем просчет для "Доставить"
+            calcTariffPrice(
+                {
+                    'value': $('#dest_city').val(),
+                    'point': $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal
+                },
+                point, $('input[name="need-to-bring-type"]:checked').val() == "in"
+            ); // вызываем просчет для "Доставить"
         }
     }
 }
 
 function renderCalendar(data) {
+    console.log('render');
     if(data.error === undefined) {
         $('#route-name').html(data.route.name);
         $('#base-price').html(data.route.price);
@@ -639,7 +772,7 @@ function drawDelivery(delivery) {
             '<div class="block__itogo_item d-flex">'+
             '<div class="d-flex flex-wrap">'+
             '<span class="block__itogo_value">' +
-            'Забор груза: ' + delivery.take.city_name
+            'Забор груза: ' + delivery.take.city_name + (delivery.take.polygon_name === undefined ? "" : (" (" + delivery.take.polygon_name) + ")")
             +
             (typeof delivery.take.distance !== "undefined" ? ('<small> (' + delivery.take.distance + ' км) </small>') : '')
             +
@@ -659,7 +792,7 @@ function drawDelivery(delivery) {
             '<div class="block__itogo_item d-flex">'+
             '<div class="d-flex flex-wrap">'+
             '<span class="block__itogo_value">' +
-            'Доставка груза: ' + delivery.bring.city_name
+            'Доставка груза: ' + delivery.bring.city_name + (delivery.bring.polygon_name === undefined ? "" : (" (" + delivery.bring.polygon_name + ")"))
             +
             (typeof delivery.bring.distance !== "undefined" ? ('<small> (' + delivery.bring.distance + ' км) </small>') : '')
             +

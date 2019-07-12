@@ -7,6 +7,7 @@ use App\Counterparty;
 use App\Http\Helpers\CalculatorHelper;
 use App\Order;
 use App\OrderItem;
+use App\Polygon;
 use App\Route;
 use App\Type;
 use Carbon\Carbon;
@@ -58,7 +59,8 @@ class OrderController extends Controller
                     'volume' => $totalVolume,
                     'isWithinTheCity' => $request->get('need-to-take-type') === "in",
                     'x2' => $request->get('ship-from-point') === "on",
-                    'distance' => $request->get('take_distance')
+                    'distance' => $request->get('take_distance'),
+                    'polygonId' => $request->get('take_polygon')
                 ] : [],
             $request->get('need-to-bring') === "on" ?
                 [
@@ -69,7 +71,8 @@ class OrderController extends Controller
                     'volume' => $totalVolume,
                     'isWithinTheCity' => $request->get('need-to-bring-type') === "in",
                     'x2' => $request->get('bring-to-point') === "on",
-                    'distance' => $request->get('bring_distance')
+                    'distance' => $request->get('bring_distance'),
+                    'polygonId' => $request->get('bring_polygon')
                 ] : [],
             $request->get('insurance_amount'),
             $request->get('discount')
@@ -125,6 +128,22 @@ class OrderController extends Controller
         $shipCity = $cities->where('id', $request->get('ship_city'))->first();
         $destCity = $cities->where('id', $request->get('dest_city'))->first();
 
+        $takePolygon = null;
+        if(!empty($request->get('take_polygon'))) {
+            $takePolygon = Polygon::where([
+                ['id', $request->get('take_polygon')],
+                ['city_id', $shipCity->id]
+            ])->firstOrFail();
+        }
+
+        $bringPolygon = null;
+        if(!empty($request->get('bring_polygon'))) {
+            $bringPolygon = Polygon::where([
+                ['id', $request->get('bring_polygon')],
+                ['city_id', $destCity->id]
+            ])->firstOrFail();
+        }
+
         $route = Route::where([
             ['ship_city_id', $shipCity->id],
             ['dest_city_id', $destCity->id],
@@ -141,7 +160,9 @@ class OrderController extends Controller
         $order->total_weight = $totalWeight;
         $order->ship_city_id = $shipCity->id;
         $order->ship_city_name = $shipCity->name;
+        $order->take_polygon_id = $takePolygon->id ?? null;
         $order->dest_city_id = $destCity->id;
+        $order->bring_polygon_id = $bringPolygon->id ?? null;
         $order->estimated_delivery_date = Carbon::now()->addDays($route->delivery_time)->toDateString();
         $order->dest_city_name = $destCity->name;
         $order->take_need = $request->get('need-to-take') === "on"; // Нужен ли забор груза
@@ -431,7 +452,7 @@ class OrderController extends Controller
             if($request->get('need-to-take-type') === "from") {
                 $order->take_address = $request->get('ship_point'); // Адрес забора
                 $order->take_city_name = $calculatedData['delivery']['take']['city_name']; // Город забора
-                $order->take_distance = $calculatedData['delivery']['take']['distance']; // Дистанция от города отправки до адреса забора
+                $order->take_distance = $calculatedData['delivery']['take']['distance'] ?? null; // Дистанция от города отправки до адреса забора
             } else { // Если забор в пределах города
                 $order->take_address = null;
                 $order->take_distance = null;
@@ -456,7 +477,7 @@ class OrderController extends Controller
             if($request->get('need-to-bring-type') === "from") {
                 $order->delivery_address = $request->get('dest_point'); // Адрес доставки
                 $order->delivery_city_name = $calculatedData['delivery']['bring']['city_name']; // Город доставки
-                $order->delivery_distance = $calculatedData['delivery']['bring']['distance']; // Дистанция от города назначения до адреса доставки
+                $order->delivery_distance = $calculatedData['delivery']['bring']['distance'] ?? null; // Дистанция от города назначения до адреса доставки
             } else { // Если доставка в пределах города
                 $order->delivery_address = null;
                 $order->delivery_distance = null;

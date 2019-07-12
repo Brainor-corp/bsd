@@ -43,6 +43,8 @@ class ReportsController extends Controller
                 'status',
                 'order_items',
                 'payment',
+                'take_polygon',
+                'bring_polygon',
                 'order_services' => function ($services) {
                     return $services->withPivot('price');
                 }
