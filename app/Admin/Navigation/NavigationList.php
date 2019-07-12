@@ -48,6 +48,11 @@ class NavigationList
                         'text' => 'Особые нас. пункты'
                     ],
                     [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Polygons',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Полигоны'
+                    ],
+                    [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Routes',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Маршруты'
