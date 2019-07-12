@@ -507,6 +507,7 @@ class CalculatorHelper
                 $takeParams['x2'],
                 $takeParams['distance']
             );
+            $takeData['polygons'] = $shipCity->polygons;
         }
 
         $bringData = null;
@@ -519,6 +520,7 @@ class CalculatorHelper
                 $bringParams['x2'],
                 $bringParams['distance']
             );
+            $bringData['polygons'] = $destCity->polygons;
         }
 
         if(

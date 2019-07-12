@@ -3,6 +3,7 @@
     @if(isset($order))
         <input type="hidden" name="order_id" value="{{ $order->id }}">
     @endif
+    <div id="hiddenMap" class="d-none"></div>
     <div class="calc__title">Груз</div>
     <div class="form-item row align-items-center">
         <label class="col-auto calc__label">Наименование груза*</label>

@@ -124,6 +124,10 @@ class CalculatorController extends Controller
         $cities = City::whereIn('id', [
             $request->get('ship_city'),
             $request->get('dest_city')
+        ])->with([
+            'polygons' => function ($polygonsQ) {
+                return $polygonsQ->orderBy('priority');
+            }
         ])->get();
 
         if(count($cities) < 2) {
@@ -298,5 +302,12 @@ class CalculatorController extends Controller
         }else{
             return $result;
         }
+    }
+
+    public function getCityPolygons(Request $request) {
+        $city = City::where('id', intval($request->get('city_id')))
+            ->with('polygons')->first();
+
+        return $city->polygons ?? [];
     }
 }
