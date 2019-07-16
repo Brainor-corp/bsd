@@ -240,7 +240,6 @@ class CalculatorController extends Controller
     }
 
     public function getTariff(Request $request, $packages = null, $ship_city = null, $dest_city = null, $route_id = null) {
-
         $formData = null;
         if(isset($request->formData)){
             $formData = array();
@@ -251,29 +250,35 @@ class CalculatorController extends Controller
         if($dest_city == null){$dest_city = $request->dest_city;}
         
         $shipCity = null;
+        $deliveryPoint = null;
         if(is_numeric($ship_city)) {
             $shipCity = City::where('id', $ship_city)->first();
             if(empty($shipCity)) {
                 $shipCity = Point::where('id', $ship_city)->firstOrFail();
+                $deliveryPoint = $shipCity;
             }
         } else {
             $shipCity = City::where('name', $ship_city)->first();
             if(empty($shipCity)) {
                 $shipCity = Point::where('name', $ship_city)->firstOrFail();
+                $deliveryPoint = $shipCity;
             }
         }
         $ship_city = $shipCity instanceof City ? $shipCity->id : $shipCity->city_id;
 
         $destCity = null;
+        $bringPoint = null;
         if(is_numeric($dest_city)) {
             $destCity = City::where('id', $dest_city)->first();
             if(empty($destCity)) {
                 $destCity = Point::where('id', $dest_city)->firstOrFail();
+                $bringPoint = $destCity;
             }
         } else {
             $destCity = City::where('name', $dest_city)->first();
             if(empty($destCity)) {
                 $destCity = Point::where('name', $dest_city)->firstOrFail();
+                $bringPoint = $destCity;
             }
         }
         $dest_city = $destCity instanceof City ? $destCity->id : $destCity->city_id;
@@ -301,16 +306,33 @@ class CalculatorController extends Controller
             }
         }
 
+        $weight = $request->get('cargo')['packages'][0]['weight'];
+        $volume = $request->get('cargo')['packages'][0]['volume'];
+
         $services = null;
         if(isset($formData['service'])){$services = $formData['service'];}
 
         $routeData = CalculatorHelper::getRouteData(null, null, $packages, $route_id);
-        $totalData = CalculatorHelper::getTotalPrice($routeData['price'], $services, $routeData['totalVolume']);
+        $deliveryData = isset($deliveryPoint) ? CalculatorHelper::getDeliveryToPointPrice($deliveryPoint, $weight, $volume) : null;
+        $bringData = isset($bringPoint) ? CalculatorHelper::getDeliveryToPointPrice($bringPoint, $weight, $volume) : null;
+
+        $totalData = CalculatorHelper::getTotalPrice(
+            $routeData['price'],
+            $services,
+            $routeData['totalVolume'],
+            null,
+            null,
+            $deliveryData['price'] ?? null,
+            $bringData['price'] ?? null
+        );
+
         $resultData = [
             'base_price' => $routeData['price'],
             'total_volume' => $routeData['totalVolume'],
             'route' => $routeData['model'],
             'total_data' => $totalData,
+            'delivery_to_point' => $deliveryData,
+            'bring_to_point' => $bringData,
         ];
 
         return response()->json($resultData);

@@ -262,8 +262,20 @@ class CalculatorHelper
 
         // Возьмём в учёт цену за забор и доставку груза
         if(is_numeric($totalPrice)) {
-            if(isset($take_price)) {$totalPrice += floatval($take_price);}
-            if(isset($bring_price)) {$totalPrice += floatval($bring_price);}
+            if(isset($take_price)) {
+                if(is_numeric($take_price)) {
+                    $totalPrice += floatval($take_price);
+                } else {
+                    $totalPrice = 'Договорная';
+                }
+            }
+            if(isset($bring_price)) {
+                if(is($bring_price)) {
+                    $totalPrice += floatval($bring_price);
+                } else {
+                    $totalPrice = 'Договорная';
+                }
+            }
         }
 
         if(isset($services)){
@@ -482,6 +494,43 @@ class CalculatorHelper
     public static function getCityByName($cityName) {
         return City::where('name', $cityName)
                 ->first() ?? false;
+    }
+
+    public static function getDeliveryToPointPrice(
+        Point $point,
+        $weight,
+        $volume,
+        $x2 = false
+    ) {
+        $per_km_tariff = DB::table('per_km_tariffs')
+            ->join('cities', 'cities.tariff_zone_id', '=', 'per_km_tariffs.tariff_zone_id')
+            ->join('forward_thresholds', function($join)
+            {
+                $join->on('forward_thresholds.id', '=', 'per_km_tariffs.forward_threshold_id');
+                $join->on('forward_thresholds.threshold_group_id', '=', 'cities.threshold_group_id');
+            })
+            ->where([
+                ['cities.id', $point->city_id],
+                ['forward_thresholds.weight', '>=', floatval($weight)],
+                ['forward_thresholds.volume', '>=', floatval($volume)],
+            ])
+            ->orderBy('forward_thresholds.weight', 'ASC')
+            ->orderBy('forward_thresholds.volume', 'ASC')
+            ->first();
+
+        if(!isset($per_km_tariff)) {
+            return [
+                'distance' => $point->distance,
+                'price' => 'Договорная'
+            ];
+        }
+
+        $price = $point->distance * $per_km_tariff->tariff;
+
+        return [
+            'distance' => $point->distance,
+            'price' => $x2 ? $price * 2 : $price
+        ];
     }
 
     /**

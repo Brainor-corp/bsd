@@ -60,6 +60,14 @@
                         Стоимость перевозки
                         <span><span id="short_base-price">300</span><span class="rouble">p</span></span>
                     </div>
+                    <div class="form-item justify-content-between w-100" style="display: none" id="deliveryPriceBlock">
+                        Стоимость забора "от двери" (<span id="deliveryDistance"></span>)
+                        <span id="deliveryPrice"></span><span class="rouble">p</span>
+                    </div>
+                    <div class="form-item justify-content-between w-100" style="display: none" id="bringPriceBlock">
+                        Стоимость доставки "до двери" (<span id="bringDistance"></span>)
+                        <span id="bringPrice"></span><span class="rouble">p</span>
+                    </div>
                     <div class="form-item justify-content-between w-100">
                         Итог
                         <span><span id="short_total-price">350</span><span class="rouble">p</span></span>

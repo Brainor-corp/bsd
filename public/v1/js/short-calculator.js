@@ -112,6 +112,7 @@ var getShortBaseTariff = function () {
 
             },
             success: function(data){
+                console.log(data);
                 $('#short_base-price').html(data.base_price);
                 $('#short_base-price').attr('data-base-price', data.base_price);
                 $('#short_total-price').html(data.total_data.total);
@@ -123,6 +124,20 @@ var getShortBaseTariff = function () {
                 $('#total-price').html(data.total_data.total);
                 $('#total-price').attr('data-total-price', data.total_data.total);
                 $('#total-volume').attr('data-total-volume', data.total_volume);
+
+                $('#deliveryPriceBlock').hide();
+                if(data.delivery_to_point !== null) {
+                    $('#deliveryDistance').html(data.delivery_to_point.distance + 'км');
+                    $('#deliveryPrice').html(data.delivery_to_point.price);
+                    $('#deliveryPriceBlock').show();
+                }
+
+                $('#bringPriceBlock').hide();
+                if(data.bring_to_point !== null) {
+                    $('#bringDistance').html(data.bring_to_point.distance + 'км');
+                    $('#bringPrice').html(data.bring_to_point.price);
+                    $('#bringPriceBlock').show();
+                }
             },
             error: function (err) {
                 console.log(err);
