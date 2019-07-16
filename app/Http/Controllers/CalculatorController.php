@@ -6,6 +6,7 @@ use App\City;
 use App\Http\Helpers\CalculatorHelper;
 use App\Order;
 use App\Oversize;
+use App\Point;
 use App\Route;
 use App\Service;
 use App\Type;
@@ -181,10 +182,34 @@ class CalculatorController extends Controller
         if($ship_city == null){
             $ship_city = $request->ship_city;
         }
+
+        if(!is_numeric($ship_city)) {
+            $query = $ship_city;
+
+            $ship_city = City::where('name', $query)->first();
+            if(empty($ship_city)) {
+                $ship_city = Point::where('name', $query)->first();
+            }
+
+            $ship_city = $ship_city instanceof City ? $ship_city->id : ($ship_city->city_id ?? null);
+        }
+
+        if(empty($ship_city)) {
+            return [];
+        }
+
         $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $ship_city))
             ->with('terminal','kladr')
             ->orderBy('name')
             ->get();
+
+        $destinationPoints = Point::whereHas('city', function ($cityQ) use ($ship_city) {
+            return $cityQ->where('id', $ship_city);
+        })->with([
+            'city.terminal',
+            'city.kladr',
+        ])->get();
+
         return view('v1.pages.calculator.parts.destination-cities')->with(compact('destinationCities'));
     }
 
@@ -214,7 +239,7 @@ class CalculatorController extends Controller
         return CalculatorHelper::oversize_ratio($package);
     }
 
-    public function getTariff(Request $request, $packages = null, $ship_city_id = null, $dest_city_id = null, $route_id = null) {
+    public function getTariff(Request $request, $packages = null, $ship_city = null, $dest_city = null, $route_id = null) {
 
         $formData = null;
         if(isset($request->formData)){
@@ -222,14 +247,43 @@ class CalculatorController extends Controller
             parse_str($request->formData, $formData);
         }
 
-        if($ship_city_id == null){$ship_city_id = $request->ship_city;}
-        if($dest_city_id == null){$dest_city_id = $request->dest_city;}
+        if($ship_city == null){$ship_city = $request->ship_city;}
+        if($dest_city == null){$dest_city = $request->dest_city;}
+        
+        $shipCity = null;
+        if(is_numeric($ship_city)) {
+            $shipCity = City::where('id', $ship_city)->first();
+            if(empty($shipCity)) {
+                $shipCity = Point::where('id', $ship_city)->firstOrFail();
+            }
+        } else {
+            $shipCity = City::where('name', $ship_city)->first();
+            if(empty($shipCity)) {
+                $shipCity = Point::where('name', $ship_city)->firstOrFail();
+            }
+        }
+        $ship_city = $shipCity instanceof City ? $shipCity->id : $shipCity->city_id;
+
+        $destCity = null;
+        if(is_numeric($dest_city)) {
+            $destCity = City::where('id', $dest_city)->first();
+            if(empty($destCity)) {
+                $destCity = Point::where('id', $dest_city)->firstOrFail();
+            }
+        } else {
+            $destCity = City::where('name', $dest_city)->first();
+            if(empty($destCity)) {
+                $destCity = Point::where('name', $dest_city)->firstOrFail();
+            }
+        }
+        $dest_city = $destCity instanceof City ? $destCity->id : $destCity->city_id;
 
         if($route_id == null){
             if(!isset($request->route_id)){
-                $route = Route::where('ship_city_id', $ship_city_id)
-                    ->where('dest_city_id', $dest_city_id)
-                    ->first();
+                $route = Route::where([
+                    ['ship_city_id', $ship_city],
+                    ['dest_city_id', $dest_city],
+                ])->first();
                 $route_id = $route->id;
             }else{
                 $route_id = $request->route_id;

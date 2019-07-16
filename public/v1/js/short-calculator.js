@@ -41,6 +41,9 @@
                 // });
 
                 getShortRoute();
+            },
+            error: function (data) {
+                console.log(data);
             }
         });
     }
@@ -80,7 +83,7 @@ var getShortRoute = function () {
                 getShortBaseTariff();
             },
             error: function (err) {
-                // console.log(err);
+                console.log(err);
             }
         });
     }
@@ -122,7 +125,7 @@ var getShortBaseTariff = function () {
                 $('#total-volume').attr('data-total-volume', data.total_volume);
             },
             error: function (err) {
-                // console.log(err);
+                console.log(err);
             }
         });
 
