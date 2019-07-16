@@ -81,17 +81,34 @@ class CalculatorController extends Controller
 
             $selectedShipCity = null;
             $selectedDestCity = null;
-            if(isset($request->ship_city)){
-                $selectedShipCity = $request->ship_city;
-            }else{
-                $selectedShipCity = 53;
+
+            $deliveryPoint = null;
+            if(isset($request->ship_city)){ // Если город отправления выбран
+                $selectedShipCity = City::where('name', $request->ship_city)->first(); // Пробуем найти его в таблице городов по названию
+                if(empty($selectedShipCity)) { // Если не нашли
+                    $selectedShipCity = Point::where('name', $request->ship_city)->firstOrFail(); // Пробуем найти его в таблице пунктов
+                    $deliveryPoint = $selectedShipCity;
+                }
+            } else { // Если город отправления не выбран
+                $selectedShipCity = City::where('id', 53)->first(); // Пробуем найти его в таблице городов по конкретному id (53 -- Москва)
             }
 
-            if(isset($request->ship_city) && isset($request->dest_city)){
-                $selectedDestCity = $request->dest_city;
-            }else{
-                $selectedDestCity = 78;
+            // Получим id города/пункта отправления в зависимости от того, в какой таблице он нашёлся
+            $selectedShipCity = $selectedShipCity instanceof City ? $selectedShipCity->id : $selectedShipCity->city_id;
+
+            $bringPoint = null;
+            if(isset($request->dest_city)){ // Если город отправления выбран
+                $selectedDestCity = City::where('name', $request->dest_city)->first(); // Пробуем найти его в таблице городов по названию
+                if(empty($selectedDestCity)) { // Если не нашли
+                    $selectedDestCity = Point::where('name', $request->dest_city)->firstOrFail(); // Пробуем найти его в таблице пунктов
+                    $bringPoint = $selectedDestCity;
+                }
+            } else { // Если город отправления не выбран
+                $selectedDestCity = City::where('id', 78)->first(); // Пробуем найти его в таблице городов по конкретному id (78 -- Санкт-Петербург)
             }
+
+            // Получим id города/пункта назначения в зависимости от того, в какой таблице он нашёлся
+            $selectedDestCity = $selectedDestCity instanceof City ? $selectedDestCity->id : $selectedDestCity->city_id;
         }
 
         $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity))
@@ -115,6 +132,8 @@ class CalculatorController extends Controller
                 'services',
                 'selectedShipCity',
                 'selectedDestCity',
+                'deliveryPoint',
+                'bringPoint',
                 'order',
                 'userTypes'
             ));
@@ -122,7 +141,7 @@ class CalculatorController extends Controller
     }
 
     public function getAllCalculatedData(Request $request) {
-        $cities = City::whereIn('id', [
+        $cities = City::whereIn('name', [
             $request->get('ship_city'),
             $request->get('dest_city')
         ])->with([
@@ -132,7 +151,10 @@ class CalculatorController extends Controller
         ])->get();
 
         if(count($cities) < 2) {
-            return ["error" => "error"];
+            return [
+                "error" => "Cities not found",
+                "data" => $request->all()
+            ];
         }
 
         $totalWeight = 0;
@@ -144,14 +166,14 @@ class CalculatorController extends Controller
         }
 
         return CalculatorHelper::getAllCalculatedData(
-            $cities->where('id', $request->get('ship_city'))->first(),
-            $cities->where('id', $request->get('dest_city'))->first(),
+            $cities->where('name', $request->get('ship_city'))->first(),
+            $cities->where('name', $request->get('dest_city'))->first(),
             $request->get('cargo')['packages'],
             $request->get('service'),
             $request->get('need-to-take') === "on" ?
             [
                 'cityName' => $request->get('need-to-take-type') === "in" ?
-                    $cities->where('id', $request->get('ship_city'))->first()->name :
+                    $cities->where('name', $request->get('ship_city'))->first()->name :
                     $request->get('take_city_name'),
                 'weight' => $totalWeight,
                 'volume' => $totalVolume,
@@ -163,7 +185,7 @@ class CalculatorController extends Controller
             $request->get('need-to-bring') === "on" ?
             [
                 'cityName' => $request->get('need-to-bring-type') === "in" ?
-                    $cities->where('id', $request->get('dest_city'))->first()->name :
+                    $cities->where('name', $request->get('dest_city'))->first()->name :
                     $request->get('bring_city_name'),
                 'weight' => $totalWeight,
                 'volume' => $totalVolume,
@@ -203,12 +225,16 @@ class CalculatorController extends Controller
             ->orderBy('name')
             ->get();
 
-        $destinationPoints = Point::whereHas('city', function ($cityQ) use ($ship_city) {
-            return $cityQ->where('id', $ship_city);
-        })->with([
-            'city.terminal',
-            'city.kladr',
-        ])->get();
+        if($request->has('pointsNeed')) {
+            $destinationPoints = Point::whereHas('city', function ($cityQ) use ($ship_city) {
+                return $cityQ->where('id', $ship_city);
+            })->with([
+                'city.terminal',
+                'city.kladr',
+            ])->get();
+
+            // todo Объединить поинты с городами для выдачи
+        }
 
         return view('v1.pages.calculator.parts.destination-cities')->with(compact('destinationCities'));
     }
@@ -383,7 +409,7 @@ class CalculatorController extends Controller
     }
 
     public function getCityPolygons(Request $request) {
-        $city = City::where('id', intval($request->get('city_id')))
+        $city = City::where('name', $request->get('city'))
             ->with([
                 'polygons' => function ($polygonsQ) {
                     return $polygonsQ->orderBy('priority');

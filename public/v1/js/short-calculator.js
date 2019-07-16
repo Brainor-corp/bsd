@@ -15,7 +15,10 @@
         $.ajax({
             type: 'post',
             url: '/api/calculator/get-destination-cities',
-            data: {ship_city:value},//здесь мы передаем стандартным пост методом без сериализации. В конечном скрипте данные будут лежать в $_POST['ajax_data']
+            data: {
+                ship_city: value,
+                pointsNeed: true
+            },//здесь мы передаем стандартным пост методом без сериализации. В конечном скрипте данные будут лежать в $_POST['ajax_data']
             cache: false,
             beforeSend: function() {
 
@@ -126,6 +129,7 @@ var getShortBaseTariff = function () {
                 $('#total-volume').attr('data-total-volume', data.total_volume);
 
                 $('#deliveryPriceBlock').hide();
+                $('input[name="deliveryName"]').val(null);
                 if(data.delivery_to_point !== null) {
                     $('#deliveryDistance').html(data.delivery_to_point.distance + 'км');
                     $('#deliveryPrice').html(data.delivery_to_point.price);
@@ -133,6 +137,7 @@ var getShortBaseTariff = function () {
                 }
 
                 $('#bringPriceBlock').hide();
+                $('input[name="bringName"]').val(null);
                 if(data.bring_to_point !== null) {
                     $('#bringDistance').html(data.bring_to_point.distance + 'км');
                     $('#bringPrice').html(data.bring_to_point.price);

@@ -502,6 +502,29 @@ class CalculatorHelper
         $volume,
         $x2 = false
     ) {
+        // Найдем тариф внутри города
+        $fixed_tariff = DB::table('inside_forwarding')
+            ->join('forward_thresholds', function($join)
+            {
+                $join->on('inside_forwarding.forward_threshold_id', '=', 'forward_thresholds.id');
+            })
+            ->where([
+                ['city_id', $point->city->id],
+                ['forward_thresholds.weight', '>=', floatval($weight)],
+                ['forward_thresholds.volume', '>=', floatval($volume)],
+            ])
+            ->orderBy('forward_thresholds.weight', 'ASC')
+            ->orderBy('forward_thresholds.volume', 'ASC')
+            ->first();
+
+        if(!isset($fixed_tariff)) {
+            return [
+                'name' => $point->name,
+                'distance' => $point->distance,
+                'price' => 'Договорная'
+            ];
+        }
+
         $per_km_tariff = DB::table('per_km_tariffs')
             ->join('cities', 'cities.tariff_zone_id', '=', 'per_km_tariffs.tariff_zone_id')
             ->join('forward_thresholds', function($join)
@@ -520,14 +543,19 @@ class CalculatorHelper
 
         if(!isset($per_km_tariff)) {
             return [
+                'name' => $point->name,
                 'distance' => $point->distance,
                 'price' => 'Договорная'
             ];
         }
 
-        $price = $point->distance * $per_km_tariff->tariff;
+        $fixed_tariff = $fixed_tariff->tariff;
+        $per_km_tariff = floatval($per_km_tariff->tariff);
+
+        $price = $fixed_tariff + intval($point->distance) * 2 * $per_km_tariff;
 
         return [
+            'name' => $point->name,
             'distance' => $point->distance,
             'price' => $x2 ? $price * 2 : $price
         ];
