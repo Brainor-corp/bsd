@@ -648,6 +648,9 @@ function calcTariffPrice(city, point, inCity) {
             return;
 
         if (city) {
+            console.log('===========');
+            console.log(city.value);
+
             // Пробуем получить полигоны для выбранного города
             $.ajaxSetup({
                 headers: {
@@ -658,11 +661,12 @@ function calcTariffPrice(city, point, inCity) {
                 type: 'post',
                 url: '/api/calculator/get-city-polygons',
                 data: {
-                    city_id: city.value
+                    city: city.value
                 },
                 dataType: "json",
                 cache: false,
                 success: async function(data) {
+                    console.log(data);
                     let isInPolygon;
                     let polygonId = '';
 
