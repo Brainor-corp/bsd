@@ -113,6 +113,9 @@ class ReportsController extends Controller
         $documentData = $response1c['response'] ?? [];
         $file = [];
 
+        dd($documentData);
+
+
         switch ($document_type_id_1c) {
             case 1:
                 // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
@@ -133,7 +136,6 @@ class ReportsController extends Controller
                 break;
             case 5:
                 // Счет на оплату
-
                 $items['Товар_Номенклатура'] = array_column($documentData['Товары'], 'Номенклатура');
                 $items['Товар_Содержание'] = array_column($documentData['Товары'], 'Содержание');
                 $items['Товар_Количество'] = array_column($documentData['Товары'], 'Количество');
@@ -145,13 +147,21 @@ class ReportsController extends Controller
                 $items['Товар_СуммаНДС'] = array_column($documentData['Товары'], 'СуммаНДС');
                 $items['Товар_ЭкспедиторскаяРасписка'] = array_column($documentData['Товары'], 'ЭкспедиторскаяРасписка');
 
+                $items = [];
+                foreach($documentData['Товары'] as $index => $item) {
+                    $item = [
+                        $index + 1,
+                        $item['Товар_Содержание'],
+                        $item['Товар_Количество'],
+                        'шт.', //todo
+                        $item['Товар_Цена'],
+                        $item['Товар_Сумма'],
+                    ];
+                    array_push($items, $item);
+                }
                 dd($items);
 
-                $file = DocumentHelper::generatePETDocument(
-                    public_path('templates/InvoiceTemplate.xlsx'),
-                    "Счет на оплату № todo от todo",
-                    '.xlsx',
-                    array_merge($documentData, $items));
+                $file = DocumentHelper::generateInvoiceDocument($documentData);
                 break;
             case 6:
                 // ???
