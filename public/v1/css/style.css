@@ -536,13 +536,13 @@ font-weight:900;
 	z-index:2;
 }
 .main-header {
-	height:115px;
+	/*height:115px;*/
 	padding-top:15px;
 }
 .main-page-header{
 	background:#353c41;
 	/* background:#353c41 url(../../images/header-bg.png) no-repeat top center; */
-	height:810px;
+	/*height:810px;*/
 	position: relative;
 	overflow:hidden;
 }

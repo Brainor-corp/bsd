@@ -270,7 +270,7 @@ class CalculatorHelper
                 }
             }
             if(isset($bring_price)) {
-                if(is($bring_price)) {
+                if(is_numeric($bring_price)) {
                     $totalPrice += floatval($bring_price);
                 } else {
                     $totalPrice = 'Договорная';
@@ -545,7 +545,7 @@ class CalculatorHelper
             return [
                 'name' => $point->name,
                 'distance' => $point->distance,
-                'price' => 'Договорная'
+                'price' => 'Договорная',
             ];
         }
 

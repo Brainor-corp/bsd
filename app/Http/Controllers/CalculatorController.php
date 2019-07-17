@@ -18,7 +18,9 @@ class CalculatorController extends Controller
     public function calculatorShow($id = null, Request $request) {
         $shipCities = City::where('is_ship', true)->with('terminal','kladr')->get();
 
+        $citiesIdsToFindRoute = [];
         $order = null;
+
         if(isset($id)) { // Если открыли страницу черновика
             $order = Order::where('id', $id)
                 ->when(
@@ -47,6 +49,14 @@ class CalculatorController extends Controller
             $packages = $order->order_items->toArray();
             $selectedShipCity = $order->ship_city_id;
             $selectedDestCity = $order->dest_city_id;
+
+            $citiesIdsToFindRoute['ship'] = [
+                $shipCities->where('id', $order->ship_city_id)->first()
+            ];
+
+            $citiesIdsToFindRoute['bring'] = [
+                City::where('id', $order->dest_city_id)->first()
+            ];
         } else { // Если открыли стандартный калькулятор
             if(isset($request->cargo['packages'])){
                 $requestPackages = $request->cargo['packages'];
@@ -85,30 +95,61 @@ class CalculatorController extends Controller
             $deliveryPoint = null;
             if(isset($request->ship_city)){ // Если город отправления выбран
                 $selectedShipCity = City::where('name', $request->ship_city)->first(); // Пробуем найти его в таблице городов по названию
-                if(empty($selectedShipCity)) { // Если не нашли
-                    $selectedShipCity = Point::where('name', $request->ship_city)->firstOrFail(); // Пробуем найти его в таблице пунктов
-                    $deliveryPoint = $selectedShipCity;
-                }
+                $deliveryPoint = Point::where('name', $request->ship_city)->first(); // Пробуем найти его в таблице пунктов
             } else { // Если город отправления не выбран
                 $selectedShipCity = City::where('id', 53)->first(); // Пробуем найти его в таблице городов по конкретному id (53 -- Москва)
             }
 
-            // Получим id города/пункта отправления в зависимости от того, в какой таблице он нашёлся
-            $selectedShipCity = $selectedShipCity instanceof City ? $selectedShipCity->id : $selectedShipCity->city_id;
+            $citiesIdsToFindRoute['ship'] = [
+                $selectedShipCity, $deliveryPoint
+            ];
 
             $bringPoint = null;
             if(isset($request->dest_city)){ // Если город отправления выбран
                 $selectedDestCity = City::where('name', $request->dest_city)->first(); // Пробуем найти его в таблице городов по названию
-                if(empty($selectedDestCity)) { // Если не нашли
-                    $selectedDestCity = Point::where('name', $request->dest_city)->firstOrFail(); // Пробуем найти его в таблице пунктов
-                    $bringPoint = $selectedDestCity;
-                }
+                $bringPoint = Point::where('name', $request->dest_city)->first(); // Пробуем найти его в таблице пунктов
             } else { // Если город отправления не выбран
                 $selectedDestCity = City::where('id', 78)->first(); // Пробуем найти его в таблице городов по конкретному id (78 -- Санкт-Петербург)
             }
 
-            // Получим id города/пункта назначения в зависимости от того, в какой таблице он нашёлся
-            $selectedDestCity = $selectedDestCity instanceof City ? $selectedDestCity->id : $selectedDestCity->city_id;
+            $citiesIdsToFindRoute['bring'] = [
+                $selectedDestCity, $bringPoint
+            ];
+        }
+
+        $route = null;
+
+        // В базе могут существовать города и пункты с одинаковым названием.
+        // Из-за этого может оказаться, что для города маршрута нет,
+        // в то время как для пункта с таким же названием он есть (Прим.: Москва -> Адлер).
+        // Поэтому для поиска маршрута проходим циклом по всем найденный городам/пунктам.
+        foreach($citiesIdsToFindRoute['ship'] as $shipModel) {
+            if(!isset($shipModel)) {
+                continue;
+            }
+
+            $selectedShipCity = $shipModel instanceof City ? $shipModel->id : $shipModel->city_id;
+
+            foreach($citiesIdsToFindRoute['bring'] as $destModel) {
+                if(!isset($destModel)) {
+                    continue;
+                }
+
+                $selectedDestCity = $destModel instanceof City ? $destModel->id : $destModel->city_id;
+
+                $route = Route::where([
+                    ['ship_city_id', $selectedShipCity],
+                    ['dest_city_id', $selectedDestCity],
+                ])->first();
+
+                if(isset($route)) {
+                    break;
+                }
+            }
+        }
+
+        if(!isset($route)) {
+            return abort(404, "Route not found");
         }
 
         $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity))
@@ -116,8 +157,7 @@ class CalculatorController extends Controller
             ->orderBy('name')
             ->get();
 
-        $route = $this->getRoute($request, $selectedShipCity,$selectedDestCity);
-        $tariff = json_decode($this->getTariff($request, $packages, $selectedShipCity,$selectedDestCity)->content());
+        $tariff = json_decode($this->getTariff($request, $packages ?? null, $selectedShipCity,$selectedDestCity)->content());
 
         $services = Service::get();
         $userTypes = Type::where('class', 'UserType')->get();
@@ -210,10 +250,10 @@ class CalculatorController extends Controller
 
             $ship_city = City::where('name', $query)->first();
             if(empty($ship_city)) {
-                $ship_city = Point::where('name', $query)->first();
+                $ship_city = Point::where('name', $query)->firstOrFail();
             }
 
-            $ship_city = $ship_city instanceof City ? $ship_city->id : ($ship_city->city_id ?? null);
+            $ship_city = $ship_city instanceof City ? $ship_city->id : $ship_city->city_id;
         }
 
         if(empty($ship_city)) {
@@ -227,13 +267,33 @@ class CalculatorController extends Controller
 
         if($request->has('pointsNeed')) {
             $destinationPoints = Point::whereHas('city', function ($cityQ) use ($ship_city) {
-                return $cityQ->where('id', $ship_city);
+                return $cityQ->whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $ship_city));
             })->with([
                 'city.terminal',
                 'city.kladr',
             ])->get();
 
-            // todo Объединить поинты с городами для выдачи
+            $merged = Collect();
+            foreach($destinationCities as $destinationCity) {
+                $city = new \stdClass();
+                $city->name = $destinationCity->name;
+                $city->terminal = $destinationCity->terminal;
+                $city->kladr = $destinationCity->kladr;
+                $city->coordinates_or_address = $destinationCity->coordinates_or_address;
+
+                $merged->push($city);
+            }
+            foreach($destinationPoints as $destinationPoint) {
+                $point = new \stdClass();
+                $point->name = $destinationPoint->name;
+                $point->terminal = $destinationPoint->city->terminal;
+                $point->kladr = $destinationPoint->city->kladr;
+                $point->coordinates_or_address = $destinationPoint->city->coordinates_or_address;
+
+                $merged->push($point);
+            }
+
+            $destinationCities = $merged->sortBy('name')->unique('name');
         }
 
         return view('v1.pages.calculator.parts.destination-cities')->with(compact('destinationCities'));
@@ -274,52 +334,75 @@ class CalculatorController extends Controller
 
         if($ship_city == null){$ship_city = $request->ship_city;}
         if($dest_city == null){$dest_city = $request->dest_city;}
-        
+
+        $citiesIdsToFindRoute = [];
+
         $shipCity = null;
         $deliveryPoint = null;
         if(is_numeric($ship_city)) {
             $shipCity = City::where('id', $ship_city)->first();
-            if(empty($shipCity)) {
-                $shipCity = Point::where('id', $ship_city)->firstOrFail();
-                $deliveryPoint = $shipCity;
-            }
+            $deliveryPoint = Point::where('id', $ship_city)->first();
         } else {
             $shipCity = City::where('name', $ship_city)->first();
-            if(empty($shipCity)) {
-                $shipCity = Point::where('name', $ship_city)->firstOrFail();
-                $deliveryPoint = $shipCity;
-            }
+            $deliveryPoint = Point::where('name', $ship_city)->first();
         }
-        $ship_city = $shipCity instanceof City ? $shipCity->id : $shipCity->city_id;
+
+        $citiesIdsToFindRoute['ship'] = [
+            $shipCity, $deliveryPoint
+        ];
 
         $destCity = null;
         $bringPoint = null;
         if(is_numeric($dest_city)) {
             $destCity = City::where('id', $dest_city)->first();
-            if(empty($destCity)) {
-                $destCity = Point::where('id', $dest_city)->firstOrFail();
-                $bringPoint = $destCity;
-            }
+            $bringPoint = Point::where('id', $dest_city)->first();
         } else {
             $destCity = City::where('name', $dest_city)->first();
-            if(empty($destCity)) {
-                $destCity = Point::where('name', $dest_city)->firstOrFail();
-                $bringPoint = $destCity;
-            }
+            $bringPoint = Point::where('name', $dest_city)->first();
         }
-        $dest_city = $destCity instanceof City ? $destCity->id : $destCity->city_id;
+
+        $citiesIdsToFindRoute['bring'] = [
+            $destCity, $bringPoint
+        ];
 
         if($route_id == null){
             if(!isset($request->route_id)){
-                $route = Route::where([
-                    ['ship_city_id', $ship_city],
-                    ['dest_city_id', $dest_city],
-                ])->first();
-                $route_id = $route->id;
+                // В базе могут существовать города и пункты с одинаковым названием.
+                // Из-за этого может оказаться, что для города маршрута нет,
+                // в то время как для пункта с таким же названием он есть (Прим.: Москва -> Адлер).
+                // Поэтому для поиска маршрута проходим циклом по всем найденный городам/пунктам.
+                foreach($citiesIdsToFindRoute['ship'] as $shipModel) {
+                    if(!isset($shipModel)) {
+                        continue;
+                    }
+
+                    $ship_city = $shipModel instanceof City ? $shipModel->id : $shipModel->city_id;
+
+                    foreach($citiesIdsToFindRoute['bring'] as $destModel) {
+                        if(!isset($destModel)) {
+                            continue;
+                        }
+
+                        $dest_city = $destModel instanceof City ? $destModel->id : $destModel->city_id;
+
+                        $route = Route::where([
+                            ['ship_city_id', $ship_city],
+                            ['dest_city_id', $dest_city],
+                        ])->first();
+
+                        if(isset($route)) {
+                            $route_id = $route->id;
+                            break;
+                        }
+                    }
+                }
+
+                if(!isset($route_id)) {
+                    return abort(404, "Route not found");
+                }
             }else{
                 $route_id = $request->route_id;
             }
-
         }
 
         if($packages == null){
@@ -332,8 +415,8 @@ class CalculatorController extends Controller
             }
         }
 
-        $weight = $request->get('cargo')['packages'][0]['weight'];
-        $volume = $request->get('cargo')['packages'][0]['volume'];
+        $weight = $formData['cargo']['packages'][0]['weight'];
+        $volume = $formData['cargo']['packages'][0]['volume'];
 
         $services = null;
         if(isset($formData['service'])){$services = $formData['service'];}

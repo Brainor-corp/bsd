@@ -59,17 +59,17 @@ class MainPageController extends Controller
         // Получим id города/пункта отправления в зависимости от того, в какой таблице он нашёлся
         $selectedShipCity = $selectedShipCity instanceof City ? $selectedShipCity->id : $selectedShipCity->city_id;
 
-        // Выбираем города отправления
+        // Выбираем города назначения
         $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity))
             ->orderBy('name')
             ->get();
 
-        // Выбираем пункты отправления
+        // Выбираем пункты назначения
         $destinationPoints = Point::whereHas('city', function ($cityQ) use ($selectedShipCity) {
             return $cityQ->whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity));
         })->with('city')->get();
 
-        // Объединим города и пункты отправления в одну коллекцию
+        // Объединим города и пункты назначения в одну коллекцию
         $destinationCities = Collect($destinationCities->pluck('name'))->merge($destinationPoints->pluck('name'));
         $destinationCities = $destinationCities->unique()->map(function ($item, $key) {
             $city = new \stdClass();
