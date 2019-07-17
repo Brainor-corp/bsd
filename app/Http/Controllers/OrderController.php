@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\View;
 class OrderController extends Controller
 {
     public function orderSave(Request $request) {
-        $cities = City::whereIn('id', [
+        $cities = City::whereIn('name', [
             $request->get('ship_city'),
             $request->get('dest_city')
         ])->get();
@@ -46,14 +46,14 @@ class OrderController extends Controller
         }
 
         $calculatedData = CalculatorHelper::getAllCalculatedData(
-            $cities->where('id', $request->get('ship_city'))->first(),
-            $cities->where('id', $request->get('dest_city'))->first(),
+            $cities->where('name', $request->get('ship_city'))->first(),
+            $cities->where('name', $request->get('dest_city'))->first(),
             $request->get('cargo')['packages'],
             $request->get('service'),
             $request->get('need-to-take') === "on" ?
                 [
                     'cityName' => $request->get('need-to-take-type') === "in" ?
-                        $cities->where('id', $request->get('ship_city'))->first()->name :
+                        $cities->where('name', $request->get('ship_city'))->first()->name :
                         $request->get('take_city_name'),
                     'weight' => $totalWeight,
                     'volume' => $totalVolume,
@@ -65,7 +65,7 @@ class OrderController extends Controller
             $request->get('need-to-bring') === "on" ?
                 [
                     'cityName' => $request->get('need-to-bring-type') === "in" ?
-                        $cities->where('id', $request->get('dest_city'))->first()->name :
+                        $cities->where('name', $request->get('dest_city'))->first()->name :
                         $request->get('bring_city_name'),
                     'weight' => $totalWeight,
                     'volume' => $totalVolume,
@@ -125,8 +125,8 @@ class OrderController extends Controller
                 })->firstOrFail();
         }
 
-        $shipCity = $cities->where('id', $request->get('ship_city'))->first();
-        $destCity = $cities->where('id', $request->get('dest_city'))->first();
+        $shipCity = $cities->where('name', $request->get('ship_city'))->first();
+        $destCity = $cities->where('name', $request->get('dest_city'))->first();
 
         $takePolygon = null;
         if(!empty($request->get('take_polygon'))) {

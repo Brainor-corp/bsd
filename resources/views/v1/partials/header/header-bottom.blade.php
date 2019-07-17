@@ -28,7 +28,7 @@
                         <option value=""></option>
                         @if($shipCities->count() > 0)
                             @foreach($shipCities as $shipCity)
-                                <option value="{{ $shipCity->id }}" @if($shipCity->id == 53) selected @endif>{{ $shipCity->name }}</option>
+                                <option value="{{ $shipCity->name }}" @if($shipCity->name === 'Москва') selected @endif>{{ $shipCity->name }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -38,7 +38,7 @@
                         <option value=""></option>
                         @if($destinationCities->count() > 0)
                             @foreach($destinationCities as $destinationCity)
-                                <option value="{{ $destinationCity->id }}" @if($destinationCity->id == 78) selected @endif>{{ $destinationCity->name }}</option>
+                                <option value="{{ $destinationCity->name }}" @if($destinationCity->name === 'Санкт-Петербург') selected @endif>{{ $destinationCity->name }}</option>
                             @endforeach
                         @endif
                     </select>
@@ -59,6 +59,14 @@
                     <div class="form-item justify-content-between w-100">
                         Стоимость перевозки
                         <span><span id="short_base-price">300</span><span class="rouble">p</span></span>
+                    </div>
+                    <div class="form-item justify-content-between w-100" style="display: none" id="deliveryPriceBlock">
+                        Стоимость забора "от двери" (<span id="deliveryDistance"></span>)
+                        <span id="deliveryPrice"></span><span class="rouble">p</span>
+                    </div>
+                    <div class="form-item justify-content-between w-100" style="display: none" id="bringPriceBlock">
+                        Стоимость доставки "до двери" (<span id="bringDistance"></span>)
+                        <span id="bringPrice"></span><span class="rouble">p</span>
                     </div>
                     <div class="form-item justify-content-between w-100">
                         Итог
