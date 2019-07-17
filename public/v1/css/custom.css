@@ -85,3 +85,18 @@
 .event-feed__item:hover .event-feed__info span a{
     color: #ef402f;
 }
+.package-wrapper #add-package-btn{
+    display: none;
+}
+.package-wrapper:last-child #add-package-btn{
+    display: inline-block;
+}
+.package-wrapper:last-child #delete-package-btn{
+    display: none;
+}
+.package-wrapper .calc__label .content{
+    display: none;
+}
+.package-wrapper:first-child .calc__label .content{
+    display: inline;
+}
