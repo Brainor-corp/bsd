@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use alhimik1986\PhpExcelTemplator\params\ExcelParam;
 use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
+use alhimik1986\PhpExcelTemplator\setters\CellSetterArray2DValue;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use App\Http\Helpers\DocumentHelper;
 use App\Order;
@@ -158,7 +159,7 @@ class ReportsController extends Controller
                     ];
                     array_push($items, $item);
                 }
-                $params['[[items]]'] = $items;
+                $params['[[items]]'] = new ExcelParam(CellSetterArray2DValue::class, $items);
 
                 $file = DocumentHelper::generateInvoiceDocument($params);
                 break;
