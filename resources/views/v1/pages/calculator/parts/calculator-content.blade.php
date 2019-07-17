@@ -26,39 +26,58 @@
                         </div>
                     </div>
                 </div>
-                @foreach($packages as $key => $package)
-                    <div class="col-11 form-item row align-items-center package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
-                        <label class="col-auto calc__label">Габариты (м)*</label>
-                        <div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">
-                            <div class="input-group">
-                                <input type="number" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
-                                <input type="number" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
-                                <input type="number" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
-                                <input type="number" id="packages_{{ $key }}_weight" class="form-control text-center package-params package-weight" name="cargo[packages][{{ $key }}][weight]" data-package-id="{{ $key }}"  data-dimension-type="weight" placeholder="Вес" value="{{ $package['weight'] }}"/>
-                                <input type="number" id="packages_{{ $key }}_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages][{{ $key }}][quantity]" data-package-id="{{ $key }}"  data-dimension-type="quantity" placeholder="Места" value="{{ $package['quantity'] }}"/>
+            </div>
+                <div>
+                    @php
+                        $packageCount=0;
+                        $packageTotalCount=count($packages);
+                    @endphp
+                    @foreach($packages as $key => $package)
+                    @php
+                        $packageCount++;
+                    @endphp
+                    <div class="row package-wrapper" id="package-wrapper-{{ $key }}">
+                        <div class="col-11 form-item row align-items-center package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
+                            <label class="col-auto calc__label">
+    {{--                            @if($packageCount == 1)--}}
+                                    <span class="content">Габариты (м)*</span>
+                                {{--@endif--}}
+                            </label>
+                            <div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">
+                                <div class="input-group">
+                                    <input type="number" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
+                                    <input type="number" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
+                                    <input type="number" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
+                                    <input type="number" id="packages_{{ $key }}_weight" class="form-control text-center package-params package-weight" name="cargo[packages][{{ $key }}][weight]" data-package-id="{{ $key }}"  data-dimension-type="weight" placeholder="Вес" value="{{ $package['weight'] }}"/>
+                                    <input type="number" id="packages_{{ $key }}_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages][{{ $key }}][quantity]" data-package-id="{{ $key }}"  data-dimension-type="quantity" placeholder="Места" value="{{ $package['quantity'] }}"/>
+                                </div>
+                                <input type="number" hidden="hidden" id="packages_{{ $key }}_volume" class="form-control text-center package-params package-volume" name="cargo[packages][{{ $key }}][volume]" data-package-id="{{ $key }}"  data-dimension-type="volume" value="{{ $package['volume'] }}"/>
                             </div>
-                            <input type="number" hidden="hidden" id="packages_{{ $key }}_volume" class="form-control text-center package-params package-volume" name="cargo[packages][{{ $key }}][volume]" data-package-id="{{ $key }}"  data-dimension-type="volume" value="{{ $package['volume'] }}"/>
                         </div>
+                            <a href="#" id="add-package-btn" class=" col-1 add_anotherplace">
+                                <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
+                            </a>
+                            <a href="#" id="delete-package-btn" class=" col-1 add_anotherplace">
+                                <span class="badge calc_badge"><i class="fa fa-minus"></i></span>
+                            </a>
                     </div>
-                @endforeach
-                <a href="#" id="add-package-btn" class=" col-1 add_anotherplace">
-                    <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
-                </a>
+                    @endforeach
+                </div>
             </div>
 
             <div class="row">
                 <div class="col-6 form-item row align-items-center">
                     <label class="col-auto calc__label">Вес груза (кг)*</label>
                     <div class="col calc__inpgrp">
-                        <input type="number" id="total-weight-hidden" hidden="hidden" style="display: none" name="cargo[total_weight]" data-total-volume="1" value="1"/>
-                        <input type="number" id="total-weight" class="form-control" value="1" required/>
+                        <input type="number" id="total-weight-hidden" hidden="hidden" style="display: none" name="cargo[total_weight]" data-total-weight="1" value="1"/>
+                        <input type="number" id="total-weight" class="form-control" value="1" disabled/>
                     </div>
                 </div>
                 <div class="col-6 form-item row align-items-center text-right">
                     <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
                     <div class="col calc__inpgrp">
                         <input type="number" id="total-volume-hidden" hidden="hidden" name="cargo[total_volume]" data-total-volume="0.001" value="0.001" required/>
-                        <input type="number" id="total-volume" class="form-control" data-total-volume="0.001" value="0.001" />
+                        <input type="number" id="total-volume" class="form-control" data-total-volume="0.001" value="0.001" disabled/>
                     </div>
                 </div>
             </div>
