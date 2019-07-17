@@ -147,6 +147,7 @@ class ReportsController extends Controller
 //                $items['Товар_СуммаНДС'] = array_column($documentData['Товары'], 'СуммаНДС');
 //                $items['Товар_ЭкспедиторскаяРасписка'] = array_column($documentData['Товары'], 'ЭкспедиторскаяРасписка');
 
+                $items = [];
                 foreach($documentData['Товары'] as $index => $item) {
                     $item = [
                         $index + 1,
