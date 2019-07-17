@@ -73,7 +73,7 @@ class DocumentHelper {
 
         return [
             'tempFile' => $tempFile,
-            'fileName' => "Счет на оплату № $params от $date" . '.xlsx'
+            'fileName' => "Счет на оплату № todo от $date" . '.xlsx'
         ];
     }
 

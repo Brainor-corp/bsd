@@ -113,8 +113,6 @@ class ReportsController extends Controller
         $documentData = $response1c['response'] ?? [];
         $file = [];
 
-        dd($documentData);
-
 
         switch ($document_type_id_1c) {
             case 1:
@@ -135,6 +133,7 @@ class ReportsController extends Controller
                 // Счет-фактура
                 break;
             case 5:
+                $params = [];
                 // Счет на оплату
                 $items['Товар_Номенклатура'] = array_column($documentData['Товары'], 'Номенклатура');
                 $items['Товар_Содержание'] = array_column($documentData['Товары'], 'Содержание');
@@ -151,17 +150,17 @@ class ReportsController extends Controller
                 foreach($documentData['Товары'] as $index => $item) {
                     $item = [
                         $index + 1,
-                        $item['Товар_Содержание'],
-                        $item['Товар_Количество'],
+                        $item['Содержание'],
+                        $item['Количество'],
                         'шт.', //todo
-                        $item['Товар_Цена'],
-                        $item['Товар_Сумма'],
+                        $item['Цена'],
+                        $item['Сумма'],
                     ];
                     array_push($items, $item);
                 }
-                dd($items);
+                $params['[[items]]'] = $items;
 
-                $file = DocumentHelper::generateInvoiceDocument($documentData);
+                $file = DocumentHelper::generateInvoiceDocument($params);
                 break;
             case 6:
                 // ???
