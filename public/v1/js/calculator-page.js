@@ -12,6 +12,23 @@ $(document).ready(function () {
     totalVolumeRecount();
 
     $('#ship_city').selectize({
+        openOnFocus:false,
+        onInitialize: function () {
+            var that = this;
+
+            this.$control.on("keyup", function (event) {
+                if(event.target.value.length > 2){
+                    that.open();
+                }else{
+                    that.close();
+                }
+            });
+
+            this.$control.on("click", function (event) {
+                $('#ship_city').selectize()[0].selectize.clear()
+                $('#dest_city').selectize()[0].selectize.clear()
+            });
+        },
         render: {
             option: function (data, escape) {
                 return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
@@ -36,6 +53,22 @@ $(document).ready(function () {
                     $('#dest_city').selectize()[0].selectize.destroy();
                     $('#dest_city').html(html);
                     let select = $('#dest_city').selectize({
+                        openOnFocus:false,
+                        onInitialize: function () {
+                            var that = this;
+
+                            this.$control.on("keyup", function (event) {
+                                if(event.target.value.length > 2){
+                                    that.open();
+                                }else{
+                                    that.close();
+                                }
+                            });
+
+                            this.$control.on("click", function (event) {
+                                $('#dest_city').selectize()[0].selectize.clear()
+                            });
+                        },
                         render: {
                             option: function (data, escape) {
                                 return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
@@ -57,6 +90,22 @@ $(document).ready(function () {
         }
     });
     $('#dest_city').selectize({
+        openOnFocus:false,
+        onInitialize: function () {
+            var that = this;
+
+            this.$control.on("keyup", function (event) {
+                if(event.target.value.length > 2){
+                    that.open();
+                }else{
+                    that.close();
+                }
+            });
+
+            this.$control.on("click", function (event) {
+                $('#dest_city').selectize()[0].selectize.clear()
+            });
+        },
         render: {
             option: function (data, escape) {
                 return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
