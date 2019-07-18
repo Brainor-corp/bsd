@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
 //        $schedule->job(new SendTestMail())->everyMinute();
 
 //        $schedule->job(new UsersSync())->everyFiveMinutes();
-//        $schedule->job(new OrdersSync())->everyMinute();
+//        $schedule->job(new OrdersSync())->everyFiveMinutes();
     }
 
     /**
