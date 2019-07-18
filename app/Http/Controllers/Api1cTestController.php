@@ -57,7 +57,7 @@ class Api1cTestController extends Controller
             $mapOrder['Название_груза'] = $order['shipping_name'];
             $mapOrder['Общий_вес'] = floatval($order['total_weight']);
             $mapOrder['Общий_объем'] = floatval($totalVolume);
-            $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_date'])->format('Y-m-d\Th:i:s');
+            $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_date'])->format('Y-m-d\TH:i:s');
             $mapOrder['Количество_мест'] = count($order['order_items']);
             $mapOrder['Итоговая_цена'] = is_numeric($order['total_price']) ? intval($order['total_price']) : 0;
             $mapOrder['Базовая_цена_маршрута'] = is_numeric($order['base_price']) ? intval($order['base_price']) : 0;
@@ -79,15 +79,15 @@ class Api1cTestController extends Controller
                 $mapOrder['Идентификатор_1С'] = $order['code_1c'];
             }
 
-            $mapOrder['Дата_и_время_создания_заказа'] = Carbon::createFromFormat('Y-m-d h:i:s', $order['created_at'])->format('Y-m-d\Th:i:s');
+            $mapOrder['Дата_и_время_создания_заказа'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['created_at'])->format('Y-m-d\TH:i:s');
 
             if(isset($order['order_finish_date'])) {
-                $mapOrder['Дата_и_время_завершения_заказа'] = Carbon::createFromFormat('Y-m-d', $order['order_finish_date'])->format('Y-m-d\Th:i:s');
+                $mapOrder['Дата_и_время_завершения_заказа'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_finish_date'])->format('Y-m-d\TH:i:s');
             }
 
             $mapOrder['Плательщик'] = [
                 'Тип_плательщика' => $order['payer']['name'],
-                'Тип_контрагента' => $order['payer_form_type']['name'],
+                'Тип_контрагента' => $order['payer_form_type']['name'] ?? "",
                 'Правовая_форма' => $order['payer_legal_form'] ?? "",
                 'Наименование' => strlen($order['payer_company_name']) >= 3 ? $order['payer_company_name'] : "---",
                 'Адрес' => [
@@ -137,7 +137,7 @@ class Api1cTestController extends Controller
                 'Дистанция_экспедиции' => strval($order['take_distance']),
                 'Точная_экспедиция' => !!intval($order['take_point']),
                 'Просчитанная_цена' => is_numeric($order['take_price']) ? floatval($order['take_price']) : 0,
-                'Название_города_экспедиции' => $order['take_city_name'],
+                'Название_города_экспедиции' => $order['take_city_name'] ?? "",
             ];
 
             $mapOrder['Доставка_груза'] = [
@@ -147,7 +147,7 @@ class Api1cTestController extends Controller
                 'Дистанция_экспедиции' => strval($order['delivery_distance']),
                 'Точная_экспедиция' => !!intval($order['delivery_point']),
                 'Просчитанная_цена' => is_numeric($order['delivery_price']) ? intval($order['delivery_price']) : 0,
-                'Название_города_экспедиции' => $order['delivery_city_name'],
+                'Название_города_экспедиции' => $order['delivery_city_name'] ?? "",
             ];
 
             $mapOrder['Пакеты'] = array_map(function ($order_item) {
@@ -163,7 +163,7 @@ class Api1cTestController extends Controller
             }, $order['order_items']);
 
             $mapOrder['Отправитель'] = [
-                'Тип_контрагента' => $order['sender_type']['name'],
+                'Тип_контрагента' => $order['sender_type']['name'] ?? "",
                 'Правовая_форма' => $order['sender_legal_form'] ?? "",
                 'Наименование' => strlen($order['sender_company_name']) >= 3 ? $order['sender_company_name'] : "---",
                 'Адрес' => [
@@ -185,7 +185,7 @@ class Api1cTestController extends Controller
             ];
 
             $mapOrder['Получатель'] = [
-                'Тип_контрагента' => $order['recipient_type']['name'],
+                'Тип_контрагента' => $order['recipient_type']['name'] ?? "",
                 'Правовая_форма' => $order['recipient_legal_form'] ?? "",
                 'Наименование' => strlen($order['recipient_company_name']) >= 3 ? $order['recipient_company_name'] : "---",
                 'Адрес' => [
