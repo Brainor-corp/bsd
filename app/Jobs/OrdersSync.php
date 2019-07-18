@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Http\Helpers\Api1CHelper;
 use App\Order;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -10,7 +9,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 
 class OrdersSync implements ShouldQueue
 {
@@ -219,25 +217,7 @@ class OrdersSync implements ShouldQueue
         }, $orders);
 
         foreach($orders as $order) {
-            try {
-                $response1c = Api1CHelper::post('create_order', $order);
-                if(
-                    $response1c['status'] == 200 &&
-                    $response1c['status']['status'] === 'success' &&
-                    !empty($response1c['status']['id'])
-                ) {
-                    DB::table('orders')->where('id', $order['Идентификатор_на_сайте'])->update([
-                        'code_1c' => $response1c['status']['id'],
-                        'sync_need' => false
-                    ]);
-                } else {
-                    // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
-                    throw new \Exception("Заказ " . $order['Идентификатор_на_сайте'] . " не обработан.");
-                }
-            } catch (\Exception $exception) {
-                // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
-                throw new \Exception($exception->getMessage());
-            }
+            dispatch(new OrderSync($order));
         }
     }
 }
