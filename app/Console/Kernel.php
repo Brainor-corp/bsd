@@ -3,7 +3,6 @@
 namespace App\Console;
 
 use App\Jobs\OrdersSync;
-use App\Jobs\SendTestMail;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -26,9 +25,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+//        $schedule->job(new SendTestMail())->everyMinute();
+
 //        $schedule->job(new UsersSync())->everyFiveMinutes();
-        $schedule->job(new SendTestMail())->everyMinute();
-        $schedule->job(new OrdersSync())->everyFiveMinutes();
+        $schedule->job(new OrdersSync())->everyMinute();
     }
 
     /**
