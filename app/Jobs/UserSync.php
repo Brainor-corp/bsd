@@ -13,6 +13,8 @@ class UserSync implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 1;
+
     private $user;
 
     /**
