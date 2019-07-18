@@ -1,4 +1,21 @@
 ﻿$('#short_ship_city').selectize({
+    openOnFocus:false,
+    onInitialize: function () {
+        var that = this;
+
+        this.$control.on("keyup", function (event) {
+            if(event.target.value.length > 2){
+                that.open();
+            }else{
+                that.close();
+            }
+        });
+
+        this.$control.on("click", function (event) {
+            $('#short_ship_city').selectize()[0].selectize.clear()
+            $('#short_dest_city').selectize()[0].selectize.clear()
+        });
+    },
     onChange: function(value) {// при изменении города отправления
 
         if (!value.length) return;
@@ -27,6 +44,22 @@
                 $('#short_dest_city').selectize()[0].selectize.destroy();
                 $('#short_dest_city').html(html);
                 $('#short_dest_city').selectize({
+                    openOnFocus:false,
+                    onInitialize: function () {
+                        var that = this;
+
+                        this.$control.on("keyup", function (event) {
+                            if(event.target.value.length > 2){
+                                that.open();
+                            }else{
+                                that.close();
+                            }
+                        });
+
+                        this.$control.on("click", function (event) {
+                            $('#short_dest_city').selectize()[0].selectize.clear()
+                        });
+                    },
                     onChange: function(value) {// при изменении города назначения
                         // var $select = $('#dest_city').selectize();
                         // var selectize = $select[0].selectize;
@@ -53,6 +86,22 @@
 });
 
 $('#short_dest_city').selectize({
+    openOnFocus:false,
+    onInitialize: function () {
+        var that = this;
+
+        this.$control.on("keyup", function (event) {
+            if(event.target.value.length > 2){
+                that.open();
+            }else{
+                that.close();
+            }
+        });
+
+        this.$control.on("click", function (event) {
+            $('#short_dest_city').selectize()[0].selectize.clear()
+        });
+    },
     onChange: function(value) {// при изменении города назначения
 
         // var $select = $('#dest_city').selectize();
