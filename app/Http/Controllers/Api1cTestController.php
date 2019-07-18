@@ -39,7 +39,6 @@ class Api1cTestController extends Controller
                 'order_items'
             )
             ->orderBy('created_at', 'desc')
-            ->where('id', 99)
             ->limit(1)
 
             ->get()->toArray();
