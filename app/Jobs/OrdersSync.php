@@ -91,7 +91,7 @@ class OrdersSync implements ShouldQueue
             $mapOrder['Дата_и_время_создания_заказа'] = Carbon::createFromFormat('Y-m-d h:i:s', $order['created_at'])->format('Y-m-d\Th:i:s');
 
             if(isset($order['order_finish_date'])) {
-                $mapOrder['Дата_и_время_завершения_заказа'] = Carbon::createFromFormat('Y-m-d', $order['order_finish_date'])->format('Y-m-d\Th:i:s');
+                $mapOrder['Дата_и_время_завершения_заказа'] = Carbon::createFromFormat('Y-m-d h:i:s', $order['order_finish_date'])->format('Y-m-d\Th:i:s');
             }
 
             $mapOrder['Плательщик'] = [
@@ -219,19 +219,24 @@ class OrdersSync implements ShouldQueue
         }, $orders);
 
         foreach($orders as $order) {
-            $response1c = Api1CHelper::post('create_order', $order);
-            if(
-                $response1c['status'] == 200 &&
-                $response1c['status']['status'] === 'success' &&
-                !empty($response1c['status']['id'])
-            ) {
-                DB::table('orders')->where('id', $order['Идентификатор_на_сайте'])->update([
-                    'code_1c' => $response1c['status']['id'],
-                    'sync_need' => false
-                ]);
-            } else {
+            try {
+                $response1c = Api1CHelper::post('create_order', $order);
+                if(
+                    $response1c['status'] == 200 &&
+                    $response1c['status']['status'] === 'success' &&
+                    !empty($response1c['status']['id'])
+                ) {
+                    DB::table('orders')->where('id', $order['Идентификатор_на_сайте'])->update([
+                        'code_1c' => $response1c['status']['id'],
+                        'sync_need' => false
+                    ]);
+                } else {
+                    // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
+                    throw new \Exception("Заказ $order->id не обработан.");
+                }
+            } catch (\Exception $exception) {
                 // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
-                throw new \Exception("Заказ $order->id не обработан.");
+                throw new \Exception($exception->getMessage());
             }
         }
     }
