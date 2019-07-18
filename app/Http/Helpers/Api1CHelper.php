@@ -11,7 +11,9 @@ class Api1CHelper {
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+
 //        curl_setopt($curl, CURLOPT_HEADER, 1);
+
         curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
@@ -38,7 +40,9 @@ class Api1CHelper {
         return [
             'status' => $status,
             'response' => json_decode($json_response, true),
+
 //            'headers' => $headers
+
         ];
     }
 

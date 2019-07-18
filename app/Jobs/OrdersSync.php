@@ -94,7 +94,7 @@ class OrdersSync implements ShouldQueue
 
             $mapOrder['Плательщик'] = [
                 'Тип_плательщика' => $order['payer']['name'],
-                'Тип_контрагента' => $order['payer_form_type']['name'],
+                'Тип_контрагента' => $order['payer_form_type']['name'] ?? "",
                 'Правовая_форма' => $order['payer_legal_form'] ?? "",
                 'Наименование' => strlen($order['payer_company_name']) >= 3 ? $order['payer_company_name'] : "---",
                 'Адрес' => [
@@ -144,7 +144,7 @@ class OrdersSync implements ShouldQueue
                 'Дистанция_экспедиции' => strval($order['take_distance']),
                 'Точная_экспедиция' => !!intval($order['take_point']),
                 'Просчитанная_цена' => is_numeric($order['take_price']) ? floatval($order['take_price']) : 0,
-                'Название_города_экспедиции' => $order['take_city_name'],
+                'Название_города_экспедиции' => $order['take_city_name'] ?? "",
             ];
 
             $mapOrder['Доставка_груза'] = [
@@ -154,7 +154,7 @@ class OrdersSync implements ShouldQueue
                 'Дистанция_экспедиции' => strval($order['delivery_distance']),
                 'Точная_экспедиция' => !!intval($order['delivery_point']),
                 'Просчитанная_цена' => is_numeric($order['delivery_price']) ? intval($order['delivery_price']) : 0,
-                'Название_города_экспедиции' => $order['delivery_city_name'],
+                'Название_города_экспедиции' => $order['delivery_city_name'] ?? "",
             ];
 
             $mapOrder['Пакеты'] = array_map(function ($order_item) {
@@ -170,7 +170,7 @@ class OrdersSync implements ShouldQueue
             }, $order['order_items']);
 
             $mapOrder['Отправитель'] = [
-                'Тип_контрагента' => $order['sender_type']['name'],
+                'Тип_контрагента' => $order['sender_type']['name'] ?? "",
                 'Правовая_форма' => $order['sender_legal_form'] ?? "",
                 'Наименование' => strlen($order['sender_company_name']) >= 3 ? $order['sender_company_name'] : "---",
                 'Адрес' => [
@@ -192,7 +192,7 @@ class OrdersSync implements ShouldQueue
             ];
 
             $mapOrder['Получатель'] = [
-                'Тип_контрагента' => $order['recipient_type']['name'],
+                'Тип_контрагента' => $order['recipient_type']['name'] ?? "",
                 'Правовая_форма' => $order['recipient_legal_form'] ?? "",
                 'Наименование' => strlen($order['recipient_company_name']) >= 3 ? $order['recipient_company_name'] : "---",
                 'Адрес' => [

@@ -39,6 +39,7 @@ class Api1cTestController extends Controller
                 'order_items'
             )
             ->orderBy('created_at', 'desc')
+            ->where('id', 96)
             ->limit(1)
 
             ->get()->toArray();
@@ -209,6 +210,7 @@ class Api1cTestController extends Controller
         }, $orders);
 
         foreach($orders as $order) {
+            return $order;
             $response1c = Api1CHelper::post('create_order', $order);
             dd([
                 'send' => $order,
