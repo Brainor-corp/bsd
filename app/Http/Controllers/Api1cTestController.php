@@ -87,7 +87,7 @@ class Api1cTestController extends Controller
 
             $mapOrder['Плательщик'] = [
                 'Тип_плательщика' => $order['payer']['name'],
-                'Тип_контрагента' => $order['payer_form_type']['name'] ?? "",
+//                'Тип_контрагента' => $order['payer_form_type']['name'] ?? "",
                 'Правовая_форма' => $order['payer_legal_form'] ?? "",
                 'Наименование' => strlen($order['payer_company_name']) >= 3 ? $order['payer_company_name'] : "---",
                 'Адрес' => [
@@ -107,6 +107,10 @@ class Api1cTestController extends Controller
                 'Серия_паспорта' => strlen($order['payer_passport_series']) >= 0 && strlen($order['payer_passport_series']) <= 4 ? strval($order['payer_passport_series']) : "",
                 'Номер_паспорта' => strlen($order['payer_passport_number']) >= 0 && strlen($order['payer_passport_number']) <= 6 ? strval($order['payer_passport_number']) : "",
             ];
+
+            if(isset($order['payer_form_type']['name'])) {
+                $mapOrder['Плательщик']['Тип_контрагента'] = $order['payer_form_type']['name'];
+            }
 
             if(isset($order['order_services'])) {
                 $mapOrder['Услуги'] = array_map(function ($order_service) {
@@ -163,7 +167,7 @@ class Api1cTestController extends Controller
             }, $order['order_items']);
 
             $mapOrder['Отправитель'] = [
-                'Тип_контрагента' => $order['sender_type']['name'] ?? "",
+//                'Тип_контрагента' => $order['sender_type']['name'] ?? "",
                 'Правовая_форма' => $order['sender_legal_form'] ?? "",
                 'Наименование' => strlen($order['sender_company_name']) >= 3 ? $order['sender_company_name'] : "---",
                 'Адрес' => [
@@ -184,8 +188,12 @@ class Api1cTestController extends Controller
                 'Номер_паспорта' => strlen($order['sender_passport_number']) >= 0 && strlen($order['sender_passport_number']) <= 6 ? strval($order['sender_passport_number']) : "",
             ];
 
+            if(isset($order['sender_type']['name'])) {
+                $mapOrder['Отправитель']['Тип_контрагента'] = $order['sender_type']['name'];
+            }
+
             $mapOrder['Получатель'] = [
-                'Тип_контрагента' => $order['recipient_type']['name'] ?? "",
+//                'Тип_контрагента' => $order['recipient_type']['name'] ?? "",
                 'Правовая_форма' => $order['recipient_legal_form'] ?? "",
                 'Наименование' => strlen($order['recipient_company_name']) >= 3 ? $order['recipient_company_name'] : "---",
                 'Адрес' => [
@@ -205,6 +213,10 @@ class Api1cTestController extends Controller
                 'Серия_паспорта' => strlen($order['recipient_passport_series']) >= 0 && strlen($order['recipient_passport_series']) <= 4 ? strval($order['recipient_passport_series']) : "",
                 'Номер_паспорта' => strlen($order['recipient_passport_number']) >= 0 && strlen($order['recipient_passport_number']) <= 6 ? strval($order['recipient_passport_number']) : "",
             ];
+
+            if(isset($order['recipient_type']['name'])) {
+                $mapOrder['Получатель']['Тип_контрагента'] = $order['recipient_type']['name'];
+            }
 
             return $mapOrder;
         }, $orders);
