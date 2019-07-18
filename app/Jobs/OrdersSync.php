@@ -232,7 +232,7 @@ class OrdersSync implements ShouldQueue
                     ]);
                 } else {
                     // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
-                    throw new \Exception("Заказ " . $order['id'] . " не обработан.");
+                    throw new \Exception("Заказ " . $order['Идентификатор_на_сайте'] . " не обработан.");
                 }
             } catch (\Exception $exception) {
                 // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
