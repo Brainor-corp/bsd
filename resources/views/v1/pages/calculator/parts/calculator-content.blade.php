@@ -94,7 +94,7 @@
                 <label class="custom-control-label" for="need-to-take">Нужно забрать груз</label>
             </div>
             <div class="custom-control custom-radio">
-                <input type="radio" checked class="custom-control-input need-to-take-input" id="need-to-take-type-in" name="need-to-take-type" value="in"
+                <input type="radio" class="custom-control-input need-to-take-input" id="need-to-take-type-in" name="need-to-take-type" value="in"
                         @if(isset($order) && $order->take_need && $order->take_in_city) checked @endif
                         @if(!isset($order) && !isset($deliveryPoint) || (isset($order) && !$order->take_need)) disabled @endif/>
                 <label class="custom-control-label" for="need-to-take-type-in">в пределах города отправления</label>
@@ -168,7 +168,7 @@
                 <label class="custom-control-label" for="need-to-bring">Нужно доставить груз</label>
             </div>
             <div class="custom-control custom-radio">
-                <input type="radio" checked class="custom-control-input need-to-bring-input" id="need-to-bring-type-in" name="need-to-bring-type" value="in"
+                <input type="radio" class="custom-control-input need-to-bring-input" id="need-to-bring-type-in" name="need-to-bring-type" value="in"
                        @if(isset($order) && $order->delivery_need && $order->delivery_in_city) checked @endif
                        @if(!isset($order) && !isset($bringPoint) || (isset($order) && !$order->delivery_need)) disabled @endif/>
                 <label class="custom-control-label" for="need-to-bring-type-in">в пределах города отправления</label>
