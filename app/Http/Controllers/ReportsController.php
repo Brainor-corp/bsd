@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use alhimik1986\PhpExcelTemplator\params\ExcelParam;
 use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArray2DValue;
+use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValue;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use App\Http\Helpers\DocumentHelper;
 use App\Order;
@@ -314,13 +315,12 @@ class ReportsController extends Controller
             '{order_date}' => $order->created_at->format('d.m.Y h:i:s'),
         ];
 
-        $params['[service_number]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, range(3, $order->order_services->count() + 2));
-        $params['[service_name]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_services->pluck('name')->toArray());
-        $params['[service_quantity]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_services->pluck('quantity')->toArray());
-        $params['[service_point]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_services->pluck('point')->toArray());
-        $params['[service_price]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_services->pluck('price')->toArray());
-        $params['[service_summary]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_services->pluck('summary')->toArray());
-
+        $params['[service_number]'] = new ExcelParam(CellSetterArrayValueSpecial::class, range(3, $order->order_services->count() + 2));
+        $params['[service_name]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $order->order_services->pluck('name')->toArray());
+        $params['[service_quantity]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $order->order_services->pluck('quantity')->toArray());
+        $params['[service_point]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $order->order_services->pluck('point')->toArray());
+        $params['[service_price]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $order->order_services->pluck('price')->toArray());
+        $params['[service_summary]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $order->order_services->pluck('summary')->toArray());
 
         $name = md5('docs bsd' . time()) . $documentExtension;
         $path = storage_path('app/public/documents/');
@@ -331,49 +331,6 @@ class ReportsController extends Controller
         PhpExcelTemplator::saveToFile($templateFile, $tempFile, $params);
         return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
     }
-
-//    public function actionDownloadDocumentReceipt(Request $request){
-//        $order = Order::where('id', $request->id)
-//            ->where(function ($orderQuery) {
-//                return Auth::check() ? $orderQuery
-//                    ->where('user_id', Auth::user()->id)
-//                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
-//                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
-//            })
-//            ->with('status', 'ship_city', 'dest_city')->firstOrFail();
-//
-//        $orderDate = Date::now()->format('d F Y');
-//        $path = public_path('templates\\ReceiptTemplate.xlsx');
-//        $documentName = "Экспедиторская расписка №$order->id от $orderDate г.";
-//        $documentExtension = '.xlsx';
-//
-//        $params = [
-//            'created_at' => $order->created_at,
-//            'number' => $order->id,
-//            'ship_city' => $order->ship_city_name ?? $order->ship_city->name,
-//            'dest_city' => $order->dest_city_name ?? $order->dest_city->name,
-//        ];
-//
-//        foreach ($order->order_items as $key => $item){
-//            $blocks['items'][$key]['quantity'] = $item->quantity;
-//            $blocks['items'][$key]['weight'] = $item->weight;
-//            $blocks['items'][$key]['volume'] = $item->volume;
-//            $blocks['items'][$key]['price'] = 312;
-//            $blocks['items'][$key]['name'] = 'efsd';
-//        }
-//        foreach ($order->order_items as $key => $item){
-//            $blocks['items'][$key+2]['quantity'] = $item->quantity;
-//            $blocks['items'][$key+2]['weight'] = $item->weight;
-//            $blocks['items'][$key+2]['volume'] = $item->volume;
-//            $blocks['items'][$key+2]['price'] = 123;
-//            $blocks['items'][$key+2]['name'] = 'asdads';
-//        }
-//
-////        dd($blocks);
-//        $tempFile = DocumentHelper::generateDocument($path, $documentExtension, $params, $blocks);
-//
-//        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
-//    }
 
     public function actionDownloadDocumentReceipt(Request $request) {
         $order = Order::where('id', $request->id)
@@ -442,6 +399,54 @@ class ReportsController extends Controller
         File::makeDirectory($path, $mode = 0777, true, true);
 
         PhpExcelTemplator::saveToFile($templateFile, $tempFile, $params);
+        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
+    }
+
+    public function actionDownloadDocumentRequest(Request $request)
+    {
+        $order = Order::where('id', $request->id)
+            ->where(function ($orderQuery) {
+                return Auth::check() ? $orderQuery
+                    ->where('user_id', Auth::user()->id)
+                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
+                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
+            })
+            ->with('status', 'ship_city', 'dest_city')->firstOrFail();
+
+        $orderDate = Date::parse($order->created_at)->format('d F Y');
+        $documentName = "Заявка №$order->id от $orderDate г.";
+        $documentExtension = '.docx';
+
+        $templateFile = public_path('templates/RequestTemplate.docx');
+
+        $params = [
+            '{order_id}' => $order->id,
+            '{order_date}' => $order->created_at->format('d.m.Y h:i:s'),
+            '{ship_city}' => $order->ship_city_name ?? $order->ship_city->name,
+            '{dest_city}' => $order->dest_city_name ?? $order->dest_city->name,
+        ];
+
+        $blocks['blk'] = [
+            [
+                'length' => 1,
+                'width' => 22,
+                'height' => 2,
+                'volume' => 23,
+                'weight' => 2,
+                'quantity' => 4,
+            ],
+            [
+                'length' => 113121,
+                'width' => 222,
+                'height' => 2332,
+                'volume' => 223,
+                'weight' => 233,
+                'quantity' => 42232,
+            ],
+        ];
+
+        $tempFile = DocumentHelper::generateTBSDocument($templateFile, $documentExtension, $params, $blocks);
+
         return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
     }
 }
