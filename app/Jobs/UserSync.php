@@ -37,26 +37,18 @@ class UserSync implements ShouldQueue
     {
         $notSynchronizedUser = $this->user;
 
-        try {
-            $response1c = Api1CHelper::post(
-                'new_user',
-                [
-                    'email' => $notSynchronizedUser->email,
-                    'tel' => intval($notSynchronizedUser->phone) // Для Api важно, чтобы номер был цифрой
-                ]
-            );
+        $response1c = Api1CHelper::post(
+            'new_user',
+            [
+                'email' => $notSynchronizedUser->email,
+                'tel' => intval($notSynchronizedUser->phone) // Для Api важно, чтобы номер был цифрой
+            ]
+        );
 
-            if($response1c['status'] == 200 && !empty($response1c['response']['id'] && $response1c['response']['id'] !== 'not found')) {
-                $notSynchronizedUser->guid = $response1c['response']['id'];
-                $notSynchronizedUser->sync_need = false;
-                $notSynchronizedUser->update();
-            } else {
-                // Тригерим ошибку, чтобы job с неудачным пользователем упал в failed jobs
-                throw new \Exception("Пользователь " . $notSynchronizedUser->id . " не обработан.");
-            }
-        } catch (\Exception $exception) {
-            // Тригерим ошибку, чтобы job с неудачным пользователем упал в failed jobs
-            throw new \Exception($exception->getMessage());
+        if($response1c['status'] == 200 && !empty($response1c['response']['id'] && $response1c['response']['id'] !== 'not found')) {
+            $notSynchronizedUser->guid = $response1c['response']['id'];
+            $notSynchronizedUser->sync_need = false;
+            $notSynchronizedUser->update();
         }
     }
 }

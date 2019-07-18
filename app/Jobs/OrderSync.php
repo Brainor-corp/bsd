@@ -38,24 +38,18 @@ class OrderSync implements ShouldQueue
     {
         $order = $this->order;
 
-        try {
-            $response1c = Api1CHelper::post('create_order', $order);
-            if(
-                $response1c['status'] == 200 &&
-                $response1c['status']['status'] === 'success' &&
-                !empty($response1c['status']['id'])
-            ) {
-                DB::table('orders')->where('id', $order['Идентификатор_на_сайте'])->update([
-                    'code_1c' => $response1c['status']['id'],
-                    'sync_need' => false
-                ]);
-            } else {
-                // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
-                throw new \Exception("Заказ " . $order['Идентификатор_на_сайте'] . " не обработан.");
-            }
-        } catch (\Exception $exception) {
+        $response1c = Api1CHelper::post('create_order', $order);
+        if(
+            $response1c['status']['status'] === 'success' &&
+            !empty($response1c['status']['id'])
+        ) {
+            DB::table('orders')->where('id', $order['Идентификатор_на_сайте'])->update([
+                'code_1c' => $response1c['status']['id'],
+                'sync_need' => false
+            ]);
+        } else {
             // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
-            throw new \Exception($exception->getMessage());
+            throw new \Exception("Заказ " . $order['Идентификатор_на_сайте'] . " не обработан.");
         }
     }
 }
