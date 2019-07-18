@@ -210,7 +210,6 @@ class Api1cTestController extends Controller
         }, $orders);
 
         foreach($orders as $order) {
-            return $order;
             $response1c = Api1CHelper::post('create_order', $order);
             dd([
                 'send' => $order,
