@@ -11,7 +11,7 @@ class Api1CHelper {
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-//        curl_setopt($curl, CURLOPT_HEADER, 1);
+        curl_setopt($curl, CURLOPT_HEADER, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
@@ -23,22 +23,22 @@ class Api1CHelper {
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
-//        $headers = [];
-//        $output = rtrim($json_response);
-//        $data = explode("\n",$output);
-//        $headers['status'] = $data[0];
-//        array_shift($data);
-//
-//        foreach($data as $part){
-//            $middle = explode(":",$part,2);
-//            if ( !isset($middle[1]) ) { $middle[1] = null; }
-//            $headers[trim($middle[0])] = trim($middle[1]);
-//        }
+        $headers = [];
+        $output = rtrim($json_response);
+        $data = explode("\n",$output);
+        $headers['status'] = $data[0];
+        array_shift($data);
+
+        foreach($data as $part){
+            $middle = explode(":",$part,2);
+            if ( !isset($middle[1]) ) { $middle[1] = null; }
+            $headers[trim($middle[0])] = trim($middle[1]);
+        }
 
         return [
             'status' => $status,
             'response' => json_decode($json_response, true),
-//            'headers' => $headers
+            'headers' => $headers
         ];
     }
 
