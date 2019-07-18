@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Http\Helpers\Api1CHelper;
 use App\Order;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -10,7 +9,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 
 class OrdersSync implements ShouldQueue
 {
@@ -66,7 +64,7 @@ class OrdersSync implements ShouldQueue
             $mapOrder['Название_груза'] = $order['shipping_name'];
             $mapOrder['Общий_вес'] = floatval($order['total_weight']);
             $mapOrder['Общий_объем'] = floatval($totalVolume);
-            $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_date'])->format('Y-m-d\Th:i:s');
+            $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_date'])->format('Y-m-d\TH:i:s');
             $mapOrder['Количество_мест'] = count($order['order_items']);
             $mapOrder['Итоговая_цена'] = is_numeric($order['total_price']) ? intval($order['total_price']) : 0;
             $mapOrder['Базовая_цена_маршрута'] = is_numeric($order['base_price']) ? intval($order['base_price']) : 0;
@@ -88,15 +86,15 @@ class OrdersSync implements ShouldQueue
                 $mapOrder['Идентификатор_1С'] = $order['code_1c'];
             }
 
-            $mapOrder['Дата_и_время_создания_заказа'] = Carbon::createFromFormat('Y-m-d h:i:s', $order['created_at'])->format('Y-m-d\Th:i:s');
+            $mapOrder['Дата_и_время_создания_заказа'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['created_at'])->format('Y-m-d\TH:i:s');
 
             if(isset($order['order_finish_date'])) {
-                $mapOrder['Дата_и_время_завершения_заказа'] = Carbon::createFromFormat('Y-m-d', $order['order_finish_date'])->format('Y-m-d\Th:i:s');
+                $mapOrder['Дата_и_время_завершения_заказа'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_finish_date'])->format('Y-m-d\TH:i:s');
             }
 
             $mapOrder['Плательщик'] = [
                 'Тип_плательщика' => $order['payer']['name'],
-                'Тип_контрагента' => $order['payer_form_type']['name'],
+                'Тип_контрагента' => $order['payer_form_type']['name'] ?? "",
                 'Правовая_форма' => $order['payer_legal_form'] ?? "",
                 'Наименование' => strlen($order['payer_company_name']) >= 3 ? $order['payer_company_name'] : "---",
                 'Адрес' => [
@@ -146,7 +144,7 @@ class OrdersSync implements ShouldQueue
                 'Дистанция_экспедиции' => strval($order['take_distance']),
                 'Точная_экспедиция' => !!intval($order['take_point']),
                 'Просчитанная_цена' => is_numeric($order['take_price']) ? floatval($order['take_price']) : 0,
-                'Название_города_экспедиции' => $order['take_city_name'],
+                'Название_города_экспедиции' => $order['take_city_name'] ?? "",
             ];
 
             $mapOrder['Доставка_груза'] = [
@@ -156,7 +154,7 @@ class OrdersSync implements ShouldQueue
                 'Дистанция_экспедиции' => strval($order['delivery_distance']),
                 'Точная_экспедиция' => !!intval($order['delivery_point']),
                 'Просчитанная_цена' => is_numeric($order['delivery_price']) ? intval($order['delivery_price']) : 0,
-                'Название_города_экспедиции' => $order['delivery_city_name'],
+                'Название_города_экспедиции' => $order['delivery_city_name'] ?? "",
             ];
 
             $mapOrder['Пакеты'] = array_map(function ($order_item) {
@@ -172,7 +170,7 @@ class OrdersSync implements ShouldQueue
             }, $order['order_items']);
 
             $mapOrder['Отправитель'] = [
-                'Тип_контрагента' => $order['sender_type']['name'],
+                'Тип_контрагента' => $order['sender_type']['name'] ?? "",
                 'Правовая_форма' => $order['sender_legal_form'] ?? "",
                 'Наименование' => strlen($order['sender_company_name']) >= 3 ? $order['sender_company_name'] : "---",
                 'Адрес' => [
@@ -194,7 +192,7 @@ class OrdersSync implements ShouldQueue
             ];
 
             $mapOrder['Получатель'] = [
-                'Тип_контрагента' => $order['recipient_type']['name'],
+                'Тип_контрагента' => $order['recipient_type']['name'] ?? "",
                 'Правовая_форма' => $order['recipient_legal_form'] ?? "",
                 'Наименование' => strlen($order['recipient_company_name']) >= 3 ? $order['recipient_company_name'] : "---",
                 'Адрес' => [
@@ -219,20 +217,7 @@ class OrdersSync implements ShouldQueue
         }, $orders);
 
         foreach($orders as $order) {
-            $response1c = Api1CHelper::post('create_order', $order);
-            if(
-                $response1c['status'] == 200 &&
-                $response1c['status']['status'] === 'success' &&
-                !empty($response1c['status']['id'])
-            ) {
-                DB::table('orders')->where('id', $order['Идентификатор_на_сайте'])->update([
-                    'code_1c' => $response1c['status']['id'],
-                    'sync_need' => false
-                ]);
-            } else {
-                // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
-                throw new \Exception("Заказ $order->id не обработан.");
-            }
+            dispatch(new OrderSync($order));
         }
     }
 }

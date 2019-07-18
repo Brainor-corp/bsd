@@ -6,6 +6,7 @@ use App\City;
 use App\Order;
 use App\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
@@ -254,6 +255,14 @@ class Orders extends Section {
         ]);
 
         return $form;
+    }
+
+    public function beforeDelete(Request $request, $id = null)
+    {
+        $order = Order::where('id', $id)->first();
+        $order->order_services()->sync(null);
+
+        DB::table('order_items')->where('order_id', $id)->delete();
     }
 
     public function afterSave(Request $request, $model = null) {
