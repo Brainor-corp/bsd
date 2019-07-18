@@ -349,12 +349,16 @@ $(document).ready(function () {
     $(document).on('change', '#need-to-take', function () {
         if($(this).is(':checked')) {
             $('.need-to-take-input').removeAttr('disabled');
+            if($('input[name="need-to-take-type"]:checked').val() !== 'from') {
+                $('#need-to-take-type-in').prop('checked', true);
+            }
             if($('input[name="need-to-take-type"]:checked').val() === 'from') {
                 $('.need-to-take-input-address').removeAttr('disabled');
             }
         } else {
             $('.need-to-take-input').attr('disabled', 'disabled');
             $('.need-to-take-input-address').attr('disabled', 'disabled');
+            // $('input[name="need-to-take-type"]:checked').prop('checked', false);
         }
 
         calcTariffPrice(
@@ -368,28 +372,34 @@ $(document).ready(function () {
     });
 
     $(document).on('change', 'input[name="need-to-take-type"]', function () {
-        if($('input[name="need-to-take-type"]:checked').val() === 'from') {
-            $('.need-to-take-input-address').removeAttr('disabled');
-        } else if($('input[name="need-to-take-type"]:checked').val() === 'in') {
-            $('.need-to-take-input-address').attr('disabled', 'disabled');
-        }
+        if($(this).is(':checked')) {
+            if ($('input[name="need-to-take-type"]:checked').val() === 'from') {
+                $('.need-to-take-input-address').removeAttr('disabled');
+            } else if ($('input[name="need-to-take-type"]:checked').val() === 'in') {
+                $('.need-to-take-input-address').attr('disabled', 'disabled');
+            }
 
-        calcTariffPrice(
-            {
-                'value': $('#ship_city').val(),
-                'point': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
-            },
-            $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in"
-        );
+            calcTariffPrice(
+                {
+                    'value': $('#ship_city').val(),
+                    'point': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
+                },
+                $('#ship_point'), $('input[name="need-to-take-type"]:checked').val() == "in"
+            );
+        }
     });
 
     $(document).on('change', '#need-to-bring', function () {
         if($(this).is(':checked')) {
             $('.need-to-bring-input').removeAttr('disabled');
+            if($('input[name="need-to-bring-type"]:checked').val() !== 'from') {
+                $('#need-to-bring-type-in').prop('checked', true);
+            }
             if($('input[name="need-to-bring-type"]:checked').val() === 'from') {
                 $('.need-to-bring-input-address').removeAttr('disabled');
             }
         } else {
+            // $('input[name="need-to-bring-type"]:checked').prop('checked', false);
             $('.need-to-bring-input').attr('disabled', 'disabled');
             $('.need-to-bring-input-address').attr('disabled', 'disabled');
         }
