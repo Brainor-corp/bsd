@@ -32,6 +32,7 @@ class OrdersSync implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     * @throws \Exception
      */
     public function handle()
     {
@@ -228,6 +229,9 @@ class OrdersSync implements ShouldQueue
                     'code_1c' => $response1c['status']['id'],
                     'sync_need' => false
                 ]);
+            } else {
+                // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
+                throw new \Exception("Заказ $order->id не обработан.");
             }
         }
     }
