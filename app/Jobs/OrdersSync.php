@@ -66,7 +66,7 @@ class OrdersSync implements ShouldQueue
             $mapOrder['Название_груза'] = $order['shipping_name'];
             $mapOrder['Общий_вес'] = floatval($order['total_weight']);
             $mapOrder['Общий_объем'] = floatval($totalVolume);
-            $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_date'])->format('Y-m-d\Th:i:s');
+            $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_date'])->format('Y-m-d\TH:i:s');
             $mapOrder['Количество_мест'] = count($order['order_items']);
             $mapOrder['Итоговая_цена'] = is_numeric($order['total_price']) ? intval($order['total_price']) : 0;
             $mapOrder['Базовая_цена_маршрута'] = is_numeric($order['base_price']) ? intval($order['base_price']) : 0;
@@ -88,10 +88,10 @@ class OrdersSync implements ShouldQueue
                 $mapOrder['Идентификатор_1С'] = $order['code_1c'];
             }
 
-            $mapOrder['Дата_и_время_создания_заказа'] = Carbon::createFromFormat('Y-m-d h:i:s', $order['created_at'])->format('Y-m-d\Th:i:s');
+            $mapOrder['Дата_и_время_создания_заказа'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['created_at'])->format('Y-m-d\TH:i:s');
 
             if(isset($order['order_finish_date'])) {
-                $mapOrder['Дата_и_время_завершения_заказа'] = Carbon::createFromFormat('Y-m-d h:i:s', $order['order_finish_date'])->format('Y-m-d\Th:i:s');
+                $mapOrder['Дата_и_время_завершения_заказа'] = Carbon::createFromFormat('Y-m-d H:i:s', $order['order_finish_date'])->format('Y-m-d\TH:i:s');
             }
 
             $mapOrder['Плательщик'] = [
