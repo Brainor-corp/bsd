@@ -108,7 +108,7 @@ class Api1cTestController extends Controller
                 'Номер_паспорта' => strlen($order['payer_passport_number']) >= 0 && strlen($order['payer_passport_number']) <= 6 ? strval($order['payer_passport_number']) : "",
             ];
 
-            switch($order['payer_form_type']['name']) {
+            switch($order['payer']['name']) {
                 case "Отправитель": $mapOrder['Плательщик']['Тип_контрагента'] = $order['sender_type']['name']; break;
                 case "Получатель": $mapOrder['Плательщик']['Тип_контрагента'] = $order['recipient_type']['name']; break;
                 default: $mapOrder['Плательщик']['Тип_контрагента'] = $order['payer_form_type']['name']; break;
