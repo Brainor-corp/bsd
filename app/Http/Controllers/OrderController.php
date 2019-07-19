@@ -154,9 +154,18 @@ class OrderController extends Controller
             $order = new Order;
         }
 
+        $cargoType = Type::where('id', $request->get('cargo')['name'])->first();
+        if($cargoType){
+            $cargoTypeName = $cargoType->name;
+            $cargoTypeId = $cargoType->id;
+        }else{
+            $cargoTypeName = 'Неизвестный тип груза';
+            $cargoTypeId = null;
+        }
         $order->total_price = $calculatedData['total'];
         $order->base_price = $calculatedData['route']['price'];
-        $order->shipping_name = $request->get('cargo')['name'];
+        $order->shipping_name = $cargoTypeName;
+        $order->cargo_type = $cargoTypeId;
         $order->total_weight = $totalWeight;
         $order->ship_city_id = $shipCity->id;
         $order->ship_city_name = $shipCity->name;

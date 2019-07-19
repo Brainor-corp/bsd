@@ -8,7 +8,27 @@
     <div class="form-item row align-items-center">
         <label class="col-auto calc__label">Наименование груза*</label>
         <div class="col">
-            <input type="text" class="form-control" placeholder="Введите наименование груза" name="cargo[name]" value="{{ $order->shipping_name ?? '' }}" required>
+            {{--<input type="text" class="form-control" placeholder="Введите наименование груза" name="cargo[name]" value="{{ $order->shipping_name ?? '' }}" required>--}}
+            <select class="form-control" name="cargo[name]">
+                <option value="" selected disabled>Выберите тип груза</option>
+                @php( $selectedEcho = false)
+                @foreach($cargoTypes as $cargoType)
+                    <option value="{{ $cargoType->id }}"
+                    @if (isset($order->cargo_type) && $selectedEcho == false)
+                        @if ($cargoType->id == $order->cargo_type)
+                            {{ 'selected' }}
+                            @php( $selectedEcho = true)
+                        @endif
+                    @endif
+                    @if (isset($order->shipping_name) && $selectedEcho == false)
+                        @if ($cargoType->name == $order->shipping_name)
+                            {{ 'selected' }}
+                            @php( $selectedEcho = true)
+                        @endif
+                    @endif
+                    >{{ $cargoType->name }}</option>
+                @endforeach
+            </select>
         </div>
     </div>
     <div class="row">
