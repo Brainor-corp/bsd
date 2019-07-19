@@ -7,6 +7,7 @@ use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArray2DValue;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValue;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
+use alhimik1986\PhpExcelTemplator\setters\CellSetterStringValue;
 use App\Http\Helpers\DocumentHelper;
 use App\Order;
 use App\Type;
@@ -130,7 +131,7 @@ class ReportsController extends Controller
                 break;
             case 2:
                 // Экспедиторская расписка
-                $file = DocumentHelper::generatePETDocument(
+                $file = DocumentHelper::generateReceiptDocument(
                     public_path('templates/ReceiptTemplate.xlsx'),
                     "Экспедиторская расписка №" . $documentData['УникальныйИдентификатор'],
                     '.xlsx',
@@ -138,39 +139,23 @@ class ReportsController extends Controller
                 break;
             case 3:
                 // Заявка на экспедирование
+                $file = DocumentHelper::generateRequestDocument(
+                    $documentData,
+                    "Заявка №" . $documentData['УникальныйИдентификатор']);
+                $data = json_decode($documentData['ДанныеСайта'], true);
+                dd($documentData);
                 break;
             case 4:
-                // Счет-фактура
+                // Счет-фактура(УПД???)
+
+
                 break;
             case 5:
                 $params = [];
                 // Счет на оплату
-//                $items['Товар_Номенклатура'] = array_column($documentData['Товары'], 'Номенклатура');
-//                $items['Товар_Содержание'] = array_column($documentData['Товары'], 'Содержание');
-//                $items['Товар_Количество'] = array_column($documentData['Товары'], 'Количество');
-//                $items['Товар_Цена'] = array_column($documentData['Товары'], 'Цена');
-//                $items['Товар_Сумма'] = array_column($documentData['Товары'], 'Сумма');
-//                $items['Товар_ПроцентСкидки'] = array_column($documentData['Товары'], 'ПроцентСкидки');
-//                $items['Товар_СуммаСкидки'] = array_column($documentData['Товары'], 'СуммаСкидки');
-//                $items['Товар_СтавкаНДС'] = array_column($documentData['Товары'], 'СтавкаНДС');
-//                $items['Товар_СуммаНДС'] = array_column($documentData['Товары'], 'СуммаНДС');
-//                $items['Товар_ЭкспедиторскаяРасписка'] = array_column($documentData['Товары'], 'ЭкспедиторскаяРасписка');
 
-                $items = [];
-                foreach($documentData['Товары'] as $index => $item) {
-                    $item = [
-                        $index + 1,
-                        $item['Содержание'],
-                        $item['Количество'],
-                        'шт.', //todo
-                        $item['Цена'],
-                        $item['Сумма'],
-                    ];
-                    array_push($items, $item);
-                }
-                $params['[[items]]'] = new ExcelParam(CellSetterArray2DValue::class, $items);
-
-                $file = DocumentHelper::generateInvoiceDocument($params);
+//                dd($documentData);
+                $file = DocumentHelper::generateInvoiceDocument($documentData);
                 break;
             case 6:
                 // ???
@@ -457,8 +442,6 @@ class ReportsController extends Controller
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadView('v1.pdf.document-request', $blocks);
 
-        return $pdf->download('invoic2e.pdf');
-
-//        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
+        return $pdf->download($documentName);
     }
 }
