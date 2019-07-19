@@ -100,3 +100,7 @@
 .package-wrapper:first-child .calc__label .content{
     display: inline;
 }
+
+select.form-control:not([size]):not([multiple]) {
+    color:#36393b!important;
+}

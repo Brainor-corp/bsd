@@ -22,6 +22,10 @@ class Order extends Model
         return $this->belongsTo(Type::class, 'status_id');
     }
 
+    public function cargo_type(){
+        return $this->belongsTo(Type::class, 'cargo_type');
+    }
+
     public function recipient_type(){
         return $this->belongsTo(Type::class, 'recipient_type_id');
     }

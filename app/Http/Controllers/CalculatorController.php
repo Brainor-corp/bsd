@@ -162,6 +162,8 @@ class CalculatorController extends Controller
         $services = Service::get();
         $userTypes = Type::where('class', 'UserType')->get();
 
+        $cargoTypes = Type::where('class', 'cargo_type')->get();
+
         return view('v1.pages.calculator.calculator-show.calculator-show')
             ->with(compact(
                 'packages',
@@ -175,7 +177,8 @@ class CalculatorController extends Controller
                 'deliveryPoint',
                 'bringPoint',
                 'order',
-                'userTypes'
+                'userTypes',
+                'cargoTypes'
             ));
 
     }
