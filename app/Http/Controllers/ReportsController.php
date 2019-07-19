@@ -10,13 +10,20 @@ use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use App\Http\Helpers\DocumentHelper;
 use App\Order;
 use App\Type;
+use Barryvdh\DomPDF\PDF;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use Jenssegers\Date\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpWord\Exception\Exception;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Settings;
 
 define('SPECIAL_ARRAY_TYPE', CellSetterArrayValueSpecial::class);
 
@@ -411,7 +418,8 @@ class ReportsController extends Controller
                     ->orWhere('enter_id', $_COOKIE['enter_id']) :
                     $orderQuery->where('enter_id', $_COOKIE['enter_id']);
             })
-            ->with('status', 'ship_city', 'dest_city')->firstOrFail();
+            ->with('status', 'ship_city', 'dest_city')
+            ->firstOrFail();
 
         $orderDate = Date::parse($order->created_at)->format('d F Y');
         $documentName = "Заявка №$order->id от $orderDate г.";
@@ -445,8 +453,11 @@ class ReportsController extends Controller
             ],
         ];
 
-        $tempFile = DocumentHelper::generateTBSDocument($templateFile, $documentExtension, $params, $blocks);
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadView('v1.pdf.document-request', $blocks);
 
-        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
+        return $pdf->download('invoic2e.pdf');
+
+//        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
     }
 }
