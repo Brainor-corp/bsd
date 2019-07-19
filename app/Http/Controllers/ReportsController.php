@@ -7,6 +7,7 @@ use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArray2DValue;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValue;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
+use alhimik1986\PhpExcelTemplator\setters\CellSetterStringValue;
 use App\Http\Helpers\DocumentHelper;
 use App\Order;
 use App\Type;
@@ -176,7 +177,7 @@ class ReportsController extends Controller
                 }
 
                 foreach($documentData as $key => $var) {
-                    $params["{{$key}}"] = new ExcelParam(CellSetterArrayValueSpecial::class, $var);
+                    $params["{{$key}}"] = new ExcelParam(CellSetterStringValue::class, $var);
                 }
 
                 $params['[service_number]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['number']);
