@@ -52,7 +52,7 @@
     <span>Характер груза:  <i><b><u>{{ $documentData['Груз'] }}</u></b></i></span>
     <br>
     <span>Вес: <i><b><u>{{ $documentData['Вес'] }} кг</u></b></i> Обьем: <i><b><u>{{ $documentData['Объем'] }} м<sup><small>3</small></sup></u></b></i> Количество мест: <i><b><u>{{ $documentData['КоличествоМест'] }} шт</u></b></i></span>
-    <div class="table-block hl">
+    <div class="table-block">
         <table>
             <thead>
             <tr>
@@ -65,7 +65,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
+            <tr class="hl">
                 <td>2</td>
                 <td>3</td>
                 <td>4</td>
