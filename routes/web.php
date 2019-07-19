@@ -127,6 +127,7 @@ Route::get('/1c/test/create-order', 'Api1cTestController@createOrder');
 Route::get('/1c/test/document-list', 'Api1cTestController@documentList');
 Route::get('/1c/test/document/id', 'Api1cTestController@documentById');
 Route::get('/1c/test/document/number', 'Api1cTestController@documentByNumber');
+Route::get('/1c/test/orders', 'Api1cTestController@orders');
 
 
 Route::get('/jobs/test/SendTestMail', function () {
