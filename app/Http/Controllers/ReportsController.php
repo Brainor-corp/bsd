@@ -141,7 +141,7 @@ class ReportsController extends Controller
                 // Заявка на экспедирование
                 return DocumentHelper::generateRequestDocument(
                     $documentData,
-                    "Заявка №" . $documentData['УникальныйИдентификатор']);
+                    "Заявка №" . $documentData['УникальныйИдентификатор'] . '.pdf');
                 break;
             case 4:
                 // Счет-фактура(УПД???)
