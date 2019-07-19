@@ -145,8 +145,6 @@ class ReportsController extends Controller
                 break;
             case 4:
                 // Счет-фактура(УПД???)
-
-
                 break;
             case 5:
                 $params = [];
