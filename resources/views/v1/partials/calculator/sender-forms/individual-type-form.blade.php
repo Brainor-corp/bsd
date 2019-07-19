@@ -16,8 +16,8 @@
     <label class="col-auto calc__label">Паспорт*</label>
     <div class="col calc__inpgrp">
         <div class="input-group">
-            <input type="number" min="1000" max="9999" class="form-control text-center form-item req" name="sender_passport_series" value="{{ $order->sender_passport_series ?? '' }}" placeholder="Серия" {{ isset($disabled) ? 'disabled' : 'required' }} />
-            <input type="number" min="100000" max="999999" class="form-control text-center form-item req" name="sender_passport_number" value="{{ $order->sender_passport_number ?? '' }}" placeholder="Номер" {{ isset($disabled) ? 'disabled' : 'required' }} />
+            <input type="text" pattern="\d{4}" maxlength="4" class="form-control text-center form-item req" name="sender_passport_series" value="{{ $order->sender_passport_series ?? '' }}" placeholder="Серия" {{ isset($disabled) ? 'disabled' : 'required' }} />
+            <input type="text" pattern="\d{6}" maxlength="6" class="form-control text-center form-item req" name="sender_passport_number" value="{{ $order->sender_passport_number ?? '' }}" placeholder="Номер" {{ isset($disabled) ? 'disabled' : 'required' }} />
         </div>
     </div>
 </div>

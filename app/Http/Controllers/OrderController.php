@@ -28,8 +28,6 @@ class OrderController extends Controller
             'payer_phone_individual' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->get('payer_phone_individual'))
         ]);
 
-        dd($request->all());
-
         $rules = [
             "ship_city" => ['required', 'string', 'max:255'],                                   // Город_отправления (название)
             "take_city_name" => ['nullable', 'string', 'max:255'],                              // Название_города_экспедиции (забор)
@@ -89,7 +87,7 @@ class OrderController extends Controller
             "recipient_addition_info_individual" => ['nullable', 'string'],                     // Получатель (Дополнительная_информация) -- Для физ.лиц
 
             "payer_type" => ['required', 'string'],                                             // Данные плательщика
-            "payer_form_type_id" => ['required', 'numeric'],                                    // Плательщик (Тип_контрагента)
+            "payer_form_type_id" => ['nullable', 'numeric'],                                    // Плательщик (Тип_контрагента)
             "payer_legal_form" => ['nullable', 'string', 'max:255'],                            // Плательщик (Правовая_форма)
             "payer_company_name" => ['nullable', 'string', 'min:3', 'max:255'],                 // Плательщик (Наименование)
             "payer_legal_address_city" => ['nullable', 'string', 'max:255'],                    // Плательщик (Адрес (Город))

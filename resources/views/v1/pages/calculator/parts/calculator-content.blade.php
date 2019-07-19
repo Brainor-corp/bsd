@@ -18,7 +18,7 @@
         <label class="col-auto calc__label">Наименование груза*</label>
         <div class="col">
             {{--<input type="text" class="form-control" placeholder="Введите наименование груза" name="cargo[name]" value="{{ $order->shipping_name ?? '' }}" required>--}}
-            <select class="form-control" name="cargo[name]">
+            <select class="form-control" name="cargo[name]" required>
                 <option value="" selected disabled>Выберите тип груза</option>
                 @php( $selectedEcho = false)
                 @foreach($cargoTypes as $cargoType)
@@ -63,11 +63,11 @@
                         <label class="col-auto calc__label"><span class="content">Габариты (м)*</span></label>
                         <div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">
                             <div class="input-group">
-                                <input type="number" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
-                                <input type="number" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
-                                <input type="number" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
-                                <input type="number" id="packages_{{ $key }}_weight" class="form-control text-center package-params package-weight" name="cargo[packages][{{ $key }}][weight]" data-package-id="{{ $key }}"  data-dimension-type="weight" placeholder="Вес" value="{{ $package['weight'] }}"/>
-                                <input type="number" id="packages_{{ $key }}_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages][{{ $key }}][quantity]" data-package-id="{{ $key }}"  data-dimension-type="quantity" placeholder="Места" value="{{ $package['quantity'] }}"/>
+                                <input type="number" min="0" step="any" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
+                                <input type="number" min="0" step="any" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
+                                <input type="number" min="0" step="any" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
+                                <input type="number" min="0" step="any" id="packages_{{ $key }}_weight" class="form-control text-center package-params package-weight" name="cargo[packages][{{ $key }}][weight]" data-package-id="{{ $key }}"  data-dimension-type="weight" placeholder="Вес" value="{{ $package['weight'] }}"/>
+                                <input type="number" min="0" step="any" id="packages_{{ $key }}_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages][{{ $key }}][quantity]" data-package-id="{{ $key }}"  data-dimension-type="quantity" placeholder="Места" value="{{ $package['quantity'] }}"/>
                             </div>
                             <input type="number" hidden="hidden" id="packages_{{ $key }}_volume" class="form-control text-center package-params package-volume" name="cargo[packages][{{ $key }}][volume]" data-package-id="{{ $key }}"  data-dimension-type="volume" value="{{ $package['volume'] }}"/>
                         </div>
@@ -282,7 +282,7 @@
         <div id="insurance-amount-wrapper">
             <br>
             <label class="" for="insurance-amount">Сумма страховки</label>
-            <input type="number" class="form-control" id="insurance-amount" name="insurance_amount" placeholder="Введите сумму страховки" value="{{ $order->insurance ?? '50000' }}">
+            <input type="number" min="50000" class="form-control" id="insurance-amount" name="insurance_amount" placeholder="Введите сумму страховки" value="{{ $order->insurance ?? '50000' }}" required>
             <br>
         </div>
         <div class="relative">
