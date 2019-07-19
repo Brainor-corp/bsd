@@ -15,8 +15,8 @@
     <label class="col-auto calc__label">Паспорт*</label>
     <div class="col calc__inpgrp">
         <div class="input-group">
-            <input type="text" class="form-control text-center form-item req" name="payer_passport_series" value="{{ $order->payer_passport_series ?? '' }}" placeholder="Серия" {{ isset($disabled) ? 'disabled' : 'required' }} />
-            <input type="text" class="form-control text-center form-item req" name="payer_passport_number" value="{{ $order->payer_passport_number ?? '' }}" placeholder="Номер" {{ isset($disabled) ? 'disabled' : 'required' }} />
+            <input type="text" pattern="\d{4}" maxlength="4" class="form-control text-center form-item req" name="payer_passport_series" value="{{ $order->payer_passport_series ?? '' }}" placeholder="Серия" {{ isset($disabled) ? 'disabled' : 'required' }} />
+            <input type="text" pattern="\d{6}" maxlength="6" class="form-control text-center form-item req" name="payer_passport_number" value="{{ $order->payer_passport_number ?? '' }}" placeholder="Номер" {{ isset($disabled) ? 'disabled' : 'required' }} />
         </div>
     </div>
 </div>
@@ -26,7 +26,7 @@
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="payer_phone_individual">Телефон*</label>
-    <div class="col calc__inpgrp"><input type="text" class="form-control req" name="payer_phone_individual" id="payer_phone_individual" value="{{ $order->payer_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <div class="col calc__inpgrp"><input type="text" class="form-control req phone-mask" name="payer_phone_individual" id="payer_phone_individual" value="{{ $order->payer_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="payer_addition_info_individual">Дополнительная информация</label>
