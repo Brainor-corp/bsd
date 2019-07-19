@@ -40,7 +40,7 @@
             border-color: #777777;
         }
         .hl {
-            color: yellow;
+            color: red;
         }
     </style>
 </head>

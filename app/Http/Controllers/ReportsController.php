@@ -142,8 +142,6 @@ class ReportsController extends Controller
                 return DocumentHelper::generateRequestDocument(
                     $documentData,
                     "Заявка №" . $documentData['УникальныйИдентификатор']);
-//                $data = json_decode($documentData['ДанныеСайта'], true);
-//                dd($documentData);
                 break;
             case 4:
                 // Счет-фактура(УПД???)
