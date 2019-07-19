@@ -10,6 +10,7 @@
                name="sender_company_name"
                autocomplete="off"
                data-field="company_name"
+               minlength="3"
                data-source="{{ route('getCounterparties', ['type_id' => isset($userTypes) ? $userTypes->where('slug', 'yuridicheskoe-lico')->first->id : '']) }}"
                value="{{ $order->sender_company_name ?? '' }}"
                class="form-control req autocomplete"
@@ -32,19 +33,19 @@
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="sender_inn">ИНН*</label>
-    <div class="col calc__inpgrp"><input type="text" id="sender_inn" name="sender_inn" value="{{ $order->sender_inn ?? '' }}" class="form-control req" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <div class="col calc__inpgrp"><input type="text" maxlength="12" id="sender_inn" name="sender_inn" value="{{ $order->sender_inn ?? '' }}" class="form-control req" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="sender_kpp">КПП*</label>
-    <div class="col calc__inpgrp"><input type="text" id="sender_kpp" name="sender_kpp" value="{{ $order->sender_kpp ?? '' }}" class="form-control req" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <div class="col calc__inpgrp"><input type="text" maxlength="9" id="sender_kpp" name="sender_kpp" value="{{ $order->sender_kpp ?? '' }}" class="form-control req" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
-    <label class="col-auto calc__label" for="sender_contact_person_legal">Контактноя лицо*</label>
+    <label class="col-auto calc__label" for="sender_contact_person_legal">Контактное лицо*</label>
     <div class="col calc__inpgrp"><input type="text" id="sender_contact_person_legal" class="form-control req" name="sender_contact_person_legal" value="{{ $order->sender_contact_person ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="sender_phone_legal">Телефон*</label>
-    <div class="col calc__inpgrp"><input type="text" class="form-control req" id="sender_phone_legal" name="sender_phone_legal" value="{{ $order->sender_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <div class="col calc__inpgrp"><input type="text" class="form-control req phone-mask" id="sender_phone_legal" name="sender_phone_legal" value="{{ $order->sender_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="sender_addition_info_legal">Дополнительная информация</label>
