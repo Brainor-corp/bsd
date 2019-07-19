@@ -11,6 +11,7 @@
         "php": "^7.1.3",
         "ext-json": "*",
         "alhimik1986/php-excel-templator": "^1.0",
+        "barryvdh/laravel-dompdf": "^0.8.4",
         "brainor-rus/zeus-admin": "^1.0",
         "cviebrock/eloquent-sluggable": "4.8",
         "fideloper/proxy": "^4.0",
