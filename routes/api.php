@@ -41,3 +41,6 @@ Route::get('/upload-xml-outside-forwarding', 'UploadXmlController@uploadOutsideF
 Route::get('/upload-xml-regions', 'UploadXmlController@uploadRegions')->name('uploadRegions');
 Route::get('/upload-xml-points', 'UploadXmlController@uploadPoints')->name('uploadPoints');
 Route::get('/upload-xml-terminals', 'UploadXmlController@uploadTerminals')->name('uploadTerminals');
+
+// 1c
+Route::post('/1c/order/update_status', 'Api\OrdersController@updateOrderStatus');
