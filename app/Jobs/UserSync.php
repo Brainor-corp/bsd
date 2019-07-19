@@ -51,9 +51,6 @@ class UserSync implements ShouldQueue
                 'guid' => $response1c['response']['id'],
                 'sync_need' => false
             ]);
-        } else {
-            // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
-            throw new \Exception("Пользователь " . $notSynchronizedUser->id . " не обработан.");
         }
     }
 }
