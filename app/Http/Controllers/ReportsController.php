@@ -139,11 +139,11 @@ class ReportsController extends Controller
                 break;
             case 3:
                 // Заявка на экспедирование
-                $file = DocumentHelper::generateRequestDocument(
+                return DocumentHelper::generateRequestDocument(
                     $documentData,
                     "Заявка №" . $documentData['УникальныйИдентификатор']);
-                $data = json_decode($documentData['ДанныеСайта'], true);
-                dd($documentData);
+//                $data = json_decode($documentData['ДанныеСайта'], true);
+//                dd($documentData);
                 break;
             case 4:
                 // Счет-фактура(УПД???)
