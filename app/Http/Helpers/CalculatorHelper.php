@@ -398,9 +398,11 @@ class CalculatorHelper
                 ['city_id', $city->id],
                 ['forward_thresholds.weight', '>=', floatval($weight)],
                 ['forward_thresholds.volume', '>=', floatval($volume)],
+                // todo Units
             ])
             ->orderBy('forward_thresholds.weight', 'ASC')
             ->orderBy('forward_thresholds.volume', 'ASC')
+            // todo Units
             ->first();
 
         $fixed_tariff = $fixed_tariff->tariff ?? false;
@@ -448,9 +450,11 @@ class CalculatorHelper
                 ['cities.id', $city->id],
                 ['forward_thresholds.weight', '>=', floatval($weight)],
                 ['forward_thresholds.volume', '>=', floatval($volume)],
+                // todo Units
             ])
             ->orderBy('forward_thresholds.weight', 'ASC')
             ->orderBy('forward_thresholds.volume', 'ASC')
+            // todo Units
             ->first();
 
         if(!$per_km_tariff) {
