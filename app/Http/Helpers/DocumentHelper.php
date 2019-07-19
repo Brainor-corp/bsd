@@ -7,6 +7,7 @@ use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterStringValue;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 
 class DocumentHelper {
