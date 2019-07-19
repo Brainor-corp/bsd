@@ -156,20 +156,30 @@ class ReportsController extends Controller
 //                $items['Товар_СуммаНДС'] = array_column($documentData['Товары'], 'СуммаНДС');
 //                $items['Товар_ЭкспедиторскаяРасписка'] = array_column($documentData['Товары'], 'ЭкспедиторскаяРасписка');
 
-                dd($documentData);
-                $items = [];
+//                dd($documentData);
+                $items = [
+                    'number' => [],
+                    'name' => [],
+                    'quantity' => [],
+                    'points' => [],
+                    'price' => [],
+                    'sum' => [],
+                ];
+
                 foreach($documentData['Товары'] as $index => $item) {
-                    $item = [
-                        $index + 1,
-                        $item['Содержание'],
-                        $item['Количество'],
-                        'шт.', //todo
-                        $item['Цена'],
-                        $item['Сумма'],
-                    ];
-                    array_push($items, $item);
+                    $items['number'][] = $index + 1;
+                    $items['name'][] = $item['Содержание'];
+                    $items['quantity'][] = $item['Количество'];
+                    $items['points'][] = 'шт.';
+                    $items['price'][] = $item['Цена'];
+                    $items['sum'][] = $item['Сумма'];
                 }
-                $params['[[items]]'] = new ExcelParam(CellSetterArray2DValue::class, $items);
+                $params['[service_number]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['number']);
+                $params['[service_name]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['name']);
+                $params['[service_quantity]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['quantity']);
+                $params['[service_point]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['points']);
+                $params['[service_price]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['price']);
+                $params['[service_summary]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['sum']);
 
                 $file = DocumentHelper::generateInvoiceDocument($params);
                 break;
