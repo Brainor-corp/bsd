@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 
 class UserSync implements ShouldQueue
 {
@@ -46,9 +47,10 @@ class UserSync implements ShouldQueue
         );
 
         if($response1c['status'] == 200 && !empty($response1c['response']['id'] && $response1c['response']['id'] !== 'not found')) {
-            $notSynchronizedUser->guid = $response1c['response']['id'];
-            $notSynchronizedUser->sync_need = false;
-            $notSynchronizedUser->update();
+            DB::table('users')->where('id', $notSynchronizedUser->id)->update([
+                'guid' => $response1c['response']['id'],
+                'sync_need' => false
+            ]);
         }
     }
 }

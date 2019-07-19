@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -83,5 +84,15 @@ class Order extends Model
 
     public function getComprehensibleDeliveryNeed(){
         return $this->delivery_need ? 'Да' : 'Нет';
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($model){
+            $model->order_services()->detach();
+            DB::table('order_items')->where('order_id', $model->id)->delete();
+        });
     }
 }

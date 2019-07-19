@@ -48,6 +48,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function orders() {
+        return $this->hasMany(Order::class);
+    }
+
+    public function events() {
+        return $this->hasMany(Event::class);
+    }
+
     public function getFullNameAttribute(){
         return implode(' ', [
             $this->surname,
