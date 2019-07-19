@@ -180,7 +180,7 @@ class ReportsController extends Controller
                     $params["{{$key}}"] = new ExcelParam(CellSetterStringValue::class, $var);
                 }
 
-                $params["{ВсегоТоваров}"] = new ExcelParam(CellSetterStringValue::class, count($items));
+                $params["{ВсегоТоваров}"] = new ExcelParam(CellSetterStringValue::class, count($documentData['Товары']));
                 $params['[service_number]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['number']);
                 $params['[service_name]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['name']);
                 $params['[service_quantity]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['quantity']);
