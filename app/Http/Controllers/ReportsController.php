@@ -42,6 +42,7 @@ class ReportsController extends Controller
                     $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
             })->with([
                 'status',
+                'cargo_type',
                 'order_items',
                 'payment',
                 'take_polygon',
