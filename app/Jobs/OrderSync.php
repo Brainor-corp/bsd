@@ -40,11 +40,12 @@ class OrderSync implements ShouldQueue
 
         $response1c = Api1CHelper::post('create_order', $order);
         if(
-            $response1c['status']['status'] === 'success' &&
-            !empty($response1c['status']['id'])
+            $response1c['status'] == 200 &&
+            $response1c['response']['status'] === 'success' &&
+            !empty($response1c['response']['id'])
         ) {
             DB::table('orders')->where('id', $order['Идентификатор_на_сайте'])->update([
-                'code_1c' => $response1c['status']['id'],
+                'code_1c' => $response1c['response']['id'],
                 'sync_need' => false
             ]);
         } else {
