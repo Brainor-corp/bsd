@@ -4,6 +4,15 @@
         <input type="hidden" name="order_id" value="{{ $order->id }}">
     @endif
     <div id="hiddenMap" class="d-none"></div>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="calc__title">Груз</div>
     <div class="form-item row align-items-center">
         <label class="col-auto calc__label">Наименование груза*</label>

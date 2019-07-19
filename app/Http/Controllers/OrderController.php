@@ -13,11 +13,115 @@ use App\Type;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 
 class OrderController extends Controller
 {
     public function orderSave(Request $request) {
+        $request->merge([
+            'sender_phone_legal' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->get('sender_phone_legal')),
+            'sender_phone_individual' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->get('sender_phone_individual')),
+            'recipient_phone_legal' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->get('recipient_phone_legal')),
+            'recipient_phone_individual' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->get('recipient_phone_individual')),
+            'payer_phone_legal' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->get('payer_phone_legal')),
+            'payer_phone_individual' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->get('payer_phone_individual'))
+        ]);
+
+        dd($request->all());
+
+        $rules = [
+            "ship_city" => ['required', 'string', 'max:255'],                                   // Город_отправления (название)
+            "take_city_name" => ['nullable', 'string', 'max:255'],                              // Название_города_экспедиции (забор)
+            "take_distance" => ['nullable', 'numeric'],                                         // Дистанция_экспедиции (забор)
+            "ship_point" => ['nullable', 'string'],                                             // Адрес_экспедиции (забор)
+            "take_polygon" => ['nullable'],                                                     // Полигон экспедиции (забор)
+
+            "dest_city" => ['required', 'string', 'max:255'],                                   // Город_назначения (название)
+            "bring_city_name" => ['nullable', 'string', 'max:255'],                             // Название_города_экспедиции (доставка)
+            "bring_distance" => ['nullable', 'numeric'],                                        // Дистанция_экспедиции (доставка)
+            "dest_point" => ['nullable', 'string'],                                             // Адрес_экспедиции (доставка)
+            "bring_polygon" => ['nullable'],                                                    // Полигон экспедиции (доставка)
+
+            "insurance_amount" => ['required', 'numeric', 'min:50000'],                         // Страховка (Цена_страхования)
+            "discount" => ['nullable', 'numeric'],                                              // Скидка (Процент_скидки)
+
+            "sender_type_id" => ['required', 'numeric'],                                        // Отправитель (Тип_контрагента)
+            "sender_legal_form" => ['nullable', 'string', 'max:255'],                           // Отправитель (Правовая_форма)
+            "sender_company_name" => ['nullable', 'string', 'min:3', 'max:255'],                // Отправитель (Наименование)
+            "sender_legal_address_city" => ['nullable', 'string', 'max:255'],                   // Отправитель (Адрес (Город))
+            "sender_legal_address_street" => ['nullable', 'string', 'max:255'],                 // Отправитель (Адрес (Улица))
+            "sender_legal_address_house" => ['nullable', 'string', 'max:255'],                  // Отправитель (Адрес (Дом))
+            "sender_legal_address_block" => ['nullable', 'string', 'max:255'],                  // Отправитель (Адрес (Корпус))
+            "sender_legal_address_building" => ['nullable', 'string', 'max:255'],               // Отправитель (Адрес (Строение))
+            "sender_legal_address_apartment" => ['nullable', 'string', 'max:255'],              // Отправитель (Адрес (Квартира_офис))
+            "sender_inn" => ['nullable', 'string', 'max:12'],                                   // Отправитель (ИНН)
+            "sender_kpp" => ['nullable', 'string', 'max:9'],                                    // Отправитель (КПП)
+            "sender_contact_person_legal" => ['nullable', 'string', 'max:255'],                 // Отправитель (Контактное_лицо) -- Для юр.лиц
+            "sender_phone_legal" => ['nullable', 'regex:/\d{11}/'],                             // Отправитель (Телефон) -- Для юр.лиц
+            "sender_addition_info_legal" => ['nullable', 'string'],                             // Отправитель (Дополнительная_информация) -- Для юр.лиц
+            "sender_name_individual" => ['nullable', 'string', 'max:255'],                      // Отправитель (Имя)
+            "sender_passport_series" => ['nullable', 'numeric', 'min:1000', 'max:9999'],        // Отправитель (Серия_паспорта)
+            "sender_passport_number" => ['nullable', 'numeric', 'min:100000', 'max:999999'],    // Отправитель (Номер_паспорта)
+            "sender_contact_person_individual" => ['nullable', 'string', 'max:255'],            // Отправитель (Контактное_лицо) -- Для физ.лиц
+            "sender_phone_individual" => ['nullable', 'regex:/\d{11}/'],                        // Отправитель (Телефон) -- Для физ.лиц
+            "sender_addition_info_individual" => ['nullable', 'string'],                        // Отправитель (Дополнительная_информация) -- Для физ.лиц
+
+            "recipient_type_id" => ['required', 'numeric'],                                     // Получатель (Тип_контрагента)
+            "recipient_legal_form" => ['nullable', 'string', 'max:255'],                        // Получатель (Правовая_форма)
+            "recipient_company_name" => ['nullable', 'string', 'min:3', 'max:255'],             // Получатель (Наименование)
+            "recipient_legal_address_city" => ['nullable', 'string', 'max:255'],                // Получатель (Адрес (Город))
+            "recipient_legal_address_street" => ['nullable', 'string', 'max:255'],              // Получатель (Адрес (Улица))
+            "recipient_legal_address_house" => ['nullable', 'string', 'max:255'],               // Получатель (Адрес (Дом))
+            "recipient_legal_address_block" => ['nullable', 'string', 'max:255'],               // Получатель (Адрес (Корпус))
+            "recipient_legal_address_building" => ['nullable', 'string', 'max:255'],            // Получатель (Адрес (Строение))
+            "recipient_legal_address_apartment" => ['nullable', 'string', 'max:255'],           // Получатель (Адрес (Квартира_офис))
+            "recipient_inn"  => ['nullable', 'string', 'max:12'],                               // Получатель (ИНН)
+            "recipient_kpp" => ['nullable', 'string', 'max:9'],                                 // Получатель (КПП)
+            "recipient_contact_person_legal" => ['nullable', 'string', 'max:255'],              // Получатель (Контактное_лицо) -- Для юр.лиц
+            "recipient_phone_legal" => ['nullable', 'regex:/\d{11}/'],                          // Получатель (Телефон) -- Для юр.лиц
+            "recipient_addition_info_legal" => ['nullable', 'string'],                          // Получатель (Дополнительная_информация) -- Для юр.лиц
+            "recipient_name_individual" => ['nullable', 'string', 'max:255'],                   // Получатель (Имя)
+            "recipient_passport_series" => ['nullable', 'numeric', 'min:1000', 'max:9999'],     // Получатель (Серия_паспорта)
+            "recipient_passport_number" => ['nullable', 'numeric', 'min:100000', 'max:999999'], // Получатель (Номер_паспорта)
+            "recipient_contact_person_individual" => ['nullable', 'string', 'max:255'],         // Получатель (Контактное_лицо) -- Для физ.лиц
+            "recipient_phone_individual" => ['nullable', 'regex:/\d{11}/'],                     // Получатель (Телефон) -- Для физ.лиц
+            "recipient_addition_info_individual" => ['nullable', 'string'],                     // Получатель (Дополнительная_информация) -- Для физ.лиц
+
+            "payer_type" => ['required', 'string'],                                             // Данные плательщика
+            "payer_form_type_id" => ['required', 'numeric'],                                    // Плательщик (Тип_контрагента)
+            "payer_legal_form" => ['nullable', 'string', 'max:255'],                            // Плательщик (Правовая_форма)
+            "payer_company_name" => ['nullable', 'string', 'min:3', 'max:255'],                 // Плательщик (Наименование)
+            "payer_legal_address_city" => ['nullable', 'string', 'max:255'],                    // Плательщик (Адрес (Город))
+            "payer_legal_address_street" => ['nullable', 'string', 'max:255'],                  // Плательщик (Адрес (Улица))
+            "payer_legal_address_house"  => ['nullable', 'string', 'max:255'],                  // Плательщик (Адрес (Дом))
+            "payer_legal_address_block" => ['nullable', 'string', 'max:255'],                   // Плательщик (Адрес (Корпус))
+            "payer_legal_address_building" => ['nullable', 'string', 'max:255'],                // Плательщик (Адрес (Строение))
+            "payer_legal_address_apartment" => ['nullable', 'string', 'max:255'],               // Плательщик (Адрес (Квартира_офис))
+            "payer_inn" => ['nullable', 'string', 'max:12'],                                    // Плательщик (ИНН)
+            "payer_kpp" => ['nullable', 'string', 'max:9'],                                     // Плательщик (КПП)
+            "payer_contact_person_legal" => ['nullable', 'string', 'max:255'],                  // Плательщик (Контактное_лицо) -- Для юр.лиц
+            "payer_phone_legal" => ['nullable', 'regex:/\d{11}/'],                              // Плательщик (Телефон) -- Для юр.лиц
+            "payer_addition_info_legal" => ['nullable', 'string'],                              // Плательщик (Дополнительная_информация) -- Для юр.лиц
+            "payer_name_individual" => ['nullable', 'string', 'max:255'],                       // Плательщик (Имя)
+            "payer_passport_series" => ['nullable', 'numeric', 'min:1000', 'max:9999'],         // Плательщик (Серия_паспорта)
+            "payer_passport_number" => ['nullable', 'numeric', 'min:100000', 'max:999999'],     // Плательщик (Номер_паспорта)
+            "payer_contact_person_individual" => ['nullable', 'string', 'max:255'],             // Плательщик (Контактное_лицо) -- Для физ.лиц
+            "payer_phone_individual" => ['nullable', 'regex:/\d{11}/'],                         // Плательщик (Телефон) -- Для физ.лиц
+            "payer_addition_info_individual" => ['nullable', 'string'],                         // Плательщик (Дополнительная_информация) -- Для физ.лиц
+
+            "payment" => ['required', 'string'],                                                // Способ_оплаты
+            "status" => ['required', 'string'],                                                 // Статус_заказа
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $cities = City::whereIn('name', [
             $request->get('ship_city'),
             $request->get('dest_city')
