@@ -107,4 +107,12 @@ class DocumentHelper {
             'fileName' => "Счет на оплату № todo от $date" . '.xlsx'
         ];
     }
+
+    public static function generateRequestDocument($documentData, $documentName)
+    {
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadView('v1.pdf.document-request', $documentData);
+
+        return $pdf->download($documentName);
+    }
 }

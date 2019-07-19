@@ -139,10 +139,16 @@ class ReportsController extends Controller
                 break;
             case 3:
                 // Заявка на экспедирование
+                $file = DocumentHelper::generateRequestDocument(
+                    $documentData,
+                    "Заявка №" . $documentData['УникальныйИдентификатор']);
+                $data = json_decode($documentData['ДанныеСайта'], true);
                 dd($documentData);
                 break;
             case 4:
-                // Счет-фактура
+                // Счет-фактура(УПД???)
+
+
                 break;
             case 5:
                 $params = [];
@@ -436,8 +442,6 @@ class ReportsController extends Controller
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadView('v1.pdf.document-request', $blocks);
 
-        return $pdf->download('invoic2e.pdf');
-
-//        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
+        return $pdf->download($documentName);
     }
 }
