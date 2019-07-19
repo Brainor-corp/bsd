@@ -131,7 +131,7 @@ class ReportsController extends Controller
                 break;
             case 2:
                 // Экспедиторская расписка
-                $file = DocumentHelper::generatePETDocument(
+                $file = DocumentHelper::generateReceiptDocument(
                     public_path('templates/ReceiptTemplate.xlsx'),
                     "Экспедиторская расписка №" . $documentData['УникальныйИдентификатор'],
                     '.xlsx',
@@ -139,6 +139,7 @@ class ReportsController extends Controller
                 break;
             case 3:
                 // Заявка на экспедирование
+                dd($documentData);
                 break;
             case 4:
                 // Счет-фактура
@@ -146,49 +147,9 @@ class ReportsController extends Controller
             case 5:
                 $params = [];
                 // Счет на оплату
-//                $items['Товар_Номенклатура'] = array_column($documentData['Товары'], 'Номенклатура');
-//                $items['Товар_Содержание'] = array_column($documentData['Товары'], 'Содержание');
-//                $items['Товар_Количество'] = array_column($documentData['Товары'], 'Количество');
-//                $items['Товар_Цена'] = array_column($documentData['Товары'], 'Цена');
-//                $items['Товар_Сумма'] = array_column($documentData['Товары'], 'Сумма');
-//                $items['Товар_ПроцентСкидки'] = array_column($documentData['Товары'], 'ПроцентСкидки');
-//                $items['Товар_СуммаСкидки'] = array_column($documentData['Товары'], 'СуммаСкидки');
-//                $items['Товар_СтавкаНДС'] = array_column($documentData['Товары'], 'СтавкаНДС');
-//                $items['Товар_СуммаНДС'] = array_column($documentData['Товары'], 'СуммаНДС');
-//                $items['Товар_ЭкспедиторскаяРасписка'] = array_column($documentData['Товары'], 'ЭкспедиторскаяРасписка');
 
 //                dd($documentData);
-                $items = [
-                    'number' => [],
-                    'name' => [],
-                    'quantity' => [],
-                    'points' => [],
-                    'price' => [],
-                    'sum' => [],
-                ];
-
-                foreach($documentData['Товары'] as $index => $item) {
-                    $items['number'][] = $index + 1;
-                    $items['name'][] = $item['Содержание'];
-                    $items['quantity'][] = $item['Количество'];
-                    $items['points'][] = 'шт.';
-                    $items['price'][] = $item['Цена'];
-                    $items['sum'][] = $item['Сумма'];
-                }
-
-                foreach($documentData as $key => $var) {
-                    $params["{{$key}}"] = new ExcelParam(CellSetterStringValue::class, $var);
-                }
-
-                $params["{ВсегоТоваров}"] = new ExcelParam(CellSetterStringValue::class, count($documentData['Товары']));
-                $params['[service_number]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['number']);
-                $params['[service_name]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['name']);
-                $params['[service_quantity]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['quantity']);
-                $params['[service_point]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['points']);
-                $params['[service_price]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['price']);
-                $params['[service_summary]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['sum']);
-
-                $file = DocumentHelper::generateInvoiceDocument($params);
+                $file = DocumentHelper::generateInvoiceDocument($documentData);
                 break;
             case 6:
                 // ???
