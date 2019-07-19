@@ -96,6 +96,26 @@ class Users extends Section
         return $form;
     }
 
+    public function beforeDelete(Request $request, $id = null)
+    {
+        $user = User::where('id', $id)
+            ->with([
+                'orders',
+                'events'
+            ])
+            ->first();
+
+        $user->roles()->sync(null);
+
+        foreach($user->orders as $order) {
+            $order->delete();
+        }
+
+        foreach($user->events as $event) {
+            $event->delete();
+        }
+    }
+
     public function beforeSave(Request $request, $model = null)
     {
         if($request->password !== $request->repeat_password){
