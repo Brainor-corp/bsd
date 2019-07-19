@@ -112,7 +112,7 @@ class DocumentHelper {
     public static function generateRequestDocument($documentData, $documentName)
     {
         $pdf = App::make('dompdf.wrapper');
-        $pdf->loadView('v1.pdf.document-request', $documentData);
+        $pdf->loadView('v1.pdf.document-request', compact('documentData'));
 
         return $pdf->download($documentName);
     }
