@@ -174,6 +174,11 @@ class ReportsController extends Controller
                     $items['price'][] = $item['Цена'];
                     $items['sum'][] = $item['Сумма'];
                 }
+
+                foreach($documentData as $key => $var) {
+                    $params["{{$key}}"] = new ExcelParam(CellSetterArrayValueSpecial::class, $var);
+                }
+
                 $params['[service_number]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['number']);
                 $params['[service_name]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['name']);
                 $params['[service_quantity]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['quantity']);
