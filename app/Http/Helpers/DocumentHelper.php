@@ -7,7 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 
 class DocumentHelper {
-    public static function generateTBSDocument($templatePath, $documentExtension, Array $parameters = null, Array $blocks = null){
+    public static function generateTBSDocument($templatePath, $documentExtension, Array $parameters = null, Array $blocks = null)
+    {
         $TBS = new \clsTinyButStrong();
         $TBS->Plugin(TBS_INSTALL, \clsOpenTBS::class);
 
@@ -16,12 +17,12 @@ class DocumentHelper {
         $TBS->SetOption('charset', 'UTF-8');
         $TBS->SetOption('render', TBS_OUTPUT);
 
-        foreach ($parameters as $name => $value){
+        foreach ($parameters as $name => $value) {
             $TBS->MergeField($name, $value);
         }
 
-        if(isset($blocks)){
-            foreach ($blocks as $blockName => $blockValues){
+        if(isset($blocks)) {
+            foreach ($blocks as $blockName => $blockValues) {
                 $TBS->MergeBlock($blockName, $blockValues);
             }
         }
