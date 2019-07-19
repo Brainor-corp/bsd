@@ -45,7 +45,7 @@ class OrderSync implements ShouldQueue
             !empty($response1c['response']['id'])
         ) {
             DB::table('orders')->where('id', $order['Идентификатор_на_сайте'])->update([
-                'code_1c' => $response1c['id'],
+                'code_1c' => $response1c['response']['id'],
                 'sync_need' => false
             ]);
         } else {
