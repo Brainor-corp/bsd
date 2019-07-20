@@ -146,7 +146,7 @@ class ReportsController extends Controller
                 // Счет-фактура(УПД???)
                 $status = $documentData['УникальныйИдентификатор'];
 
-                $file = DocumentHelper::generateTransferDocument($documentData, "УПД (статус todo) №$status от todo г");
+                $file = DocumentHelper::generateTransferDocument($documentData, "УПД (статус todo) №$status от todo г.xlsx");
                 break;
             case 5:
                 // Счет на оплату
