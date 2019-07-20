@@ -138,7 +138,7 @@ class ReportsController extends Controller
                 break;
             case 3:
                 // Заявка на экспедирование
-                $file = DocumentHelper::generateRequestDocument(
+                return DocumentHelper::generateRequestDocument(
                     $documentData,
                     "Заявка №" . $documentData['УникальныйИдентификатор'] . '.pdf');
                 break;
