@@ -132,7 +132,6 @@ class ReportsController extends Controller
                 break;
             case 2:
                 // Экспедиторская расписка
-                dd($documentData);
                 $file = DocumentHelper::generateReceiptDocument(
                     "Экспедиторская расписка №" . $documentData['УникальныйИдентификатор'],
                     $documentData);
