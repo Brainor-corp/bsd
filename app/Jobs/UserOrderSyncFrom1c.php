@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\City;
 use App\Order;
 use App\Type;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -71,7 +72,9 @@ class UserOrderSyncFrom1c implements ShouldQueue
             $order->take_address = $response1c['response']['АдресЗабора'] ?? "";
             $order->take_address = $response1c['response']['АдресЗабора'] ?? "";
             $order->delivery_address = $response1c['response']['АдресДоставки'] ?? "";
-            $order->delivered_in = $response1c['response']['ДатаИсполнения'] ?? null;
+            $order->order_date = isset($response1c['response']['ДатаИсполнения']) ?
+                Carbon::createFromFormat("d.m.Y h:i:s", $response1c['response']['ДатаИсполнения'])->format("") :
+                null;
 
             $order->total_price = 0; // todo Нет в API?
             $order->base_price = 0; // todo Нет в API?
