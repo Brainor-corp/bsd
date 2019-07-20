@@ -13,6 +13,8 @@ class UserOrdersSyncFrom1c implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 1;
+
     private $user;
 
     /**
