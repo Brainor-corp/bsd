@@ -84,7 +84,14 @@ class UserOrderSyncFrom1c implements ShouldQueue
             if($response1c['status'] != 200) {
                 // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
                 throw new \Exception(
-                    "Для пользователя " . $user->guid . " не удалось получить информацию о заказе " . $document['id']
+                    "Для пользователя " . $user->guid . " не удалось получить информацию о заказе (Api вернуло ошибку) " . $document['id']
+                );
+            }
+
+            if(empty($response1c['response'])) {
+                // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
+                throw new \Exception(
+                    "Для пользователя " . $user->guid . " не удалось получить информацию о заказе (Api не вернуло данные) " . $document['id']
                 );
             }
         }
