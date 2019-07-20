@@ -76,6 +76,7 @@ class UserOrderSyncFrom1c implements ShouldQueue
             $order->total_price = 0; // todo Нет в API?
             $order->base_price = 0; // todo Нет в API?
             $order->insurance = 0; // todo Нет в API?
+            $order->insurance_amount = 0; // todo Нет в API?
 
             $order->user_id = $user->id;
             $order->code_1c = $response1c['response']['УникальныйИдентификатор'] ?? '';
