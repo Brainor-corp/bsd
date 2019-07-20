@@ -446,11 +446,18 @@ $(document).ready(function () {
             var point = $(element);
             var city = '';
             var cityKladrId = '';
-            if(point.attr('id') === 'ship_point'){
+            if(
+                point.attr('id') === 'ship_point' &&
+                $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()] !== undefined
+            ){
                 city = $('#ship_city').text();
                 cityKladrId = $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].kladrId;
             }
-            if(point.attr('id') === 'dest_point') {
+
+            if(
+                point.attr('id') === 'dest_point' &&
+                $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()] !== undefined
+            ) {
                 city = $('#dest_city').text();
                 cityKladrId = $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].kladrId;
             }
