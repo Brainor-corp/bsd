@@ -64,7 +64,10 @@ class UserOrderSyncFrom1c implements ShouldQueue
             $order->status_id = Type::where([
                     ['class', 'order_status'],
                     ['name', $response1c['response']['Статус']] ?? 'Не определён' // todo Добавить статус
-                ])->first()->id ?? null;
+                ])->first()->id ?? Type::where([
+                    ['class', 'order_status'],
+                    ['name', 'Не определён'] // todo Добавить статус
+                ])->first()->id;
             $order->ship_city_id = City::where('name', $response1c['response']['ГородОтправления'] ?? "-")->first()->id ?? null;
             $order->ship_city_name = $response1c['response']['ГородОтправления'] ?? "-";
             $order->dest_city_id = City::where('name', $response1c['response']['ГородНазначения'] ?? "-")->first()->id ?? null;
