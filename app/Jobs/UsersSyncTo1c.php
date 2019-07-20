@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class UsersSync implements ShouldQueue
+class UsersSyncTo1c implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -34,7 +34,7 @@ class UsersSync implements ShouldQueue
     {
         $notSynchronizedUsers = User::where('sync_need', true)->get();
         foreach($notSynchronizedUsers as $notSynchronizedUser) {
-            dispatch(new UserSync($notSynchronizedUser));
+            dispatch(new UserSyncTo1c($notSynchronizedUser));
         }
     }
 }
