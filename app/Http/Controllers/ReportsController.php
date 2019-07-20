@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use alhimik1986\PhpExcelTemplator\params\ExcelParam;
 use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
-use alhimik1986\PhpExcelTemplator\setters\CellSetterArray2DValue;
-use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValue;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
-use alhimik1986\PhpExcelTemplator\setters\CellSetterStringValue;
 use App\Http\Helpers\DocumentHelper;
 use App\Order;
 use App\Type;
@@ -77,11 +74,11 @@ class ReportsController extends Controller
                     $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
             })->firstOrFail();
 
-        //$code1c = $order->user->guid;
-        $user_1c = "f008aa7f-29d6-11e9-80c7-000d3a396ad2"; // todo Временно
+        $user_1c = $order->user->guid ?? null;
+//        $user_1c = "f008aa7f-29d6-11e9-80c7-000d3a396ad2";
 
-        //$code1c = $order->code_1c;
-        $code1c = "2ef09a62-8dbb-11e9-a688-001c4208e0b2"; // todo Временно
+        $code1c = $order->code_1c;
+//        $code1c = "2ef09a62-8dbb-11e9-a688-001c4208e0b2";
 
         $documents = [];
 
@@ -109,8 +106,8 @@ class ReportsController extends Controller
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'document/id',
             [
-//                "user_id" => $user->guid,
-                "user_id" => "f008aa7f-29d6-11e9-80c7-000d3a396ad2", // todo Временно
+                "user_id" => $user->guid,
+//                "user_id" => "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
                 "document_id" => $document_id_1c,
                 "type" => intval($document_type_id_1c),
                 "empty_fields" => true
@@ -152,7 +149,7 @@ class ReportsController extends Controller
                 $file = DocumentHelper::generateInvoiceDocument($documentData);
                 break;
             case 6:
-                // ???
+                // todo Нет шаблона
                 break;
             default: break;
         }
