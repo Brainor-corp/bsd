@@ -10,13 +10,14 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 
-class DocumentHelper {
-    public static function generateTBSDocument($templatePath, $documentExtension, Array $parameters = null, Array $blocks = null)
+class DocumentHelper
+{
+    public static function generateContractDocument(Array $parameters)
     {
         $TBS = new \clsTinyButStrong();
         $TBS->Plugin(TBS_INSTALL, \clsOpenTBS::class);
 
-        $TBS->LoadTemplate($templatePath);
+        $TBS->LoadTemplate(public_path('templates/ContractTemplate.docx'));
 
         $TBS->SetOption('charset', 'UTF-8');
         $TBS->SetOption('render', TBS_OUTPUT);
@@ -25,13 +26,7 @@ class DocumentHelper {
             $TBS->MergeField($name, $value);
         }
 
-        if(isset($blocks)) {
-            foreach ($blocks as $blockName => $blockValues) {
-                $TBS->MergeBlock($blockName, $blockValues);
-            }
-        }
-
-        $name = md5('docs bsd' . time()) . $documentExtension;
+        $name = md5('docs bsd' . time()) . '.docx';
         $path = storage_path('app/public/documents/');
 
         $tempFile = $path . $name;
@@ -39,10 +34,15 @@ class DocumentHelper {
         File::makeDirectory($path, $mode = 0777, true, true);
 
         $TBS->Show(OPENTBS_FILE, $tempFile);
-        return $tempFile;
+
+        return [
+            'tempFile' => $tempFile,
+            'fileName' => 'ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ №todo' . '.docx'
+        ];
     }
 
-    public static function generateReceiptDocument($templatePath, $documentName, $documentExtension, Array $parameters = null, Array $blocks = null) {
+    public static function generateReceiptDocument($documentName, Array $parameters = null)
+    {
         $params = [];
         $keys = array_keys($parameters);
         foreach($keys as $key) {
@@ -50,30 +50,22 @@ class DocumentHelper {
             $params[$newKey] = $parameters[$key];
         }
 
-        $name = md5('docs bsd' . time()) . $documentExtension;
+        $name = md5('docs bsd' . time()) . '.xlsx';
         $path = storage_path('app/public/documents/');
 
         $tempFile = $path . $name;
         File::makeDirectory($path, $mode = 0777, true, true);
 
-        PhpExcelTemplator::saveToFile($templatePath, $tempFile, $params);
+        PhpExcelTemplator::saveToFile(public_path('templates/ReceiptTemplate.xlsx'), $tempFile, $params);
 
         return [
             'tempFile' => $tempFile,
-            'fileName' => $documentName . $documentExtension
+            'fileName' => $documentName . '.xlsx'
         ];
     }
 
     public static function generateInvoiceDocument($documentData)
     {
-//        $items = [
-//            'number' => [],
-//            'name' => [],
-//            'quantity' => [],
-//            'points' => [],
-//            'price' => [],
-//            'sum' => [],
-//        ];
         foreach($documentData['Товары'] as $index => $item) {
             $items['number'][] = $index + 1;
             $items['name'][] = $item['Содержание'];
@@ -96,8 +88,6 @@ class DocumentHelper {
         $name = md5('docs bsd' . time()) . '.xlsx';
         $path = storage_path('app/public/documents/');
 
-        $date = Carbon::now();
-
         $tempFile = $path . $name;
         File::makeDirectory($path, $mode = 0777, true, true);
 
@@ -105,15 +95,49 @@ class DocumentHelper {
 
         return [
             'tempFile' => $tempFile,
-            'fileName' => "Счет на оплату № todo от $date" . '.xlsx'
+            'fileName' => "Счет на оплату № todo от todo" . '.xlsx'
         ];
     }
 
     public static function generateRequestDocument($documentData, $documentName)
     {
         $pdf = App::make('dompdf.wrapper');
-        $pdf->loadView('v1.pdf.document-request', $documentData);
+        $pdf->loadView('v1.pdf.document-request', compact('documentData'));
 
         return $pdf->download($documentName);
+    }
+
+    public static function generateTransferDocument($documentData, $documentName)
+    {
+//        foreach($documentData['Товары'] as $index => $item) {
+//            $items['number'][] = $index + 1;
+//            $items['name'][] = $item['Содержание'];
+//            $items['quantity'][] = $item['Количество'];
+//            $items['points'][] = 'шт.';
+//            $items['price'][] = $item['Цена'];
+//            $items['sum'][] = $item['Сумма'];
+//        }
+        foreach($documentData as $key => $var) {
+            $params["{{$key}}"] = new ExcelParam(CellSetterStringValue::class, $var);
+        }
+//        $params['[service_number]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['number']);
+//        $params['[service_name]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['name']);
+//        $params['[service_quantity]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['quantity']);
+//        $params['[service_point]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['points']);
+//        $params['[service_price]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['price']);
+//        $params['[service_summary]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['sum']);
+
+        $name = md5('docs bsd' . time()) . '.xlsx';
+        $path = storage_path('app/public/documents/');
+
+        $tempFile = $path . $name;
+        File::makeDirectory($path, $mode = 0777, true, true);
+
+        PhpExcelTemplator::saveToFile(public_path('templates/TransferTemplate.xlsx'), $tempFile, $params);
+
+        return [
+            'tempFile' => $tempFile,
+            'fileName' => $documentName
+        ];
     }
 }
