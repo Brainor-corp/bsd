@@ -274,11 +274,11 @@
                                 </div>
                                 <div class="calc__title">Форма оплаты</div>
                                 <div class="custom-control custom-radio">
-                                    <input disabled @if($order->payment->slug === 'nalichnyy-raschet') checked @endif type="radio" class="custom-control-input" id="available">
+                                    <input disabled @if(isset($order->payment) && $order->payment->slug === 'nalichnyy-raschet') checked @endif type="radio" class="custom-control-input" id="available">
                                     <label class="custom-control-label" for="available">Наличный расчет</label>
                                 </div>
                                 <div class="custom-control custom-radio">
-                                    <input disabled @if($order->payment->slug === 'beznalichnyy-raschet') checked @endif type="radio" class="custom-control-input" id="non-cash">
+                                    <input disabled @if(isset($order->payment) && $order->payment->slug === 'beznalichnyy-raschet') checked @endif type="radio" class="custom-control-input" id="non-cash">
                                     <label class="custom-control-label" for="non-cash">Безналичный расчет</label>
                                 </div>
 {{--                                <div class="form-item d-flex">--}}
