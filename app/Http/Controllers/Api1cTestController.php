@@ -6,6 +6,7 @@ use App\Http\Helpers\Api1CHelper;
 use App\Order;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
 
 class Api1cTestController extends Controller
 {
@@ -252,13 +253,13 @@ class Api1cTestController extends Controller
         dd($response1c);
     }
 
-    public function documentById() {
+    public function documentById(Request $request) {
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'document/id',
             [
-                "user_id" => "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
-                "document_id" => "f22b5b40-3c29-11e9-80f7-000d3a396ad2",
-                "type" => 5,
+                "user_id" => $request->get('user_id') ?? "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
+                "document_id" => $request->get('document_id') ?? "f22b5b40-3c29-11e9-80f7-000d3a396ad2",
+                "type" => $request->get('type') ?? 5,
                 "empty_fields" => true
             ]
         );
