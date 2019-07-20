@@ -282,11 +282,11 @@ class Api1cTestController extends Controller
         dd($response1c);
     }
 
-    public function orders() {
+    public function orders(Request $request) {
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'orders',
             [
-                'user_id' => "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
+                'user_id' => $request->get('user_id') ?? "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
             ]
         );
 
