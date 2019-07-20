@@ -128,29 +128,28 @@ class ReportsController extends Controller
         switch ($document_type_id_1c) {
             case 1:
                 // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
+                $file = DocumentHelper::generateContractDocument($documentData);
                 break;
             case 2:
                 // Экспедиторская расписка
                 $file = DocumentHelper::generateReceiptDocument(
-                    public_path('templates/ReceiptTemplate.xlsx'),
                     "Экспедиторская расписка №" . $documentData['УникальныйИдентификатор'],
-                    '.xlsx',
                     $documentData);
                 break;
             case 3:
                 // Заявка на экспедирование
-                return DocumentHelper::generateRequestDocument(
+                $file = DocumentHelper::generateRequestDocument(
                     $documentData,
                     "Заявка №" . $documentData['УникальныйИдентификатор'] . '.pdf');
                 break;
             case 4:
                 // Счет-фактура(УПД???)
+                $status = $documentData['УникальныйИдентификатор'];
+
+                $file = DocumentHelper::generateTransferDocument($documentData, "УПД (статус todo) №$status от todo г");
                 break;
             case 5:
-                $params = [];
                 // Счет на оплату
-
-//                dd($documentData);
                 $file = DocumentHelper::generateInvoiceDocument($documentData);
                 break;
             case 6:
@@ -257,31 +256,9 @@ class ReportsController extends Controller
     }
 
     public function actionDownloadDocumentContract(Request $request) {
-        $order = Order::where('id', $request->id)
-            ->where(function ($orderQuery) {
-                return Auth::check() ? $orderQuery
-                    ->where('user_id', Auth::user()->id)
-                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
-                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
-            })
-            ->with('status', 'ship_city', 'dest_city', 'user')->firstOrFail();
-
-        $path = public_path('templates/ContractTemplate.docx');
-        $documentName = 'Договор';
-        $documentExtension = '.docx';
-
-        $params = [
-            'created_at' => $order->created_at,
-            'number' => $order->id,
-            'client_phone' => $order->user->phone ?? '—',
-            'client_email' => $order->user->email ?? '—',
-            'client_name' => $order->user->full_name ?? '—',
-            'client_short' => $order->user->surname_initials ?? '—',
-        ];
-
-        $tempFile = DocumentHelper::generateTBSDocument($path, $documentExtension, $params);
-
-        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
+        $documentData['УникальныйИдентификатор'] = '123123';
+        $file = DocumentHelper::generateContractDocument($documentData);
+        return response()->download($file, 'test.docx')->deleteFileAfterSend(true);
     }
 
     public function actionDownloadDocumentInvoice(Request $request) {
@@ -381,14 +358,30 @@ class ReportsController extends Controller
             '{order_date}' => $orderDate,
         ];
 
-        $name = md5('docs bsd' . time()) . $documentExtension;
-        $path = storage_path('app/public/documents/');
+        $documentTestData['Товары'] = [
+            [
+                'Содержание' => 'Name1',
+                'Количество' => '2',
+                'Цена' => '222',
+                'Сумма' => '233',
+            ],
+            [
+                'Содержание' => 'Name2',
+                'Количество' => '1',
+                'Цена' => '2',
+            ],
+        ];
 
-        $tempFile = $path . $name;
-        File::makeDirectory($path, $mode = 0777, true, true);
+        $file = DocumentHelper::generateTransferDocument($documentTestData, 'test');
 
-        PhpExcelTemplator::saveToFile($templateFile, $tempFile, $params);
-        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
+//        $name = md5('docs bsd' . time()) . $documentExtension;
+//        $path = storage_path('app/public/documents/');
+
+//        $tempFile = $path . $name;
+//        File::makeDirectory($path, $mode = 0777, true, true);
+//
+//        PhpExcelTemplator::saveToFile($templateFile, $tempFile, $params);
+        return response()->download($file['tempFile'], $documentName . $documentExtension)->deleteFileAfterSend(true);
     }
 
     public function actionDownloadDocumentRequest(Request $request)
