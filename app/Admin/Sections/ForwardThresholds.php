@@ -26,7 +26,7 @@ class ForwardThresholds extends Section {
             Column::text('name', 'Название'),
             Column::text('weight', 'Вес'),
             Column::text('volume', 'Обьем'),
-            Column::text('units', 'Едениц'),
+            Column::text('units', 'Единиц'),
         ])
             ->setFilter([
                 null,
