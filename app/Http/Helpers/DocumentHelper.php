@@ -78,6 +78,7 @@ class DocumentHelper
             $params["{{$key}}"] = new ExcelParam(CellSetterStringValue::class, $var);
         }
         $params["{ВсегоТоваров}"] = new ExcelParam(CellSetterStringValue::class, count($documentData['Товары']));
+        $params["{СуммаТоваров}"] = new ExcelParam(CellSetterStringValue::class, array_sum(array_column($documentData['Товары'], 'Сумма')));
         $params['[service_number]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['number']);
         $params['[service_name]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['name']);
         $params['[service_quantity]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['quantity']);
