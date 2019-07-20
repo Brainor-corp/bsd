@@ -124,7 +124,6 @@ class ReportsController extends Controller
         $documentData = $response1c['response'] ?? [];
         $file = [];
 
-
         switch ($document_type_id_1c) {
             case 1:
                 // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
@@ -162,8 +161,6 @@ class ReportsController extends Controller
             return response()->download($file['tempFile'], $file['fileName'])
                 ->deleteFileAfterSend(true);
         }
-
-        dd($documentData);
 
         return redirect(route('report-list'));
     }
