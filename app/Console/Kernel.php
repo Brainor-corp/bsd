@@ -2,8 +2,9 @@
 
 namespace App\Console;
 
-use App\Jobs\OrdersSync;
-use App\Jobs\UsersSync;
+use App\Jobs\OrdersSyncTo1c;
+use App\Jobs\UsersOrdersSyncFrom1C;
+use App\Jobs\UsersSyncTo1c;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -28,8 +29,9 @@ class Kernel extends ConsoleKernel
     {
 //        $schedule->job(new SendTestMail())->everyMinute();
 
-        $schedule->job(new UsersSync())->everyFiveMinutes();
-        $schedule->job(new OrdersSync())->everyFiveMinutes();
+        $schedule->job(new UsersSyncTo1c())->everyFiveMinutes();
+        $schedule->job(new OrdersSyncTo1c())->everyFiveMinutes();
+        $schedule->job(new UsersOrdersSyncFrom1C())->everyMinute();
     }
 
     /**

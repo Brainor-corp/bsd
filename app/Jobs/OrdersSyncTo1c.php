@@ -10,7 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class OrdersSync implements ShouldQueue
+class OrdersSyncTo1c implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -30,7 +30,6 @@ class OrdersSync implements ShouldQueue
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
      */
     public function handle()
     {
@@ -228,7 +227,7 @@ class OrdersSync implements ShouldQueue
         }, $orders);
 
         foreach($orders as $order) {
-            dispatch(new OrderSync($order));
+            dispatch(new OrderSyncTo1c($order));
         }
     }
 }

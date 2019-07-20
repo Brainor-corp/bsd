@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 
-class OrderSync implements ShouldQueue
+class OrderSyncTo1c implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -32,7 +32,6 @@ class OrderSync implements ShouldQueue
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
      */
     public function handle()
     {
@@ -48,9 +47,6 @@ class OrderSync implements ShouldQueue
                 'code_1c' => $response1c['response']['id'],
                 'sync_need' => false
             ]);
-        } else {
-            // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
-            throw new \Exception("Заказ " . $order['Идентификатор_на_сайте'] . " не обработан.");
         }
     }
 }
