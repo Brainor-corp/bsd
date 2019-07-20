@@ -357,6 +357,7 @@ class CalculatorHelper
         $volume,
         $isWithinTheCity,
         $x2,
+        $packages,
         $distance = null,
         $polygonId = null
     ) {
@@ -382,8 +383,7 @@ class CalculatorHelper
             ];
         }
 
-        // Если город -- терминальный
-        ////, то находим тариф за городом
+        // Если город -- особый пункт
         if($city instanceof Point) {
             $city = $city->city; // Дальше будем работать с привязанным к пункту городом
         }
@@ -398,9 +398,11 @@ class CalculatorHelper
                 ['city_id', $city->id],
                 ['forward_thresholds.weight', '>=', floatval($weight)],
                 ['forward_thresholds.volume', '>=', floatval($volume)],
+                ['forward_thresholds.units', '>=', count($packages)],
             ])
             ->orderBy('forward_thresholds.weight', 'ASC')
             ->orderBy('forward_thresholds.volume', 'ASC')
+            ->orderBy('forward_thresholds.units', 'ASC')
             ->first();
 
         $fixed_tariff = $fixed_tariff->tariff ?? false;
@@ -448,9 +450,11 @@ class CalculatorHelper
                 ['cities.id', $city->id],
                 ['forward_thresholds.weight', '>=', floatval($weight)],
                 ['forward_thresholds.volume', '>=', floatval($volume)],
+                ['forward_thresholds.units', '>=', count($packages)],
             ])
             ->orderBy('forward_thresholds.weight', 'ASC')
             ->orderBy('forward_thresholds.volume', 'ASC')
+            ->orderBy('forward_thresholds.units', 'ASC')
             ->first();
 
         if(!$per_km_tariff) {
@@ -607,6 +611,7 @@ class CalculatorHelper
                 $takeParams['volume'],
                 $takeParams['isWithinTheCity'],
                 $takeParams['x2'],
+                $packages,
                 $takeParams['distance'],
                 $takeParams['polygonId']
             );
@@ -620,6 +625,7 @@ class CalculatorHelper
                 $bringParams['volume'],
                 $bringParams['isWithinTheCity'],
                 $bringParams['x2'],
+                $packages,
                 $bringParams['distance'],
                 $bringParams['polygonId']
             );
