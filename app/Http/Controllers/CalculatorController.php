@@ -6,12 +6,14 @@ use App\City;
 use App\Http\Helpers\CalculatorHelper;
 use App\Order;
 use App\Oversize;
+use App\OversizeMarkup;
 use App\Point;
 use App\Route;
 use App\Service;
 use App\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CalculatorController extends Controller
 {
@@ -164,6 +166,7 @@ class CalculatorController extends Controller
 
         $cargoTypes = Type::where('class', 'cargo_type')->get();
 
+        $oversizeMarkups = OversizeMarkup::get();
         return view('v1.pages.calculator.calculator-show.calculator-show')
             ->with(compact(
                 'packages',
@@ -178,7 +181,8 @@ class CalculatorController extends Controller
                 'bringPoint',
                 'order',
                 'userTypes',
-                'cargoTypes'
+                'cargoTypes',
+                'oversizeMarkups'
             ));
 
     }

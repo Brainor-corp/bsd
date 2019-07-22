@@ -101,6 +101,13 @@
     display: inline;
 }
 
+.package-params{
+    background:transparent;
+}
+.package-params.oversized{
+    background:rgba(255, 177, 177, 0.25);
+}
+
 select.form-control:not([size]):not([multiple]) {
     color:#36393b!important;
 }

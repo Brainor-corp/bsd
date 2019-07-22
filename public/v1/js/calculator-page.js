@@ -140,7 +140,7 @@ $(document).ready(function () {
         var lastId = $( '.package-item' ).filter( ':last' ).data('packageId');
         var nextId = lastId+1;
 
-        console.log(lastId, nextId);
+        // console.log(lastId, nextId);
 
         var html =
             '<div class="row package-wrapper" id="package-wrapper-'+ nextId +'">'+
@@ -226,13 +226,18 @@ $(document).ready(function () {
 
         dimensionMax = parameters[dimensionType];
         if($(this).val() >dimensionMax){
-            $(this).css({
-                'background': 'rgba(255, 177, 177, 0.25)',
-            });
+            $(this).addClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length === 0){
+                myDivs = $('<div class="oversize-error">Возможно увеличение стоимости доставки из-за негабаритности груза</div>   ')
+                    .appendTo($(this).parent().parent())
+            }
         }else {
-            $(this).css({
-                'background': 'transparent',
-            });
+            $(this).removeClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length !== 0){
+                if($(this).parent().children('.oversized').length === 0) {
+                    $(this).parent().parent().children('div.oversize-error').remove();
+                }
+            }
         }
 
         if(length === ''){
@@ -269,13 +274,18 @@ $(document).ready(function () {
 
         dimensionMax = parameters[dimensionType];
         if($(this).val() >dimensionMax){
-            $(this).css({
-                'background': 'rgba(255, 177, 177, 0.25)',
-            });
+            $(this).addClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length === 0){
+                myDivs = $('<div class="oversize-error">Возможно увеличение стоимости доставки из-за негабаритности груза</div>   ')
+                    .appendTo($(this).parent().parent())
+            }
         }else {
-            $(this).css({
-                'background': 'transparent',
-            });
+            $(this).removeClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length !== 0){
+                if($(this).parent().children('.oversized').length === 0) {
+                    $(this).parent().parent().children('div.oversize-error').remove();
+                }
+            }
         }
 
         totalWeigthRecount();
@@ -294,14 +304,19 @@ $(document).ready(function () {
             dimensionMax = 0;
 
         dimensionMax = parameters[dimensionType];
-        if($(this).val() > dimensionMax){
-            $(this).css({
-                'background': 'rgba(255, 177, 177, 0.25)',
-            });
+        if($(this).val() >dimensionMax){
+            $(this).addClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length === 0){
+                myDivs = $('<div class="oversize-error">Возможно увеличение стоимости доставки из-за негабаритности груза</div>   ')
+                    .appendTo($(this).parent().parent())
+            }
         }else {
-            $(this).css({
-                'background': 'transparent',
-            });
+            $(this).removeClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length !== 0){
+                if($(this).parent().children('.oversized').length === 0) {
+                    $(this).parent().parent().children('div.oversize-error').remove();
+                }
+            }
         }
 
         if(volume !== ''){
@@ -461,17 +476,78 @@ $(document).ready(function () {
                 city = $('#dest_city').text();
                 cityKladrId = $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].kladrId;
             }
-            console.log(cityKladrId);
+            // console.log(cityKladrId);
             $(element).kladr({
                 // type: $.kladr.type.city, // берем город
                 oneString: true, // Если включить эту штуку, то будет возвращаться полный адрес
                 parentType: $.kladr.type.city,
                 parentId: cityKladrId,
+                source: function (query, callback) {
+                        ymaps.suggest(query.name, {results: 10}).then(function (items) {
+                            callback(items);
+                        });
+                },
+                labelFormat: function (obj, query) {
+                    return obj.displayName;
+                },
+                valueFormat: function (obj, query) {
+                    return obj.value.replace('Россия, ', '');
+                },
                 select: function (obj) {
                     kladrChange(obj, point);
                 }
             });
         });
+    }
+
+    // Срабатывает при изменении значения селекта выбора города
+    function kladrChange(obj = null, point) {
+        // console.log(obj);
+
+        if(obj !== null) {
+            var locality = '';
+            ymaps.geocode(obj.value, {results: 1}).then(function (res) {
+                locality = res.geoObjects.get(0).getLocalities()[0];
+                point.data('name', locality).attr('data-name', locality); // Это имя отправляем к нам на сервер
+            }, function (err) {
+                // Обработка ошибки.
+            });
+            // let name = obj.type === "Город" ? obj : typeof obj.parents !== "undefined" ? $.grep(obj.parents, function(v) {
+            //     return v.type === "Город";
+            // })[0] : undefined;
+
+            point.data('fullName', obj.value).attr('data-full-name', obj.value); // Это имя отправляем яндексу для просчета дистанции
+
+            if (obj.id !== undefined)
+                point.data('id', obj.id);
+            else
+                point.data('id', 0);
+        }
+
+        if(point.attr('id') === "ship_point") {
+            if($('#ship_city').data().selectize.getValue() !== "") {
+                $('input[name="take_city_name"]').val(point.data('name'));
+                calcTariffPrice(
+                    {
+                        'value': $('#ship_city').val(),
+                        'point': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
+                    },
+                    point,
+                    $('input[name="need-to-take-type"]:checked').val() == "in"
+                ); // вызываем просчет для "Забрать из"
+            }
+        } else {
+            if($('#dest_city').data().selectize.getValue() !== "") {
+                $('input[name="bring_city_name"]').val(point.data('name'));
+                calcTariffPrice(
+                    {
+                        'value': $('#dest_city').val(),
+                        'point': $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal
+                    },
+                    point, $('input[name="need-to-bring-type"]:checked').val() == "in"
+                ); // вызываем просчет для "Доставить"
+            }
+        }
     }
 
     $(document).on('change', '#ship-from-point', function () {
@@ -483,7 +559,7 @@ $(document).ready(function () {
     });
 
     function updateRequiredInputs() {
-        console.log('update req..');
+        // console.log('update req..');
 
         $('.req:hidden').removeAttr('required');
         $('.req:visible').attr('required', 'required');
@@ -584,7 +660,7 @@ $(document).ready(function () {
             currentBlock.find("input[name$='contact_person_individual']").val(ui.item["contact_person"]);
             currentBlock.find("input[name$='addition_info_individual']").val(ui.item["addition_info"]);
 
-            console.log(ui.item);
+            // console.log(ui.item);
         }
     });
 
@@ -652,11 +728,11 @@ function getAllCalculatedData() {
         beforeSend: function() {
         },
         success: function (data) {
-            console.log(data);
+            // console.log(data);
             renderCalendar(data);
         },
         error: function(data){
-            console.log(data);
+            // console.log(data);
         }
     });
 }
@@ -690,15 +766,15 @@ function totalWeigthRecount() {
 };
 
 async function checkAddressInPolygon(address, polygon) {
-    console.log('checking contains..');
+    // console.log('checking contains..');
     return await ymaps.geocode(address).then(function (res) {
-        console.log('here!');
+        // console.log('here!');
         var newPoint = res.geoObjects.get(0);
         map.geoObjects.removeAll().add(polygon);
         map.geoObjects.add(newPoint);
 
         let result = !!polygon.geometry.contains(newPoint.geometry.getCoordinates());
-        console.log(result ? "В функции +" : "В функции -");
+        // console.log(result ? "В функции +" : "В функции -");
 
         return result;
     });
@@ -714,8 +790,8 @@ function calcTariffPrice(city, point, inCity) {
             return;
 
         if (city) {
-            console.log('===========');
-            console.log(city.value);
+            // console.log('===========');
+            // console.log(city.value);
 
             // Пробуем получить полигоны для выбранного города
             $.ajaxSetup({
@@ -732,12 +808,12 @@ function calcTariffPrice(city, point, inCity) {
                 dataType: "json",
                 cache: false,
                 success: async function(data) {
-                    console.log(data);
+                    // console.log(data);
                     let isInPolygon;
                     let polygonId = '';
 
                     for (const el of data) {
-                        console.log(el);
+                        // console.log(el);
                         let findCoordinates = [];
                         let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
                         $(polygonCoordinates).each(function (pairKey, pairVal) {
@@ -751,23 +827,23 @@ function calcTariffPrice(city, point, inCity) {
                             ]);
                         });
 
-                        console.log(point.attr('id'));
+                        // console.log(point.attr('id'));
                         let address = $("#" + point.attr('id')).val();
                         let polygon =  new ymaps.Polygon([findCoordinates]);
 
                         isInPolygon = await checkAddressInPolygon(address, polygon);
-                        console.log(typeof isInPolygon);
+                        // console.log(typeof isInPolygon);
                         if(isInPolygon) {
-                            console.log(address + " содержится в " + el.name);
+                            // console.log(address + " содержится в " + el.name);
                             polygonId = el.id;
                             break;
                         }
                     }
 
-                    console.log('done');
+                    // console.log('done');
 
                     if(isInPolygon) {
-                        console.log('Нужно поставить цену тарифа');
+                        // console.log('Нужно поставить цену тарифа');
 
                         let hiddenPolygonInputClass = '.take-polygon-hidden-input';
                         if(point.attr('id') === 'dest_point') {
@@ -779,9 +855,9 @@ function calcTariffPrice(city, point, inCity) {
 
                         getAllCalculatedData();
                     } else {
-                        console.log('Не нужно ставить цену тарифа');
+                        // console.log('Не нужно ставить цену тарифа');
                         ymaps.route([city.point, fullName]).then(function (route) {
-                            console.log('От: ' + city.point + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
+                            // console.log('От: ' + city.point + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
                             $(point.closest('.delivery-block')).find('.distance-hidden-input').val(Math.ceil(route.getLength() / 1000));
 
                             getAllCalculatedData();
@@ -796,50 +872,8 @@ function calcTariffPrice(city, point, inCity) {
     }
 }
 
-// Срабатывает при изменении значения селекта выбора города
-function kladrChange(obj = null, point) {
-    if(obj !== null) {
-        let name = obj.type === "Город" ? obj : typeof obj.parents !== "undefined" ? $.grep(obj.parents, function(v) {
-            return v.type === "Город";
-        })[0] : undefined;
-
-        point.data('name', typeof name === "undefined" ? obj.name : name.name); // Это имя отправляем к нам на сервер
-        point.data('fullName', obj.fullName); // Это имя отправляем яндексу для просчета дистанции
-
-        if (obj.id !== undefined)
-            point.data('id', obj.id);
-        else
-            point.data('id', 0);
-    }
-
-    if(point.attr('id') === "ship_point") {
-        if($('#ship_city').data().selectize.getValue() !== "") {
-            $('input[name="take_city_name"]').val(point.data('name'));
-            calcTariffPrice(
-                {
-                    'value': $('#ship_city').val(),
-                    'point': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
-                },
-                point,
-                $('input[name="need-to-take-type"]:checked').val() == "in"
-            ); // вызываем просчет для "Забрать из"
-        }
-    } else {
-        if($('#dest_city').data().selectize.getValue() !== "") {
-            $('input[name="bring_city_name"]').val(point.data('name'));
-            calcTariffPrice(
-                {
-                    'value': $('#dest_city').val(),
-                    'point': $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal
-                },
-                point, $('input[name="need-to-bring-type"]:checked').val() == "in"
-            ); // вызываем просчет для "Доставить"
-        }
-    }
-}
-
 function renderCalendar(data) {
-    console.log('render');
+    // console.log('render');
     if(data.error === undefined) {
         $('#route-name').html(data.route.name);
         $('#base-price').html(data.route.price);
