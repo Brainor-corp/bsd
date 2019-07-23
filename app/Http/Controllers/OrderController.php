@@ -138,7 +138,7 @@ class OrderController extends Controller
                 'length' => $package['length'],
                 'width' => $package['width'],
                 'height' => $package['height'],
-                'volume' => $package['length'] * $package['width'] * $package['height'],
+                'volume' => $package['volume'],
                 'weight' => $package['weight'],
                 'quantity' => $package['quantity'],
             ]);
@@ -183,6 +183,7 @@ class OrderController extends Controller
         if(!$calculatedData) {
             return abort(400);
         }
+
 
         $allTypes = Type::where('class', 'payer_type')
             ->orWhere('class', 'payment_type')
@@ -231,7 +232,7 @@ class OrderController extends Controller
         $destCity = $cities->where('name', $request->get('dest_city'))->first();
 
         $takePolygon = null;
-        if(!empty($request->get('take_polygon'))) {
+        if(!empty($request->get('take_polygon')) && $request->get('take_polygon') !== 0) {
             $takePolygon = Polygon::where([
                 ['id', $request->get('take_polygon')],
                 ['city_id', $shipCity->id]
@@ -239,7 +240,7 @@ class OrderController extends Controller
         }
 
         $bringPolygon = null;
-        if(!empty($request->get('bring_polygon'))) {
+        if(!empty($request->get('bring_polygon')) && $request->get('bring_polygon') !== 0) {
             $bringPolygon = Polygon::where([
                 ['id', $request->get('bring_polygon')],
                 ['city_id', $destCity->id]

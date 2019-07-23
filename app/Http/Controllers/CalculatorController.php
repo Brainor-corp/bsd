@@ -204,8 +204,8 @@ class CalculatorController extends Controller
         $totalVolume = 0;
 
         foreach($request->get('cargo')['packages'] as $package) {
-            $totalWeight += $package['weight'];
-            $totalVolume += $package['volume'];
+            $totalWeight += $package['weight'] * $package['quantity'];
+            $totalVolume += $package['volume'] * $package['quantity'];
         }
 
         return CalculatorHelper::getAllCalculatedData(
