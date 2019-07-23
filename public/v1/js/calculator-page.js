@@ -508,7 +508,39 @@ $(document).ready(function () {
             var locality = '';
             ymaps.geocode(obj.value, {results: 1}).then(function (res) {
                 locality = res.geoObjects.get(0).getLocalities()[0];
-                point.data('name', locality).attr('data-name', locality); // Это имя отправляем к нам на сервер
+                point.data('name', locality).attr('data-name', locality).val(locality).attr('value', locality); // Это имя отправляем к нам на сервер
+
+                point.data('fullName', obj.value).attr('data-full-name', obj.value); // Это имя отправляем яндексу для просчета дистанции
+
+                if (obj.id !== undefined)
+                    point.data('id', obj.id);
+                else
+                    point.data('id', 0);
+
+                if(point.attr('id') === "ship_point") {
+                    if($('#ship_city').data().selectize.getValue() !== "") {
+                        $('input[name="take_city_name"]').val(point.data('name'));
+                        calcTariffPrice(
+                            {
+                                'value': $('#ship_city').val(),
+                                'point': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
+                            },
+                            point,
+                            $('input[name="need-to-take-type"]:checked').val() == "in"
+                        ); // вызываем просчет для "Забрать из"
+                    }
+                } else {
+                    if($('#dest_city').data().selectize.getValue() !== "") {
+                        $('input[name="bring_city_name"]').val(point.data('name'));
+                        calcTariffPrice(
+                            {
+                                'value': $('#dest_city').val(),
+                                'point': $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal
+                            },
+                            point, $('input[name="need-to-bring-type"]:checked').val() == "in"
+                        ); // вызываем просчет для "Доставить"
+                    }
+                }
             }, function (err) {
                 // Обработка ошибки.
             });
@@ -516,38 +548,10 @@ $(document).ready(function () {
             //     return v.type === "Город";
             // })[0] : undefined;
 
-            point.data('fullName', obj.value).attr('data-full-name', obj.value); // Это имя отправляем яндексу для просчета дистанции
 
-            if (obj.id !== undefined)
-                point.data('id', obj.id);
-            else
-                point.data('id', 0);
         }
 
-        if(point.attr('id') === "ship_point") {
-            if($('#ship_city').data().selectize.getValue() !== "") {
-                $('input[name="take_city_name"]').val(point.data('name'));
-                calcTariffPrice(
-                    {
-                        'value': $('#ship_city').val(),
-                        'point': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
-                    },
-                    point,
-                    $('input[name="need-to-take-type"]:checked').val() == "in"
-                ); // вызываем просчет для "Забрать из"
-            }
-        } else {
-            if($('#dest_city').data().selectize.getValue() !== "") {
-                $('input[name="bring_city_name"]').val(point.data('name'));
-                calcTariffPrice(
-                    {
-                        'value': $('#dest_city').val(),
-                        'point': $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal
-                    },
-                    point, $('input[name="need-to-bring-type"]:checked').val() == "in"
-                ); // вызываем просчет для "Доставить"
-            }
-        }
+
     }
 
     $(document).on('change', '#ship-from-point', function () {
