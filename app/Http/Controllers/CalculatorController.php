@@ -174,8 +174,6 @@ class CalculatorController extends Controller
                 'services',
                 'selectedShipCity',
                 'selectedDestCity',
-                'deliveryPoint',
-                'bringPoint',
                 'order',
                 'userTypes',
                 'cargoTypes'
