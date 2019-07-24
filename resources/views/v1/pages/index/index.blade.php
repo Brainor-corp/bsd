@@ -47,7 +47,10 @@
         @if($aboutPage)
             {!! $aboutPage->content !!}
         @endif
-        <br><br>
+    </div>
+</section>
+<section class="custom-text bg-white mb-0">
+    <div class="container">
         @if($textBlock)
             {!! $textBlock->content !!}
         @endif
