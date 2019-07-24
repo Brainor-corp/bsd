@@ -48,9 +48,11 @@
             {!! $aboutPage->content !!}
         @endif
         <br><br>
-        @if($textBlock)
-            {!! $textBlock->content !!}
-        @endif
+        <div style="color: white">
+            @if($textBlock)
+                {!! $textBlock->content !!}
+            @endif
+        </div>
     </div>
 </section>
 @endsection
