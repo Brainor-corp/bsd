@@ -69,7 +69,9 @@ class NewsController extends Controller {
                     },
                     'tags',
                 ]
-            )->paginate(10);
+            )
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         $cities = City::all();
 
@@ -121,7 +123,9 @@ class NewsController extends Controller {
                     },
                     'tags',
                 ]
-            )->paginate(10);
+            )
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         $cities = City::all();
 
