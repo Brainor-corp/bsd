@@ -47,12 +47,13 @@
         @if($aboutPage)
             {!! $aboutPage->content !!}
         @endif
-        <br><br>
-        <div style="color: white">
-            @if($textBlock)
-                {!! $textBlock->content !!}
-            @endif
-        </div>
+    </div>
+</section>
+<section class="custom-text bg-white mb-0">
+    <div class="container">
+        @if($textBlock)
+            {!! $textBlock->content !!}
+        @endif
     </div>
 </section>
 @endsection
