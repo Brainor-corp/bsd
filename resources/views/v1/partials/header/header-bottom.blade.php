@@ -5,16 +5,16 @@
         <p>по всей России в более чем 300 городов</p>
         <ul class="icons_list clearfix text-center text-md-left">
             <li data-toggle="tooltip" data-placement="bottom" title="Морские перевозки">
-                <a href="##" class="service__mini-block mezhter"></a>
+                <a href="/uslugi/morskie-perevozki" class="service__mini-block mezhter"></a>
             </li>
             <li data-toggle="tooltip" data-placement="bottom" title="Авиа перевозки">
-                <a href="##" class="service__mini-block aviap"></a>
+                <a href="/uslugi/aviaperevozka" class="service__mini-block aviap"></a>
             </li>
             <li data-toggle="tooltip" data-placement="bottom" title="Наземные перевозки">
-                <a href="##" class="service__mini-block perevozkadoc"></a>
+                <a href="/uslugi/nazemnye-perevozki" class="service__mini-block perevozkadoc"></a>
             </li>
             <li data-toggle="tooltip" data-placement="bottom" title="ЖД перевозки">
-                <a href="##" class="service__mini-block dostavkavgip"></a>
+                <a href="/uslugi/zhd-perevozki" class="service__mini-block dostavkavgip"></a>
             </li>
         </ul>
     </div>
