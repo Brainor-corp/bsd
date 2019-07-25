@@ -22,7 +22,7 @@
                                 <a href="tel:{{ $phones[0] }}">{{ $phones[0] }}</a>
                             @endif
                         @endif
-                        <a href="tel:8 (800) 000-00-00">8 (800) 000-00-00</a>
+                        {{--<a href="tel:8 (800) 000-00-00">8 (800) 000-00-00</a>--}}
                     </div>
                 </div>
                 <nav role="navigation" class="nav navbar-expand-sm">

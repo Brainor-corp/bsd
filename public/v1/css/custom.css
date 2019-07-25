@@ -1,6 +1,7 @@
 .inner-page-header .dropdown-menu:before{
     left: -1px;
     border-color: transparent transparent transparent rgba(0,0,0,.15);
+    display: none!important;
 }
 
 .selectize-control .selectize-input{
