@@ -65,10 +65,10 @@ $(document).ready(function(){
         var ckeditorId = $(this).data('ckeditorId');
         function elementsOutput(element, index, array) {
             var lightBoxData = 'data-lightbox="'+element.getAttribute("data-insert-media-id")+'"';
-            if(element.getAttribute("data-insert-media-title").length > 0){
+            if(element.getAttribute("data-insert-media-title") != null && element.getAttribute("data-insert-media-title").length > 0){
                 lightBoxData = lightBoxData + ' data-title="'+element.getAttribute("data-insert-media-title")+'"'
             }
-            if(element.getAttribute("data-insert-media-alt").length > 0){
+            if(element.getAttribute("data-insert-media-alt") != null && element.getAttribute("data-insert-media-alt").length > 0){
                 lightBoxData = lightBoxData + ' data-alt="'+element.getAttribute("data-insert-media-alt")+'"'
             }
             insertString = insertString+
@@ -77,6 +77,39 @@ $(document).ready(function(){
                 '<img src="'+element.getAttribute("data-insert-media-url")+'"'+'/>'+
                 '</a>'+
                 '</p>';
+        }
+        elements.forEach(elementsOutput);
+
+        var editor = CKEDITOR.instances[ckeditorId];
+        // Check the active editing mode.
+        if ( editor.mode == 'wysiwyg' )
+        {
+            // Insert HTML code.
+            // https://docs.ckeditor.com/ckeditor4/docs/#!/api/CKEDITOR.editor-method-insertHtml
+            editor.insertHtml( insertString );
+        }
+        else{alert( 'You must be in WYSIWYG mode!' );}
+
+        // $('#insertMediaModal').modal('toggle');
+        $( ".modal-backdrop.fade.show" ).remove();
+    });
+
+    $(document).on('click', '#insertSingleMediaAsLink', function (e) {
+        var elements = document.querySelectorAll('.insert-media-element.ui-selected img');
+        var insertString = '';
+        var fileName = '';
+        var ckeditorId = $(this).data('ckeditorId');
+        function elementsOutput(element, index, array) {
+            if(element.getAttribute("data-insert-media-title") != null && element.getAttribute("data-insert-media-title").length > 0){
+                fileName = element.getAttribute("data-insert-media-title");
+            }else{
+                fileName = element.getAttribute("data-insert-media-url");
+            }
+            if(index > 0){insertString = insertString + ' ,';}
+            insertString = insertString+
+                '<a href="'+element.getAttribute("data-insert-media-url")+'">'+
+                fileName +
+                '</a>';
         }
         elements.forEach(elementsOutput);
 
@@ -133,10 +166,10 @@ $(document).ready(function(){
         var galleryId = Date.now();
         function elementsOutput(element, index, array) {
             var lightBoxData = 'data-lightbox="'+galleryId+'"';
-            if(element.getAttribute("data-insert-media-title").length > 0){
+            if(element.getAttribute("data-insert-media-title") != null && element.getAttribute("data-insert-media-title").length > 0){
                 lightBoxData = lightBoxData + ' data-title="'+element.getAttribute("data-insert-media-title")+'"'
             }
-            if(element.getAttribute("data-insert-media-alt").length > 0){
+            if(element.getAttribute("data-insert-media-alt") != null && element.getAttribute("data-insert-media-alt").length > 0){
                 lightBoxData = lightBoxData + ' data-alt="'+element.getAttribute("data-insert-media-alt")+'"'
             }
             insertString = insertString+
