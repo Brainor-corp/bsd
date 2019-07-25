@@ -16,7 +16,6 @@
 
     <script src="{{ asset('v1/js/short-calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>
 @endsection
-
 @section('content')
 <section class="service">
     <div class="container">
