@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\OversizeMarkup;
 use App\CmsBoosterPost;
 use App\Http\Helpers\CalculatorHelper;
 use App\Point;
@@ -179,6 +180,8 @@ class MainPageController extends Controller
         $textBlock = CMSHelper::getQueryBuilder($args)
             ->first();
 
+        $oversizeMarkups = OversizeMarkup::get();
+
         return view('v1.pages.index.index')
             ->with(compact(
                 'packages',
@@ -190,7 +193,8 @@ class MainPageController extends Controller
                 'news',
                 'servicesPostsChunk',
                 'aboutPage',
-                'textBlock'
+                'textBlock',
+                'oversizeMarkups'
             ));
     }
 }
