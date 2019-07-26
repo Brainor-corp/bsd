@@ -18,6 +18,8 @@ class Requisites extends Section
 {
     protected $title = 'Реквизиты';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('id', '#'),

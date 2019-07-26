@@ -3,10 +3,7 @@
 namespace App\Admin\Sections;
 
 use App\City;
-use App\ForwardThreshold;
-use App\Region;
 use App\Terminal;
-use App\Type;
 use Illuminate\Http\Request;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
@@ -17,10 +14,11 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 
 
-
 class Polygons extends Section
 {
     protected $title = 'Полигоны';
+
+    protected $checkAccess = true;
 
     public static function onDisplay(Request $request){
         $display = Display::table([

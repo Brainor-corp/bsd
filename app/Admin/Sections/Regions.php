@@ -20,6 +20,8 @@ class Regions extends Section
 {
     protected $title = 'Регионы';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('code', 'Код'),

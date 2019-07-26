@@ -19,6 +19,8 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 class Terminals extends Section {
     protected $title = 'Терминалы';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::link('id', '#'),

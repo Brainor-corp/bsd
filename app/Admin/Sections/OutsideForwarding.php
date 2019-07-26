@@ -18,6 +18,8 @@ class OutsideForwarding extends Section {
     protected $title = 'Внешние пересылки';
     protected $model = '\App\OutsideForwarding';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::link('id', '#'),

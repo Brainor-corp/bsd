@@ -22,6 +22,8 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 class Orders extends Section {
     protected $title = 'Заявки';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::link('id', '#')->setSortable(1),

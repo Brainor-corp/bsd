@@ -20,6 +20,8 @@ class OversizeMarkups extends Section {
     protected $title = 'Множитель перегруза';
     protected $model = '\App\OversizeMarkup';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::link('oversize.real_name', 'Компания'),

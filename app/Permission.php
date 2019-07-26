@@ -2,13 +2,10 @@
 
 namespace App;
 
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 
-class Role extends Model
+class Permission extends Model
 {
-    use Sluggable;
-
     protected $fillable = [
         'name', 'slug'
     ];
@@ -20,9 +17,5 @@ class Role extends Model
                 'source' => 'name'
             ]
         ];
-    }
-
-    public function permissions() {
-        return $this->belongsToMany(Permission::class);
     }
 }

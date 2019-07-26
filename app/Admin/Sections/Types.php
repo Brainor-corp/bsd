@@ -20,6 +20,8 @@ class Types extends Section
 {
     protected $title = 'Типы';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::link('id', '#'),

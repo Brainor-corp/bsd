@@ -2,7 +2,6 @@
 
 namespace App\Admin\Sections;
 
-use App\Permission;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -10,9 +9,9 @@ use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 
-class Roles extends Section
+class Permissions extends Section
 {
-    protected $title = 'Роли';
+    protected $title = 'Привелегии';
 
     protected $checkAccess = true;
 
@@ -35,13 +34,7 @@ class Roles extends Section
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('name', 'Название')->setRequired(true),
-                FormField::input('slug', 'Слаг (необязательно)'),
-                FormField::bselect('permissions', 'Привелегии')
-                    ->setDataAttributes([
-                        'multiple'
-                    ])
-                    ->setModelForOptions(Permission::class)
-                    ->setDisplay('name'),
+                FormField::input('slug', 'Слаг (необяхательно)'),
             ])
         ]);
 

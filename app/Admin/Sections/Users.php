@@ -18,6 +18,8 @@ class Users extends Section
 {
     protected $title = 'Пользователи';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(){
         $display = Display::table([
             Column::link('id', '#'),
@@ -43,8 +45,8 @@ class Users extends Section
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('name', 'Имя')->setRequired(true),
-                FormField::input('surname', 'Фамилия'),
-                FormField::input('patronomic', 'Отчество'),
+                FormField::input('surname', 'Фамилия')->setRequired(true),
+                FormField::input('patronomic', 'Отчество')->setRequired(true),
                 FormField::input('guid', '1c ID')
                     ->setHelpBlock("<small class='text-muted'>Идентификатор пользователя в 1c</small>"),
                 FormField::bselect('sync_need', 'Нужна синхронизация с 1с')
@@ -62,6 +64,12 @@ class Users extends Section
                 FormField::input('repeat_password', 'Повторите пароль')
                     ->setRequired(true)
                     ->setType('password'),
+                FormField::bselect('roles', 'Роли')
+                    ->setDataAttributes([
+                        'multiple', 'data-live-search="true"'
+                    ])
+                    ->setModelForOptions(Role::class)
+                    ->setDisplay('name'),
 
             ]),
         ]);

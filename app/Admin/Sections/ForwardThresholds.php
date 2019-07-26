@@ -19,6 +19,8 @@ class ForwardThresholds extends Section {
     protected $title = 'Предельные пороги';
     protected $model = '\App\ForwardThreshold';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::link('id', '#'),

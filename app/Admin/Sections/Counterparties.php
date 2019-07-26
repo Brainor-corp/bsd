@@ -20,6 +20,8 @@ class Counterparties extends Section
 {
     protected $title = 'Counterparties';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(){
         $display = Display::table([
             Column::link('id', '#'),

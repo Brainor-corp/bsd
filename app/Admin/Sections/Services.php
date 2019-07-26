@@ -20,6 +20,8 @@ class Services extends Section
 {
     protected $title = 'Услуги';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::link('id', '#'),

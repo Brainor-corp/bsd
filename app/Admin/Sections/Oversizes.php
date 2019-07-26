@@ -17,6 +17,8 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 class Oversizes extends Section {
     protected $title = 'Группы негабаритов';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::text('id', '#'),

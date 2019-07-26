@@ -2,9 +2,9 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\GeoIpCheck;
 use App\Http\Middleware\OrderSave;
 use App\Http\Middleware\SmsConfirm;
-use App\Http\Middleware\GeoIpCheck;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -73,6 +73,7 @@ class Kernel extends HttpKernel
         'order.save' => OrderSave::class,
         'sms-confirm' => SmsConfirm::class,
         'geoIpCheck' => GeoIpCheck::class,
+        'admin' => \App\Http\Middleware\Admin::class,
     ];
 
     /**

@@ -56,6 +56,20 @@ class User extends Authenticatable
         return $this->hasMany(Event::class);
     }
 
+    public function hasRole($slug){
+        return $this->roles()->where('slug', $slug)->exists() ? true : false;
+    }
+
+    public function hasRoleWithPermission($slug){
+        return $this->roles()->whereHas('permissions', function ($permission) use ($slug) {
+            return $permission->whereSlug($slug);
+        })->exists() ? true : false;
+    }
+
+    public function isSuperAdmin() {
+        return $this->hasRole('super-admin');
+    }
+
     public function getFullNameAttribute(){
         return implode(' ', [
             $this->surname,

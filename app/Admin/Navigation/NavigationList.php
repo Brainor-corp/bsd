@@ -24,6 +24,11 @@ class NavigationList
                         'icon' => 'fas fa-address-book',
                         'text' => 'Роли'
                     ],
+                    [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Permissions',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Привелегии'
+                    ],
                 ]
             ],
             [
