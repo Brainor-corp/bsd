@@ -13,7 +13,7 @@
 
 
 
-Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
+Route::group(['middleware' => ['geoIpCheck']], function () {
 
     Auth::routes();
     Route::post('/password-method-redirect', 'Auth\ForgotPasswordController@resetMethodRedirect')->name('password.method-redirect');
@@ -28,8 +28,10 @@ Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
     Route::get('/test-payment', 'PaymentController@testPaymentPage')->name('test-payment');
     Route::post('/make-payment', 'PaymentController@makePayment')->name('make-payment');
 
-    // Главная
-    Route::get('/', 'MainPageController@index')->name('index');
+    Route::group(['middleware' => ['password_reset']], function () {
+        // Главная
+        Route::get('/', 'MainPageController@index')->name('index');
+    });
 
     // Список терминалов. Терминалы выводятся согласно текущему заданном городу.
     Route::get('/terminals-addresses', 'TerminalsController@showAddresses')->name('terminals-addresses-show');

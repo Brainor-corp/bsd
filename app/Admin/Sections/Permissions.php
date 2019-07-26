@@ -34,7 +34,7 @@ class Permissions extends Section
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('name', 'Название')->setRequired(true),
-                FormField::input('slug', 'Слаг (необяхательно)'),
+                FormField::input('slug', 'Слаг (необязательно)'),
             ])
         ]);
 

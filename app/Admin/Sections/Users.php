@@ -57,7 +57,7 @@ class Users extends Section
                 FormField::hidden('need_password_reset')->setValue(true),
                 FormField::input('email', 'EMail')->setRequired(true)
                     ->setType('email'),
-                FormField::input('phone', 'Телефон'),
+                FormField::input('phone', 'Телефон')->setRequired(true),
                 FormField::input('password', 'Пароль')
                     ->setRequired(true)
                     ->setType('password'),
@@ -91,7 +91,7 @@ class Users extends Section
                     ->setOptions([0 => 'Нет', 1 => 'Да'])
                     ->setRequired(true),
                 FormField::input('email', 'EMail')->setRequired(true),
-                FormField::input('phone', 'Телефон'),
+                FormField::input('phone', 'Телефон')->setRequired(true),
                 FormField::bselect('roles', 'Роли')
                     ->setDataAttributes([
                         'multiple', 'data-live-search="true"'
