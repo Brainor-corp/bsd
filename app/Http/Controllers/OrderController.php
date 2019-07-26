@@ -59,8 +59,8 @@ class OrderController extends Controller
             "sender_phone_legal" => ['nullable', 'regex:/\d{11}/'],                             // Отправитель (Телефон) -- Для юр.лиц
             "sender_addition_info_legal" => ['nullable', 'string'],                             // Отправитель (Дополнительная_информация) -- Для юр.лиц
             "sender_name_individual" => ['nullable', 'string', 'max:255'],                      // Отправитель (Имя)
-            "sender_passport_series" => ['nullable', 'numeric', 'min:1000', 'max:9999'],        // Отправитель (Серия_паспорта)
-            "sender_passport_number" => ['nullable', 'numeric', 'min:100000', 'max:999999'],    // Отправитель (Номер_паспорта)
+            "sender_passport_series" => ['nullable', 'numeric', 'digits:4'],                    // Отправитель (Серия_паспорта)
+            "sender_passport_number" => ['nullable', 'numeric', 'digits:6'],                    // Отправитель (Номер_паспорта)
             "sender_contact_person_individual" => ['nullable', 'string', 'max:255'],            // Отправитель (Контактное_лицо) -- Для физ.лиц
             "sender_phone_individual" => ['nullable', 'regex:/\d{11}/'],                        // Отправитель (Телефон) -- Для физ.лиц
             "sender_addition_info_individual" => ['nullable', 'string'],                        // Отправитель (Дополнительная_информация) -- Для физ.лиц
@@ -80,8 +80,8 @@ class OrderController extends Controller
             "recipient_phone_legal" => ['nullable', 'regex:/\d{11}/'],                          // Получатель (Телефон) -- Для юр.лиц
             "recipient_addition_info_legal" => ['nullable', 'string'],                          // Получатель (Дополнительная_информация) -- Для юр.лиц
             "recipient_name_individual" => ['nullable', 'string', 'max:255'],                   // Получатель (Имя)
-            "recipient_passport_series" => ['nullable', 'numeric', 'min:1000', 'max:9999'],     // Получатель (Серия_паспорта)
-            "recipient_passport_number" => ['nullable', 'numeric', 'min:100000', 'max:999999'], // Получатель (Номер_паспорта)
+            "recipient_passport_series" => ['nullable', 'numeric', 'digits:4'],                 // Получатель (Серия_паспорта)
+            "recipient_passport_number" => ['nullable', 'numeric', 'digits:6'],                 // Получатель (Номер_паспорта)
             "recipient_contact_person_individual" => ['nullable', 'string', 'max:255'],         // Получатель (Контактное_лицо) -- Для физ.лиц
             "recipient_phone_individual" => ['nullable', 'regex:/\d{11}/'],                     // Получатель (Телефон) -- Для физ.лиц
             "recipient_addition_info_individual" => ['nullable', 'string'],                     // Получатель (Дополнительная_информация) -- Для физ.лиц
@@ -102,8 +102,8 @@ class OrderController extends Controller
             "payer_phone_legal" => ['nullable', 'regex:/\d{11}/'],                              // Плательщик (Телефон) -- Для юр.лиц
             "payer_addition_info_legal" => ['nullable', 'string'],                              // Плательщик (Дополнительная_информация) -- Для юр.лиц
             "payer_name_individual" => ['nullable', 'string', 'max:255'],                       // Плательщик (Имя)
-            "payer_passport_series" => ['nullable', 'numeric', 'min:1000', 'max:9999'],         // Плательщик (Серия_паспорта)
-            "payer_passport_number" => ['nullable', 'numeric', 'min:100000', 'max:999999'],     // Плательщик (Номер_паспорта)
+            "payer_passport_series" => ['nullable', 'numeric', 'digits:4'],                     // Плательщик (Серия_паспорта)
+            "payer_passport_number" => ['nullable', 'numeric', 'digits:6'],                     // Плательщик (Номер_паспорта)
             "payer_contact_person_individual" => ['nullable', 'string', 'max:255'],             // Плательщик (Контактное_лицо) -- Для физ.лиц
             "payer_phone_individual" => ['nullable', 'regex:/\d{11}/'],                         // Плательщик (Телефон) -- Для физ.лиц
             "payer_addition_info_individual" => ['nullable', 'string'],                         // Плательщик (Дополнительная_информация) -- Для физ.лиц

@@ -9,7 +9,7 @@ function initSortable() {
                 var parent_id = $(this).parent().data("parentId");
                 var prev_id = $(ui.item).prev('li').attr('id');
                 var next_id = $(ui.item).next('li').attr('id');
-                // alert(id +'-'+ parent_id +'-'+ prev_id+'-'+ next_id);
+                console.log(id +'-'+ parent_id +'-'+ prev_id+'-'+ next_id);
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
