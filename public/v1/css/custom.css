@@ -3,7 +3,9 @@
     border-color: transparent transparent transparent rgba(0,0,0,.15);
     display: none!important;
 }
-
+.nav{
+    flex-wrap: nowrap;
+}
 .selectize-control .selectize-input{
     border-radius: 7px!important;
 }
