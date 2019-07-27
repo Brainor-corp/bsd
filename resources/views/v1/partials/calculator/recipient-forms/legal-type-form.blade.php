@@ -19,7 +19,7 @@
                autocomplete="off"
                data-field="company_name"
                minlength="3"
-               data-source="{{ route('getCounterparties', ['type_id' => isset($userTypes) ? $userTypes->where('slug', 'yuridicheskoe-lico')->first->id : '']) }}"
+               data-source="{{ route('getCounterparties', ['type_id' => isset($userTypes) ? $userTypes->where('slug', 'yuridicheskoe-lico')->first()->id : '']) }}"
                value="{{ old('recipient_company_name') ?? ($order->recipient_company_name ?? '') }}"
                class="form-control req autocomplete"
                {{ isset($disabled) ? 'disabled' : 'required' }}

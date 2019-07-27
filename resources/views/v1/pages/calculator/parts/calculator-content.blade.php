@@ -471,32 +471,107 @@
 
     <div class="calc__title">Данные плательщика</div>
     <div class="custom-control custom-radio">
-        <input type="radio" @if(isset($order->payer) && $order->payer->slug === 'otpravitel') checked @endif class="custom-control-input" id="sender" name="payer_type" value="otpravitel" required />
+        <input type="radio"
+               @if(!empty(old('payer_type')))
+                    @if(old('payer_type') === 'otpravitel') checked @endif
+               @else
+                    @if(isset($order->payer) && $order->payer->slug === 'otpravitel') checked @endif
+               @endif
+               class="custom-control-input"
+               id="sender"
+               name="payer_type"
+               value="otpravitel"
+               required
+        />
         <label class="custom-control-label" for="sender">Отправитель</label>
     </div>
     <div class="custom-control custom-radio">
-        <input type="radio" @if(isset($order->payer) && $order->payer->slug === 'poluchatel') checked @endif class="custom-control-input" id="recipient" name="payer_type" value="poluchatel" required />
+        <input type="radio"
+               @if(!empty(old('payer_type')))
+                    @if(old('payer_type') === 'poluchatel') checked @endif
+               @else
+                    @if(isset($order->payer) && $order->payer->slug === 'poluchatel') checked @endif
+               @endif
+               class="custom-control-input"
+               id="recipient"
+               name="payer_type"
+               value="poluchatel"
+               required
+        />
         <label class="custom-control-label" for="recipient">Получатель</label>
     </div>
     <div class="custom-control custom-radio">
-        <input type="radio" @if(isset($order->payer) && $order->payer->slug === '3-e-lico') checked @endif class="custom-control-input" id="3rd-person" name="payer_type" value="3-e-lico" required />
+        <input type="radio"
+               @if(!empty(old('payer_type')))
+                    @if(old('payer_type') === '3-e-lico') checked @endif
+               @else
+                    @if(isset($order->payer) && $order->payer->slug === '3-e-lico') checked @endif
+               @endif
+               class="custom-control-input"
+               id="3rd-person"
+               name="payer_type"
+               value="3-e-lico"
+               required
+        />
         <label class="custom-control-label" for="3rd-person">3-е лицо</label>
     </div>
-    <div id="3rd-person-payer"  @if(!isset($order->payer) || $order->payer->slug !== '3-e-lico') style="display: none" @endif>
+    <div id="3rd-person-payer"
+         @if(!empty(old('payer_type')))
+            @if(old('payer_type') !== '3-e-lico') style="display: none" @endif
+         @else
+            @if(!isset($order->payer) || $order->payer->slug !== '3-e-lico') style="display: none" @endif
+         @endif
+    >
         @foreach($userTypes as $userType)
             <div class="custom-control custom-radio">
-                <input type="radio" data-slug="{{ $userType->slug }}" class="custom-control-input req" id="payer_type_{{ $userType->slug }}" @if(isset($order->payer_form_type) && $order->payer_form_type_id == $userType->id) checked @endif value="{{ $userType->id }}" name="payer_form_type_id" required />
+                <input type="radio"
+                       data-slug="{{ $userType->slug }}"
+                       class="custom-control-input req"
+                       id="payer_type_{{ $userType->slug }}"
+                       @if(!empty(old('payer_form_type_id')))
+                            @if(old('payer_form_type_id') == $userType->id) checked @endif
+                       @else
+                            @if(isset($order->payer_form_type) && $order->payer_form_type_id == $userType->id) checked @endif
+                       @endif
+                       value="{{ $userType->id }}"
+                       name="payer_form_type_id"
+                       required
+                />
                 <label class="custom-control-label" for="payer_type_{{ $userType->slug }}">{{ $userType->name }}</label>
             </div>
         @endforeach
         <div class="payer-forms">
             <div class="legal"
-                 @if(isset($order->payer_form_type) && $order->payer_form_type->slug == 'yuridicheskoe-lico') style="display: block" @else style="display: none" @endif
+                 @if(!empty(old('payer_form_type_id')) && !empty($userTypes->where('id', old('payer_form_type_id'))->first()))
+                     @if($userTypes->where('id', old('payer_form_type_id'))->first()->slug == 'yuridicheskoe-lico')
+                         style="display: block"
+                     @else
+                         style="display: none"
+                     @endif
+                 @else
+                     @if(isset($order->payer_form_type) && $order->payer_form_type->slug == 'yuridicheskoe-lico')
+                        style="display: block"
+                     @else
+                        style="display: none"
+                     @endif
+                 @endif
             >
                 @include('v1.partials.calculator.payer-forms.legal-type-form')
             </div>
             <div class="individual"
-                 @if(isset($order->payer_form_type) && $order->payer_form_type->slug == 'fizicheskoe-lico') style="display: block" @else style="display: none" @endif
+                 @if(!empty(old('payer_form_type_id')) && !empty($userTypes->where('id', old('payer_form_type_id'))->first()))
+                     @if($userTypes->where('id', old('payer_form_type_id'))->first()->slug == 'fizicheskoe-lico')
+                        style="display: block"
+                     @else
+                        style="display: none"
+                     @endif
+                 @else
+                     @if(isset($order->payer_form_type) && $order->payer_form_type->slug == 'fizicheskoe-lico')
+                        style="display: block"
+                     @else
+                        style="display: none"
+                     @endif
+                 @endif
             >
                 @include('v1.partials.calculator.payer-forms.individual-type-form')
             </div>
