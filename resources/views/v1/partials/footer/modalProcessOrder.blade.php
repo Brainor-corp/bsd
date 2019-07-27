@@ -1,8 +1,8 @@
 @if(
     \Illuminate\Support\Facades\Auth::check() &&
+    \Illuminate\Support\Facades\Auth::user()->verified &&
     session()->has('process_order') &&
     session()->has('process_order_modal')
-    // todo Добавить проверку подтверждённости пользователя
 )
     @php
         $order = json_decode(session()->get('process_order'));
