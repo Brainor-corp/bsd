@@ -1,9 +1,13 @@
 @if(
     \Illuminate\Support\Facades\Auth::check() &&
-    session()->has('process_order')
+    session()->has('process_order') &&
+    session()->has('process_order_modal')
     // todo Добавить проверку подтверждённости пользователя
 )
-    @php($order = json_decode(session()->get('process_order')))
+    @php
+        $order = json_decode(session()->get('process_order'));
+        session()->forget('process_order_modal');
+    @endphp
     <div class="modal" id="process-order" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
