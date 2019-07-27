@@ -13,7 +13,6 @@ use App\Service;
 use App\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class CalculatorController extends Controller
 {
@@ -91,8 +90,21 @@ class CalculatorController extends Controller
                 ];
             }
 
+
             $selectedShipCity = null;
             $selectedDestCity = null;
+
+            if(!empty(old('ship_city'))) { // Если форма не прошла проверку валидации, берём заполненные города
+                $request->merge([
+                    'ship_city' => old('ship_city')
+                ]);
+            }
+
+            if(!empty(old('dest_city'))) { // Если форма не прошла проверку валидации, берём заполненные города
+                $request->merge([
+                    'dest_city' => old('dest_city')
+                ]);
+            }
 
             $deliveryPoint = null;
             if(isset($request->ship_city)){ // Если город отправления выбран
