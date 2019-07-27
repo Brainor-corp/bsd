@@ -22,12 +22,14 @@
                 <option value="" selected disabled>Выберите тип груза</option>
                 @foreach($cargoTypes as $cargoType)
                     <option value="{{ $cargoType->id }}"
-                    @if(isset($order->cargo_type) && $cargoType->id == $order->cargo_type)
-                        selected
-                    @elseif(isset($order->shipping_name) && $cargoType->name == $order->shipping_name)
-                        selected
-                    @elseif(!empty(old('cargo.name')) && intval(old('cargo.name')) === $cargoType->id)
-                        selected
+                    @if(!empty(old('cargo.name')))
+                        @if(!empty(old('cargo.name')) && intval(old('cargo.name')) === $cargoType->id) selected @endif
+                    @else
+                        @if(isset($order->cargo_type) && $cargoType->id == $order->cargo_type)
+                            selected
+                        @elseif(isset($order->shipping_name) && $cargoType->name == $order->shipping_name)
+                            selected
+                        @endif
                     @endif
                     >{{ $cargoType->name }}</option>
                 @endforeach

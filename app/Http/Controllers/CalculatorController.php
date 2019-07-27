@@ -17,6 +17,25 @@ use Illuminate\Support\Facades\Auth;
 class CalculatorController extends Controller
 {
     public function calculatorShow($id = null, Request $request) {
+        // Если имеем дело с незавершенным заказом
+        if($request->has('continue') && session()->has('process_order')) {
+            $continueOrder = json_decode(session()->get('process_order'));
+            $continueOrder = (array)$continueOrder;
+            $continueOrder['cargo'] = (array)$continueOrder['cargo'];
+            $continueOrder['cargo']['packages'] = (array)$continueOrder['cargo']['packages'];
+            $continueOrder['cargo']['packages'] = array_map(function ($el) {
+                return (array)$el;
+            }, $continueOrder['cargo']['packages']);
+
+            // удалим незавершенный заказ из сессии
+            session()->forget('process_order');
+
+            // направим пользователя на дооформление заказа с проставленными полями
+            return redirect(route('calculator-show', [
+               'id' => $continueOrder['order_id'] ?? null
+            ]))->withInput($continueOrder);
+        }
+
         $shipCities = City::where('is_ship', true)->with('terminal','kladr')->get();
 
         $citiesIdsToFindRoute = [];
