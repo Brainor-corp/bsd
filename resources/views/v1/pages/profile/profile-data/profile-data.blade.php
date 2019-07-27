@@ -78,7 +78,7 @@
                                 <div class="form-group row">
                                     <label class="col-auto profile__label">Телефон</label>
                                     <div class="col">
-                                        <input type="text" class="form-control form-group phone-mask" name="phone" value="{{ auth()->user()->phone ?? '' }}" placeholder="Телефон">
+                                        <input type="text" class="form-control form-group phone-mask" name="phone" value="{{ auth()->user()->phone ?? '' }}" placeholder="+7(XXX)XXX-XX-XX">
                                     </div>
                                 </div>
                                 <div class="row">

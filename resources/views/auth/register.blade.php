@@ -53,7 +53,7 @@
                             <label for="phone" class="col-md-4 col-form-label text-md-right">{{ __('Телефон') }}</label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="text" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }} phone-mask" name="phone" value="{{ old('phone') }}" required autofocus>
+                                <input id="phone" type="text" placeholder="+7(XXX)XXX-XX-XX" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }} phone-mask" name="phone" value="{{ old('phone') }}" required autofocus>
                             </div>
                         </div>
 

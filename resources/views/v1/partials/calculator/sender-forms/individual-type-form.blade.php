@@ -27,7 +27,7 @@
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="sender_phone_individual">Телефон*</label>
-    <div class="col calc__inpgrp"><input type="text" class="form-control req phone-mask" name="sender_phone_individual" id="sender_phone_individual" value="{{ $order->sender_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <div class="col calc__inpgrp"><input type="text" placeholder="+7(XXX)XXX-XX-XX" class="form-control req phone-mask" name="sender_phone_individual" id="sender_phone_individual" value="{{ $order->sender_phone ?? '' }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="sender_addition_info_individual">Дополнительная информация</label>
