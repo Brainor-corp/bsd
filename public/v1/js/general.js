@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    if($('#process-order').length) {
+        $('#process-order').modal('show');
+    }
+
     $('.city-search').selectize({
         create: false,
         maxItems: 1,
