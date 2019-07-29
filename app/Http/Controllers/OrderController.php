@@ -10,6 +10,7 @@ use App\OrderItem;
 use App\Polygon;
 use App\Route;
 use App\Type;
+use App\Http\Helpers\EventHelper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -623,6 +624,13 @@ class OrderController extends Controller
         $order->order_items()->saveMany($packages);
 
         $order->order_services()->sync($servicesToSync);
+
+        EventHelper::createEvent(
+            'Заказ успешно зарегистрирован!',
+            null,
+            1,
+            '/klientam/report/'.$order->id,
+            Auth::id());
 
         return $order->status->slug === "chernovik" ?
             redirect(route('calculator-show', ['id' => $order->id])) :

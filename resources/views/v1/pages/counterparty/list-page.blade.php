@@ -41,23 +41,27 @@
                                         @foreach($counterparties as $counterparty)
                                             <tr>
                                                 <td class="align-middle">{{ $counterparty->active ? 'Да' : 'Нет'}}</td>
-                                                <td class="align-middle">{{ $counterparty->legal_form  ?? ''}}</td>
-                                                <td class="align-middle">{{ $counterparty->company_name  ?? ''}}</td>
+                                                <td class="align-middle">{{ $counterparty->legal_form  ?? 'Физ.Лицо'}}</td>
+                                                <td class="align-middle">{{ $counterparty->company_name  ?? '-'}}</td>
                                                 <td class="align-middle">
-                                                    {{ $counterparty->legal_address_city  ?? ''}},
-                                                    {{ $counterparty->legal_address_street  ?? ''}},
-                                                    {{ $counterparty->legal_address_house  ?? ''}},
-                                                    {{ $counterparty->legal_address_block  ?? ''}},
-                                                    {{ $counterparty->legal_address_building  ?? ''}},
-                                                    {{ $counterparty->legal_address_apartment  ?? ''}}
+                                                    @if(null !== $counterparty->legal_form)
+                                                        {{ $counterparty->legal_address_city  ?? ''}},
+                                                        {{ $counterparty->legal_address_street  ?? ''}},
+                                                        {{ $counterparty->legal_address_house  ?? ''}},
+                                                        {{ $counterparty->legal_address_block  ?? ''}},
+                                                        {{ $counterparty->legal_address_building  ?? ''}},
+                                                        {{ $counterparty->legal_address_apartment  ?? ''}}
+                                                    @else
+                                                        -
+                                                    @endif
                                                 </td>
-                                                <td class="align-middle">{{ $counterparty->inn  ?? ''}}</td>
-                                                <td class="align-middle">{{ $counterparty->kpp  ?? ''}}</td>
-                                                <td class="align-middle">{{ $counterparty->phone  ?? ''}}</td>
-                                                <td class="align-middle">{{ $counterparty->name  ?? ''}}</td>
+                                                <td class="align-middle">{{ $counterparty->inn  ?? '-'}}</td>
+                                                <td class="align-middle">{{ $counterparty->kpp  ?? '-'}}</td>
+                                                <td class="align-middle">{{ $counterparty->phone  ?? '-'}}</td>
+                                                <td class="align-middle">{{ $counterparty->name  ?? '-'}}</td>
                                                 <td class="align-middle">{{ $counterparty->passport_series  ?? ''}} {{ $counterparty->passport_number  ?? ''}}</td>
-                                                <td class="align-middle">{{ $counterparty->addition_info  ?? ''}}</td>
-                                                <td class="align-middle">{{ $counterparty->contact_person  ?? ''}}</td>
+                                                <td class="align-middle">{{ $counterparty->addition_info  ?? '-'}}</td>
+                                                <td class="align-middle">{{ $counterparty->contact_person  ?? '-'}}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
