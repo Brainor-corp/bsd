@@ -19,7 +19,7 @@
                         <h1>Мои котрагенты</h1>
                     </header>
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-12">
                             <div class="table-responsive mb-3">
                                 <table class="table table-bordered text-center">
                                     <thead>
@@ -68,17 +68,17 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-3 offset-md-1">
-                            <div class="sidebar__block">
-                                <div class="sidebar__image">
-                                    <img src="{{ asset('/images/img/news-img.png') }}" alt="С новым годом">
-                                </div>
-                                <div class="sidebar__body">
-                                    <h5>С наступающим новым годом!</h5>
-                                    <span>Дорогие друзья! Компания «БСД» поздравляет Вас с Новым годом и Рождеством! Спасибо за то, что были с нами эти 365 дней!</span>
-                                </div>
-                            </div>
-                        </div>
+                        {{--<div class="col-3 offset-md-1">--}}
+                            {{--<div class="sidebar__block">--}}
+                                {{--<div class="sidebar__image">--}}
+                                    {{--<img src="{{ asset('/images/img/news-img.png') }}" alt="С новым годом">--}}
+                                {{--</div>--}}
+                                {{--<div class="sidebar__body">--}}
+                                    {{--<h5>С наступающим новым годом!</h5>--}}
+                                    {{--<span>Дорогие друзья! Компания «БСД» поздравляет Вас с Новым годом и Рождеством! Спасибо за то, что были с нами эти 365 дней!</span>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
                     </div>
                 </div>
             </div>
