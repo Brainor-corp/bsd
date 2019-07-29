@@ -626,7 +626,8 @@ class OrderController extends Controller
 
         return $order->status->slug === "chernovik" ?
             redirect(route('calculator-show', ['id' => $order->id])) :
-            redirect(route('report-show', ['id' => $order->id]));
+//            redirect(route('report-show', ['id' => $order->id]));
+            redirect(route('orders-list'));
     }
 
     public function shipmentSearch(Request $request){
