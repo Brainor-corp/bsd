@@ -34,7 +34,9 @@ class ReportsController extends Controller
                     ->where('user_id', Auth::id())
                     ->orWhere('enter_id', $_COOKIE['enter_id']) :
                     $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
-            })->get();
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return View::make('v1.pages.profile.profile-inner.report-list-page')->with(compact('orders'));
     }

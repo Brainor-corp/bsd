@@ -40,7 +40,7 @@ class CounterpartyController extends Controller
 
         $counterparties = Counterparty::where([
             ['user_id', Auth::id()],
-            ['active', true],
+//            ['active', true],
         ])->get();
 
         return View::make('v1.pages.counterparty.list-page')->with(compact('counterparties'));
