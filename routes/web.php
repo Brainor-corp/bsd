@@ -34,7 +34,7 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     });
 
     // Список терминалов. Терминалы выводятся согласно текущему заданном городу.
-    Route::get('/terminals-addresses', 'TerminalsController@showAddresses')->name('terminals-addresses-show');
+    Route::get('/terminals-addresses/{city?}', 'TerminalsController@showAddresses')->name('terminals-addresses-show');
 
     // Акции
     Route::get('/promotions', 'PromotionsController@showList')->name('promotion-list-show');
@@ -131,10 +131,6 @@ Route::get('/1c/test/document/id', 'Api1cTestController@documentById');
 Route::get('/1c/test/document/number', 'Api1cTestController@documentByNumber');
 Route::get('/1c/test/orders', 'Api1cTestController@orders');
 
-
-Route::get('/jobs/test/SendTestMail', function () {
-    dispatch(New \App\Jobs\SendTestMail());
-});
 
 //Route::group(['middleware' => ['auth']], function () {
 //    // Профиль пользователя

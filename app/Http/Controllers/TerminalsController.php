@@ -8,10 +8,14 @@ use Illuminate\Http\Request;
 
 class TerminalsController extends Controller
 {
-    public function showAddresses(Request $request) {
+    public function showAddresses(Request $request, $city = null) {
         $currentCity = null;
 
-        if($request->session()->has('current_city')) {
+        if(isset($city)) {
+            $currentCity = City::where('slug', $city)->with('requisites.requisiteParts')->firstOrFail();
+        }
+
+        if(!isset($currentCity) && $request->session()->has('current_city')) {
             $sessionCity = $request->session()->get('current_city');
             if(isset($sessionCity['id']) && is_numeric($sessionCity['id'])) {
                 $currentCity = City::where('id', $sessionCity['id'])->with('requisites.requisiteParts')->first();
