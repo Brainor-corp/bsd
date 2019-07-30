@@ -195,7 +195,7 @@ class NavigationList
                     ],
 
                 ]
-            ],
+            ]
         ];
 
         return $navigation;

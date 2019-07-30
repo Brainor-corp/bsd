@@ -28,8 +28,9 @@
                         <div class="col-8">
                             {!! html_entity_decode($page->content) !!}
                         </div>
+
                         <div class="col-3 offset-md-1">
-                            @include('zeusAdmin.cms.partials.sidebarKlientam')
+                            @include('zeusAdmin.cms.partials.sidebarByTag')
                         </div>
                     </div>
                 </div>
