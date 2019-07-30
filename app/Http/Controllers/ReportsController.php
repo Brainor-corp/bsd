@@ -8,8 +8,6 @@ use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use App\Http\Helpers\DocumentHelper;
 use App\Order;
 use App\Type;
-use Barryvdh\DomPDF\PDF;
-use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -102,7 +100,7 @@ class ReportsController extends Controller
             ->with(compact('documents'));
     }
 
-    public function downloadOrderDocument($document_id_1c, $document_type_id_1c) {
+    public function downloadOrderDocument(Request $request, $document_id_1c, $document_type_id_1c) {
         $user = Auth::user();
 
         $response1c = \App\Http\Helpers\Api1CHelper::post(
@@ -126,29 +124,37 @@ class ReportsController extends Controller
         switch ($document_type_id_1c) {
             case 1:
                 // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
-                $file = DocumentHelper::generateContractDocument($documentData);
+                $file = DocumentHelper::generateContractDocument(
+                    json_decode($request->get('document_name')),
+                    $documentData
+                );
                 break;
             case 2:
                 // Экспедиторская расписка
                 $file = DocumentHelper::generateReceiptDocument(
-                    "Экспедиторская расписка №" . $documentData['УникальныйИдентификатор'],
-                    $documentData);
+                    json_decode($request->get('document_name')),
+                    $documentData
+                );
                 break;
             case 3:
                 // Заявка на экспедирование
                 return DocumentHelper::generateRequestDocument(
                     $documentData,
-                    "Заявка №" . $documentData['УникальныйИдентификатор'] . '.pdf');
+                    json_decode($request->get('document_name')) . '.pdf');
                 break;
             case 4:
                 // Счет-фактура(УПД???)
-                $status = $documentData['УникальныйИдентификатор'];
-
-                $file = DocumentHelper::generateTransferDocument($documentData, "УПД (статус todo) №$status от todo г.xlsx");
+                $file = DocumentHelper::generateTransferDocument(
+                    $documentData,
+                    json_decode($request->get('document_name'))
+                );
                 break;
             case 5:
                 // Счет на оплату
-                $file = DocumentHelper::generateInvoiceDocument($documentData);
+                $file = DocumentHelper::generateInvoiceDocument(
+                    $documentData,
+                    json_decode($request->get('document_name'))
+                );
                 break;
             case 6:
                 // todo Нет шаблона
