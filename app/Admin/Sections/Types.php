@@ -63,7 +63,7 @@ class Types extends Section
                 FormField::input('name', 'Название')->setRequired(true),
                 FormField::input('class', 'Класс')->setRequired(true),
                 FormField::textarea('description', 'Описание'),
-                FormField::input('optional', 'Произвольное значение')
+                FormField::input('option', 'Произвольное значение')
             ])
         ])->setMeta($meta);
 
