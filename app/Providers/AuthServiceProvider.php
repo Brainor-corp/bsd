@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Admin\Sections\Cities;
 use App\Admin\Sections\CitiesClosestTerminalUpdater;
 use App\Admin\Sections\Comments;
+use App\Admin\Sections\Companies;
 use App\Admin\Sections\ContactEmails;
 use App\Admin\Sections\Contacts;
 use App\Admin\Sections\Counterparties;
@@ -57,6 +58,7 @@ class AuthServiceProvider extends ServiceProvider
         Comments::class => DefaultSectionPolicy::class,
         ContactEmails::class => DefaultSectionPolicy::class,
         Contacts::class => DefaultSectionPolicy::class,
+        Companies::class => DefaultSectionPolicy::class,
         Counterparties::class => DefaultSectionPolicy::class,
         ForwardThresholds::class => DefaultSectionPolicy::class,
         InsideForwarding::class => DefaultSectionPolicy::class,

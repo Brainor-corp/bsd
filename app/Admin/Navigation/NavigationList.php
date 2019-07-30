@@ -99,6 +99,11 @@ class NavigationList
                 'noDirect' => true,
                 'nodes' => [
                     [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/Companies',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Компании'
+                    ],
+                    [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Promotions',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Акции'
