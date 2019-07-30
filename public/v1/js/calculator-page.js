@@ -11,6 +11,8 @@ $(document).ready(function () {
     totalWeigthRecount();
     totalVolumeRecount();
 
+    $('.cargo-type-select').selectize();
+
     $('#ship_city').selectize({
         openOnFocus:false,
         onInitialize: function () {

@@ -18,7 +18,7 @@
         <label class="col-auto calc__label">Наименование груза*</label>
         <div class="col">
             {{--<input type="text" class="form-control" placeholder="Введите наименование груза" name="cargo[name]" value="{{ $order->shipping_name ?? '' }}" required>--}}
-            <select class="form-control" name="cargo[name]" required>
+            <select class="form-control cargo-type-select" data-live-search="true" name="cargo[name]" required>
                 <option value="" selected disabled>Выберите тип груза</option>
                 @foreach($cargoTypes as $cargoType)
                     <option value="{{ $cargoType->id }}"
