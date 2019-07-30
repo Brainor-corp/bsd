@@ -44,13 +44,10 @@ class OrdersController extends Controller
         ])->first();
 
         if(!isset($status)) {
-            return response(
-                [
-                    "status" => "error",
-                    "text" => "Статус с указанным названием (" . $request->get('status') . ") не найден"
-                ],
-                400
-            );
+            $status = new Type();
+            $status->name = $request->get('status');
+            $status->class = 'order_status';
+            $status->save();
         }
 
         $order->status_id = $status->id;
