@@ -9,7 +9,12 @@
     <div class="breadcrumb__list d-flex">
         <div class="container">
             <span class="breadcrumb__item"><a href="/" class="">Главная</a></span>
-            <span class="breadcrumb__item">Адреса терминалов</span>
+            @if(isset($city))
+                <span class="breadcrumb__item"><a href="{{ url('terminals-addresses') }}" class="">Адреса терминалов</a></span>
+                <span class="breadcrumb__item">{{ $currentCity->name }}</span>
+            @else
+                <span class="breadcrumb__item">Адреса терминалов</span>
+            @endif
         </div>
     </div>
     <section class="wrapper">
@@ -17,7 +22,11 @@
             <div class="row">
                 <div class="col-12">
                     <header class="wrapper__header">
-                        <h1>Адреса терминалов</h1>
+                        @if(isset($city))
+                            <h1>{{ $currentCity->name }}</h1>
+                        @else
+                            <h1>Адреса терминалов</h1>
+                        @endif
                     </header>
                 </div>
             </div>

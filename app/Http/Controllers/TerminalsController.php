@@ -29,6 +29,6 @@ class TerminalsController extends Controller
         $terminals = Terminal::where('city_id', $currentCity->id)->get();
 
         return view('v1.pages.terminals.addresses.addresses')
-            ->with(compact('terminals', 'currentCity'));
+            ->with(compact('terminals', 'currentCity', 'city'));
     }
 }
