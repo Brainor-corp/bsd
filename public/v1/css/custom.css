@@ -119,3 +119,11 @@
 select.form-control:not([size]):not([multiple]) {
     color:#36393b!important;
 }
+
+ol {
+    list-style-position: inside;
+}
+
+ol li {
+    padding-left: 10px;
+}
