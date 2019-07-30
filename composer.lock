@@ -174,16 +174,16 @@
         },
         {
             "name": "brainor-rus/zeus-admin",
-            "version": "1.0.49",
+            "version": "1.0.50",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brainor-rus/zeus-admin.git",
-                "reference": "65352cb662d2648dc2a7e98f0f618cf7e5023914"
+                "reference": "96bb52e02057528f255fcfd22b1416aad1b558ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brainor-rus/zeus-admin/zipball/65352cb662d2648dc2a7e98f0f618cf7e5023914",
-                "reference": "65352cb662d2648dc2a7e98f0f618cf7e5023914",
+                "url": "https://api.github.com/repos/brainor-rus/zeus-admin/zipball/96bb52e02057528f255fcfd22b1416aad1b558ba",
+                "reference": "96bb52e02057528f255fcfd22b1416aad1b558ba",
                 "shasum": ""
             },
             "require": {
@@ -224,7 +224,7 @@
                 "laravel admin",
                 "zeus"
             ],
-            "time": "2019-07-29T20:05:48+00:00"
+            "time": "2019-07-30T19:57:28+00:00"
         },
         {
             "name": "cocur/slugify",
@@ -1212,16 +1212,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.8.29",
+            "version": "v5.8.30",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "489ae2218c7eb138caac780de584d8df9fe8160b"
+                "reference": "7ccf0cf63931a8d8391aed90e6fc011381ea6838"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/489ae2218c7eb138caac780de584d8df9fe8160b",
-                "reference": "489ae2218c7eb138caac780de584d8df9fe8160b",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/7ccf0cf63931a8d8391aed90e6fc011381ea6838",
+                "reference": "7ccf0cf63931a8d8391aed90e6fc011381ea6838",
                 "shasum": ""
             },
             "require": {
@@ -1355,7 +1355,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2019-07-16T14:05:28+00:00"
+            "time": "2019-07-30T14:08:47+00:00"
         },
         {
             "name": "laravel/tinker",
