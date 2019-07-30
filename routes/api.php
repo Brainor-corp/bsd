@@ -42,5 +42,7 @@ Route::get('/upload-xml-regions', 'UploadXmlController@uploadRegions')->name('up
 Route::get('/upload-xml-points', 'UploadXmlController@uploadPoints')->name('uploadPoints');
 Route::get('/upload-xml-terminals', 'UploadXmlController@uploadTerminals')->name('uploadTerminals');
 
+Route::get('/upload-csv-order-types', 'UploadCsvController@loadOrderTypes');
+
 // 1c
 Route::post('/1c/order/update_status', 'Api\OrdersController@updateOrderStatus');
