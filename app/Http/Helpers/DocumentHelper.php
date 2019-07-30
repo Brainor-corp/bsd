@@ -6,7 +6,6 @@ use alhimik1986\PhpExcelTemplator\params\ExcelParam;
 use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterStringValue;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 
@@ -64,7 +63,7 @@ class DocumentHelper
         ];
     }
 
-    public static function generateInvoiceDocument($documentData)
+    public static function generateInvoiceDocument($documentData, $documentName)
     {
         foreach($documentData['Товары'] as $index => $item) {
             $items['number'][] = $index + 1;
@@ -96,7 +95,7 @@ class DocumentHelper
 
         return [
             'tempFile' => $tempFile,
-            'fileName' => "Счет на оплату № todo от todo" . '.xlsx'
+            'fileName' => $documentName . '.xlsx'
         ];
     }
 
