@@ -59,6 +59,8 @@ class Cities extends Section
             FormColumn::column([
                 FormField::input('name', 'Наименование')
                     ->setRequired(true),
+                FormField::input('slug', 'Слаг')
+                    ->setIsSystem(true),
                 FormField::bselect('is_ship', 'Отправка')
                     ->setHelpBlock("<small class='text-muted'>Это город отправления</small>")
                     ->setRequired(1)
