@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\File;
 
 class DocumentHelper
 {
-    public static function generateContractDocument(Array $parameters)
+    public static function generateContractDocument($documentName, Array $parameters)
     {
         $TBS = new \clsTinyButStrong();
         $TBS->Plugin(TBS_INSTALL, \clsOpenTBS::class);
@@ -36,7 +36,7 @@ class DocumentHelper
 
         return [
             'tempFile' => $tempFile,
-            'fileName' => 'ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ №todo' . '.docx'
+            'fileName' => $documentName . '.docx'
         ];
     }
 

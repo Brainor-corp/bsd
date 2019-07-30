@@ -124,13 +124,17 @@ class ReportsController extends Controller
         switch ($document_type_id_1c) {
             case 1:
                 // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
-                $file = DocumentHelper::generateContractDocument($documentData);
+                $file = DocumentHelper::generateContractDocument(
+                    json_decode($request->get('document_name')),
+                    $documentData
+                );
                 break;
             case 2:
                 // Экспедиторская расписка
                 $file = DocumentHelper::generateReceiptDocument(
                     json_decode($request->get('document_name')),
-                    $documentData);
+                    $documentData
+                );
                 break;
             case 3:
                 // Заявка на экспедирование
