@@ -123,41 +123,41 @@ class NavigationList
                         'icon' => 'fas fa-address-book',
                         'text' => 'Типы'
                     ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/RouteTariffs',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Тарифы маршрутов'
-                    ],
+//                    [
+//                        'url' => '/' . config('zeusAdmin.admin_url') . '/RouteTariffs',
+//                        'icon' => 'fas fa-address-book',
+//                        'text' => 'Тарифы маршрутов'
+//                    ],
                     [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Terminals',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Терминалы'
                     ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/ForwardThresholds',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Предельные пороги'
-                    ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/InsideForwarding',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Внутренние пересылки'
-                    ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/OutsideForwarding',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Внешние пересылки'
-                    ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/PerKmTariffs',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Покилометровые тарифы'
-                    ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/OversizeMarkups',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Множитель перегруза'
-                    ],
+//                    [
+//                        'url' => '/' . config('zeusAdmin.admin_url') . '/ForwardThresholds',
+//                        'icon' => 'fas fa-address-book',
+//                        'text' => 'Предельные пороги'
+//                    ],
+//                    [
+//                        'url' => '/' . config('zeusAdmin.admin_url') . '/InsideForwarding',
+//                        'icon' => 'fas fa-address-book',
+//                        'text' => 'Внутренние пересылки'
+//                    ],
+//                    [
+//                        'url' => '/' . config('zeusAdmin.admin_url') . '/OutsideForwarding',
+//                        'icon' => 'fas fa-address-book',
+//                        'text' => 'Внешние пересылки'
+//                    ],
+//                    [
+//                        'url' => '/' . config('zeusAdmin.admin_url') . '/PerKmTariffs',
+//                        'icon' => 'fas fa-address-book',
+//                        'text' => 'Покилометровые тарифы'
+//                    ],
+//                    [
+//                        'url' => '/' . config('zeusAdmin.admin_url') . '/OversizeMarkups',
+//                        'icon' => 'fas fa-address-book',
+//                        'text' => 'Множитель перегруза'
+//                    ],
                     [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Reviews',
                         'icon' => 'fas fa-address-book',
