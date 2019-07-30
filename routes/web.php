@@ -44,7 +44,7 @@ Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
     Route::post('/news-filter', 'NewsController@filterAction')->name('news-filter');
 
     // Документы и сертификаты
-    Route::get('/o-kompanii/documents-and-certificates', 'DocumentsController@showDocuments')->name('documents-show');
+//    Route::get('/o-kompanii/documents-and-certificates', 'DocumentsController@showDocuments')->name('documents-show');
 
     // Отзывы
     Route::get('/klientam/reviews', 'ReviewsController@showReviews')->name('reviews');
