@@ -174,16 +174,16 @@
         },
         {
             "name": "brainor-rus/zeus-admin",
-            "version": "1.0.50",
+            "version": "1.0.51",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brainor-rus/zeus-admin.git",
-                "reference": "96bb52e02057528f255fcfd22b1416aad1b558ba"
+                "reference": "d2abb4121e01f5ceeb9104106e2db4fde7a9adc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brainor-rus/zeus-admin/zipball/96bb52e02057528f255fcfd22b1416aad1b558ba",
-                "reference": "96bb52e02057528f255fcfd22b1416aad1b558ba",
+                "url": "https://api.github.com/repos/brainor-rus/zeus-admin/zipball/d2abb4121e01f5ceeb9104106e2db4fde7a9adc0",
+                "reference": "d2abb4121e01f5ceeb9104106e2db4fde7a9adc0",
                 "shasum": ""
             },
             "require": {
@@ -224,7 +224,7 @@
                 "laravel admin",
                 "zeus"
             ],
-            "time": "2019-07-30T19:57:28+00:00"
+            "time": "2019-07-31T03:56:01+00:00"
         },
         {
             "name": "cocur/slugify",
@@ -3300,7 +3300,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
+                    "email": "backendtea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -5352,8 +5352,8 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                    "role": "lead",
-                    "email": "sebastian@phpunit.de"
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
                 }
             ],
             "description": "The PHP Unit Testing framework.",
