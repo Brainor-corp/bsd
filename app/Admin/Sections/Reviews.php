@@ -5,6 +5,7 @@ namespace App\Admin\Sections;
 use App\City;
 use App\ReviewFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
@@ -59,10 +60,40 @@ class Reviews extends Section {
                     ])
                     ->setOptions([0 => 'Нет', 1 => 'Да'])
                     ->setRequired(true),
-                FormField::custom(View::make('admin.reviews-section.reviews-file-field')->with(compact('file'))),
+                FormField::custom(View::make('admin.reviews-section.reviews-file-field')
+                    ->with(compact('file'))),
             ])
         ]);
 
+        $form->setAttributes([
+            'enctype=multipart/form-data'
+        ]);
+
         return $form;
+    }
+
+    public function afterSave(Request $request, $model = null)
+    {
+//        throw new \Exception(print_r($request->file(), 1));
+
+        $model->file()->delete();
+
+        $uploadFile = $request->file('review-file');
+        if(!isset($uploadFile)) {
+            return;
+        }
+
+        $file = new ReviewFile();
+        $storagePath = Storage::disk('available_public')->put('files/review-files', $uploadFile);
+
+        $file->name = $uploadFile->getClientOriginalName();
+        $file->mime = $uploadFile->getMimeType();
+        $file->extension = $uploadFile->getClientOriginalExtension();
+        $file->url = url($storagePath);
+        $file->path = Storage::disk('available_public')->path($storagePath);
+        $file->base_url = $storagePath;
+        $file->size = $uploadFile->getSize();
+
+        $model->file()->save($file);
     }
 }
