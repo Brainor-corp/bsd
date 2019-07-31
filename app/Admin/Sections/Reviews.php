@@ -74,14 +74,16 @@ class Reviews extends Section {
 
     public function afterSave(Request $request, $model = null)
     {
-//        throw new \Exception(print_r($request->file(), 1));
-
-        $model->file()->delete();
-
         $uploadFile = $request->file('review-file');
         if(!isset($uploadFile)) {
             return;
         }
+
+        $modelFile = $model->file;
+        if(isset($modelFile) && file_exists($modelFile->path)) {
+            unlink($modelFile->path);
+        }
+        $modelFile->delete();
 
         $file = new ReviewFile();
         $storagePath = Storage::disk('available_public')->put('files/review-files', $uploadFile);
