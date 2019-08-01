@@ -36,6 +36,4 @@
         </div>
         {!! html_entity_decode($page->content) !!}
     </section>
-
-
 @endsection
