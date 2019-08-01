@@ -83,7 +83,8 @@ class Reviews extends Section {
         if(isset($modelFile) && file_exists($modelFile->path)) {
             unlink($modelFile->path);
         }
-        $modelFile->delete();
+
+        $model->file()->delete();
 
         $file = new ReviewFile();
         $storagePath = Storage::disk('available_public')->put('files/review-files', $uploadFile);
