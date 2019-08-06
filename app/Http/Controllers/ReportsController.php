@@ -103,6 +103,10 @@ class ReportsController extends Controller
     public function downloadOrderDocument(Request $request, $document_id_1c, $document_type_id_1c) {
         $user = Auth::user();
 
+        if(!isset($user)) {
+        	return redirect(route('login'));
+        }
+
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'document/id',
             [
