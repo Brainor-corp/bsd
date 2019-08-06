@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\Api1CHelper;
 use App\Http\Helpers\SMSHelper;
+use App\Jobs\SendUserRegisterMail;
 use App\Rules\GoogleReCaptchaV3;
 use App\User;
 use Carbon\Carbon;
@@ -55,7 +56,7 @@ class RegisterController extends Controller
         $data['phone'] = str_replace(array('+', ' ', '(' , ')', '-'), '', $data['phone']);
 
         return Validator::make($data, [
-            'gToken' => ['required', new GoogleReCaptchaV3()],
+//            'gToken' => ['required', new GoogleReCaptchaV3()],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => [
@@ -94,6 +95,7 @@ class RegisterController extends Controller
 
         $user =  User::create($toCreate);
 
+        SendUserRegisterMail::dispatch($user);
         SMSHelper::sendSms($user->phone, strval($smsCode));
 
         return $user;

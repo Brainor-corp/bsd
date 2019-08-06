@@ -24,7 +24,7 @@
                 <div class="calc__block_title">Быстрый расчет стоимости</div>
                 <div class="input-group calc__block_inpg">
                     {{--<input type="text" id="ship_city" class="form-control" placeholder="Москва">--}}
-                    <select id="short_ship_city" class="form-control" name="ship_city" placeholder="Москва">
+                    <select id="short_ship_city" class="form-control" name="ship_city" placeholder="Выбрать город">
                         <option value=""></option>
                         @if($shipCities->count() > 0)
                             @foreach($shipCities as $shipCity)
@@ -34,7 +34,7 @@
                     </select>
 {{--                    <a href="#" class="group-input__icon"><i class="fa fa-refresh" aria-hidden="true"></i></a>--}}
                     {{--<input type="text" id="dest_city" class="form-control" placeholder="Санкт-Петербург">--}}
-                    <select id="short_dest_city" class="form-control"  name="dest_city" placeholder="Москва">
+                    <select id="short_dest_city" class="form-control"  name="dest_city" placeholder="Выбрать город">
                         <option value=""></option>
                         @if($destinationCities->count() > 0)
                             @foreach($destinationCities as $destinationCity)
