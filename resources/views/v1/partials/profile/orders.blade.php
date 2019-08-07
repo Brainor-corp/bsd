@@ -28,6 +28,7 @@
                 <a href="{{ route('calculator-show', ['id' => $order->id]) }}" class="table-icon-link"><i class="fa fa-pencil-square-o"></i></a>
             @else
                 <a href="{{ route('report-show', ['id' => $order->id]) }}" class="table-icon-link"><i class="fa fa-eye"></i></a>
+                <a href="{{ route('calculator-show', ['id' => $order->id]) }}" class="table-icon-link"><i class="fa fa-undo"></i></a>
             @endif
         </td>
     </tr>

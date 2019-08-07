@@ -612,6 +612,9 @@
         <label class="custom-control-label" for="non-cash">Безналичный расчет</label>
     </div>
     <div class="form-item d-flex">
+        @if(request()->get('repeat'))
+            <input type="hidden" name="repeat" value="1">
+        @endif
         <button type="submit" name="status" value="ozhidaet-moderacii" class="btn margin-item btn-danger">Оформить заказ</button>
         <button type="submit" name="status" value="chernovik" class="btn margin-item btn-default">Сохранить черновик</button>
     </div>
