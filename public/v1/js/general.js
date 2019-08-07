@@ -109,4 +109,16 @@ $(document).ready(function () {
         content.html($(this).html());
         $(".modal-profile").modal({show:true});
     });
+
+    $('.toggle-password').click(function () {
+        let btn = $(this);
+        let input = $($(this).data("toggle"));
+        if (input.attr("type") == "password") {
+            input.attr("type", "text");
+            $(btn).removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            input.attr("type", "password");
+            $(btn).addClass('fa-eye').removeClass('fa-eye-slash');
+        }
+    });
 });
