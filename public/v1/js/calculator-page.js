@@ -38,6 +38,7 @@ $(document).ready(function () {
         },
         onChange: function(value) {// при изменении города отправления
             if (!value.length) return;
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -79,6 +80,17 @@ $(document).ready(function () {
                         onChange: function(value) {// при изменении города назначения
                             getAllCalculatedData();
                             kladrInitialize();
+                            if(value == 'Москва'){
+                                $('#need-to-bring-type-in').parent().remove();
+                            }else {
+                                if($("#need-to-bring-type-in").length == 0){
+                                    $("#need-to-bring").parent().after("<div class=\"custom-control custom-radio\">\n" +
+                                        "                <input type=\"radio\" class=\"custom-control-input need-to-bring-input\" id=\"need-to-bring-type-in\" name=\"need-to-bring-type\" value=\"in\" disabled=\"\">\n" +
+                                        "                <label class=\"custom-control-label\" for=\"need-to-bring-type-in\">в пределах города отправления</label>\n" +
+                                        "            </div>");
+                                }
+
+                            }
                         },
                     });
 
@@ -87,6 +99,20 @@ $(document).ready(function () {
                     // Вызываем тригер изменения пункта самовывоза, чтобы пересчитать дистанцию
                     $('#ship_point').trigger('change');
                     kladrInitialize();
+                    //При выборе города москва удалять пункт по городу
+                    if(value == 'Москва'){
+                        $('#need-to-take-type-in').parent().remove();
+                    }else {
+                        if($("#need-to-take-type-in").length == 0){
+                            $("#need-to-take").parent().after(
+                                "<div class=\"custom-control custom-radio\">\n" +
+                                "                <input type=\"radio\" class=\"custom-control-input need-to-take-input\" id=\"need-to-take-type-in\" name=\"need-to-take-type\" value=\"in\" disabled=\"disabled\">\n" +
+                                "                <label class=\"custom-control-label\" for=\"need-to-take-type-in\">в пределах города отправления</label>\n" +
+                                "            </div>"
+                            );
+                        }
+
+                    }
                 }
             });
         }
@@ -118,6 +144,18 @@ $(document).ready(function () {
             $('#dest_point').trigger('change');
             getAllCalculatedData();
             kladrInitialize();
+            //Удаление при Москве возврат при другом городе
+            if(value == 'Москва'){
+                $('#need-to-bring-type-in').parent().remove();
+            }else {
+                if($("#need-to-bring-type-in").length == 0){
+                    $("#need-to-bring").parent().after("<div class=\"custom-control custom-radio\">\n" +
+                        "                <input type=\"radio\" class=\"custom-control-input need-to-bring-input\" id=\"need-to-bring-type-in\" name=\"need-to-bring-type\" value=\"in\" disabled=\"\">\n" +
+                        "                <label class=\"custom-control-label\" for=\"need-to-bring-type-in\">в пределах города отправления</label>\n" +
+                        "            </div>");
+                }
+
+            }
         }
     });
 
@@ -717,6 +755,8 @@ $(document).ready(function () {
             currentBlock.find("input[name$='kpp']").val(ui.item["kpp"]);
         }
     });
+
+
 });
 
 function getAllCalculatedData() {
