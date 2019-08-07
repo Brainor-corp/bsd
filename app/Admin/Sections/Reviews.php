@@ -65,9 +65,9 @@ class Reviews extends Section {
             ])
         ]);
 
-        $form->setAttributes([
-            'enctype=multipart/form-data'
-        ]);
+//        $form->setAttributes([
+//            'enctype=multipart/form-data'
+//        ]);
 
         return $form;
     }

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\ContactEmail;
 use App\CustomTag;
+use App\Jobs\SendReviewLeftMailToAdmin;
 use App\Review;
 use App\ReviewFile;
 use Bradmin\Cms\Models\BRTag;
@@ -58,6 +60,10 @@ class ReviewsController extends Controller {
         $file->size = $uploadFile->getSize();
 
         $review->file()->save($file);
+
+        foreach(ContactEmail::where('active', true)->get() as $email) {
+            SendReviewLeftMailToAdmin::dispatch($email->email, $review);
+        }
 
         return redirect()->back()->withSuccess('success');
     }
