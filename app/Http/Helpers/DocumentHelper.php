@@ -104,7 +104,7 @@ class DocumentHelper
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadView('v1.pdf.document-request', compact('documentData'));
 
-        return $pdf->download($documentName);
+        return $pdf->download($documentName . 'pdf');
     }
 
     public static function generateTransferDocument($documentData, $documentName)
@@ -137,7 +137,7 @@ class DocumentHelper
 
         return [
             'tempFile' => $tempFile,
-            'fileName' => $documentName
+            'fileName' => $documentName . '.xlsx'
         ];
     }
 }
