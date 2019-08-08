@@ -46,7 +46,7 @@
 </head>
 <body>
 <div>
-    <p class="header-1"><b>ЗАЯВКА №{{ $documentData['УникальныйИдентификатор'] }} от <span class="hl">12042019</span></b></p>
+    <p class="header-1"><b>{{ $documentData['Представление'] }}</b></p>
     <span>Дата исполнения (дата подачи авто): <i><b><u>{{ $documentData['ДатаИсполнения'] }}</u></b></i></span>
     <p class="header-2"><b>Информация о грузе</b></p>
     <span>Характер груза:  <i><b><u>{{ $documentData['Груз'] }}</u></b></i></span>
