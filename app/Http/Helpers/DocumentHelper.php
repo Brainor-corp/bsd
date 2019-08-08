@@ -103,19 +103,14 @@ class DocumentHelper
 
     public static function generateRequestDocument($documentData, $documentName)
     {
-        $view = View::make('v1.pdf.document-request')->with($documentData);
+        $view = View::make('v1.pdf.document-request')->with(compact('documentData'));
         $html = $view->render();
 
         $pdf = new TCPDF();
-        $pdf::SetTitle('Hello World');
+        $pdf::SetTitle($documentName);
         $pdf::AddPage();
         $pdf::writeHTML($html, true, false, true, false, '');
-        $pdf::Output('hello_world.pdf');
-
-//        $pdf = App::make('dompdf.wrapper');
-//        $pdf->loadView('v1.pdf.document-request', compact('documentData'));
-//
-//        return $pdf->download($documentName . 'pdf');
+        $pdf::Output($documentName, 'D');
     }
 
     public static function generateTransferDocument($documentData, $documentName)
