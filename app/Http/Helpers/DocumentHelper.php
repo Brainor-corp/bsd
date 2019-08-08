@@ -8,6 +8,8 @@ use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterStringValue;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\View;
+use Elibyy\TCPDF\Facades\TCPDF;
 
 class DocumentHelper
 {
@@ -101,10 +103,19 @@ class DocumentHelper
 
     public static function generateRequestDocument($documentData, $documentName)
     {
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->loadView('v1.pdf.document-request', compact('documentData'));
+        $view = View::make('v1.pdf.document-request')->with($documentData);
+        $html = $view->render();
 
-        return $pdf->download($documentName . 'pdf');
+        $pdf = new TCPDF();
+        $pdf::SetTitle('Hello World');
+        $pdf::AddPage();
+        $pdf::writeHTML($html, true, false, true, false, '');
+        $pdf::Output('hello_world.pdf');
+
+//        $pdf = App::make('dompdf.wrapper');
+//        $pdf->loadView('v1.pdf.document-request', compact('documentData'));
+//
+//        return $pdf->download($documentName . 'pdf');
     }
 
     public static function generateTransferDocument($documentData, $documentName)
