@@ -6,7 +6,6 @@ use alhimik1986\PhpExcelTemplator\params\ExcelParam;
 use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterStringValue;
-use App\MyTCPDF;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
@@ -107,11 +106,16 @@ class DocumentHelper
         $view = View::make('v1.pdf.document-request')->with(compact('documentData'));
         $html = $view->render();
 
-        $pdf = new MyTCPDF();
+        $pdf = new TCPDF();
         $pdf::SetTitle($documentName);
         $pdf::AddPage();
         $pdf::writeHTML($html, true, false, true, false, '');
-        $pdf::Output($documentName, 'D');
+        $pdf::Output(storage_path($documentName), 'F');
+
+        return [
+            'tempFile' => storage_path($documentName),
+            'fileName' => $documentName
+        ];
     }
 
     public static function generateTransferDocument($documentData, $documentName)
