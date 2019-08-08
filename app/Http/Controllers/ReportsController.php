@@ -112,8 +112,9 @@ class ReportsController extends Controller
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'document/id',
             [
-                "user_id" => $user->guid,
+//                "user_id" => $user->guid,
 //                "user_id" => "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
+                "user_id" => "77feff2c-14dc-11e9-a990-000d3a28f168",
                 "document_id" => $document_id_1c,
                 "type" => intval($document_type_id_1c),
                 "empty_fields" => true
