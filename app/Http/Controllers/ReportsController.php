@@ -127,6 +127,7 @@ class ReportsController extends Controller
         $documentData = $response1c['response'] ?? [];
         $file = [];
 
+        dd($response1c);
         switch ($document_type_id_1c) {
             case 1:
                 // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
