@@ -25,11 +25,11 @@
                         <h1>{{ $page->title }}</h1>
                     </header>
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-md-8">
                             {!! html_entity_decode($page->content) !!}
                         </div>
 
-                        <div class="col-3 offset-md-1">
+                        <div class="col-md-3 offset-md-1">
                             @include('zeusAdmin.cms.partials.sidebarByTag')
                         </div>
                     </div>
