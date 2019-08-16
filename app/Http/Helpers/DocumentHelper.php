@@ -51,6 +51,8 @@ class DocumentHelper
             $params[$newKey] = $parameters[$key];
         }
 
+        $params["{СуммаСкидки}"] = new ExcelParam(CellSetterStringValue::class, floatval($parameters['СтоимостьПоТарифу']) - floatval($parameters['СтоимостьПеревозки']) + floatval($parameters['СуммаСложныйГруз']));
+
         $name = md5('docs bsd' . time()) . '.xlsx';
         $path = storage_path('app/public/documents/');
 
