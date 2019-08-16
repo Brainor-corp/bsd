@@ -304,7 +304,7 @@
     </div>
     <div class="form-item form-group-additional">
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="insurance" disabled checked>
+            <input type="checkbox" class="custom-control-input" id="insurance">
             <label class="custom-control-label" for="insurance">Страхование</label>
         </div>
         <div id="insurance-amount-wrapper">

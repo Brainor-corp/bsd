@@ -94,6 +94,7 @@ class CalculatorHelper
         }
 
         $totalVolume = $volume;
+        $totalWeight = $weight;
 
         $tariff = new \stdClass();
 
@@ -101,9 +102,6 @@ class CalculatorHelper
             if ($route->wrapper_tariff > 0) {
                 $tariff->wrapper = $route->wrapper_tariff;
                 $basePrice = $tariff->wrapper;
-                if ($basePrice < $route->min_cost) {
-                    $basePrice = $route->min_cost;
-                }
             }
         }
         if (!isset($basePrice)) {
@@ -188,15 +186,18 @@ class CalculatorHelper
         return [
             'model' => $route,
             'totalVolume' => $totalVolume,
+            'totalWeight' => $totalWeight,
             'price' => $basePrice
         ];
     }
 
     public static function getServicesData($services, $packages, $insuranceAmount) {
         $totalVolume = 0;
+        $totalWeight = 0;
 
         foreach($packages as $package) {
-            $totalVolume += $package['volume']  * $package['quantity'];
+            $totalVolume += $package['volume'] * $package['quantity'];
+            $totalWeight += $package['weight'] * $package['quantity'];
         }
 
         $servicesData = Service::get();
@@ -218,22 +219,22 @@ class CalculatorHelper
                 ];
             }
         }
-
-        $insurancePrice = 50;
-        if(isset($insuranceAmount)){
-            if(intval($insuranceAmount)>0){
-                $insurancePrice = max(($insuranceAmount * 0.1000000000000000055511151231257827021181583404541015625)/100, 50);
+        if ($totalWeight <= 2 && $totalVolume <= 0.01) {}
+        else{
+            $insurancePrice = 50;
+            if(isset($insuranceAmount)){
+                if(intval($insuranceAmount)>0){
+                    $insurancePrice = max(($insuranceAmount * 0.1000000000000000055511151231257827021181583404541015625)/100, 50);
+                }
             }
+            $usedServices[] = [
+                'name'          => 'Страховка',
+                'slug'          => '',
+                'description'   => '',
+                'price'         => round($insurancePrice, 2),
+                'total'         => round($insurancePrice, 2),
+            ];
         }
-
-        $usedServices[] = [
-            'name'          => 'Страховка',
-            'slug'          => '',
-            'description'   => '',
-            'price'         => round($insurancePrice, 2),
-            'total'         => round($insurancePrice, 2),
-        ];
-
         return $usedServices;
     }
 
@@ -255,7 +256,7 @@ class CalculatorHelper
         return isset($query) ? $query->markup / 100 : false;
     }
 
-    public static function getTotalPrice($base_price, $services, $totalVolume, $insuranceAmount = null, $discount = null, $take_price = null, $bring_price = null) {
+    public static function getTotalPrice($base_price, $services, $totalWeight, $totalVolume, $insuranceAmount = null, $discount = null, $take_price = null, $bring_price = null) {
         $result = [];
 
         $totalPrice = $base_price;
@@ -321,13 +322,16 @@ class CalculatorHelper
                 $result['insurance'] = $insurancePrice;
             }
         }else{
-            $insurancePrice = 50;
+            if ($totalWeight <= 2 && $totalVolume <= 0.01) {}
+            else {
+                $insurancePrice = 50;
 
-            if(is_numeric($totalPrice) && is_numeric($insurancePrice)) {
-                $totalPrice += $insurancePrice;
+                if (is_numeric($totalPrice) && is_numeric($insurancePrice)) {
+                    $totalPrice += $insurancePrice;
+                }
+
+                $result['insurance'] = $insurancePrice;
             }
-
-            $result['insurance'] = $insurancePrice;
         }
 
         if(isset($discount)){

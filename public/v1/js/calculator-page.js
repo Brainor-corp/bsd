@@ -732,12 +732,15 @@ function getAllCalculatedData() {
         dataType: "json",
         cache: false,
         beforeSend: function() {
+            $('#calculator-data-preloader').show()
         },
         success: function (data) {
             // console.log(data);
             renderCalendar(data);
+            $('#calculator-data-preloader').hide()
         },
         error: function(data){
+            $('#calculator-data-preloader').hide()
             // console.log(data);
         }
     });
@@ -959,6 +962,9 @@ function drawServices(services) {
             '</span>'+
             '</div>'+
             '</div>';
+        if(item.name == 'Страховка'){
+            $('#insurance').attr('checked', true);
+        }
     });
 
     if(servicesPoints !== ''){

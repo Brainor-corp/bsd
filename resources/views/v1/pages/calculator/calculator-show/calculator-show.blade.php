@@ -42,6 +42,18 @@
                         </div>
                         <div class="col-md-4 offset-md-2">
                             <section class="block__itogo">
+                                <div id="calculator-data-preloader" style="
+                                    position:absolute;
+                                    display: none;
+                                    width: 100%;
+                                    height: 100%;
+                                ">
+                                    <img src="{{ asset('/images/loading.svg') }}" style="
+                                        top:30%;
+                                        left: 42%;
+                                        position: absolute;
+                                    ">
+                                </div>
                                 <div class="block__itogo-inner">
                                     <header class="block__itogo_title">Перевозка груза включает</header>
                                     {{--<div class="block__itogo_item d-flex">--}}

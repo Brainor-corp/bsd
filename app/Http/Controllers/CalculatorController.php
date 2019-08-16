@@ -465,6 +465,7 @@ class CalculatorController extends Controller
         $totalData = CalculatorHelper::getTotalPrice(
             $routeData['price'],
             $services,
+            $routeData['totalWeight'],
             $routeData['totalVolume'],
             null,
             null,
@@ -484,7 +485,7 @@ class CalculatorController extends Controller
         return response()->json($resultData);
     }
 
-    public function getTotalPrice(Request $request, $base_price = null, $totalVolume = null, $needJson = true) {
+    public function getTotalPrice(Request $request, $base_price = null, $totalVolume = null, $totalWeight = null, $needJson = true) {
         $take_price = $bring_price = $insuranceAmount = $discount = $formData = null;
 
         if(isset($request->base_price)){$base_price = $request->base_price;}
@@ -513,13 +514,23 @@ class CalculatorController extends Controller
         if(isset($request->total_volume)){$totalVolume = $request->total_volume;}
         if(isset($formData['total_volume'])){$totalVolume = $formData['total_volume'];}
         if($totalVolume == null){$totalVolume = 1;}
+        if($totalWeight == null){$totalWeight = 1;}
 
         if(is_numeric($totalPrice)) {
             if($request->get('take_price') && is_numeric($request->get('take_price'))) {$take_price = floatval($request->get('take_price'));}
             if($request->get('bring_price') && is_numeric($request->get('bring_price'))) {$bring_price = floatval($request->get('bring_price'));}
         }
 
-        $result = CalculatorHelper::getTotalPrice($base_price, $services, $totalVolume, $insuranceAmount, $discount, $take_price, $bring_price);
+        $result = CalculatorHelper::getTotalPrice(
+            $base_price,
+            $services,
+            $totalVolume,
+            $totalWeight,
+            $insuranceAmount,
+            $discount,
+            $take_price,
+            $bring_price
+        );
 
         if($needJson == true){
             return response()->json($result);
