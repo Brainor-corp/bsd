@@ -393,6 +393,8 @@ class CalculatorHelper
         }
 
         // Найдем тариф внутри города
+        $packagesCount = count($packages);
+        if($packagesCount == 1){$packagesCount = 0;}
         $fixed_tariff = DB::table('inside_forwarding')
             ->join('forward_thresholds', function($join)
             {
@@ -402,7 +404,7 @@ class CalculatorHelper
                 ['city_id', $city->id],
                 ['forward_thresholds.weight', '>=', floatval($weight)],
                 ['forward_thresholds.volume', '>=', floatval($volume)],
-                ['forward_thresholds.units', '>=', count($packages)],
+                ['forward_thresholds.units', '>=', $packagesCount],
             ])
             ->orderBy('forward_thresholds.weight', 'ASC')
             ->orderBy('forward_thresholds.volume', 'ASC')
@@ -435,7 +437,7 @@ class CalculatorHelper
 
             if(isset($polygon)) {
                 return [
-                    'price' => $x2 ? $polygon->price * 2 : $polygon->price,
+                    'price' => $x2 ? ($polygon->price * floatval($fixed_tariff)) * 2 : ($polygon->price * floatval($fixed_tariff)),
                     'city_name' => "$cityName",
                     'polygon_name' => $polygon->name
                 ];
