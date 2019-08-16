@@ -168,13 +168,13 @@ var getShortBaseTariff = function () {
 
             },
             success: function(data){
-                console.log(data);
+                // console.log(data);
                 if (weight <= 2 && volume <= 0.01) {
-                    $('#short_ins_wrapper').hide();
+                    $('.short_ins_wrapper').hide();
                     totalPrice = data.total_data.total;
                 }
                 else{
-                    $('#short_ins_wrapper').show();
+                    $('.short_ins_wrapper').show();
                     totalPrice = data.total_data.total;
                 }
                 $('#short_base-price').html(data.base_price);

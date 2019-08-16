@@ -49,7 +49,7 @@
                 </div>
                 <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg">
                     <label class="calc__label_max">Объем груза (м<sup>3</sup>)</label>
-                    <input type="number" step="any" id="short_packages_0_volume" class="form-control text-center package-params short_package-volume" name="cargo[packages][0][volume]" data-package-id="0" value="0.1"/>
+                    <input type="number" step="any" id="short_packages_0_volume" class="form-control text-center package-params short_package-volume" name="cargo[packages][0][volume]" data-package-id="0" value="0.01"/>
                 </div>
                 <div class="form-inline calc__block_itog" >
                     <div class="form-item justify-content-between w-100 short_ins_wrapper" style="display: none">
