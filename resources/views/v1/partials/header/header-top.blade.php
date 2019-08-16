@@ -32,12 +32,8 @@
                             data-toggle="collapse"
                             data-target="#main_nav"
                             aria-controls="main_nav">
-                        @if($isMainPage)
-                            <span class="fa fa-bars"></span>
-                        @else
                             <span class="fa fa-bars margin-item"></span>
                             <span class="margin-item">Меню</span>
-                        @endif
                     </button>
                     <div id="main_nav" class="collapse navbar-collapse">
                         <ul class="nav navbar-nav d-flex nav_top m-0">

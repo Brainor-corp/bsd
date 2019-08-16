@@ -8,7 +8,7 @@
         <div class="container">
             <span class="breadcrumb__item"><a href="{{ route('index') }}" class="">Главная</a></span>
             <span class="breadcrumb__item"><a href="{{ route('profile-data-show') }}" class="">Кабинет</a></span>
-            <span class="breadcrumb__item">Мои котрагенты</span>
+            <span class="breadcrumb__item">Мои контрагенты</span>
         </div>
     </div>
     <section class="wrapper">
@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col-12">
                     <header class="wrapper__header">
-                        <h1>Мои котрагенты</h1>
+                        <h1>Мои контрагенты</h1>
                     </header>
                     <div class="row">
                         <div class="col-12">
