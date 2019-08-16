@@ -145,7 +145,11 @@ var getShortRoute = function () {
 var getShortBaseTariff = function () {
     let shipCityID = $("#short_ship_city").val(),
         destCityID = $("#short_dest_city").val(),
-        formData  = $('.short_calculator-form').serialize();
+        formData  = $('.short_calculator-form').serialize(),
+        weight = $(".short_package-weight").val(),
+        volume = $(".short_package-volume").val(),
+        totalPrice = 0;
+
 
     // console.log(shipCityID);
     // console.log(destCityID);
@@ -165,16 +169,24 @@ var getShortBaseTariff = function () {
             },
             success: function(data){
                 console.log(data);
+                if (weight <= 2 && volume <= 0.01) {
+                    $('#short_ins_wrapper').hide();
+                    totalPrice = data.total_data.total;
+                }
+                else{
+                    $('#short_ins_wrapper').show();
+                    totalPrice = data.total_data.total;
+                }
                 $('#short_base-price').html(data.base_price);
                 $('#short_base-price').attr('data-base-price', data.base_price);
-                $('#short_total-price').html(data.total_data.total);
-                $('#short_total-price').attr('data-total-price', data.total_data.total);
+                $('#short_total-price').html(totalPrice);
+                $('#short_total-price').attr('data-total-price', totalPrice);
                 $('#short_total-volume').attr('data-total-volume', data.total_volume);
 
                 $('#base-price').html(data.base_price);
                 $('#base-price').attr('data-base-price', data.base_price);
-                $('#total-price').html(data.total_data.total);
-                $('#total-price').attr('data-total-price', data.total_data.total);
+                $('#total-price').html(totalPrice);
+                $('#total-price').attr('data-total-price', totalPrice);
                 $('#total-volume').attr('data-total-volume', data.total_volume);
 
                 $('#deliveryPriceBlock').hide();
