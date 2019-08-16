@@ -2045,6 +2045,17 @@ label.calc__label_max {
 	.notice__image{
 		display:none;
 	}
+
+	.calc__block_inpg{
+		display: unset!important;
+	}
+	.calc__block_inpg .selectize-control.form-control{
+		width: 100%!important;
+		margin-bottom: 10px;
+	}
+	.calc__block_inpg .selectize-input.items{
+		border-radius: 0!important;
+	}
 }
 @media (min-width:1200px) {
 	.header__top .flex-wrap > div,
