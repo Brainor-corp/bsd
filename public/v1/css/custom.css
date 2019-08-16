@@ -37,6 +37,9 @@
 }
 
 /*Калькулятор*/
+.calc__block .calc__block_inpg .selectize-control .selectize-input {
+    font-size: 0.8rem;
+}
 .calc__inpgrp {
      max-width: 100% !important;
 }
@@ -126,4 +129,19 @@ ol {
 
 ol li {
     padding-left: 10px;
+}
+
+.card-body .field-icon {
+    float: right;
+    margin-top: -30px;
+    position: relative;
+    z-index: 2;
+    font-size: large;
+    padding-right: 30px;
+    color: black;
+}
+
+.card-body .field-icon:hover {
+    cursor: pointer;
+    pointer-events: all;
 }

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\ContactEmail;
 use App\Counterparty;
 use App\Http\Helpers\CalculatorHelper;
+use App\Jobs\SendOrderCreatedMailToAdmin;
 use App\Order;
 use App\OrderItem;
 use App\Polygon;
@@ -19,7 +21,8 @@ use Illuminate\Support\Facades\View;
 
 class OrderController extends Controller
 {
-    public function orderSave(Request $request) {
+    public function orderSave(Request $request)
+    {
         $request->merge([
             'sender_phone_legal' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->get('sender_phone_legal')),
             'sender_phone_individual' => str_replace(array('+', ' ', '(' , ')', '-'), '', $request->get('sender_phone_individual')),
@@ -219,7 +222,7 @@ class OrderController extends Controller
         }
 
         $order = null;
-        if($request->get('order_id')) {
+        if($request->get('order_id') && !($request->get('repeat') === '1')) {
             $order = Order::where('id', $request->get('order_id'))
                 ->where(function ($orderQuery) {
                     return Auth::check() ? $orderQuery
@@ -631,6 +634,10 @@ class OrderController extends Controller
             1,
             '/klientam/report/'.$order->id,
             Auth::id());
+
+        foreach(ContactEmail::where('active', true)->get() as $email) {
+            SendOrderCreatedMailToAdmin::dispatch($email->email, $order);
+        }
 
         return $order->status->slug === "chernovik" ?
             redirect(route('calculator-show', ['id' => $order->id])) :
