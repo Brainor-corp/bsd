@@ -76,9 +76,11 @@ class ReportsController extends Controller
 
         $user_1c = $order->user->guid ?? null;
 //        $user_1c = "f008aa7f-29d6-11e9-80c7-000d3a396ad2";
+//        $user_1c = "77feff2c-14dc-11e9-a990-000d3a28f168";
 
         $code1c = $order->code_1c;
 //        $code1c = "2ef09a62-8dbb-11e9-a688-001c4208e0b2";
+//        $code1c = "aaea8a04-afa5-11e9-1d9c-001c4208e0b2";
 
         $documents = [];
 
@@ -103,11 +105,16 @@ class ReportsController extends Controller
     public function downloadOrderDocument(Request $request, $document_id_1c, $document_type_id_1c) {
         $user = Auth::user();
 
+        if(!isset($user)) {
+        	return redirect(route('login'));
+        }
+
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'document/id',
             [
                 "user_id" => $user->guid,
 //                "user_id" => "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
+//                "user_id" => "77feff2c-14dc-11e9-a990-000d3a28f168",
                 "document_id" => $document_id_1c,
                 "type" => intval($document_type_id_1c),
                 "empty_fields" => true
@@ -138,7 +145,7 @@ class ReportsController extends Controller
                 break;
             case 3:
                 // Заявка на экспедирование
-                return DocumentHelper::generateRequestDocument(
+                $file = DocumentHelper::generateRequestDocument(
                     $documentData,
                     json_decode($request->get('document_name')) . '.pdf');
                 break;
@@ -157,7 +164,8 @@ class ReportsController extends Controller
                 );
                 break;
             case 6:
-                // todo Нет шаблона
+                // Реализация (акт, накладная)
+
                 break;
             default: break;
         }

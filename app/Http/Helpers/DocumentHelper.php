@@ -8,6 +8,8 @@ use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterStringValue;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\View;
+use Elibyy\TCPDF\Facades\TCPDF;
 
 class DocumentHelper
 {
@@ -48,6 +50,8 @@ class DocumentHelper
             $newKey = "{" . $key . "}";
             $params[$newKey] = $parameters[$key];
         }
+
+        $params["{СуммаСкидки}"] = new ExcelParam(CellSetterStringValue::class, floatval($parameters['СтоимостьПоТарифу']) - floatval($parameters['СтоимостьПеревозки']) + floatval($parameters['СуммаСложныйГруз']));
 
         $name = md5('docs bsd' . time()) . '.xlsx';
         $path = storage_path('app/public/documents/');
@@ -101,10 +105,19 @@ class DocumentHelper
 
     public static function generateRequestDocument($documentData, $documentName)
     {
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->loadView('v1.pdf.document-request', compact('documentData'));
+        $view = View::make('v1.pdf.document-request')->with(compact('documentData'));
+        $html = $view->render();
 
-        return $pdf->download($documentName);
+        $pdf = new TCPDF();
+        $pdf::SetTitle($documentName);
+        $pdf::AddPage();
+        $pdf::writeHTML($html, true, false, true, false, '');
+        $pdf::Output(storage_path($documentName), 'F');
+
+        return [
+            'tempFile' => storage_path($documentName),
+            'fileName' => $documentName
+        ];
     }
 
     public static function generateTransferDocument($documentData, $documentName)
@@ -137,7 +150,7 @@ class DocumentHelper
 
         return [
             'tempFile' => $tempFile,
-            'fileName' => $documentName
+            'fileName' => $documentName . '.xlsx'
         ];
     }
 }
