@@ -134,17 +134,17 @@ class ReportsController extends Controller
         $file = [];
 
         switch ($document_type_id_1c) {
-            case 1:
-                // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
-                $file = DocumentHelper::generateContractDocument(
-                    json_decode($request->get('document_name')),
-                    $documentData
-                );
-                break;
+//            case 1:
+//                // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
+//                $file = DocumentHelper::generateContractDocument(
+//                    json_decode($request->get('document_name')),
+//                    $documentData
+//                );
+//                break;
             case 2:
                 // Экспедиторская расписка
                 $file = DocumentHelper::generateReceiptDocument(
-                    json_decode($request->get('document_name')),
+                    $documentData['Представление'],
                     $documentData
                 );
                 break;
@@ -152,20 +152,20 @@ class ReportsController extends Controller
                 // Заявка на экспедирование
                 $file = DocumentHelper::generateRequestDocument(
                     $documentData,
-                    json_decode($request->get('document_name')) . '.pdf');
+                    $documentData['Представление'] . '.pdf');
                 break;
             case 4:
                 // Счет-фактура(УПД???)
                 $file = DocumentHelper::generateTransferDocument(
                     $documentData,
-                    json_decode($request->get('document_name'))
+                    $documentData['Представление']
                 );
                 break;
             case 5:
                 // Счет на оплату
                 $file = DocumentHelper::generateInvoiceDocument(
                     $documentData,
-                    json_decode($request->get('document_name'))
+                    $documentData['Представление']
                 );
                 break;
             case 6:
