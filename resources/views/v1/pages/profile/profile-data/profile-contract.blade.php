@@ -34,7 +34,10 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <a class="btn btn-primary" href="{{ route('profile-contract-download') }}">Скачать договор</a>
+                            <form action="{{ route('profile-contract-download') }}" method="post">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">Скачать договор</button>
+                            </form>
                         </div>
                     </div>
                 </div>
