@@ -180,19 +180,23 @@ class ProfileController extends Controller {
             $response1c = \App\Http\Helpers\Api1CHelper::post(
                 'client/contract',
                 [
+//                    "user_id" => 'e9795c33-97f7-11e8-a972-000d3a28f168',
                     "user_id" => $user->guid,
                 ]
             );
-            if(!empty($response1c['response']['result'])) {
+
+            if(!empty($response1c['response']['#value'])) {
                 $file = DocumentHelper::generateContractDocument(
                     'Договор от ',
-                    $response1c['response']['result']
+                    $response1c['response']['#value']
                 );
 
                 if(isset($file['tempFile']) && isset($file['fileName'])) {
                     return response()->download($file['tempFile'], $file['fileName'])
                         ->deleteFileAfterSend(true);
                 }
+            } else {
+                return redirect()->back()->withErrors(['Для Вашего профиля генерация договора недоступна.']);
             }
         }
         return redirect()->back()->withErrors(['Произошла ошибка. Обновите страницу или попробуйте позднее.']);
