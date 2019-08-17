@@ -197,5 +197,4 @@ class ProfileController extends Controller {
         }
         return redirect()->back()->withErrors(['Произошла ошибка. Обновите страницу или попробуйте позднее.']);
     }
-
 }
