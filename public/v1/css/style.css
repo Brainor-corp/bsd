@@ -156,6 +156,16 @@ a:hover {
 	display: inline-block;
 }
 /* icons */
+#update-balance-btn:hover{
+	cursor: pointer;
+}
+#update-balance-btn i{
+	color: #ef402f;
+}
+.loading-svg{
+	width: 30px;
+	height: auto;
+}
 .icons{
 	background: url('../../images/img/icons.png') no-repeat;
 	display:inline-block;

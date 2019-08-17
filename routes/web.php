@@ -112,6 +112,12 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
         Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
         Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
 
+        Route::get('/profile/balance', 'ProfileController@balancePageShow')->name('profile-balance-show');
+        Route::post('/profile/balance/get', 'ProfileController@balanceGet')->name('profile-balance-get');
+
+        Route::get('/profile/contract', 'ProfileController@contractPageShow')->name('profile-contract-show');
+        Route::post('/profile/contract/download', 'ProfileController@contractDownload')->name('profile-contract-download');
+
         Route::group(['middleware' => ['sms-confirm']], function () {
             // Оформленные заказы могут смотреть только авторизованные пользователи,
             // т.к. оформить заказ можно только будучи авторизованным.
