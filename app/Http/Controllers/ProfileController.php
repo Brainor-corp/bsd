@@ -184,6 +184,7 @@ class ProfileController extends Controller {
                 ]
             );
             if(!empty($response1c['response']['#value'])) {
+                dd($response1c);
                 $file = DocumentHelper::generateContractDocument(
                     json_decode($response1c['response']['']),
                     $response1c['response']['#value']
