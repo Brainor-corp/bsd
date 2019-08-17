@@ -183,11 +183,10 @@ class ProfileController extends Controller {
                     "user_id" => $user->guid,
                 ]
             );
-            if(!empty($response1c['response']['#value'])) {
-                dd($response1c);
+            if(!empty($response1c['response']['result'])) {
                 $file = DocumentHelper::generateContractDocument(
-                    json_decode($response1c['response']['']),
-                    $response1c['response']['#value']
+                    'Договор от ',
+                    $response1c['response']['result']
                 );
 
                 if(isset($file['tempFile']) && isset($file['fileName'])) {
