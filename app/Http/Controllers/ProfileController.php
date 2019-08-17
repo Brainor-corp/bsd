@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\DocumentHelper;
 use App\Http\Helpers\SMSHelper;
 use App\User;
 use Illuminate\Http\Request;
@@ -138,4 +139,62 @@ class ProfileController extends Controller {
         return redirect(route('index', ['cn=1']))->withSuccess("Код подтверждения отправлен повторно");
     }
 
+    public function balancePageShow()
+    {
+        return view('v1.pages.profile.profile-data.profile-balance');
+    }
+
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
+    public function balanceGet()
+    {
+        $user = Auth::user();
+
+        if(isset($user->guid)) {
+            $response1c = \App\Http\Helpers\Api1CHelper::post(
+                'client/total',
+                [
+                    "user_id" => $user->guid,
+                ]
+            );
+            if($response1c['response']['status'] == 'success') {
+                return $response1c['response']['result'];
+            }
+        }
+
+        throw new \Exception('Произошла ошибка. Обновите страницу или попробуйте позднее.');
+    }
+
+    public function contractPageShow()
+    {
+        return view('v1.pages.profile.profile-data.profile-contract');
+    }
+
+    public function contractDownload()
+    {
+        $user = Auth::user();
+
+        if(isset($user->guid)) {
+            $response1c = \App\Http\Helpers\Api1CHelper::post(
+                'client/contract',
+                [
+                    "user_id" => $user->guid,
+                ]
+            );
+            if(!empty($response1c['response']['result'])) {
+                $file = DocumentHelper::generateContractDocument(
+                    'Договор от ',
+                    $response1c['response']['result']
+                );
+
+                if(isset($file['tempFile']) && isset($file['fileName'])) {
+                    return response()->download($file['tempFile'], $file['fileName'])
+                        ->deleteFileAfterSend(true);
+                }
+            }
+        }
+        return redirect()->back()->withErrors(['Произошла ошибка. Обновите страницу или попробуйте позднее.']);
+    }
 }

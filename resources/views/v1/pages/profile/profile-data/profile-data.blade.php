@@ -13,6 +13,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
+                    @include('v1.partials.profile.profile-tabs')
                     <header class="wrapper__header">
                         <h1>Профиль</h1>
                     </header>

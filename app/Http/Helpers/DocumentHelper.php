@@ -23,6 +23,8 @@ class DocumentHelper
         $TBS->SetOption('charset', 'UTF-8');
         $TBS->SetOption('render', TBS_OUTPUT);
 
+        array_push($parameters, ['ПостфиксПолаКонтрагента' => $parameters['ПолРуководителяКонтрагента'] == 'Мужской' ? 'го' : 'ей']);
+
         foreach ($parameters as $name => $value) {
             $TBS->MergeField($name, $value);
         }
