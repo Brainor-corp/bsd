@@ -94,7 +94,12 @@ class ReportsController extends Controller
             );
 
             if($response1c['response']['status'] == 'success') {
-                $documents = $response1c['response']['documents'] ?? [];
+                $documents = [];
+                foreach($response1c['response']['documents'] as $document) {
+                    if($document['type'] !== 1) {
+                        array_push($documents, $document);
+                    }
+                }
             }
         }
 
