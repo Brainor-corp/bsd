@@ -67,6 +67,7 @@ class OrdersSyncTo1c implements ShouldQueue
             $mapOrder['Количество_мест'] = count($order['order_items']);
             $mapOrder['Итоговая_цена'] = is_numeric($order['total_price']) ? intval($order['total_price']) : 0;
             $mapOrder['Базовая_цена_маршрута'] = is_numeric($order['base_price']) ? intval($order['base_price']) : 0;
+            $mapOrder['Заявку_заполнил'] = $order['order_creator'];
 
             $mapOrder['Страховка'] = [
                 'Сумма_страховки' => is_numeric($order['insurance']) ? intval($order['insurance']) : 0,
@@ -92,6 +93,7 @@ class OrdersSyncTo1c implements ShouldQueue
             }
 
             $mapOrder['Плательщик'] = [
+                'Email_плательщика' => $order['payer_email'],
                 'Тип_плательщика' => $order['payer']['name'],
                 'Правовая_форма' => $order['payer_legal_form'] ?? "",
                 'Наименование' => strlen($order['payer_company_name']) >= 3 ? $order['payer_company_name'] : "---",

@@ -472,6 +472,17 @@
     </div>
 
     <div class="calc__title">Данные плательщика</div>
+    <div id="payer-email-wrapper">
+        <label class="" for="payer-email">E-Mail плательщика</label>
+        <input type="email"
+               class="form-control"
+               id="payer-email"
+               name="payer-email"
+               placeholder="Введите E-Mail плательщика"
+               value="{{ $order->payer_email ?? '' }}"
+               required
+        >
+    </div>
     <div class="custom-control custom-radio">
         <input type="radio"
                @if(!empty(old('payer_type')))
@@ -610,6 +621,18 @@
                required
         />
         <label class="custom-control-label" for="non-cash">Безналичный расчет</label>
+    </div>
+    <div class="calc__title">Прочее</div>
+    <div id="order-creator-wrapper">
+        <label class="" for="order-creator">Заявку заполнил</label>
+        <input type="text"
+               class="form-control"
+               id="order-creator"
+               name="order-creator"
+               placeholder="ФИО"
+               value="@if(isset($order)){{ $order->order_creator }}@else{{ \Illuminate\Support\Facades\Auth::check() ? \Illuminate\Support\Facades\Auth::user()->full_name : '' }}@endif"
+               required>
+        <br>
     </div>
     <div class="form-item d-flex">
         @if(request()->get('repeat'))
