@@ -6,13 +6,13 @@ use App\City;
 use App\ContactEmail;
 use App\Counterparty;
 use App\Http\Helpers\CalculatorHelper;
+use App\Http\Helpers\EventHelper;
 use App\Jobs\SendOrderCreatedMailToAdmin;
 use App\Order;
 use App\OrderItem;
 use App\Polygon;
 use App\Route;
 use App\Type;
-use App\Http\Helpers\EventHelper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +91,7 @@ class OrderController extends Controller
             "recipient_addition_info_individual" => ['nullable', 'string'],                     // Получатель (Дополнительная_информация) -- Для физ.лиц
 
             "payer_type" => ['required', 'string'],                                             // Данные плательщика
+            "payer-email" => ['required', 'email'],                                             // Email_плательщика
             "payer_form_type_id" => ['nullable', 'numeric'],                                    // Плательщик (Тип_контрагента)
             "payer_legal_form" => ['nullable', 'string', 'max:255'],                            // Плательщик (Правовая_форма)
             "payer_company_name" => ['nullable', 'string', 'min:3', 'max:255'],                 // Плательщик (Наименование)
@@ -114,6 +115,7 @@ class OrderController extends Controller
 
             "payment" => ['required', 'string'],                                                // Способ_оплаты
             "status" => ['required', 'string'],                                                 // Статус_заказа
+            "order-creator" => ['required', 'string'],                                          // Заявку_заполнил
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -450,6 +452,7 @@ class OrderController extends Controller
 
         // Плательщик ///////////////////////////////////////////////////////////////////////////
         $order->payer_type = $payerType->id;
+        $order->payer_email = $request->get('payer-email');
 
         if($payerType->slug === '3-e-lico') {
             $payerFormType = $userTypes->where('id', $request->get('payer_form_type_id'))->first();
@@ -559,6 +562,7 @@ class OrderController extends Controller
         $order->payment_type = $paymentType->id;
         $order->status_id = $orderStatus->id;
         $order->order_date = Carbon::now();
+        $order->order_creator = $request->get('order-creator');
 
         if($request->get('need-to-take') === "on") {
             $order->take_point = $request->get('ship-from-point') === "on";
@@ -628,12 +632,15 @@ class OrderController extends Controller
 
         $order->order_services()->sync($servicesToSync);
 
-        EventHelper::createEvent(
-            'Заказ успешно зарегистрирован!',
-            null,
-            1,
-            '/klientam/report/'.$order->id,
-            Auth::id());
+        if(Auth::check()) {
+            EventHelper::createEvent(
+                'Заказ успешно зарегистрирован!',
+                null,
+                1,
+                '/klientam/report/'.$order->id,
+                Auth::id()
+            );
+        }
 
         foreach(ContactEmail::where('active', true)->get() as $email) {
             SendOrderCreatedMailToAdmin::dispatch($email->email, $order);

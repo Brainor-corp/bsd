@@ -16,7 +16,7 @@ class Order extends Model
         'recipient_name', 'recipient_phone', 'payer_id', 'payer_name', 'payer_phone',
         'payment_type', 'code_1c', 'manager_id', 'operator_id', 'order_date',
         'order_finish_date', 'discount', 'discount_amount', 'insurance', 'insurance_amount', 'estimated_delivery_date',
-        'take_polygon_id', 'bring_polygon_id'
+        'take_polygon_id', 'bring_polygon_id', 'payer_email', 'order_creator'
     ];
 
     public function status(){
