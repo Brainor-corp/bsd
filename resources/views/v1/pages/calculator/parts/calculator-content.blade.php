@@ -1,6 +1,6 @@
 <form class="calculator-form" action="{{ route('order-save-action') }}" method="post">
     @csrf
-    @if(isset($order))
+    @if(isset($order) && empty(request()->get('repeat')))
         <input type="hidden" name="order_id" value="{{ $order->id }}">
     @endif
     <div id="hiddenMap" class="d-none"></div>
@@ -635,9 +635,6 @@
         <br>
     </div>
     <div class="form-item d-flex">
-        @if(request()->get('repeat'))
-            <input type="hidden" name="repeat" value="1">
-        @endif
         <button type="submit" name="status" value="ozhidaet-moderacii" class="btn margin-item btn-danger">Оформить заказ</button>
         <button type="submit" name="status" value="chernovik" class="btn margin-item btn-default">Сохранить черновик</button>
     </div>

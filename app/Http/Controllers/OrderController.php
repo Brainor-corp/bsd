@@ -224,7 +224,7 @@ class OrderController extends Controller
         }
 
         $order = null;
-        if($request->get('order_id') && !($request->get('repeat') === '1')) {
+        if($request->get('order_id')) {
             $order = Order::where('id', $request->get('order_id'))
                 ->where(function ($orderQuery) {
                     return Auth::check() ? $orderQuery
