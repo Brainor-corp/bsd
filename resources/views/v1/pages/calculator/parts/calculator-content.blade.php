@@ -314,15 +314,14 @@
             <br>
         </div>
         <div class="relative">
-            <i class="dropdown-toggle fa-icon"></i>
-            <select class="custom-select" id="discount" name="discount">
-                <option disabled selected>У меня есть скидка</option>
-                <option value="3" @if(!empty(old('discount'))) @if(old('discount') == 3) selected @endif @else @if(isset($order) && $order->discount == 3) selected @endif @endif>3%</option>
-                <option value="5" @if(!empty(old('discount'))) @if(old('discount') == 5) selected @endif @else @if(isset($order) && $order->discount == 5) selected @endif @endif>5%</option>
-                <option value="10" @if(!empty(old('discount'))) @if(old('discount') == 10) selected @endif @else @if(isset($order) && $order->discount == 10) selected @endif @endif>10%</option>
-                <option value="15" @if(!empty(old('discount'))) @if(old('discount') == 15) selected @endif @else @if(isset($order) && $order->discount == 15) selected @endif @endif>15%</option>
-                <option value="20" @if(!empty(old('discount'))) @if(old('discount') == 20) selected @endif @else @if(isset($order) && $order->discount == 20) selected @endif @endif>20%</option>
-            </select>
+            <label class="" for="discount">Скидка (%)</label>
+            <input type="number"
+                   class="form-control"
+                   id="discount"
+                   name="discount"
+                   value="{{ $order->discount ?? 0 }}"
+                   readonly
+                   required>
         </div>
 
         {{--<div class="custom-control custom-checkbox">--}}
