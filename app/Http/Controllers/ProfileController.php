@@ -188,7 +188,7 @@ class ProfileController extends Controller {
             if(!empty($response1c['response'])) {
                 $file = DocumentHelper::generateContractDocument(
                     'Договор от ',
-                    $response1c['response']['#value']
+                    $response1c['response']
                 );
 
                 if(isset($file['tempFile']) && isset($file['fileName'])) {
