@@ -24,8 +24,6 @@ class UsersController extends Controller
     }
 
     public function createUser(Request $request) {
-        return $request->get('tel');
-
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
