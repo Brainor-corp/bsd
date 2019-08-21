@@ -49,7 +49,7 @@ class UsersController extends Controller
         $user->sync_need = false;
         $user->email = $request->get('email');
         $user->name = $request->get('name');
-        $user->phone = $request->get('tel');
+        $user->phone = strval($request->get('tel'));
         $user->verified = true;
         $user->email_verified_at = Carbon::now();
         $user->need_password_reset = true;
