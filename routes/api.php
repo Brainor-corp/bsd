@@ -25,6 +25,7 @@ Route::any('/calculator/get-total-price', 'CalculatorController@getTotalPrice')-
 Route::any('/calculator/get-city-polygons', 'CalculatorController@getCityPolygons')->name('getCityPolygons');
 Route::any('/calculator/get-all-calculated', 'CalculatorController@getAllCalculatedData')->name('getAllCalculated');
 Route::any('/calculator/get-counterparties', 'CounterpartyController@searchByTerm')->name('getCounterparties');
+Route::any('/calculator/get-discount', 'CalculatorController@getDiscount')->name('getCounterparties');
 //END----CALCULATOR
 
 Route::post('/get-cities-by-term', 'CitiesController@getCitiesByTerm')->name('get-cities-by-name');

@@ -192,10 +192,13 @@
                                         <br>
                                     </div>
                                     <div class="relative">
-                                        <i class="dropdown-toggle fa-icon"></i>
-                                        <select class="custom-select" id="discount" name="discount">
-                                            <option disabled selected>{{ $order->discount ? $order->discount . '%' : 'Нет скидки' }}</option>
-                                        </select>
+                                        <label class="" for="discount">Скидка (%)</label>
+                                        <input type="number"
+                                               class="form-control"
+                                               id="discount"
+                                               name="discount"
+                                               value="{{ $order->discount ?? 0 }}"
+                                               disabled>
                                     </div>
                                 </div>
 
@@ -240,6 +243,16 @@
                                 </div>
 
                                 <div class="calc__title">Данные плательщика</div>
+                                <div id="payer-email-wrapper">
+                                    <label class="" for="payer-email">E-Mail плательщика</label>
+                                    <input type="email"
+                                           class="form-control"
+                                           id="payer-email"
+                                           name="payer-email"
+                                           value="{{ $order->payer_email }}"
+                                           disabled
+                                    >
+                                </div>
                                 <div class="custom-control custom-radio">
                                     <input type="radio" @if(isset($order->payer) && $order->payer->slug === 'otpravitel') checked @endif class="custom-control-input" id="sender" name="payer_type" value="otpravitel" disabled />
                                     <label class="custom-control-label" for="sender">Отправитель</label>
@@ -280,6 +293,18 @@
                                 <div class="custom-control custom-radio">
                                     <input disabled @if(isset($order->payment) && $order->payment->slug === 'beznalichnyy-raschet') checked @endif type="radio" class="custom-control-input" id="non-cash">
                                     <label class="custom-control-label" for="non-cash">Безналичный расчет</label>
+                                </div>
+                                <div class="calc__title">Прочее</div>
+                                <div id="order-creator-wrapper">
+                                    <label class="" for="order-creator">Заявку заполнил</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="order-creator"
+                                           name="order-creator"
+                                           placeholder="ФИО"
+                                           value="{{ $order->order_creator ?? '' }}"
+                                           disabled>
+                                    <br>
                                 </div>
 {{--                                <div class="form-item d-flex">--}}
 {{--                                    <button class="btn margin-item btn-danger">Оформить заказ</button>--}}

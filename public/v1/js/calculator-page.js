@@ -7,7 +7,28 @@ ymaps.ready(function () {
     });
 });
 
+function getDiscount() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'post',
+        url: '/api/calculator/get-discount',
+        cache: false,
+        success: function(data) {
+            $('#discount').val(data);
+            $('#discount').trigger('change');
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
+}
+
 $(document).ready(function () {
+    getDiscount();
     totalWeigthRecount();
     totalVolumeRecount();
 

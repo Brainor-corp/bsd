@@ -549,4 +549,28 @@ class CalculatorController extends Controller
 
         return $city->polygons ?? [];
     }
+
+    public function getDiscount() {
+        if(Auth::guest()) {
+            return 0;
+        }
+
+        $user = Auth::user();
+        if(empty($user->guid)) {
+            return 0;
+        }
+
+        $response1c = \App\Http\Helpers\Api1CHelper::post(
+            'client/discount',
+            [
+                "user_id" => $user->guid,
+            ]
+        );
+
+        if($response1c['status'] === 200 && $response1c['response']['status'] === 'success') {
+            return $response1c['response']['result'];
+        }
+
+        return 0;
+    }
 }

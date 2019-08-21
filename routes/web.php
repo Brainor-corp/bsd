@@ -136,6 +136,8 @@ Route::get('/1c/test/document-list', 'Api1cTestController@documentList');
 Route::get('/1c/test/document/id', 'Api1cTestController@documentById');
 Route::get('/1c/test/document/number', 'Api1cTestController@documentByNumber');
 Route::get('/1c/test/orders', 'Api1cTestController@orders');
+Route::get('/1c/test/contract', 'Api1cTestController@contract');
+Route::get('/1c/test/discount', 'Api1cTestController@discount');
 
 
 //Route::group(['middleware' => ['auth']], function () {
