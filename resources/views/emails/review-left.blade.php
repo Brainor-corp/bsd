@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
 <body>
-review left
-<a href="{{ url('admin/Reviews/' . $review['id'] . '/edit')  }}">moderate here</a>
+<h1>Добавлен новый отзыв</h1>
+Для модерации перейдите по ссылке:
+<a href="{{ route('zeusAdmin.section.edit.form', [
+            'section' => 'Reviews',
+            'id' => $review['id']
+            ])
+        }}"
+>Модерировать</a>
 </body>
 </html>

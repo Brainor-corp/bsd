@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-{{ $user['name'] }}<br>
-{{ $user['email'] }}<br>
-test mail for registered user
+<h1>{{ $user['name'] }},</h1>
+<p>Вы успешно зарегистрировались на сайте {{ url('/') }}</p>
 </body>
 </html>
