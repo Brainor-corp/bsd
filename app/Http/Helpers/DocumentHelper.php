@@ -6,10 +6,9 @@ use alhimik1986\PhpExcelTemplator\params\ExcelParam;
 use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterStringValue;
-use Illuminate\Support\Facades\App;
+use Elibyy\TCPDF\Facades\TCPDF;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
-use Elibyy\TCPDF\Facades\TCPDF;
 
 class DocumentHelper
 {
@@ -23,7 +22,7 @@ class DocumentHelper
         $TBS->SetOption('charset', 'UTF-8');
         $TBS->SetOption('render', TBS_OUTPUT);
 
-        $parameters['ПостфиксПолаКонтрагента'] = $parameters['ПолРуководителяКонтрагента'] == 'Мужской' ? 'го' : 'ей';
+        $parameters['ПостфиксПолаКонтрагента'] = isset($parameters['ПолРуководителяКонтрагента']) && $parameters['ПолРуководителяКонтрагента'] == 'Мужской' ? 'го' : 'ей';
 
         foreach ($parameters as $name => $value) {
             $TBS->MergeField($name, $value);
