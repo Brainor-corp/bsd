@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\User1CRegister;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
@@ -39,6 +41,8 @@ class UsersController extends Controller
             );
         }
 
+        $password = $this->generateRandomString();
+
         $user = new User;
 
         $user->guid = $request->get('id');
@@ -49,9 +53,11 @@ class UsersController extends Controller
         $user->verified = true;
         $user->email_verified_at = Carbon::now();
         $user->need_password_reset = true;
-        $user->password = Hash::make($this->generateRandomString());
+        $user->password = Hash::make($password);
 
         $user->save();
+
+        Mail::to($user->email)->send(new User1CRegister($user, $password));
 
         return [
             'status' => 'success'
