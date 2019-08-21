@@ -185,7 +185,7 @@ class ProfileController extends Controller {
                 ]
             );
 
-            if(!empty($response1c['response']['#value'])) {
+            if(!empty($response1c['response'])) {
                 $file = DocumentHelper::generateContractDocument(
                     'Договор от ',
                     $response1c['response']['#value']
@@ -196,7 +196,7 @@ class ProfileController extends Controller {
                         ->deleteFileAfterSend(true);
                 }
             } else {
-                return redirect()->back()->withErrors(['Для Вашего профиля генерация договора недоступна.']);
+                return redirect()->back()->withErrors(['В данный момент генерация договора недоступна.']);
             }
         }
         return redirect()->back()->withErrors(['Произошла ошибка. Обновите страницу или попробуйте позднее.']);
