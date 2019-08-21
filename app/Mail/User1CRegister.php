@@ -7,20 +7,22 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UserRegister extends Mailable
+class User1CRegister extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $user;
+    private $user, $password;
 
     /**
      * Create a new message instance.
      *
      * @param User $user
+     * @param $password
      */
-    public function __construct(User $user)
+    public function __construct(User $user, $password)
     {
-	    $this->user = $user;
+        $this->user = $user;
+        $this->password = $password;
     }
 
     /**
@@ -30,6 +32,10 @@ class UserRegister extends Mailable
      */
     public function build()
     {
-	    return $this->view('emails.user-register')->with(['user' => $this->user]);
+        return $this->view('emails.1c-user-register')
+            ->with([
+                'user' => $this->user,
+                'password' => $this->password
+            ]);
     }
 }
