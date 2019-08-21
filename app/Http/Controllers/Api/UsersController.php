@@ -12,7 +12,7 @@ class UsersController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone' => ['required', 'unique:users', 'regex:/\d{11}/'],
+            'tel' => ['required', 'unique:users,phone', 'regex:/\d{11}/'],
             'id' => ['required', 'unique:users,guid'],
         ]);
 
