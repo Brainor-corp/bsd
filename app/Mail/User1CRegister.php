@@ -22,6 +22,7 @@ class User1CRegister extends Mailable
     public function __construct(User $user, $password)
     {
         $this->user = $user;
+        $this->password = $password;
     }
 
     /**
