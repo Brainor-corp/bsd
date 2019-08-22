@@ -318,6 +318,7 @@ class Api1cTestController extends Controller
     }
 
     public function newClient(Request $request) {
+        $response1c = null;
         $example = $request->get('example') ?? 1;
 
         // Пример из документации
