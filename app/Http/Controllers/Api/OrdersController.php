@@ -10,10 +10,13 @@ use Illuminate\Support\Facades\Validator;
 
 class OrdersController extends Controller
 {
-    public function updateOrderStatus(Request $request) {
+    public function updateOrder(Request $request) {
         $validator = Validator::make($request->all(), [
             "id" => "required",
             "status" => "required",
+            "weight" => "required|numeric",
+            "volume" => "required|numeric",
+            "price" => "required|numeric",
         ]);
 
         if ($validator->fails()) {
@@ -51,6 +54,9 @@ class OrdersController extends Controller
         }
 
         $order->status_id = $status->id;
+        $order->actual_weight = $request->get('weight');
+        $order->actual_volume = $request->get('volume');
+        $order->actual_price = $request->get('price');
         $order->save();
 
         return [
