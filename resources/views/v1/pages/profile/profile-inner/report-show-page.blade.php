@@ -82,21 +82,38 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-6 form-item row align-items-center">
-                                                <label class="col-auto calc__label">Вес груза (кг)*</label>
+                                                <label class="col-auto calc__label">Вес груза (заяв-й, кг)*</label>
                                                 <div class="col calc__inpgrp">
                                                     <input type="text" readonly id="total-weight" class="form-control"
                                                            value="{{ $order->total_weight }}">
                                                 </div>
                                             </div>
                                             <div class="col-6 form-item row align-items-center text-right">
-                                                <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
+                                                <label class="col-auto calc__label">Объем (заяв-й, м<sup>3</sup>)*</label>
                                                 <div class="col calc__inpgrp">
                                                     <input type="text" readonly id="total-volume" class="form-control"
                                                            value="{{ $totalVolume }}">
                                                 </div>
                                             </div>
                                         </div>
-
+                                        @if(!empty($order->actual_weight) || !empty($order->actual_volume))
+                                            <div class="row">
+                                                <div class="col-6 form-item row align-items-center">
+                                                    <label class="col-auto calc__label">Вес груза (фактический, кг)*</label>
+                                                    <div class="col calc__inpgrp">
+                                                        <input type="text" readonly id="actual-weight" class="form-control"
+                                                               value="{{ $order->actual_weight }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 form-item row align-items-center text-right">
+                                                    <label class="col-auto calc__label">Объем (фактический, м<sup>3</sup>)*</label>
+                                                    <div class="col calc__inpgrp">
+                                                        <input type="text" readonly id="actual-volume" class="form-control"
+                                                               value="{{ $order->actual_volume }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-item row block-for-distance">
