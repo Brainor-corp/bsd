@@ -317,7 +317,7 @@ class Api1cTestController extends Controller
         dd($response1c);
     }
 
-    public function new_client() {
+    public function newClient() {
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'new_client',
             [
