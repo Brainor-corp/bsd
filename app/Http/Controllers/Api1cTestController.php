@@ -61,6 +61,7 @@ class Api1cTestController extends Controller
             $mapOrder['Количество_мест'] = count($order['order_items']);
             $mapOrder['Итоговая_цена'] = is_numeric($order['total_price']) ? intval($order['total_price']) : 0;
             $mapOrder['Базовая_цена_маршрута'] = is_numeric($order['base_price']) ? intval($order['base_price']) : 0;
+            $mapOrder['Заявку_заполнил'] = $order['order_creator'];
 
             $mapOrder['Страховка'] = [
                 'Сумма_страховки' => is_numeric($order['insurance']) ? intval($order['insurance']) : 0,
@@ -86,6 +87,7 @@ class Api1cTestController extends Controller
             }
 
             $mapOrder['Плательщик'] = [
+                'Email_плательщика' => $order['payer_email'],
                 'Тип_плательщика' => $order['payer']['name'],
                 'Правовая_форма' => $order['payer_legal_form'] ?? "",
                 'Наименование' => strlen($order['payer_company_name']) >= 3 ? $order['payer_company_name'] : "---",
@@ -124,12 +126,12 @@ class Api1cTestController extends Controller
             }
 
             $mapOrder['Город_отправления'] = [
-                'Идентификатор_на_сайте' => intval($order['ship_city']['id']),
+                'Идентификатор_на_сайте' => $order['ship_city']['kladr']['code'],
                 'Название' => $order['ship_city']['name'] ?? ""
             ];
 
             $mapOrder['Город_назначения'] = [
-                'Идентификатор_на_сайте' => $order['dest_city']['id'],
+                'Идентификатор_на_сайте' => $order['dest_city']['kladr']['code'],
                 'Название' => $order['dest_city']['name'] ?? ""
             ];
 
@@ -221,6 +223,7 @@ class Api1cTestController extends Controller
         }, $orders);
 
         foreach($orders as $order) {
+            dd($order);
             $response1c = Api1CHelper::post('create_order', $order);
             dd([
                 'send' => json_encode($order),
