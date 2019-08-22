@@ -321,7 +321,7 @@ class Api1cTestController extends Controller
         $example = $request->get('example') ?? 1;
 
         // Пример из документации
-        if($example === 1) {
+        if($example == 1) {
             $response1c = \App\Http\Helpers\Api1CHelper::post(
                 'new_client',
                 [
@@ -355,7 +355,7 @@ class Api1cTestController extends Controller
         }
 
         // Пример для физ. лица
-        if($example === 2) {
+        if($example == 2) {
             $response1c = \App\Http\Helpers\Api1CHelper::post(
                 'new_client',
                 [
@@ -377,7 +377,7 @@ class Api1cTestController extends Controller
         }
 
         // Пример для юр. лица
-        if($example === 3) {
+        if($example == 3) {
             $response1c = \App\Http\Helpers\Api1CHelper::post(
                 'new_client',
                 [
