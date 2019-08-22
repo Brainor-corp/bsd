@@ -34,8 +34,8 @@ class Api1cTestController extends Controller
                 'payer',
                 'payment',
                 'order_services',
-                'ship_city',
-                'dest_city',
+                'ship_city.kladr',
+                'dest_city.kladr',
                 'status',
                 'order_items'
             )
