@@ -14,9 +14,9 @@ class OrdersController extends Controller
         $validator = Validator::make($request->all(), [
             "id" => "required",
             "status" => "required",
-            "weight" => "required, numeric",
-            "volume" => "required, numeric",
-            "price" => "required, numeric",
+            "weight" => "required|numeric",
+            "volume" => "required|numeric",
+            "price" => "required|numeric",
         ]);
 
         if ($validator->fails()) {
