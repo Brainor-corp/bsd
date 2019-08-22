@@ -46,5 +46,5 @@ Route::get('/upload-xml-terminals', 'UploadXmlController@uploadTerminals')->name
 Route::get('/upload-csv-order-types', 'UploadCsvController@loadOrderTypes');
 
 // 1c
-Route::post('/1c/order/update_status', 'Api\OrdersController@updateOrderStatus');
+Route::post('/1c/order/update', 'Api\OrdersController@updateOrder');
 Route::post('/1c/user/create', 'Api\UsersController@createUser');
