@@ -56,7 +56,7 @@ class OrdersController extends Controller
         $order->status_id = $status->id;
         $order->actual_weight = $request->get('weight');
         $order->actual_volume = $request->get('volume');
-        $order->total_price = $request->get('price');
+        $order->actual_price = $request->get('price');
         $order->save();
 
         return [
