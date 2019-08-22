@@ -180,12 +180,11 @@ class ProfileController extends Controller {
             $response1c = \App\Http\Helpers\Api1CHelper::post(
                 'client/contract',
                 [
-                    "user_id" => 'e9795c33-97f7-11e8-a972-000d3a28f168',
-//                    "user_id" => $user->guid,
+                    "user_id" => $user->guid,
                 ]
             );
 
-            if(!empty($response1c['response'])) {
+            if(!empty($response1c['response']) && isset($response1c['response']['УникальныйИдентификатор'])) {
                 $file = DocumentHelper::generateContractDocument(
                     'Договор от ',
                     $response1c['response']
