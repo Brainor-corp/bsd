@@ -180,8 +180,7 @@ class ProfileController extends Controller {
             $response1c = \App\Http\Helpers\Api1CHelper::post(
                 'client/contract',
                 [
-                    "user_id" => "e9795c33-97f7-11e8-a972-000d3a28f168",
-//                    "user_id" => $user->guid,
+                    "user_id" => $user->guid,
                 ]
             );
 
