@@ -44,8 +44,8 @@ class OrdersSyncTo1c implements ShouldQueue
                 'payer',
                 'payment',
                 'order_services',
-                'ship_city.kladr',
-                'dest_city.kladr',
+                'ship_city',
+                'dest_city',
                 'status',
                 'order_items'
             )->get()->toArray();
@@ -132,12 +132,12 @@ class OrdersSyncTo1c implements ShouldQueue
             }
 
             $mapOrder['Город_отправления'] = [
-                'Идентификатор_на_сайте' => $order['ship_city']['kladr']['code'],
+                'Идентификатор_на_сайте' => intval($order['ship_city']['kladr_id']),
                 'Название' => $order['ship_city']['name'] ?? ""
             ];
 
             $mapOrder['Город_назначения'] = [
-                'Идентификатор_на_сайте' => $order['dest_city']['kladr']['code'],
+                'Идентификатор_на_сайте' => intval($order['dest_city']['kladr_id']),
                 'Название' => $order['dest_city']['name'] ?? ""
             ];
 
