@@ -82,21 +82,42 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-6 form-item row align-items-center">
-                                                <label class="col-auto calc__label">Вес груза (кг)*</label>
+                                                <label class="col-auto calc__label">Вес груза (заяв-й, кг)*</label>
                                                 <div class="col calc__inpgrp">
                                                     <input type="text" readonly id="total-weight" class="form-control"
                                                            value="{{ $order->total_weight }}">
                                                 </div>
                                             </div>
                                             <div class="col-6 form-item row align-items-center text-right">
-                                                <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
+                                                <label class="col-auto calc__label">Объем (заяв-й, м<sup>3</sup>)*</label>
                                                 <div class="col calc__inpgrp">
                                                     <input type="text" readonly id="total-volume" class="form-control"
                                                            value="{{ $totalVolume }}">
                                                 </div>
                                             </div>
                                         </div>
-
+                                        @if(!empty($order->actual_weight) || !empty($order->actual_volume))
+                                            <div class="row">
+                                                @if(!empty($order->actual_weight))
+                                                    <div class="col-6 form-item row align-items-center">
+                                                        <label class="col-auto calc__label">Вес груза (факт-й, кг)*</label>
+                                                        <div class="col calc__inpgrp">
+                                                            <input type="text" readonly id="actual-weight" class="form-control"
+                                                                   value="{{ $order->actual_weight }}">
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                                @if(!empty($order->actual_volume))
+                                                    <div class="col-6 form-item row align-items-center text-right">
+                                                        <label class="col-auto calc__label">Объем (факт-й, м<sup>3</sup>)*</label>
+                                                        <div class="col calc__inpgrp">
+                                                            <input type="text" readonly id="actual-volume" class="form-control"
+                                                                   value="{{ $order->actual_volume }}">
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-item row block-for-distance">
@@ -424,7 +445,7 @@
                                     </div>
                                     <div class="separator-hr"></div>
                                     <footer class="block__itogo_footer d-flex">
-                                        <span>Стоимость перевозки</span>
+                                        <span>Стоимость перевозки*</span>
                                         <span class="block__itogo_price d-flex flex-nowrap">
                                             <span class="block__itogo_amount">
                                                 <span id="total-price">{{ $order->total_price }}</span>
@@ -433,6 +454,18 @@
                                             <span id="total-volume"></span>
                                         </span>
                                     </footer>
+                                    @if(!empty($order->actual_price) && $order->actual_price != $order->total_price)
+                                        <footer class="block__itogo_footer d-flex">
+                                            <span>Стоимость перевозки (фактическая)</span>
+                                            <span class="block__itogo_price d-flex flex-nowrap">
+                                                <span class="block__itogo_amount">
+                                                    <span id="total-price">{{ $order->actual_price }}</span>
+                                                </span>
+                                                <span class="rouble">p</span>
+                                                <span id="total-volume"></span>
+                                            </span>
+                                        </footer>
+                                    @endif
                                 </div>
                                 <div class="annotation-text">* - Предварительный расчет. Точная стоимость доставки будет определена после обмера груза специалистами компании БСД на складе.</div>
                             </section>
