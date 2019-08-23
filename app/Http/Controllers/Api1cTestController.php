@@ -126,12 +126,12 @@ class Api1cTestController extends Controller
             }
 
             $mapOrder['Город_отправления'] = [
-                'Идентификатор_на_сайте' => $order['ship_city']['kladr_id'],
+                'Идентификатор_на_сайте' => intval($order['ship_city']['kladr_id']),
                 'Название' => $order['ship_city']['name'] ?? ""
             ];
 
             $mapOrder['Город_назначения'] = [
-                'Идентификатор_на_сайте' => $order['dest_city']['kladr_id'],
+                'Идентификатор_на_сайте' => intval($order['dest_city']['kladr_id']),
                 'Название' => $order['dest_city']['name'] ?? ""
             ];
 
@@ -223,8 +223,6 @@ class Api1cTestController extends Controller
         }, $orders);
 
         foreach($orders as $order) {
-            dd($order);
-
             $response1c = Api1CHelper::post('create_order', $order);
             dd([
                 'send' => json_encode($order),
