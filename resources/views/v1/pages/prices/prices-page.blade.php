@@ -42,7 +42,12 @@
                             </div>
                             <div class="col-auto">
                                 <div class="form-group">
-                                    <button type="submit" class="btn margin-item btn-danger sbmt-btn">Показать</button>
+                                    <button type="submit" name="action" value="show" class="btn margin-item btn-danger sbmt-btn">Показать</button>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-group">
+                                    <button type="submit" name="action" value="download" class="btn margin-item btn-danger sbmt-btn">Скачать</button>
                                 </div>
                             </div>
                         </div>
@@ -130,9 +135,6 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    @foreach($insideForwardingsCities as $insideForwarding)
-
-                                    @endforeach
                                 @empty
                                     <span>Информация отсутствует</span>
                                 @endforelse

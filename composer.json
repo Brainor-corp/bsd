@@ -20,7 +20,7 @@
         "jenssegers/date": "^3.5",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
-        "phpoffice/phpspreadsheet": "^1.6",
+        "phpoffice/phpspreadsheet": "^1.9",
         "tinybutstrong/opentbs": "^1.9",
         "tinybutstrong/tinybutstrong": "^3.11",
         "torann/geoip": "^1.0"
