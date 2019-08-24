@@ -30,4 +30,12 @@ class PricesController extends Controller {
             ->with(compact('route','insideForwardings', 'shipCities', 'destCities', 'shipCityId', 'destCityId'));
     }
 
+    public function getDestinationCities(Request $request) {
+        $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $request->get('ship_city')))
+            ->orderBy('name')
+            ->get();
+
+        return view('v1.partials.prices.destination-cities')->with(compact('destinationCities'));
+    }
+
 }

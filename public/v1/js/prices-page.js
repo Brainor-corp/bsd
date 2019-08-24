@@ -9,7 +9,7 @@ $(document).ready(function () {
             });
             $.ajax({
                 type: 'post',
-                url: '/api/calculator/get-destination-cities',
+                url: '/api/prices/get-destination-cities',
                 data: {ship_city:value},
                 cache: false,
                 beforeSend: function() {
