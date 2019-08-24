@@ -34,8 +34,8 @@ class Api1cTestController extends Controller
                 'payer',
                 'payment',
                 'order_services',
-                'ship_city.kladr',
-                'dest_city.kladr',
+                'ship_city',
+                'dest_city',
                 'status',
                 'order_items'
             )
@@ -126,12 +126,12 @@ class Api1cTestController extends Controller
             }
 
             $mapOrder['Город_отправления'] = [
-                'Идентификатор_на_сайте' => $order['ship_city']['kladr']['code'],
+                'Идентификатор_на_сайте' => intval($order['ship_city']['kladr_id']),
                 'Название' => $order['ship_city']['name'] ?? ""
             ];
 
             $mapOrder['Город_назначения'] = [
-                'Идентификатор_на_сайте' => $order['dest_city']['kladr']['code'],
+                'Идентификатор_на_сайте' => intval($order['dest_city']['kladr_id']),
                 'Название' => $order['dest_city']['name'] ?? ""
             ];
 
@@ -362,6 +362,9 @@ class Api1cTestController extends Controller
                 [
                     "ЮридическоеФизическоеЛицо" => "ФизическоеЛицо",
                     "ДокументУдостоверяющийЛичность" => "1111111111",
+                    "ИНН" => "",
+                    "НаименованиеПолное" => "",
+                    "ПравоваяФорма" => "",
                     "ОсновноеКонтактноеЛицо" => "Иванов Иван Иванович",
                     "Комментарий" => "Тест",
                     "ДатаСоздания" => "2018-08-04T00:00:00",
