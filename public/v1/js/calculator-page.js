@@ -586,8 +586,6 @@ $(document).ready(function () {
     });
 
     function updateRequiredInputs() {
-        // console.log('update req..');
-
         $('.req:hidden').removeAttr('required');
         $('.req:visible').attr('required', 'required');
     }

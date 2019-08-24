@@ -22,8 +22,8 @@
     </div>
 </div>
 <div class="form-item row align-items-center">
-    <label class="col-auto calc__label" for="sender_contact_person_individual">Контактное лицо*</label>
-    <div class="col calc__inpgrp"><input type="text" class="form-control req" name="sender_contact_person_individual" id="sender_contact_person_individual" value="{{ old('sender_contact_person_individual') ?? ($order->sender_contact_person ?? '') }}" {{ isset($disabled) ? 'disabled' : 'required' }}/></div>
+    <label class="col-auto calc__label" for="sender_contact_person_individual">Контактное лицо</label>
+    <div class="col calc__inpgrp"><input type="text" class="form-control" name="sender_contact_person_individual" id="sender_contact_person_individual" value="{{ old('sender_contact_person_individual') ?? ($order->sender_contact_person ?? '') }}" {{ isset($disabled) ? 'disabled' : '' }}/></div>
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="sender_phone_individual">Телефон*</label>
