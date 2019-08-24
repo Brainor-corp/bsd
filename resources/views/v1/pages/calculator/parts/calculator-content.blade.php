@@ -478,7 +478,7 @@
                id="payer-email"
                name="payer-email"
                placeholder="Введите E-Mail плательщика"
-               value="{{ $order->payer_email ?? '' }}"
+               value="{{ old('payer-email') ?? ($order->payer_email ?? '') }}"
                required
         >
     </div>
@@ -629,7 +629,7 @@
                id="order-creator"
                name="order-creator"
                placeholder="ФИО"
-               value="@if(isset($order)){{ $order->order_creator }}@else{{ \Illuminate\Support\Facades\Auth::check() ? \Illuminate\Support\Facades\Auth::user()->full_name : '' }}@endif"
+               value="{{ old('order-creator') ?? ($order->order_creator ?? (\Illuminate\Support\Facades\Auth::check() ? \Illuminate\Support\Facades\Auth::user()->full_name : '')) }}"
                required>
         <br>
     </div>

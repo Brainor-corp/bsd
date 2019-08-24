@@ -12,6 +12,7 @@ use App\Order;
 use App\OrderItem;
 use App\Polygon;
 use App\Route;
+use App\Rules\INN;
 use App\Type;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -57,7 +58,7 @@ class OrderController extends Controller
             "sender_legal_address_block" => ['nullable', 'string', 'max:255'],                  // Отправитель (Адрес (Корпус))
             "sender_legal_address_building" => ['nullable', 'string', 'max:255'],               // Отправитель (Адрес (Строение))
             "sender_legal_address_apartment" => ['nullable', 'string', 'max:255'],              // Отправитель (Адрес (Квартира_офис))
-            "sender_inn" => ['nullable', 'string', 'max:12'],                                   // Отправитель (ИНН)
+            "sender_inn" => ['nullable', 'string', 'max:12', new INN()],                        // Отправитель (ИНН)
             "sender_kpp" => ['nullable', 'string', 'max:9'],                                    // Отправитель (КПП)
             "sender_contact_person_legal" => ['nullable', 'string', 'max:255'],                 // Отправитель (Контактное_лицо) -- Для юр.лиц
             "sender_phone_legal" => ['nullable', 'regex:/\d{11}/'],                             // Отправитель (Телефон) -- Для юр.лиц
@@ -78,7 +79,7 @@ class OrderController extends Controller
             "recipient_legal_address_block" => ['nullable', 'string', 'max:255'],               // Получатель (Адрес (Корпус))
             "recipient_legal_address_building" => ['nullable', 'string', 'max:255'],            // Получатель (Адрес (Строение))
             "recipient_legal_address_apartment" => ['nullable', 'string', 'max:255'],           // Получатель (Адрес (Квартира_офис))
-            "recipient_inn"  => ['nullable', 'string', 'max:12'],                               // Получатель (ИНН)
+            "recipient_inn"  => ['nullable', 'string', 'max:12', new INN()],                    // Получатель (ИНН)
             "recipient_kpp" => ['nullable', 'string', 'max:9'],                                 // Получатель (КПП)
             "recipient_contact_person_legal" => ['nullable', 'string', 'max:255'],              // Получатель (Контактное_лицо) -- Для юр.лиц
             "recipient_phone_legal" => ['nullable', 'regex:/\d{11}/'],                          // Получатель (Телефон) -- Для юр.лиц
@@ -101,7 +102,7 @@ class OrderController extends Controller
             "payer_legal_address_block" => ['nullable', 'string', 'max:255'],                   // Плательщик (Адрес (Корпус))
             "payer_legal_address_building" => ['nullable', 'string', 'max:255'],                // Плательщик (Адрес (Строение))
             "payer_legal_address_apartment" => ['nullable', 'string', 'max:255'],               // Плательщик (Адрес (Квартира_офис))
-            "payer_inn" => ['nullable', 'string', 'max:12'],                                    // Плательщик (ИНН)
+            "payer_inn" => ['nullable', 'string', 'max:12', new INN()],                         // Плательщик (ИНН)
             "payer_kpp" => ['nullable', 'string', 'max:9'],                                     // Плательщик (КПП)
             "payer_contact_person_legal" => ['nullable', 'string', 'max:255'],                  // Плательщик (Контактное_лицо) -- Для юр.лиц
             "payer_phone_legal" => ['nullable', 'regex:/\d{11}/'],                              // Плательщик (Телефон) -- Для юр.лиц
