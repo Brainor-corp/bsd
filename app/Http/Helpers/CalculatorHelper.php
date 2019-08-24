@@ -245,9 +245,18 @@ class CalculatorHelper
         $query = $query->where(function ($q) use ($package) {
             $q->orWhere([['rate_id', 26], ['threshold', '<=', $package['weight']]]);
             $q->orWhere([['rate_id', 27], ['threshold', '<=', $package['volume']]]);
-            $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['length']]]);
-            $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['width']]]);
-            $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['height']]]);
+
+            if(isset($package['length'])) {
+                $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['length']]]);
+            }
+
+            if(isset($package['width'])) {
+                $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['width']]]);
+            }
+
+            if(isset($package['height'])) {
+                $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['height']]]);
+            }
         });
         $query = $query->orderBy('markup', 'DESC');
         $query = $query->first();
