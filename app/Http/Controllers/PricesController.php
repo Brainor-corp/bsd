@@ -44,7 +44,7 @@ class PricesController extends Controller {
                 ->setDescription("Прайс лист $route->name");
 
             $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('Отчеты');
+            $sheet->setTitle('Прайс-лист');
 
             // Вычисляем кол-во ячеек, которое должен занимать заголовок тарифов
             $tariffsTitleRange = [
@@ -57,6 +57,7 @@ class PricesController extends Controller {
             ];
             $sheet->mergeCells("$tariffsTitleRange[0]1:$tariffsTitleRange[1]1");
             $sheet->setCellValue('A1', "Тарифы на грузоперевозки маршрута $route->name");
+            $sheet->getStyle('A1')->getFont()->setSize(14);
 
             $sheet->setCellValue('A3', "Бандероль до 0,01 м3 до 2 кг");
             $sheet->mergeCells("A3:A4");
@@ -140,7 +141,44 @@ class PricesController extends Controller {
 
             foreach($tariffPrices as $key => $tariffPrice) {
                 $column = Coordinate::stringFromColumnIndex($key + 1);
-                $sheet->setCellValue($column . '5', $tariffPrice);
+                $cell = $column . '5';
+                $sheet->setCellValue($cell, $tariffPrice);
+                $sheet->getStyle($cell)->getFont()->setBold(true);
+            }
+
+            if($insideForwardings->groupBy('city_id')->count()) {
+                $sheet->mergeCells("$tariffsTitleRange[0]7:$tariffsTitleRange[1]7");
+                $sheet->setCellValue('A7', "Стоимость экспедирования в черте города");
+                $sheet->getStyle('A7')->getFont()->setSize(14);
+
+                $row = 7;
+                foreach($insideForwardings->groupBy('city_id') as $insideForwardingsCities) {
+                    $row += 2;
+                    $sheet->setCellValue("A$row", "Город");
+
+                    $coll = 2;
+                    foreach($insideForwardingsCities as $insideForwarding) {
+                        $cell = Coordinate::stringFromColumnIndex($coll) . $row;
+                        $sheet->setCellValue($cell, $insideForwarding->forwardThreshold->name);
+                        $sheet->getStyle($cell)->getAlignment()->setWrapText(true);
+
+                        $coll++;
+                    }
+                    $row++;
+
+                    $cell = Coordinate::stringFromColumnIndex(1) . $row;
+                    $sheet->setCellValue($cell, $insideForwardingsCities->first()->city->name);
+                    $sheet->getStyle($cell)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle($cell)->getFont()->setBold(true);
+                    $coll = 2;
+                    foreach($insideForwardingsCities as $insideForwarding) {
+                        $cell = Coordinate::stringFromColumnIndex($coll) . $row;
+                        $sheet->setCellValue($cell, $insideForwarding->tariff);
+                        $sheet->getStyle($cell)->getFont()->setBold(true);
+
+                        $coll++;
+                    }
+                }
             }
 
             $writer = new Xlsx($spreadsheet);
