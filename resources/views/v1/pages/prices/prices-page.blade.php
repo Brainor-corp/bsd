@@ -42,7 +42,12 @@
                             </div>
                             <div class="col-auto">
                                 <div class="form-group">
-                                    <button type="submit" class="btn margin-item btn-danger sbmt-btn">Показать</button>
+                                    <button type="submit" name="action" value="show" class="btn margin-item btn-danger sbmt-btn">Показать</button>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-group">
+                                    <button type="submit" name="action" value="download" class="btn margin-item btn-danger sbmt-btn">Скачать</button>
                                 </div>
                             </div>
                         </div>
@@ -56,50 +61,50 @@
                                     <table class="table table-bordered text-center">
                                         <thead>
                                         <tr>
-                                            <th rowspan="2" class="align-middle">
+                                            <td rowspan="2" class="align-middle">
                                                 <span>Бандероль до 0,01 м3 до 2 кг</span>
-                                            </th>
-                                            <th rowspan="2" class="align-middle">
+                                            </td>
+                                            <td rowspan="2" class="align-middle">
                                                 <span>мин. стоимость руб.</span>
-                                            </th>
+                                            </td>
                                             @if($route->route_tariffs->where('rate.slug', 'ves')->count() > 0)
-                                                <th colspan="{{ $route->route_tariffs->where('rate.slug', 'ves')->count() }}">стоимость за 1кг руб.</th>
+                                                <td colspan="{{ $route->route_tariffs->where('rate.slug', 'ves')->count() }}">стоимость за 1кг руб.</td>
                                             @endif
                                             @if($route->route_tariffs->where('rate.slug', 'obem')->count() > 0)
-                                                <th colspan="{{ $route->route_tariffs->where('rate.slug', 'obem')->count() }}">стоимость за 1м3 руб.</th>
+                                                <td colspan="{{ $route->route_tariffs->where('rate.slug', 'obem')->count() }}">стоимость за 1м3 руб.</td>
                                             @endif
-                                            <th rowspan="2" class="align-middle">
+                                            <td rowspan="2" class="align-middle">
                                                 <span>мин. срок доставки*</span>
-                                            </th>
+                                            </td>
                                         </tr>
                                         <tr>
                                             @foreach($route->route_tariffs->where('rate.slug', 'ves') as $routeTariff)
-                                                <th class="align-middle">До {{ $routeTariff->threshold->value }}кг</th>
+                                                <td class="align-middle">До {{ $routeTariff->threshold->value }}кг</td>
                                             @endforeach
                                             @foreach($route->route_tariffs->where('rate.slug', 'obem') as $routeTariff)
-                                                <th class="align-middle">
+                                                <td class="align-middle">
                                                     До {{ $routeTariff->threshold->value }}м<sup>3</sup>
-                                                </th>
+                                                </td>
                                             @endforeach
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td class="align-middle">
+                                            <th class="align-middle">
                                                 {{ $route->wrapper_tariff }}
-                                            </td>
-                                            <td class="align-middle">
+                                            </th>
+                                            <th class="align-middle">
                                                 {{ $route->min_cost }}
-                                            </td>
+                                            </th>
                                             @foreach($route->route_tariffs->where('rate.slug', 'ves') as $routeTariff)
-                                                <td class="align-middle">{{ $routeTariff->price }}</td>
+                                                <th class="align-middle">{{ $routeTariff->price }}</th>
                                             @endforeach
                                             @foreach($route->route_tariffs->where('rate.slug', 'obem') as $routeTariff)
-                                                <td class="align-middle">{{ $routeTariff->price }}</td>
+                                                <th class="align-middle">{{ $routeTariff->price }}</th>
                                             @endforeach
-                                            <td class="align-middle">
+                                            <th class="align-middle">
                                                 {{ $route->delivery_time }}
-                                            </td>
+                                            </th>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -110,29 +115,26 @@
                                         <table class="table table-bordered text-center">
                                             <thead>
                                             <tr>
-                                                <th class="align-middle">Город</th>
+                                                <td class="align-middle">Город</td>
                                                 @foreach($insideForwardingsCities as $insideForwarding)
-                                                    <th class="align-middle">
+                                                    <td class="align-middle">
                                                         {{ $insideForwarding->forwardThreshold->name }}
-                                                    </th>
+                                                    </td>
                                                 @endforeach
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td class="align-middle">{{ $insideForwardingsCities->first()->city->name }}</td>
+                                                <th class="align-middle">{{ $insideForwardingsCities->first()->city->name }}</th>
                                                 @foreach($insideForwardingsCities as $insideForwarding)
-                                                    <td class="align-middle">
+                                                    <th class="align-middle">
                                                         {{ $insideForwarding->tariff }}
-                                                    </td>
+                                                    </th>
                                                 @endforeach
                                             </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                    @foreach($insideForwardingsCities as $insideForwarding)
-
-                                    @endforeach
                                 @empty
                                     <span>Информация отсутствует</span>
                                 @endforelse
