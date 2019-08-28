@@ -10,6 +10,7 @@ class Counterparty extends Model
     use Encryptable;
 
     protected $encryptable = [
+        'legal_form',
         'company_name',
         'legal_address_city',
         'legal_address_street',
