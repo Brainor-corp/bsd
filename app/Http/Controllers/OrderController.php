@@ -301,25 +301,30 @@ class OrderController extends Controller
             $order->sender_passport_number = $request->get('sender_passport_number');
 
             if(
-                Auth::check() &&
-                !Counterparty::where([
-                    ['user_id', Auth::id()],
-                    ['name', $request->get('sender_name_individual')],
-                ])->exists()
+                Auth::check()
             ) {
-                $counterparty = new Counterparty;
-                $counterparty->type_id = $senderType->id;
-                $counterparty->user_id = Auth::id();
+                $counterparty = Counterparty::where([
+                    ['hash_name', md5($request->get('sender_name_individual') . config('app.key'))],
+                ])->first();
 
-                $counterparty->phone = $request->get('sender_phone_individual');
-                $counterparty->contact_person = $request->get('sender_contact_person_individual');
-                $counterparty->addition_info = $request->get('sender_addition_info_individual');
+                if(!isset($counterparty)) {
+                    $counterparty = new Counterparty;
+                    $counterparty->type_id = $senderType->id;
 
-                $counterparty->name = $request->get('sender_name_individual');
-                $counterparty->passport_series = $request->get('sender_passport_series');
-                $counterparty->passport_number = $request->get('sender_passport_number');
+                    $counterparty->phone = $request->get('sender_phone_individual');
+                    $counterparty->contact_person = $request->get('sender_contact_person_individual');
+                    $counterparty->addition_info = $request->get('sender_addition_info_individual');
 
-                $counterparty->save();
+                    $counterparty->name = $request->get('sender_name_individual');
+                    $counterparty->passport_series = $request->get('sender_passport_series');
+                    $counterparty->passport_number = $request->get('sender_passport_number');
+
+                    $counterparty->hash_name = md5($request->get('sender_name_individual') . config('app.key'));
+
+                    $counterparty->save();
+                }
+
+                Auth::user()->counterparties()->syncWithoutDetaching([$counterparty->id]);
             }
         } elseif($senderType->slug === 'yuridicheskoe-lico') {
             $order->sender_phone = $request->get('sender_phone_legal');
@@ -338,32 +343,37 @@ class OrderController extends Controller
             $order->sender_kpp = $request->get('sender_kpp');
 
             if(
-                Auth::check() &&
-                !Counterparty::where([
-                    ['user_id', Auth::id()],
-                    ['inn', $request->get('sender_inn')],
-                ])->exists()
+                Auth::check()
             ) {
-                $counterparty = new Counterparty;
-                $counterparty->type_id = $senderType->id;
-                $counterparty->user_id = Auth::id();
+                $counterparty = Counterparty::where([
+                    ['hash_inn', md5($request->get('sender_inn') . config('app.key'))],
+                ])->first();
 
-                $counterparty->phone = $request->get('sender_phone_legal');
-                $counterparty->contact_person = $request->get('sender_contact_person_legal');
-                $counterparty->addition_info = $request->get('sender_addition_info_legal');
+                if(!isset($counterparty)) {
+                    $counterparty = new Counterparty;
+                    $counterparty->type_id = $senderType->id;
 
-                $counterparty->legal_form = $request->get('sender_legal_form');
-                $counterparty->company_name = $request->get('sender_company_name');
-                $counterparty->legal_address_city = $request->get('sender_legal_address_city');
-                $counterparty->legal_address_street = $request->get('sender_legal_address_street');
-                $counterparty->legal_address_house = $request->get('sender_legal_address_house');
-                $counterparty->legal_address_block = $request->get('sender_legal_address_block');
-                $counterparty->legal_address_building = $request->get('sender_legal_address_building');
-                $counterparty->legal_address_apartment = $request->get('sender_legal_address_apartment');
-                $counterparty->inn = $request->get('sender_inn');
-                $counterparty->kpp = $request->get('sender_kpp');
+                    $counterparty->phone = $request->get('sender_phone_legal');
+                    $counterparty->contact_person = $request->get('sender_contact_person_legal');
+                    $counterparty->addition_info = $request->get('sender_addition_info_legal');
 
-                $counterparty->save();
+                    $counterparty->legal_form = $request->get('sender_legal_form');
+                    $counterparty->company_name = $request->get('sender_company_name');
+                    $counterparty->legal_address_city = $request->get('sender_legal_address_city');
+                    $counterparty->legal_address_street = $request->get('sender_legal_address_street');
+                    $counterparty->legal_address_house = $request->get('sender_legal_address_house');
+                    $counterparty->legal_address_block = $request->get('sender_legal_address_block');
+                    $counterparty->legal_address_building = $request->get('sender_legal_address_building');
+                    $counterparty->legal_address_apartment = $request->get('sender_legal_address_apartment');
+                    $counterparty->inn = $request->get('sender_inn');
+                    $counterparty->kpp = $request->get('sender_kpp');
+
+                    $counterparty->hash_inn = md5($request->get('sender_inn') . config('app.key'));
+
+                    $counterparty->save();
+                }
+
+                Auth::user()->counterparties()->syncWithoutDetaching([$counterparty->id]);
             }
         } else {
             abort(500);
@@ -383,25 +393,30 @@ class OrderController extends Controller
             $order->recipient_passport_number = $request->get('recipient_passport_number');
 
             if(
-                Auth::check() &&
-                !Counterparty::where([
-                    ['user_id', Auth::id()],
-                    ['name', $request->get('recipient_name_individual')],
-                ])->exists()
+                Auth::check()
             ) {
-                $counterparty = new Counterparty;
-                $counterparty->type_id = $recipientType->id;
-                $counterparty->user_id = Auth::id();
+                $counterparty = Counterparty::where([
+                    ['hash_name', md5($request->get('recipient_name_individual') . config('app.key'))],
+                ])->first();
 
-                $counterparty->phone = $request->get('recipient_phone_individual');
-                $counterparty->contact_person = $request->get('recipient_contact_person_individual');
-                $counterparty->addition_info = $request->get('recipient_addition_info_individual');
+                if(!isset($counterparty)) {
+                    $counterparty = new Counterparty;
+                    $counterparty->type_id = $recipientType->id;
 
-                $counterparty->name = $request->get('recipient_name_individual');
-                $counterparty->passport_series = $request->get('recipient_passport_series');
-                $counterparty->passport_number = $request->get('recipient_passport_number');
+                    $counterparty->phone = $request->get('recipient_phone_individual');
+                    $counterparty->contact_person = $request->get('recipient_contact_person_individual');
+                    $counterparty->addition_info = $request->get('recipient_addition_info_individual');
 
-                $counterparty->save();
+                    $counterparty->name = $request->get('recipient_name_individual');
+                    $counterparty->passport_series = $request->get('recipient_passport_series');
+                    $counterparty->passport_number = $request->get('recipient_passport_number');
+
+                    $counterparty->hash_name = md5($request->get('recipient_name_individual') . config('app.key'));
+
+                    $counterparty->save();
+                }
+
+                Auth::user()->counterparties()->syncWithoutDetaching([$counterparty->id]);
             }
         } elseif($recipientType->slug === 'yuridicheskoe-lico') {
             $order->recipient_phone = $request->get('recipient_phone_legal');
@@ -420,32 +435,37 @@ class OrderController extends Controller
             $order->recipient_kpp = $request->get('recipient_kpp');
 
             if(
-                Auth::check() &&
-                !Counterparty::where([
-                    ['user_id', Auth::id()],
-                    ['inn', $request->get('recipient_inn')],
-                ])->exists()
+                Auth::check()
             ) {
-                $counterparty = new Counterparty;
-                $counterparty->type_id = $recipientType->id;
-                $counterparty->user_id = Auth::id();
+                $counterparty = Counterparty::where([
+                    ['hash_inn', md5($request->get('recipient_inn') . config('app.key'))],
+                ])->first();
 
-                $counterparty->phone = $request->get('recipient_phone_legal');
-                $counterparty->contact_person = $request->get('recipient_contact_person_legal');
-                $counterparty->addition_info = $request->get('recipient_addition_info_legal');
+                if(!isset($counterparty)) {
+                    $counterparty = new Counterparty;
+                    $counterparty->type_id = $recipientType->id;
 
-                $counterparty->legal_form = $request->get('recipient_legal_form');
-                $counterparty->company_name = $request->get('recipient_company_name');
-                $counterparty->legal_address_city = $request->get('recipient_legal_address_city');
-                $counterparty->legal_address_street = $request->get('recipient_legal_address_street');
-                $counterparty->legal_address_house = $request->get('recipient_legal_address_house');
-                $counterparty->legal_address_block = $request->get('recipient_legal_address_block');
-                $counterparty->legal_address_building = $request->get('recipient_legal_address_building');
-                $counterparty->legal_address_apartment = $request->get('recipient_legal_address_apartment');
-                $counterparty->inn = $request->get('recipient_inn');
-                $counterparty->kpp = $request->get('recipient_kpp');
+                    $counterparty->phone = $request->get('recipient_phone_legal');
+                    $counterparty->contact_person = $request->get('recipient_contact_person_legal');
+                    $counterparty->addition_info = $request->get('recipient_addition_info_legal');
 
-                $counterparty->save();
+                    $counterparty->legal_form = $request->get('recipient_legal_form');
+                    $counterparty->company_name = $request->get('recipient_company_name');
+                    $counterparty->legal_address_city = $request->get('recipient_legal_address_city');
+                    $counterparty->legal_address_street = $request->get('recipient_legal_address_street');
+                    $counterparty->legal_address_house = $request->get('recipient_legal_address_house');
+                    $counterparty->legal_address_block = $request->get('recipient_legal_address_block');
+                    $counterparty->legal_address_building = $request->get('recipient_legal_address_building');
+                    $counterparty->legal_address_apartment = $request->get('recipient_legal_address_apartment');
+                    $counterparty->inn = $request->get('recipient_inn');
+                    $counterparty->kpp = $request->get('recipient_kpp');
+
+                    $counterparty->hash_inn = md5($request->get('recipient_inn') . config('app.key'));
+
+                    $counterparty->save();
+                }
+
+                Auth::user()->counterparties()->syncWithoutDetaching([$counterparty->id]);
             }
         } else {
             abort(500);
@@ -469,25 +489,30 @@ class OrderController extends Controller
                 $order->payer_passport_number = $request->get('payer_passport_number');
 
                 if(
-                    Auth::check() &&
-                    !Counterparty::where([
-                        ['user_id', Auth::id()],
-                        ['name', $request->get('payer_name_individual')],
-                    ])->exists()
+                    Auth::check()
                 ) {
-                    $counterparty = new Counterparty;
-                    $counterparty->type_id = $payerFormType->id;
-                    $counterparty->user_id = Auth::id();
+                    $counterparty = Counterparty::where([
+                        ['hash_name', md5($request->get('payer_name_individual') . config('app.key'))],
+                    ])->first();
 
-                    $counterparty->phone = $request->get('payer_phone_individual');
-                    $counterparty->contact_person = $request->get('payer_contact_person_individual');
-                    $counterparty->addition_info = $request->get('payer_addition_info_individual');
+                    if(!isset($counterparty)) {
+                        $counterparty = new Counterparty;
+                        $counterparty->type_id = $payerFormType->id;
 
-                    $counterparty->name = $request->get('payer_name_individual');
-                    $counterparty->passport_series = $request->get('payer_passport_series');
-                    $counterparty->passport_number = $request->get('payer_passport_number');
+                        $counterparty->phone = $request->get('payer_phone_individual');
+                        $counterparty->contact_person = $request->get('payer_contact_person_individual');
+                        $counterparty->addition_info = $request->get('payer_addition_info_individual');
 
-                    $counterparty->save();
+                        $counterparty->name = $request->get('payer_name_individual');
+                        $counterparty->passport_series = $request->get('payer_passport_series');
+                        $counterparty->passport_number = $request->get('payer_passport_number');
+
+                        $counterparty->hash_name = md5($request->get('payer_name_individual') . config('app.key'));
+
+                        $counterparty->save();
+                    }
+
+                    Auth::user()->counterparties()->syncWithoutDetaching([$counterparty->id]);
                 }
             } elseif($payerFormType->slug === 'yuridicheskoe-lico') {
                 $order->payer_phone = $request->get('payer_phone_legal');
@@ -506,32 +531,37 @@ class OrderController extends Controller
                 $order->payer_kpp = $request->get('payer_kpp');
 
                 if(
-                    Auth::check() &&
-                    !Counterparty::where([
-                        ['user_id', Auth::id()],
-                        ['inn', $request->get('payer_inn')],
-                    ])->exists()
+                    Auth::check()
                 ) {
-                    $counterparty = new Counterparty;
-                    $counterparty->type_id = $payerFormType->id;
-                    $counterparty->user_id = Auth::id();
+                    $counterparty = Counterparty::where([
+                        ['hash_inn', md5($request->get('payer_inn') . config('app.key'))],
+                    ])->first();
 
-                    $counterparty->phone = $request->get('payer_phone_legal');
-                    $counterparty->contact_person = $request->get('payer_contact_person_legal');
-                    $counterparty->addition_info = $request->get('payer_addition_info_legal');
+                    if(!isset($counterparty)) {
+                        $counterparty = new Counterparty;
+                        $counterparty->type_id = $payerFormType->id;
 
-                    $counterparty->legal_form = $request->get('payer_legal_form');
-                    $counterparty->company_name = $request->get('payer_company_name');
-                    $counterparty->legal_address_city = $request->get('payer_legal_address_city');
-                    $counterparty->legal_address_street = $request->get('payer_legal_address_street');
-                    $counterparty->legal_address_house = $request->get('payer_legal_address_house');
-                    $counterparty->legal_address_block = $request->get('payer_legal_address_block');
-                    $counterparty->legal_address_building = $request->get('payer_legal_address_building');
-                    $counterparty->legal_address_apartment = $request->get('payer_legal_address_apartment');
-                    $counterparty->inn = $request->get('payer_inn');
-                    $counterparty->kpp = $request->get('payer_kpp');
+                        $counterparty->phone = $request->get('payer_phone_legal');
+                        $counterparty->contact_person = $request->get('payer_contact_person_legal');
+                        $counterparty->addition_info = $request->get('payer_addition_info_legal');
 
-                    $counterparty->save();
+                        $counterparty->legal_form = $request->get('payer_legal_form');
+                        $counterparty->company_name = $request->get('payer_company_name');
+                        $counterparty->legal_address_city = $request->get('payer_legal_address_city');
+                        $counterparty->legal_address_street = $request->get('payer_legal_address_street');
+                        $counterparty->legal_address_house = $request->get('payer_legal_address_house');
+                        $counterparty->legal_address_block = $request->get('payer_legal_address_block');
+                        $counterparty->legal_address_building = $request->get('payer_legal_address_building');
+                        $counterparty->legal_address_apartment = $request->get('payer_legal_address_apartment');
+                        $counterparty->inn = $request->get('payer_inn');
+                        $counterparty->kpp = $request->get('payer_kpp');
+
+                        $counterparty->hash_inn = md5($request->get('payer_inn') . config('app.key'));
+
+                        $counterparty->save();
+                    }
+
+                    Auth::user()->counterparties()->syncWithoutDetaching([$counterparty->id]);
                 }
             } else {
                 abort(500);

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Counterparty;
 use App\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,8 +22,8 @@ class CounterpartyController extends Controller
         $term = $request->get('term');
         $field = $request->get('field');
 
-        $counterparties = Counterparty::where([
-            ['user_id', Auth::id()],
+        $user = Auth::user();
+        $counterparties = $user->counterparties()->where([
             ['type_id', $type->id],
             ['active', true],
             [$field, 'like', "%$term%"]
@@ -38,10 +37,8 @@ class CounterpartyController extends Controller
             return [];
         }
 
-        $counterparties = Counterparty::where([
-            ['user_id', Auth::id()],
-//            ['active', true],
-        ])->get();
+        $user = Auth::user();
+        $counterparties = $user->counterparties()->get();
 
         return View::make('v1.pages.counterparty.list-page')->with(compact('counterparties'));
     }
