@@ -49,3 +49,4 @@ Route::get('/upload-csv-order-types', 'UploadCsvController@loadOrderTypes');
 // 1c
 Route::post('/1c/order/update', 'Api\OrdersController@updateOrder');
 Route::post('/1c/user/create', 'Api\UsersController@createUser');
+Route::post('/1c/client/update', 'Api\CounterpartiesController@updateCounterparty');
