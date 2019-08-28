@@ -48,6 +48,7 @@ class DocumentHelper
 
     public static function generateReceiptDocument($documentName, Array $parameters = null)
     {
+        dd($parameters);
         $params = [];
         $keys = array_keys($parameters);
         foreach($keys as $key) {
