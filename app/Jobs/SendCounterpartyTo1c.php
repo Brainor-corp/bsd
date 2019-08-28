@@ -35,64 +35,37 @@ class SendCounterpartyTo1c implements ShouldQueue
     public function handle()
     {
         $counterparty = $this->counterparty;
-        $response1c = null;
 
-        switch($counterparty->type->slug) {
-            case "fizicheskoe-lico" :
-                $response1c = \App\Http\Helpers\Api1CHelper::post(
-                    'new_client',
-                    [
-                        "ЮридическоеФизическоеЛицо" => "ФизическоеЛицо",
-                        "ДокументУдостоверяющийЛичность" => "$counterparty->passport_series $counterparty->passport_number",
-                        "ОсновноеКонтактноеЛицо" => $counterparty->contact_person,
-                        "Комментарий" => $counterparty->addition_info,
-                        "ДатаСоздания" => $counterparty->created_at->format('Y-m-d\TH:i:s'),
-                        "ТелефонЗначениеJSON" => [
-                            "type" => "Телефон",
-                            "value" => intval($counterparty->phone),
-                            "CountryCode" => "",
-                            "AreaCode" => "",
-                            "Number" => $counterparty->phone,
-                            "НомерТелефонаБезКодов" => mb_substr($counterparty->phone, -7)
-                        ]
-                    ]
-                );
-                break;
-
-            case "yuridicheskoe-lico" :
-                $response1c = \App\Http\Helpers\Api1CHelper::post(
-                    'new_client',
-                    [
-                        "ПравоваяФорма" => $counterparty->legal_form,
-                        "НаименованиеПолное" => $counterparty->company_name,
-                        "ЮридическоеФизическоеЛицо" => "ЮридическоеЛицо",
-                        "ИНН" => $counterparty->inn,
-                        "КПП" => $counterparty->kpp,
-                        "ОсновноеКонтактноеЛицо" => $counterparty->contact_person,
-                        "Комментарий" => $counterparty->addition_info,
-                        "ДатаСоздания" => $counterparty->created_at->format('Y-m-d\TH:i:s'),
-                        "ЮридическийАдресЗначениеJSON" => [
-                            "type" => "Адрес",
-                            "value" => "$counterparty->legal_address_city, $counterparty->legal_address_street, д. $counterparty->legal_address_house, корп. $counterparty->legal_address_block, стр. $counterparty->legal_address_building, кв. $counterparty->legal_address_apartment",
-                            "Страна" => "РОССИЯ",
-                            "Город" => $counterparty->legal_address_city,
-                            "НомерТелефона" => "",
-                            "НомерТелефонаБезКодов" => ""
-                        ],
-                        "ТелефонЗначениеJSON" => [
-                            "type" => "Телефон",
-                            "value" => intval($counterparty->phone),
-                            "CountryCode" => "",
-                            "AreaCode" => "",
-                            "Number" => $counterparty->phone,
-                            "НомерТелефонаБезКодов" => mb_substr($counterparty->phone, -7)
-                        ]
-                    ]
-                );
-                break;
-
-            default: break;
-        }
+        $response1c = \App\Http\Helpers\Api1CHelper::post(
+            'new_client',
+            [
+                "ПравоваяФорма" => $counterparty->legal_form ?? '',
+                "НаименованиеПолное" => $counterparty->company_name ?? '',
+                "ЮридическоеФизическоеЛицо" => $counterparty->type->slug === 'fizicheskoe-lico' ? "ФизическоеЛицо" : "ЮридическоеЛицо",
+                "ИНН" => $counterparty->inn ?? '',
+                "КПП" => $counterparty->kpp ?? '',
+                "ДокументУдостоверяющийЛичность" => strval($counterparty->passport_series . $counterparty->passport_number),
+                "ОсновноеКонтактноеЛицо" => $counterparty->contact_person ?? '',
+                "Комментарий" => $counterparty->addition_info ?? '',
+                "ДатаСоздания" => $counterparty->created_at->format('Y-m-d\TH:i:s'),
+                "ТелефонЗначениеJSON" => [
+                    "type" => "Телефон",
+                    "value" => intval($counterparty->phone),
+                    "CountryCode" => "",
+                    "AreaCode" => "",
+                    "Number" => $counterparty->phone,
+                    "НомерТелефонаБезКодов" => mb_substr($counterparty->phone, -7)
+                ],
+                "ЮридическийАдресЗначениеJSON" => [
+                    "type" => "Адрес",
+                    "value" => "$counterparty->legal_address_city, $counterparty->legal_address_street, д. $counterparty->legal_address_house, корп. $counterparty->legal_address_block, стр. $counterparty->legal_address_building, кв. $counterparty->legal_address_apartment",
+                    "Страна" => "РОССИЯ",
+                    "Город" => $counterparty->legal_address_city ?? "",
+                    "НомерТелефона" => "",
+                    "НомерТелефонаБезКодов" => ""
+                ],
+            ]
+        );
 
         if(isset($response1c['response']['status']) && $response1c['response']['status'] === "success") {
             $counterparty->code_1c = $response1c['response']['id'];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Counterparty;
 use App\Http\Helpers\Api1CHelper;
 use App\Order;
 use Carbon\Carbon;
@@ -318,101 +319,50 @@ class Api1cTestController extends Controller
     }
 
     public function newClient(Request $request) {
-        $response1c = null;
-        $example = $request->get('example') ?? 1;
+        $counterparty = $request->get('id') ?
+            Counterparty::where('id', $request->get('id'))->firstOrFail() :
+            Counterparty::orderBy('created_at', 'desc')->first();
 
-        // Пример из документации
-        if($example == 1) {
-            $response1c = \App\Http\Helpers\Api1CHelper::post(
-                'new_client',
-                [
-                    "ПравоваяФорма" => "ИП",
-                    "НаименованиеПолное" => "БСД (для юр.); Иванов Иван Иванович (для физ.)",
-                    "ЮридическоеФизическоеЛицо" => "ФизическоеЛицо",
-                    "ИНН" => "1234567899",
-                    "КПП" => "123456789",
-                    "ДокументУдостоверяющийЛичность" => "1234123456",
-                    "ОсновноеКонтактноеЛицо" => "Иванов Иван Иванович",
-                    "Комментарий" => "Дополнительная информация",
-                    "ДатаСоздания" => "2018-08-04T00:00:00",
-                    "ЮридическийАдресЗначениеJSON" => [
-                        "type" => "Адрес",
-                        "value" => "Москва, ул. Московская, д. 1а, корп. 2, стр. 3, кв. 4",
-                        "Страна" => "РОССИЯ",
-                        "Город" => "Москва",
-                        "НомерТелефона" => "",
-                        "НомерТелефонаБезКодов" => ""
-                    ],
-                    "ТелефонЗначениеJSON" => [
-                        "type" => "Телефон",
-                        "value" => "79999999999",
-                        "CountryCode" => "",
-                        "AreaCode" => "",
-                        "Number" => "79999999999",
-                        "НомерТелефонаБезКодов" => "9999999"
-                    ]
-                ]
-            );
+        $sendData = [
+            "ПравоваяФорма" => $counterparty->legal_form ?? '',
+            "НаименованиеПолное" => $counterparty->company_name ?? '',
+            "ЮридическоеФизическоеЛицо" => $counterparty->type->slug === 'fizicheskoe-lico' ? "ФизическоеЛицо" : "ЮридическоеЛицо",
+            "ИНН" => $counterparty->inn ?? '',
+            "КПП" => $counterparty->kpp ?? '',
+            "ДокументУдостоверяющийЛичность" => strval($counterparty->passport_series . $counterparty->passport_number) ?? null,
+            "ОсновноеКонтактноеЛицо" => $counterparty->contact_person ?? '',
+            "Комментарий" => $counterparty->addition_info ?? '',
+            "ДатаСоздания" => $counterparty->created_at->format('Y-m-d\TH:i:s'),
+            "ТелефонЗначениеJSON" => [
+                "type" => "Телефон",
+                "value" => intval($counterparty->phone),
+                "CountryCode" => "",
+                "AreaCode" => "",
+                "Number" => $counterparty->phone,
+                "НомерТелефонаБезКодов" => mb_substr($counterparty->phone, -7)
+            ],
+            "ЮридическийАдресЗначениеJSON" => [
+                "type" => "Адрес",
+                "value" => "$counterparty->legal_address_city, $counterparty->legal_address_street, д. $counterparty->legal_address_house, корп. $counterparty->legal_address_block, стр. $counterparty->legal_address_building, кв. $counterparty->legal_address_apartment",
+                "Страна" => "РОССИЯ",
+                "Город" => $counterparty->legal_address_city ?? "",
+                "НомерТелефона" => "",
+                "НомерТелефонаБезКодов" => ""
+            ],
+        ];
+        $response1c = \App\Http\Helpers\Api1CHelper::post(
+            'new_client',
+            $sendData
+        );
+
+        if(isset($response1c['response']['status']) && $response1c['response']['status'] === "success") {
+            $counterparty->code_1c = $response1c['response']['id'];
+            $counterparty->save();
         }
 
-        // Пример для физ. лица
-        if($example == 2) {
-            $response1c = \App\Http\Helpers\Api1CHelper::post(
-                'new_client',
-                [
-                    "ЮридическоеФизическоеЛицо" => "ФизическоеЛицо",
-                    "ДокументУдостоверяющийЛичность" => "1111111111",
-                    "ИНН" => "",
-                    "НаименованиеПолное" => "",
-                    "ПравоваяФорма" => "",
-                    "ОсновноеКонтактноеЛицо" => "Иванов Иван Иванович",
-                    "Комментарий" => "Тест",
-                    "ДатаСоздания" => "2018-08-04T00:00:00",
-                    "ТелефонЗначениеJSON" => [
-                        "type" => "Телефон",
-                        "value" => "79999999999",
-                        "CountryCode" => "",
-                        "AreaCode" => "",
-                        "Number" => "79999999999",
-                        "НомерТелефонаБезКодов" => "9999999"
-                    ]
-                ]
-            );
-        }
-
-        // Пример для юр. лица
-        if($example == 3) {
-            $response1c = \App\Http\Helpers\Api1CHelper::post(
-                'new_client',
-                [
-                    "ПравоваяФорма" => "ИП",
-                    "НаименованиеПолное" => "ООО ТЕСТ",
-                    "ЮридическоеФизическоеЛицо" => "ЮридическоеЛицо",
-                    "ИНН" => "111111111111",
-                    "КПП" => "111111111",
-                    "ОсновноеКонтактноеЛицо" => "Иванов Иван Иванович",
-                    "Комментарий" => "Тест",
-                    "ДатаСоздания" => "2018-08-04T00:00:00",
-                    "ЮридическийАдресЗначениеJSON" => [
-                        "type" => "Адрес",
-                        "value" => "Москва, ул. Московская, д. 1а, корп. 2, стр. 3, кв. 4",
-                        "Страна" => "РОССИЯ",
-                        "Город" => "Москва",
-                        "НомерТелефона" => "",
-                        "НомерТелефонаБезКодов" => ""
-                    ],
-                    "ТелефонЗначениеJSON" => [
-                        "type" => "Телефон",
-                        "value" => "79999999999",
-                        "CountryCode" => "",
-                        "AreaCode" => "",
-                        "Number" => "79999999999",
-                        "НомерТелефонаБезКодов" => "9999999"
-                    ]
-                ]
-            );
-        }
-
-        dd($response1c);
+        dd([
+            'send' => $sendData,
+            'response' => $response1c
+        ]);
     }
 }
