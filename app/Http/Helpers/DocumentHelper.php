@@ -109,6 +109,8 @@ class DocumentHelper
 
     public static function generateRequestDocument($documentData, $documentName)
     {
+        dd($documentData);
+
         $view = View::make('v1.pdf.document-request')->with(compact('documentData'));
         $html = $view->render();
 
