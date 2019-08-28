@@ -320,7 +320,7 @@ class Api1cTestController extends Controller
 
     public function newClient(Request $request) {
         $counterparty = $request->get('id') ?
-            Counterparty::where('id', $request->get('id')) :
+            Counterparty::where('id', $request->get('id'))->firstOrFail() :
             Counterparty::orderBy('created_at', 'desc')->first();
 
         $response1c = \App\Http\Helpers\Api1CHelper::post(
