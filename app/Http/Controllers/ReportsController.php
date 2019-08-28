@@ -118,7 +118,6 @@ class ReportsController extends Controller
             'document/id',
             [
                 "user_id" => $user->guid,
-//                "user_id" => "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
 //                "user_id" => "77feff2c-14dc-11e9-a990-000d3a28f168",
                 "document_id" => $document_id_1c,
                 "type" => intval($document_type_id_1c),
@@ -134,13 +133,6 @@ class ReportsController extends Controller
         $file = [];
 
         switch ($document_type_id_1c) {
-//            case 1:
-//                // ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ
-//                $file = DocumentHelper::generateContractDocument(
-//                    json_decode($request->get('document_name')),
-//                    $documentData
-//                );
-//                break;
             case 2:
                 // Экспедиторская расписка
                 $file = DocumentHelper::generateReceiptDocument(
@@ -154,13 +146,6 @@ class ReportsController extends Controller
                     $documentData,
                     $documentData['Представление'] . '.pdf');
                 break;
-            case 4:
-                // Счет-фактура(УПД???)
-                $file = DocumentHelper::generateTransferDocument(
-                    $documentData,
-                    $documentData['Представление']
-                );
-                break;
             case 5:
                 // Счет на оплату
                 $file = DocumentHelper::generateInvoiceDocument(
@@ -169,9 +154,14 @@ class ReportsController extends Controller
                 );
                 break;
             case 6:
-                // Реализация (акт, накладная)
-
+                // Реализация (акт, накладная) (УПД)
+                // Счет-фактура(УПД???)
+                $file = DocumentHelper::generateTransferDocument(
+                    $documentData,
+                    $documentData['Представление']
+                );
                 break;
+
             default: break;
         }
 

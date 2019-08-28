@@ -137,6 +137,7 @@ class DocumentHelper
         foreach($documentData as $key => $var) {
             $params["{{$key}}"] = new ExcelParam(CellSetterStringValue::class, $var);
         }
+
 //        $params['[service_number]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['number']);
 //        $params['[service_name]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['name']);
 //        $params['[service_quantity]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['quantity']);

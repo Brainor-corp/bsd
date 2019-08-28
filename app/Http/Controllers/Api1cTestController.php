@@ -243,12 +243,12 @@ class Api1cTestController extends Controller
         }
     }
 
-    public function documentList() {
+    public function documentList(Request $request) {
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'document_list',
             [
-                "user_id" => "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
-                "order_id" => "2ef09a62-8dbb-11e9-a688-001c4208e0b2"
+                "user_id" => $request->get('user_id') ?? "f008aa7f-29d6-11e9-80c7-000d3a396ad2",
+                "order_id" => $request->get('order_id') ?? "2ef09a62-8dbb-11e9-a688-001c4208e0b2"
             ]
         );
 
