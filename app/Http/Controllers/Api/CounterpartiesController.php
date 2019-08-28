@@ -49,12 +49,12 @@ class CounterpartiesController extends Controller
 
         foreach($data['КонтактнаяИнформация'] as $datum) {
             if($datum['Тип'] === 'Адрес') {
-                $address['city'] = $datum['Город'];
-                $address['address'] = $datum['Представление'];
+                $address['city'] = $datum['Город'] ?? '';
+                $address['address'] = $datum['Представление'] ?? '';
             }
 
             if($datum['Тип'] === 'Телефон') {
-                $phone = $datum['НомерТелефона'];
+                $phone = $datum['НомерТелефона'] ?? '';
             }
         }
 
