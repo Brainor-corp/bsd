@@ -303,13 +303,11 @@ class OrderController extends Controller
             if(
                 Auth::check() &&
                 !Counterparty::where([
-                    ['user_id', Auth::id()],
                     ['name', $request->get('sender_name_individual')],
                 ])->exists()
             ) {
                 $counterparty = new Counterparty;
                 $counterparty->type_id = $senderType->id;
-                $counterparty->user_id = Auth::id();
 
                 $counterparty->phone = $request->get('sender_phone_individual');
                 $counterparty->contact_person = $request->get('sender_contact_person_individual');
@@ -320,6 +318,8 @@ class OrderController extends Controller
                 $counterparty->passport_number = $request->get('sender_passport_number');
 
                 $counterparty->save();
+
+                Auth::user()->counterparties()->attach($counterparty);
             }
         } elseif($senderType->slug === 'yuridicheskoe-lico') {
             $order->sender_phone = $request->get('sender_phone_legal');
@@ -340,13 +340,11 @@ class OrderController extends Controller
             if(
                 Auth::check() &&
                 !Counterparty::where([
-                    ['user_id', Auth::id()],
                     ['inn', $request->get('sender_inn')],
                 ])->exists()
             ) {
                 $counterparty = new Counterparty;
                 $counterparty->type_id = $senderType->id;
-                $counterparty->user_id = Auth::id();
 
                 $counterparty->phone = $request->get('sender_phone_legal');
                 $counterparty->contact_person = $request->get('sender_contact_person_legal');
@@ -364,6 +362,8 @@ class OrderController extends Controller
                 $counterparty->kpp = $request->get('sender_kpp');
 
                 $counterparty->save();
+
+                Auth::user()->counterparties()->attach($counterparty);
             }
         } else {
             abort(500);
@@ -385,13 +385,11 @@ class OrderController extends Controller
             if(
                 Auth::check() &&
                 !Counterparty::where([
-                    ['user_id', Auth::id()],
                     ['name', $request->get('recipient_name_individual')],
                 ])->exists()
             ) {
                 $counterparty = new Counterparty;
                 $counterparty->type_id = $recipientType->id;
-                $counterparty->user_id = Auth::id();
 
                 $counterparty->phone = $request->get('recipient_phone_individual');
                 $counterparty->contact_person = $request->get('recipient_contact_person_individual');
@@ -402,6 +400,8 @@ class OrderController extends Controller
                 $counterparty->passport_number = $request->get('recipient_passport_number');
 
                 $counterparty->save();
+
+                Auth::user()->counterparties()->attach($counterparty);
             }
         } elseif($recipientType->slug === 'yuridicheskoe-lico') {
             $order->recipient_phone = $request->get('recipient_phone_legal');
@@ -422,13 +422,11 @@ class OrderController extends Controller
             if(
                 Auth::check() &&
                 !Counterparty::where([
-                    ['user_id', Auth::id()],
                     ['inn', $request->get('recipient_inn')],
                 ])->exists()
             ) {
                 $counterparty = new Counterparty;
                 $counterparty->type_id = $recipientType->id;
-                $counterparty->user_id = Auth::id();
 
                 $counterparty->phone = $request->get('recipient_phone_legal');
                 $counterparty->contact_person = $request->get('recipient_contact_person_legal');
@@ -446,6 +444,8 @@ class OrderController extends Controller
                 $counterparty->kpp = $request->get('recipient_kpp');
 
                 $counterparty->save();
+
+                Auth::user()->counterparties()->attach($counterparty);
             }
         } else {
             abort(500);
@@ -471,13 +471,11 @@ class OrderController extends Controller
                 if(
                     Auth::check() &&
                     !Counterparty::where([
-                        ['user_id', Auth::id()],
                         ['name', $request->get('payer_name_individual')],
                     ])->exists()
                 ) {
                     $counterparty = new Counterparty;
                     $counterparty->type_id = $payerFormType->id;
-                    $counterparty->user_id = Auth::id();
 
                     $counterparty->phone = $request->get('payer_phone_individual');
                     $counterparty->contact_person = $request->get('payer_contact_person_individual');
@@ -488,6 +486,8 @@ class OrderController extends Controller
                     $counterparty->passport_number = $request->get('payer_passport_number');
 
                     $counterparty->save();
+
+                    Auth::user()->counterparties()->attach($counterparty);
                 }
             } elseif($payerFormType->slug === 'yuridicheskoe-lico') {
                 $order->payer_phone = $request->get('payer_phone_legal');
@@ -508,13 +508,11 @@ class OrderController extends Controller
                 if(
                     Auth::check() &&
                     !Counterparty::where([
-                        ['user_id', Auth::id()],
                         ['inn', $request->get('payer_inn')],
                     ])->exists()
                 ) {
                     $counterparty = new Counterparty;
                     $counterparty->type_id = $payerFormType->id;
-                    $counterparty->user_id = Auth::id();
 
                     $counterparty->phone = $request->get('payer_phone_legal');
                     $counterparty->contact_person = $request->get('payer_contact_person_legal');
@@ -532,6 +530,8 @@ class OrderController extends Controller
                     $counterparty->kpp = $request->get('payer_kpp');
 
                     $counterparty->save();
+
+                    Auth::user()->counterparties()->attach($counterparty);
                 }
             } else {
                 abort(500);

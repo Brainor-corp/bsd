@@ -56,6 +56,10 @@ class User extends Authenticatable
         return $this->hasMany(Event::class);
     }
 
+    public function counterparties() {
+        return $this->belongsToMany(Counterparty::class);
+    }
+
     public function hasRole($slug){
         return $this->roles()->where('slug', $slug)->exists() ? true : false;
     }
