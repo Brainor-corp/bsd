@@ -2,10 +2,31 @@
 
 namespace App;
 
+use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 
 class Counterparty extends Model
 {
+    use Encryptable;
+
+    protected $encryptable = [
+        'company_name',
+        'legal_address_city',
+        'legal_address_street',
+        'legal_address_house',
+        'legal_address_block',
+        'legal_address_building',
+        'legal_address_apartment',
+        'inn',
+        'kpp',
+        'phone',
+        'name',
+        'passport_series',
+        'passport_number',
+        'addition_info',
+        'contact_person',
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
