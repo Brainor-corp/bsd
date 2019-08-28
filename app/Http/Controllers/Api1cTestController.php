@@ -329,7 +329,7 @@ class Api1cTestController extends Controller
             "ЮридическоеФизическоеЛицо" => "ФизическоеЛицо",
             "ИНН" => $counterparty->inn ?? '',
             "КПП" => $counterparty->kpp ?? '',
-            "ДокументУдостоверяющийЛичность" => intval($counterparty->passport_series . $counterparty->passport_number) ?? null,
+            "ДокументУдостоверяющийЛичность" => strval($counterparty->passport_series . $counterparty->passport_number) ?? null,
             "ОсновноеКонтактноеЛицо" => $counterparty->contact_person ?? '',
             "Комментарий" => $counterparty->addition_info ?? '',
             "ДатаСоздания" => $counterparty->created_at->format('Y-m-d\TH:i:s'),
