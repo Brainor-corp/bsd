@@ -326,7 +326,7 @@ class Api1cTestController extends Controller
         $sendData = [
             "ПравоваяФорма" => $counterparty->legal_form ?? '',
             "НаименованиеПолное" => $counterparty->company_name ?? '',
-            "ЮридическоеФизическоеЛицо" => "ФизическоеЛицо",
+            "ЮридическоеФизическоеЛицо" => $counterparty->type->slug === 'fizicheskoe-lico' ? "ФизическоеЛицо" : "ЮридическоеЛицо",
             "ИНН" => $counterparty->inn ?? '',
             "КПП" => $counterparty->kpp ?? '',
             "ДокументУдостоверяющийЛичность" => strval($counterparty->passport_series . $counterparty->passport_number) ?? null,
