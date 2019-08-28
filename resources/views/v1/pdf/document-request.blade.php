@@ -92,10 +92,10 @@
     <span>Нужна ли доставка до адреса получателя: <i><b><u>{{ $documentData['АдресГрузополучателя'] ? 'Да' : '-' }}</u></b></i></span><br>
     <p class="header-2"><b>Плательщик</b></p>
     <span>Наименование пательщика: <i><b><u>{{ $documentData['Плательщик'] }}</u></b></i></span><br>
-    <span class="hl">Форма оплаты: <i><b><u>наличные</u></b></i></span><br>
-    <span class="hl">Реквизиты: <i><b><u></u></b></i></span><br>
-    <span class="hl">Заявку заполнил: <i><b><u>Кожанов Николай Геннадьевич</u></b></i></span>
-    <span class="hl">E-mail: <i><b><u>sale2@agrohoztorg.ru</u></b></i></span><br>
+    <span>Форма оплаты: <i><b><u>{{ $documentData['ФормаОплаты'] }}</u></b></i></span><br>
+    <span>Реквизиты: <i><b><u></u></b></i></span><br>
+    <span>Заявку заполнил: <i><b><u>{{ $documentData['Заявку_заполнил'] }}</u></b></i></span>
+    <span class="hl">E-mail: <i><b><u>?</u></b></i></span><br>
     <p class="header-2 mb-0"><b>ВНИМАНИЕ!</b></p>
     <hr>
     <span>ЗАЯВКИ ПРИНИМАЮТСЯ с 9.00 до 16.00 за сутки до исполнения.</span><br>
