@@ -44,7 +44,7 @@ class SendCounterpartyTo1c implements ShouldQueue
                 "ЮридическоеФизическоеЛицо" => "ФизическоеЛицо",
                 "ИНН" => $counterparty->inn ?? '',
                 "КПП" => $counterparty->kpp ?? '',
-                "ДокументУдостоверяющийЛичность" => "$counterparty->passport_series $counterparty->passport_number",
+                "ДокументУдостоверяющийЛичность" => intval($counterparty->passport_series . $counterparty->passport_number),
                 "ОсновноеКонтактноеЛицо" => $counterparty->contact_person ?? '',
                 "Комментарий" => $counterparty->addition_info ?? '',
                 "ДатаСоздания" => $counterparty->created_at->format('Y-m-d\TH:i:s'),
