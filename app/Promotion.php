@@ -5,6 +5,7 @@ namespace App;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class Promotion extends Model
 {
@@ -29,6 +30,15 @@ class Promotion extends Model
 
     public function terminals() {
         return $this->belongsToMany(Terminal::class);
+    }
+
+    public function scopeRegionalManager($query) {
+        $user = Auth::user();
+        $userCities = $user->cities;
+
+        return $query->whereHas('terminals', function ($terminalsQuery) use ($userCities) {
+            return $terminalsQuery->whereIn('city_id', count($userCities) ? $userCities->pluck('id') : []);
+        });
     }
 
     public function getCStartAtAttribute()

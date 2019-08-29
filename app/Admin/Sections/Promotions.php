@@ -4,6 +4,7 @@ namespace App\Admin\Sections;
 
 use App\Terminal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Zeus\Admin\Cms\Models\ZeusAdminTerm;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
@@ -31,6 +32,13 @@ class Promotions extends Section
             Column::text('created_at', 'Дата создания'),
         ])->setPagination(10);
 
+        $user = Auth::user();
+        if($user->hasRole('regionalnyy-menedzher')) {
+            $display->setScopes([
+                'regionalManager'
+            ]);
+        }
+
         return $display;
     }
 
@@ -51,6 +59,15 @@ class Promotions extends Section
                         'multiple', 'data-live-search="true"'
                     ])
                     ->setModelForOptions(Terminal::class)
+                    ->setQueryFunctionForModel(function ($terminalsQuery) {
+                        $user = Auth::user();
+                        if($user->hasRole('regionalnyy-menedzher')) {
+                            $userCities = $user->cities;
+                            return $terminalsQuery->whereIn('city_id', count($userCities) ? $userCities->pluck('id') : []);
+                        }
+
+                        return $terminalsQuery;
+                    })
                     ->setDisplay('name_with_city'),
                 FormField::bselect('terms', 'Метки')
                     ->setDataAttributes([
