@@ -19,6 +19,7 @@ class CounterpartyController extends Controller
             ['class', 'UserType']
         ])->firstOrFail();
 
+
         $term = $request->get('term');
         $field = $request->get('field');
 
@@ -26,10 +27,24 @@ class CounterpartyController extends Controller
         $counterparties = $user->counterparties()->where([
             ['type_id', $type->id],
             ['active', true],
-            [$field, 'like', "%$term%"]
         ])->get();
 
-        return $counterparties->toArray();
+        $counterparties = $counterparties->filter(function ($counterparty) use ($field, $term) {
+            return mb_strpos($counterparty->$field, $term) !== FALSE;
+        });
+
+        // Расшифровываем поля
+        $result = [];
+        foreach($counterparties as $counterparty) {
+            $decryptedCounterparty = new \stdClass();
+            foreach(array_keys($counterparty->getAttributes()) as $attribute) {
+                $decryptedCounterparty->$attribute = $counterparty->$attribute;
+            }
+
+            $result[] = $decryptedCounterparty;
+        }
+
+        return $result;
     }
 
     public function showCounterpartyListPage(Request $request) {
