@@ -4,7 +4,9 @@ namespace App\Admin\Sections;
 
 use App\City;
 use App\Region;
+use App\Terminal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -43,6 +45,13 @@ class Terminals extends Section {
             ])
             ->setPagination(10);
 
+        $user = Auth::user();
+        if($user->hasRole('regionalnyy-menedzher')) {
+            $display->setScopes([
+                'regionalManager'
+            ]);
+        }
+
         return $display;
     }
 
@@ -51,6 +60,14 @@ class Terminals extends Section {
     }
 
     public static function onEdit($id) {
+        $user = Auth::user();
+        $userCities = $user->cities;
+
+        if(isset($id) && $user->hasRole('regionalnyy-menedzher')) {
+            if(!count($userCities) || !Terminal::where('id', $id)->whereIn('city_id', $userCities->pluck('id'))->exists()) {
+                abort(404);
+            }
+        }
 
         $form = Form::panel([
             FormColumn::column([
@@ -71,6 +88,13 @@ class Terminals extends Section {
                     ])
                     ->setRequired(true)
                     ->setModelForOptions(City::class)
+                    ->setQueryFunctionForModel(function ($citiesQuery) use ($user, $userCities) {
+                        if($user->hasRole('regionalnyy-menedzher')) {
+                            return $citiesQuery->whereIn('id', count($userCities) ? $userCities->pluck('id') : []);
+                        }
+
+                        return $citiesQuery;
+                    })
                     ->setDisplay('name'),
                 FormField::input('geo_point', 'Геокоординаты  (x.xxx, y.yyy)')
                 ->setPattern("(\d+\.\d+|\d+),\s(\d+\.\d+|\d+)"),
