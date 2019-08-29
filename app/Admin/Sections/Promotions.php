@@ -2,6 +2,7 @@
 
 namespace App\Admin\Sections;
 
+use App\Promotion;
 use App\Terminal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,11 +45,25 @@ class Promotions extends Section
 
     public static function onCreate()
     {
-        return self::onEdit();
+        return self::onEdit(null);
     }
 
-    public static function onEdit()
+    public static function onEdit($id)
     {
+        $user = Auth::user();
+        $userCities = $user->cities;
+
+        if(isset($id) && $user->hasRole('regionalnyy-menedzher')) {
+            if(!count($userCities) || !Promotion::where('id', $id)->whereHas('terminals', function ($terminalsQuery) use ($userCities) {
+                    return $terminalsQuery->whereHas('city', function ($cityQuery) use ($userCities) {
+                        return $cityQuery->whereIn('id', $userCities->pluck('id'));
+                    });
+                })->exists())
+            {
+                abort(404);
+            }
+        }
+
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('title', 'Название')->setRequired(true),
@@ -59,10 +74,8 @@ class Promotions extends Section
                         'multiple', 'data-live-search="true"'
                     ])
                     ->setModelForOptions(Terminal::class)
-                    ->setQueryFunctionForModel(function ($terminalsQuery) {
-                        $user = Auth::user();
+                    ->setQueryFunctionForModel(function ($terminalsQuery) use ($user, $userCities) {
                         if($user->hasRole('regionalnyy-menedzher')) {
-                            $userCities = $user->cities;
                             return $terminalsQuery->whereIn('city_id', count($userCities) ? $userCities->pluck('id') : []);
                         }
 
