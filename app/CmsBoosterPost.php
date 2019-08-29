@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
 use Zeus\Admin\Cms\Models\ZeusAdminPost;
 
 class CmsBoosterPost extends ZeusAdminPost
@@ -20,5 +21,14 @@ class CmsBoosterPost extends ZeusAdminPost
     public function scopePosts($query)
     {
         return $query->where('type', 'news');
+    }
+
+    public function scopeRegionalManager($query) {
+        $user = Auth::user();
+        $userCities = $user->cities;
+
+        return $query->whereHas('terminals', function ($terminalsQuery) use ($userCities) {
+            return $terminalsQuery->whereIn('city_id', count($userCities) ? $userCities->pluck('id') : []);
+        });
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Admin\Sections;
 
+use App\Promotion;
 use App\Terminal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Zeus\Admin\Cms\Models\ZeusAdminTerm;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
@@ -31,16 +33,37 @@ class Promotions extends Section
             Column::text('created_at', 'Дата создания'),
         ])->setPagination(10);
 
+        $user = Auth::user();
+        if($user->hasRole('regionalnyy-menedzher')) {
+            $display->setScopes([
+                'regionalManager'
+            ]);
+        }
+
         return $display;
     }
 
     public static function onCreate()
     {
-        return self::onEdit();
+        return self::onEdit(null);
     }
 
-    public static function onEdit()
+    public static function onEdit($id)
     {
+        $user = Auth::user();
+        $userCities = $user->cities;
+
+        if(isset($id) && $user->hasRole('regionalnyy-menedzher')) {
+            if(!count($userCities) || !Promotion::where('id', $id)->whereHas('terminals', function ($terminalsQuery) use ($userCities) {
+                    return $terminalsQuery->whereHas('city', function ($cityQuery) use ($userCities) {
+                        return $cityQuery->whereIn('id', $userCities->pluck('id'));
+                    });
+                })->exists())
+            {
+                abort(404);
+            }
+        }
+
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('title', 'Название')->setRequired(true),
@@ -51,6 +74,13 @@ class Promotions extends Section
                         'multiple', 'data-live-search="true"'
                     ])
                     ->setModelForOptions(Terminal::class)
+                    ->setQueryFunctionForModel(function ($terminalsQuery) use ($user, $userCities) {
+                        if($user->hasRole('regionalnyy-menedzher')) {
+                            return $terminalsQuery->whereIn('city_id', count($userCities) ? $userCities->pluck('id') : []);
+                        }
+
+                        return $terminalsQuery;
+                    })
                     ->setDisplay('name_with_city'),
                 FormField::bselect('terms', 'Метки')
                     ->setDataAttributes([
