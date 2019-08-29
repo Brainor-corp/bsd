@@ -60,6 +60,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Counterparty::class);
     }
 
+    public function cities() {
+        return $this->belongsToMany(City::class);
+    }
+
     public function hasRole($slug){
         return $this->roles()->where('slug', $slug)->exists() ? true : false;
     }

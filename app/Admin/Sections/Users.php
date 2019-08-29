@@ -2,6 +2,7 @@
 
 namespace App\Admin\Sections;
 
+use App\City;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -45,8 +46,8 @@ class Users extends Section
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('name', 'Имя')->setRequired(true),
-                FormField::input('surname', 'Фамилия')->setRequired(true),
-                FormField::input('patronomic', 'Отчество')->setRequired(true),
+                FormField::input('surname', 'Фамилия'),
+                FormField::input('patronomic', 'Отчество'),
                 FormField::input('guid', '1c ID')
                     ->setHelpBlock("<small class='text-muted'>Идентификатор пользователя в 1c</small>"),
                 FormField::bselect('sync_need', 'Нужна синхронизация с 1с')
@@ -70,6 +71,13 @@ class Users extends Section
                     ])
                     ->setModelForOptions(Role::class)
                     ->setDisplay('name'),
+                FormField::bselect('cities', 'Города')
+                    ->setHelpBlock("<small class='text-muted'>Для роли \"Региональный менеджер\"</small>")
+                    ->setDataAttributes([
+                        'multiple', 'data-live-search="true"'
+                    ])
+                    ->setModelForOptions(City::class)
+                    ->setDisplay('name'),
 
             ]),
         ]);
@@ -82,8 +90,8 @@ class Users extends Section
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('name', 'Имя')->setRequired(true),
-                FormField::input('surname', 'Фамилия')->setRequired(true),
-                FormField::input('patronomic', 'Отчество')->setRequired(true),
+                FormField::input('surname', 'Фамилия'),
+                FormField::input('patronomic', 'Отчество'),
                 FormField::input('guid', '1c ID')
                     ->setHelpBlock("<small class='text-muted'>Идентификатор пользователя в 1c</small>"),
                 FormField::bselect('sync_need', 'Нужна синхронизация с 1с')
@@ -97,6 +105,13 @@ class Users extends Section
                         'multiple', 'data-live-search="true"'
                     ])
                     ->setModelForOptions(Role::class)
+                    ->setDisplay('name'),
+                FormField::bselect('cities', 'Города')
+                    ->setHelpBlock("<small class='text-muted'>Для роли \"Региональный менеджер\"</small>")
+                    ->setDataAttributes([
+                        'multiple', 'data-live-search="true"'
+                    ])
+                    ->setModelForOptions(City::class)
                     ->setDisplay('name'),
             ]),
         ]);
