@@ -2,9 +2,9 @@
 
 namespace App\Admin\Sections;
 
-use App\Counterparty;
 use App\Type;
-use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -18,7 +18,7 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 
 class Counterparties extends Section
 {
-    protected $title = 'Counterparties';
+    protected $title = 'Контрагенты';
 
     protected $checkAccess = true;
 
@@ -57,88 +57,46 @@ class Counterparties extends Section
 
     public static function onEdit($id)
     {
-        $model = Counterparty::where('id', $id)->with('type')->firstOrFail();
-        $form = null;
-
-        switch($model->type->slug) {
-            case 'fizicheskoe-lico':
-                $form = Form::panel([
-                    FormColumn::column([
-                        FormField::bselect('active', 'Активность')
-                            ->setOptions([
-                                0 => "Не активен",
-                                1 => "Активен"
-                            ])
-                            ->setRequired(true),
-                        FormField::bselect('type_id', 'Тип')
-                            ->setModelForOptions(Type::class)
-                            ->setField('id')
-                            ->setQueryFunctionForModel(function ($q) {
-                                return $q->where('class', 'UserType');
-                            })
-                            ->setDisplay('name')
-                            ->setRequired(true),
-                        FormField::bselect('user_id', 'Пользователь')
-                            ->setModelForOptions(User::class)
-                            ->setField('id')
-                            ->setDisplay('full_name')
-                            ->setRequired(true),
-                        FormField::input('name', 'ФИО')->setRequired(true),
-                        FormField::input('passport_series', 'Серия паспорта')->setRequired(true),
-                        FormField::input('passport_number', 'Номер паспорта')->setRequired(true),
-                        FormField::input('contact_person', 'Контактное лицо')->setRequired(true),
-                        FormField::input('phone', 'Телефон')->setRequired(true),
-                        FormField::input('addition_info', 'Дополнительная информация')->setRequired(true),
+        $form = Form::panel([
+            FormColumn::column([
+                FormField::bselect('active', 'Активность')
+                    ->setOptions([
+                        0 => "Не активен",
+                        1 => "Активен"
                     ])
-                ]);
-
-                break;
-
-            case 'yuridicheskoe-lico':
-                $form = Form::panel([
-                    FormColumn::column([
-                        FormField::bselect('active', 'Активность')
-                            ->setOptions([
-                                0 => "Не активен",
-                                1 => "Активен"
-                            ])
-                            ->setRequired(true),
-                        FormField::bselect('type_id', 'Тип')
-                            ->setModelForOptions(Type::class)
-                            ->setField('id')
-                            ->setQueryFunctionForModel(function ($q) {
-                                return $q->where('class', 'UserType');
-                            })
-                            ->setDisplay('name')
-                            ->setRequired(true),
-                        FormField::bselect('user_id', 'Пользователь')
-                            ->setModelForOptions(User::class)
-                            ->setField('id')
-                            ->setDisplay('full_name')
-                            ->setRequired(true),
-                        FormField::input('contact_person', 'Контактное лицо')->setRequired(true),
-                        FormField::input('phone', 'Телефон')->setRequired(true),
-                        FormField::input('inn', 'ИНН')->setRequired(true),
-                        FormField::input('kpp', 'КПП')->setRequired(true),
-                        FormField::input('addition_info', 'Дополнительная информация')->setRequired(true),
-                    ]),
-                    FormColumn::column([
-                        FormField::input('legal_form', 'Правовая форма')->setRequired(true),
-                        FormField::input('company_name', 'Название организации')->setRequired(true),
-                        FormField::input('legal_address_city', 'Город')->setRequired(true),
-                        FormField::input('legal_address_street', 'Улица')->setRequired(true),
-                        FormField::input('legal_address_house', 'Дом')->setRequired(true),
-                        FormField::input('legal_address_block', 'Корпус')->setRequired(true),
-                        FormField::input('legal_address_building', 'Строение')->setRequired(true),
-                        FormField::input('legal_address_apartment', 'Квартира/офис')->setRequired(true),
-                    ])
-                ]);
-                break;
-            default: return abort(404);
-        }
+                    ->setRequired(true),
+                FormField::bselect('type_id', 'Тип')
+                    ->setModelForOptions(Type::class)
+                    ->setField('id')
+                    ->setQueryFunctionForModel(function ($q) {
+                        return $q->where('class', 'UserType');
+                    })
+                    ->setDisplay('name')
+                    ->setRequired(true),
+                FormField::input('name', 'ФИО'),
+                FormField::input('passport_series', 'Серия паспорта'),
+                FormField::input('passport_number', 'Номер паспорта'),
+                FormField::input('contact_person', 'Контактное лицо'),
+                FormField::input('phone', 'Телефон'),
+                FormField::input('addition_info', 'Дополнительная информация'),
+                FormField::input('inn', 'ИНН'),
+                FormField::input('kpp', 'КПП'),
+                FormField::input('legal_form', 'Правовая форма'),
+                FormField::input('company_name', 'Название организации'),
+                FormField::input('legal_address_city', 'Город'),
+                FormField::input('legal_address_street', 'Улица'),
+                FormField::input('legal_address_house', 'Дом'),
+                FormField::input('legal_address_block', 'Корпус'),
+                FormField::input('legal_address_building', 'Строение'),
+                FormField::input('legal_address_apartment', 'Квартира/офис'),
+            ])
+        ]);
 
         return $form;
     }
 
-
+    public function beforeDelete(Request $request, $id = null)
+    {
+        DB::table('counterparty_user')->where('counterparty_id', $id)->delete();
+    }
 }
