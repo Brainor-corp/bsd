@@ -26,9 +26,9 @@ class Counterparties extends Section
         $display = Display::table([
             Column::link('id', '#'),
             Column::text('type.name', 'Тип'),
-            Column::text('user.full_name', 'Пользователь'),
             Column::text('title', 'Название'),
             Column::text('active_for_human', 'Активность'),
+            Column::text('code_1c', 'Идентификатор 1с'),
         ])->setFilter([
             null,
             FilterType::select('type_id', 'Тип')
@@ -39,12 +39,12 @@ class Counterparties extends Section
                 ->setIsLike(false)
                 ->setDisplay('name'),
             null,
-            null,
             FilterType::select('active', 'Активация')
                 ->setOptions([
                     0 => 'Не активен',
                     1 => 'Активен'
                 ]),
+            FilterType::text('code_1c', 'Идентификатор 1с')
         ])->setPagination(10);
 
         return $display;
