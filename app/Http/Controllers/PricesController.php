@@ -5,196 +5,71 @@ namespace App\Http\Controllers;
 use App\City;
 use App\InsideForwarding;
 use App\Route;
+use Elibyy\TCPDF\Facades\TCPDF;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\View;
 
 class PricesController extends Controller {
     public function pricesPage(Request $request) {
-        $shipCityId = $request->get('ship_city') ?? 53;
-        $destCityId = $request->get('dest_city') ?? 78;
+        $shipCityIds = $request->get('ship_city') ?? [53];
+        $destCityIds = $request->get('dest_city') ?? [78];
 
-        $route = Route::where([
-            ['ship_city_id', $shipCityId],
-            ['dest_city_id', $destCityId]
-        ])->with('route_tariffs.rate', 'route_tariffs.threshold')->first();
+        $routesIdsPairs = [];
+        foreach($shipCityIds as $shipCityId) {
+            foreach($destCityIds as $destCityId) {
+                $routesIdsPairs[] = [
+                    ['ship_city_id', $shipCityId],
+                    ['dest_city_id', $destCityId]
+                ];
+            }
+        }
+
+        $routes = Route::where(function ($routesQuery) use ($routesIdsPairs) {
+            foreach($routesIdsPairs as $idsPair) {
+                $routesQuery->orWhere($idsPair);
+            }
+
+            return $routesQuery;
+        })->with('route_tariffs.rate', 'route_tariffs.threshold')->get();
 
         $insideForwardings = InsideForwarding::with('forwardThreshold', 'city')
             ->has('forwardThreshold')
-            ->whereIn('city_id', [$shipCityId, $destCityId])
+            ->whereIn('city_id', array_merge($shipCityIds, $destCityIds))
             ->get();
 
         $action = $request->get('action') ?? 'show';
 
         if($action == 'show') {
             $shipCities = City::where('is_ship', true)->get();
-            $destCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $shipCityId))->get();
+            $destCities = City::whereIn('id', Route::select(['dest_city_id'])->whereIn('ship_city_id', $shipCityIds))->get();
 
             return view('v1.pages.prices.prices-page')
-                ->with(compact('route','insideForwardings', 'shipCities', 'destCities', 'shipCityId', 'destCityId'));
+                ->with(compact('routes','insideForwardings', 'shipCities', 'destCities', 'shipCityIds', 'destCityIds'));
         } else {
-            $spreadsheet = new Spreadsheet();
-            $spreadsheet->getProperties()
-                ->setCreator('Балтийская служба доставки')
-                ->setLastModifiedBy('Балтийская служба доставки')
-                ->setTitle("Прайс лист $route->name")
-                ->setSubject("Прайс лист $route->name")
-                ->setDescription("Прайс лист $route->name");
+            $documentName = "Прайс-лист.pdf";
 
-            $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('Прайс-лист');
+            $view = View::make('v1.pages.prices.pdf')
+                ->with(compact('routes','insideForwardings', 'shipCityIds', 'destCityIds'));
+            $html = $view->render();
 
-            // Вычисляем кол-во ячеек, которое должен занимать заголовок тарифов
-            $tariffsTitleRange = [
-                Coordinate::stringFromColumnIndex(1),
-                Coordinate::stringFromColumnIndex(
-                    3 + // 3 ячейки есть всегда
-                        $route->route_tariffs->where('rate.slug', 'ves')->count() + // кол-во ячеек для цен по весу
-                        $route->route_tariffs->where('rate.slug', 'obem')->count() // кол-во ячеек для цен по объёму
-                )
-            ];
-            $sheet->mergeCells("$tariffsTitleRange[0]1:$tariffsTitleRange[1]1");
-            $sheet->setCellValue('A1', "Тарифы на грузоперевозки маршрута $route->name");
-            $sheet->getStyle('A1')->getFont()->setSize(14);
+            $pdf = new TCPDF();
+            $pdf::SetTitle("Прайс-лист");
+            $pdf::AddPage();
+            $pdf::writeHTML($html, true, false, true, false, '');
+            $pdf::Output(storage_path($documentName), 'F');
 
-            $sheet->setCellValue('A3', "Бандероль до 0,01 м3 до 2 кг");
-            $sheet->mergeCells("A3:A4");
-            $sheet->getStyle('A3')->getAlignment()->setWrapText(true);
-
-            $sheet->setCellValue('B3', "мин. стоимость руб.");
-            $sheet->mergeCells("B3:B4");
-            $sheet->getStyle('B3')->getAlignment()->setWrapText(true);
-
-            // Вычисляем ширину ячейки для заголовка стоимости за кг
-            $tariffWeightPriceTitleEnd = 'C';
-            if($route->route_tariffs->where('rate.slug', 'ves')->count() > 0) {
-                $tariffWeightPriceTitleStart = 'C';
-                $tariffWeightPriceTitleEnd = Coordinate::stringFromColumnIndex(
-                    Coordinate::columnIndexFromString('C') +
-                    $route->route_tariffs->where('rate.slug', 'ves')->count() - 1
-                );
-                $sheet->mergeCells("C3:$tariffWeightPriceTitleEnd" . '3');
-                $sheet->setCellValue($tariffWeightPriceTitleStart . '3', "стоимость за 1кг руб.");
-                $sheet->getStyle($tariffWeightPriceTitleStart . '3')->getAlignment()->setWrapText(true);
-
-                $i = 0;
-                foreach($route->route_tariffs->where('rate.slug', 'ves') as $routeTariff) {
-                    $pricesIteratorCell = Coordinate::stringFromColumnIndex(
-                        Coordinate::columnIndexFromString($tariffWeightPriceTitleStart) + $i
-                    );
-                    $sheet->setCellValue($pricesIteratorCell . '4', "до " . $routeTariff->threshold->value . 'кг');
-                    $sheet->getStyle($pricesIteratorCell . '4')->getAlignment()->setWrapText(true);
-                    $i++;
-                }
-            }
-
-            // Вычисляем ширину ячейки для заголовка стоимости за м3
-            $tariffVolumePriceTitleEnd = $tariffWeightPriceTitleEnd;
-            if($route->route_tariffs->where('rate.slug', 'obem')->count() > 0) {
-                $tariffVolumePriceTitleStart = Coordinate::stringFromColumnIndex(
-                    Coordinate::columnIndexFromString($tariffWeightPriceTitleEnd) + ($tariffWeightPriceTitleEnd === 'C' ? 0 : 1)
-                );
-                $tariffVolumePriceTitleEnd = Coordinate::stringFromColumnIndex(
-                    Coordinate::columnIndexFromString($tariffVolumePriceTitleStart) +
-                    $route->route_tariffs->where('rate.slug', 'obem')->count() - 1
-                );
-                $sheet->mergeCells($tariffVolumePriceTitleStart . '3' . ':' . $tariffVolumePriceTitleEnd . '3');
-                $sheet->setCellValue($tariffVolumePriceTitleStart . '3', "стоимость за 1м3 руб.");
-                $sheet->getStyle($tariffVolumePriceTitleStart . '3')->getAlignment()->setWrapText(true);
-
-                $i = 0;
-                foreach($route->route_tariffs->where('rate.slug', 'obem') as $routeTariff) {
-                    $pricesIteratorCell = Coordinate::stringFromColumnIndex(
-                        Coordinate::columnIndexFromString($tariffVolumePriceTitleStart) + $i
-                    );
-                    $sheet->setCellValue($pricesIteratorCell . '4', "до " . $routeTariff->threshold->value . 'м3');
-                    $sheet->getStyle($pricesIteratorCell . '4')->getAlignment()->setWrapText(true);
-                    $i++;
-                }
-            }
-
-            // Вычисляем позичию ячейки для заголовка минимального срока доставки
-            $tariffMinDaysTitlePos = Coordinate::stringFromColumnIndex(
-                Coordinate::columnIndexFromString($tariffVolumePriceTitleEnd) + ($tariffVolumePriceTitleEnd === 'C' ? 0 : 1)
-            );
-            $sheet->setCellValue($tariffMinDaysTitlePos . '3', "мин. срок доставки");
-            $sheet->mergeCells($tariffMinDaysTitlePos . '3' . ':' . $tariffMinDaysTitlePos . '4');
-            $sheet->getStyle($tariffMinDaysTitlePos . '3')->getAlignment()->setWrapText(true);
-
-            // Заполняем значения цен тарифа
-            $tariffPrices = [
-                $route->wrapper_tariff,
-                $route->min_cost
+            $file = [
+                'tempFile' => storage_path($documentName),
+                'fileName' => $documentName
             ];
 
-            foreach($route->route_tariffs->where('rate.slug', 'ves') as $routeTariff) {
-                $tariffPrices[] = $routeTariff->price;
-            }
-
-            foreach($route->route_tariffs->where('rate.slug', 'obem') as $routeTariff) {
-                $tariffPrices[] = $routeTariff->price;
-            }
-
-            $tariffPrices[] = $route->delivery_time;
-
-            foreach($tariffPrices as $key => $tariffPrice) {
-                $column = Coordinate::stringFromColumnIndex($key + 1);
-                $cell = $column . '5';
-                $sheet->setCellValue($cell, $tariffPrice);
-                $sheet->getStyle($cell)->getFont()->setBold(true);
-            }
-
-            if($insideForwardings->groupBy('city_id')->count()) {
-                $sheet->mergeCells("$tariffsTitleRange[0]7:$tariffsTitleRange[1]7");
-                $sheet->setCellValue('A7', "Стоимость экспедирования в черте города");
-                $sheet->getStyle('A7')->getFont()->setSize(14);
-
-                $row = 7;
-                foreach($insideForwardings->groupBy('city_id') as $insideForwardingsCities) {
-                    $row += 2;
-                    $sheet->setCellValue("A$row", "Город");
-
-                    $coll = 2;
-                    foreach($insideForwardingsCities as $insideForwarding) {
-                        $cell = Coordinate::stringFromColumnIndex($coll) . $row;
-                        $sheet->setCellValue($cell, $insideForwarding->forwardThreshold->name);
-                        $sheet->getStyle($cell)->getAlignment()->setWrapText(true);
-
-                        $coll++;
-                    }
-                    $row++;
-
-                    $cell = Coordinate::stringFromColumnIndex(1) . $row;
-                    $sheet->setCellValue($cell, $insideForwardingsCities->first()->city->name);
-                    $sheet->getStyle($cell)->getAlignment()->setWrapText(true);
-                    $sheet->getStyle($cell)->getFont()->setBold(true);
-                    $coll = 2;
-                    foreach($insideForwardingsCities as $insideForwarding) {
-                        $cell = Coordinate::stringFromColumnIndex($coll) . $row;
-                        $sheet->setCellValue($cell, $insideForwarding->tariff);
-                        $sheet->getStyle($cell)->getFont()->setBold(true);
-
-                        $coll++;
-                    }
-                }
-            }
-
-            $writer = new Xlsx($spreadsheet);
-
-            $name = md5("Прайс лист $route->name" . time()) . '.xlsx';
-            $path = storage_path('app/public/prices/');
-
-            File::makeDirectory($path, $mode = 0777, true, true);
-            $writer->save($path . $name);
-
-            return response()->download($path . $name, "Прайс лист $route->name" . '.xlsx')->deleteFileAfterSend(true);
+            return response()->download($file['tempFile'], $file['fileName'])
+                ->deleteFileAfterSend(true);
         }
     }
 
     public function getDestinationCities(Request $request) {
-        $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $request->get('ship_city')))
+        $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->whereIn('ship_city_id', $request->get('ship_city')))
             ->orderBy('name')
             ->get();
 

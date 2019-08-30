@@ -1,10 +1,11 @@
 $(document).ready(function () {
     $('#ship_city').selectize({
-        onInitialize: function () {
-            this.$control.on("click", function (event) {
-                $('#ship_city').selectize()[0].selectize.clear()
-            });
-        },
+        plugins: ['remove_button'],
+        // onInitialize: function () {
+        //     this.$control.on("click", function (event) {
+        //         $('#ship_city').selectize()[0].selectize.clear()
+        //     });
+        // },
         onChange: function(value) {// при изменении города отправления
             if (!value.length) return;
             $.ajaxSetup({
@@ -30,10 +31,11 @@ $(document).ready(function () {
     });
 
     $('#dest_city').selectize({
-        onInitialize: function () {
-            this.$control.on("click", function (event) {
-                $('#dest_city').selectize()[0].selectize.clear()
-            });
-        },
+        plugins: ['remove_button'],
+        // onInitialize: function () {
+        //     this.$control.on("click", function (event) {
+        //         $('#dest_city').selectize()[0].selectize.clear()
+        //     });
+        // },
     });
 });
