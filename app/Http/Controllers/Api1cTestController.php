@@ -5,22 +5,36 @@ namespace App\Http\Controllers;
 use App\Counterparty;
 use App\Http\Helpers\Api1CHelper;
 use App\Order;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class Api1cTestController extends Controller
 {
-    public function newUser() {
+    public function newUser(Request $request) {
+        $user = User::where('id', $request->get('id'))->first();
+        $send = [
+            'email' => $user->email,
+            'tel' => intval($user->phone)
+        ];
+
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'new_user',
-            [
-                'email' => "abegunov@mail.ru",
-                'tel' => 79817397557
-            ]
+            $send
         );
 
-        dd($response1c);
+        if($response1c['status'] == 200 && !empty($response1c['response']['id'] && $response1c['response']['id'] !== 'not found')) {
+            DB::table('users')->where('id', $user->id)->update([
+                'guid' => $response1c['response']['id'],
+                'sync_need' => false
+            ]);
+        }
+
+        dd([
+            'send' => [],
+            'response' => $response1c
+        ]);
     }
 
     public function createOrder() {
