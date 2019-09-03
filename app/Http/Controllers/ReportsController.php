@@ -127,6 +127,8 @@ class ReportsController extends Controller
             ]
         );
 
+        dd($response1c);
+
         if($response1c['status'] !== 200) {
             return redirect(route('report-list'));
         }
