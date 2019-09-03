@@ -70,7 +70,7 @@ class OrderController extends Controller
             "recipient_legal_form" => ['nullable', 'string', 'max:255'],                        // Получатель (Правовая_форма)
             "recipient_company_name" => ['nullable', 'string', 'min:3', 'max:255'],             // Получатель (Наименование)
             "recipient_legal_address_city" => ['nullable', 'string', 'max:255'],                // Получатель (Адрес (Город))
-            "recipient_legal_address" => ['nullable', 'string', 'max:255'],              // Получатель (Адрес)
+            "recipient_legal_address" => ['nullable', 'string', 'max:255'],                     // Получатель (Адрес)
             "recipient_inn"  => ['nullable', 'string', 'max:12', new INN()],                    // Получатель (ИНН)
             "recipient_kpp" => ['nullable', 'string', 'max:9'],                                 // Получатель (КПП)
             "recipient_contact_person_legal" => ['nullable', 'string', 'max:255'],              // Получатель (Контактное_лицо) -- Для юр.лиц
@@ -89,7 +89,7 @@ class OrderController extends Controller
             "payer_legal_form" => ['nullable', 'string', 'max:255'],                            // Плательщик (Правовая_форма)
             "payer_company_name" => ['nullable', 'string', 'min:3', 'max:255'],                 // Плательщик (Наименование)
             "payer_legal_address_city" => ['nullable', 'string', 'max:255'],                    // Плательщик (Адрес (Город))
-            "payer_legal_address" => ['nullable', 'string', 'max:255'],                  // Плательщик (Адрес)
+            "payer_legal_address" => ['nullable', 'string', 'max:255'],                         // Плательщик (Адрес)
             "payer_inn" => ['nullable', 'string', 'max:12', new INN()],                         // Плательщик (ИНН)
             "payer_kpp" => ['nullable', 'string', 'max:9'],                                     // Плательщик (КПП)
             "payer_contact_person_legal" => ['nullable', 'string', 'max:255'],                  // Плательщик (Контактное_лицо) -- Для юр.лиц
