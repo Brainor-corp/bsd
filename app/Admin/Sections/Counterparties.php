@@ -84,11 +84,7 @@ class Counterparties extends Section
                 FormField::input('legal_form', 'Правовая форма'),
                 FormField::input('company_name', 'Название организации'),
                 FormField::input('legal_address_city', 'Город'),
-                FormField::input('legal_address_street', 'Улица'),
-                FormField::input('legal_address_house', 'Дом'),
-                FormField::input('legal_address_block', 'Корпус'),
-                FormField::input('legal_address_building', 'Строение'),
-                FormField::input('legal_address_apartment', 'Квартира/офис'),
+                FormField::input('legal_address', 'Адрес'),
             ])
         ]);
 

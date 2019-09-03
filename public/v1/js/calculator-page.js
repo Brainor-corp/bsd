@@ -704,11 +704,7 @@ $(document).ready(function () {
                         contact_person: el['contact_person'],
                         addition_info: el['addition_info'],
                         address_city: el['legal_address_city'],
-                        address_street: el['legal_address_street'],
-                        address_house: el['legal_address_house'],
-                        address_block: el['legal_address_block'],
-                        address_building: el['legal_address_building'],
-                        address_apartment: el['legal_address_apartment'],
+                        address: el['legal_address'],
                         legal_form: el['legal_form'],
                         inn: el['inn'],
                         kpp: el['kpp'],
@@ -727,11 +723,7 @@ $(document).ready(function () {
             currentBlock.find("input[name$='addition_info_legal']").val(ui.item["addition_info"]);
             currentBlock.find("input[name$='legal_form']").val(ui.item["legal_form"]);
             currentBlock.find("input[name$='address_city']").val(ui.item["address_city"]);
-            currentBlock.find("input[name$='address_street']").val(ui.item["address_street"]);
-            currentBlock.find("input[name$='address_house']").val(ui.item["address_house"]);
-            currentBlock.find("input[name$='address_block']").val(ui.item["address_block"]);
-            currentBlock.find("input[name$='address_building']").val(ui.item["address_building"]);
-            currentBlock.find("input[name$='address_apartment']").val(ui.item["address_apartment"]);
+            currentBlock.find("input[name$='address']").val(ui.item["address"]);
             currentBlock.find("input[name$='inn']").val(ui.item["inn"]);
             currentBlock.find("input[name$='kpp']").val(ui.item["kpp"]);
         }

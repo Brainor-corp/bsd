@@ -46,11 +46,7 @@
                                                 <td class="align-middle">
                                                     @if(null !== $counterparty->legal_form)
                                                         {{ $counterparty->legal_address_city  ?? ''}},
-                                                        {{ $counterparty->legal_address_street  ?? ''}},
-                                                        {{ $counterparty->legal_address_house  ?? ''}},
-                                                        {{ $counterparty->legal_address_block  ?? ''}},
-                                                        {{ $counterparty->legal_address_building  ?? ''}},
-                                                        {{ $counterparty->legal_address_apartment  ?? ''}}
+                                                        {{ $counterparty->legal_address  ?? ''}}
                                                     @else
                                                         -
                                                     @endif

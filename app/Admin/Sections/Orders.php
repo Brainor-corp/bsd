@@ -181,11 +181,7 @@ class Orders extends Section {
                 FormField::input('sender_addition_info', 'Доп. информация'),
                 FormField::custom('<strong>Юридический адрес</strong><hr>'),
                 FormField::input('sender_legal_address_city', 'Город'),
-                FormField::input('sender_legal_address_street', 'Улица'),
-                FormField::input('sender_legal_address_house', 'Дом'),
-                FormField::input('sender_legal_address_block', 'Блок'),
-                FormField::input('sender_legal_address_building', 'Строение'),
-                FormField::input('sender_legal_address_apartment', 'Квартира/офис'),
+                FormField::input('sender_legal_address', 'Адрес'),
 
                 FormField::custom('<h4>Получатель</h4><hr>'),
                 FormField::bselect('recipient_type_id', 'Тип')
@@ -210,11 +206,7 @@ class Orders extends Section {
                 FormField::input('recipient_addition_info', 'Доп. информация'),
                 FormField::custom('<strong>Юридический адрес</strong><hr>'),
                 FormField::input('recipient_legal_address_city', 'Город'),
-                FormField::input('recipient_legal_address_street', 'Улица'),
-                FormField::input('recipient_legal_address_house', 'Дом'),
-                FormField::input('recipient_legal_address_block', 'Блок'),
-                FormField::input('recipient_legal_address_building', 'Строение'),
-                FormField::input('recipient_legal_address_apartment', 'Квартира/офис'),
+                FormField::input('recipient_legal_address', 'Адрес'),
 
                 FormField::custom('<h4>Плательщик</h4><hr>'),
                 FormField::bselect('payer_type', 'Лицо')
@@ -248,11 +240,7 @@ class Orders extends Section {
                 FormField::input('payer_addition_info', 'Доп. информация'),
                 FormField::custom('<strong>Юридический адрес</strong><hr>'),
                 FormField::input('payer_legal_address_city', 'Город'),
-                FormField::input('payer_legal_address_street', 'Улица'),
-                FormField::input('payer_legal_address_house', 'Дом'),
-                FormField::input('payer_legal_address_block', 'Блок'),
-                FormField::input('payer_legal_address_building', 'Строение'),
-                FormField::input('payer_legal_address_apartment', 'Квартира/офис'),
+                FormField::input('payer_legal_address', 'Адрес'),
             ])
         ]);
 

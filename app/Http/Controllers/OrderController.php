@@ -53,11 +53,7 @@ class OrderController extends Controller
             "sender_legal_form" => ['nullable', 'string', 'max:255'],                           // Отправитель (Правовая_форма)
             "sender_company_name" => ['nullable', 'string', 'min:3', 'max:255'],                // Отправитель (Наименование)
             "sender_legal_address_city" => ['nullable', 'string', 'max:255'],                   // Отправитель (Адрес (Город))
-            "sender_legal_address_street" => ['nullable', 'string', 'max:255'],                 // Отправитель (Адрес (Улица))
-            "sender_legal_address_house" => ['nullable', 'string', 'max:255'],                  // Отправитель (Адрес (Дом))
-            "sender_legal_address_block" => ['nullable', 'string', 'max:255'],                  // Отправитель (Адрес (Корпус))
-            "sender_legal_address_building" => ['nullable', 'string', 'max:255'],               // Отправитель (Адрес (Строение))
-            "sender_legal_address_apartment" => ['nullable', 'string', 'max:255'],              // Отправитель (Адрес (Квартира_офис))
+            "sender_legal_address" => ['nullable', 'string', 'max:255'],                        // Отправитель (Адрес)
             "sender_inn" => ['nullable', 'string', 'max:12', new INN()],                        // Отправитель (ИНН)
             "sender_kpp" => ['nullable', 'string', 'max:9'],                                    // Отправитель (КПП)
             "sender_contact_person_legal" => ['nullable', 'string', 'max:255'],                 // Отправитель (Контактное_лицо) -- Для юр.лиц
@@ -74,11 +70,7 @@ class OrderController extends Controller
             "recipient_legal_form" => ['nullable', 'string', 'max:255'],                        // Получатель (Правовая_форма)
             "recipient_company_name" => ['nullable', 'string', 'min:3', 'max:255'],             // Получатель (Наименование)
             "recipient_legal_address_city" => ['nullable', 'string', 'max:255'],                // Получатель (Адрес (Город))
-            "recipient_legal_address_street" => ['nullable', 'string', 'max:255'],              // Получатель (Адрес (Улица))
-            "recipient_legal_address_house" => ['nullable', 'string', 'max:255'],               // Получатель (Адрес (Дом))
-            "recipient_legal_address_block" => ['nullable', 'string', 'max:255'],               // Получатель (Адрес (Корпус))
-            "recipient_legal_address_building" => ['nullable', 'string', 'max:255'],            // Получатель (Адрес (Строение))
-            "recipient_legal_address_apartment" => ['nullable', 'string', 'max:255'],           // Получатель (Адрес (Квартира_офис))
+            "recipient_legal_address" => ['nullable', 'string', 'max:255'],                     // Получатель (Адрес)
             "recipient_inn"  => ['nullable', 'string', 'max:12', new INN()],                    // Получатель (ИНН)
             "recipient_kpp" => ['nullable', 'string', 'max:9'],                                 // Получатель (КПП)
             "recipient_contact_person_legal" => ['nullable', 'string', 'max:255'],              // Получатель (Контактное_лицо) -- Для юр.лиц
@@ -97,11 +89,7 @@ class OrderController extends Controller
             "payer_legal_form" => ['nullable', 'string', 'max:255'],                            // Плательщик (Правовая_форма)
             "payer_company_name" => ['nullable', 'string', 'min:3', 'max:255'],                 // Плательщик (Наименование)
             "payer_legal_address_city" => ['nullable', 'string', 'max:255'],                    // Плательщик (Адрес (Город))
-            "payer_legal_address_street" => ['nullable', 'string', 'max:255'],                  // Плательщик (Адрес (Улица))
-            "payer_legal_address_house"  => ['nullable', 'string', 'max:255'],                  // Плательщик (Адрес (Дом))
-            "payer_legal_address_block" => ['nullable', 'string', 'max:255'],                   // Плательщик (Адрес (Корпус))
-            "payer_legal_address_building" => ['nullable', 'string', 'max:255'],                // Плательщик (Адрес (Строение))
-            "payer_legal_address_apartment" => ['nullable', 'string', 'max:255'],               // Плательщик (Адрес (Квартира_офис))
+            "payer_legal_address" => ['nullable', 'string', 'max:255'],                         // Плательщик (Адрес)
             "payer_inn" => ['nullable', 'string', 'max:12', new INN()],                         // Плательщик (ИНН)
             "payer_kpp" => ['nullable', 'string', 'max:9'],                                     // Плательщик (КПП)
             "payer_contact_person_legal" => ['nullable', 'string', 'max:255'],                  // Плательщик (Контактное_лицо) -- Для юр.лиц
@@ -333,11 +321,7 @@ class OrderController extends Controller
             $order->sender_legal_form = $request->get('sender_legal_form');
             $order->sender_company_name = $request->get('sender_company_name');
             $order->sender_legal_address_city = $request->get('sender_legal_address_city');
-            $order->sender_legal_address_street = $request->get('sender_legal_address_street');
-            $order->sender_legal_address_house = $request->get('sender_legal_address_house');
-            $order->sender_legal_address_block = $request->get('sender_legal_address_block');
-            $order->sender_legal_address_building = $request->get('sender_legal_address_building');
-            $order->sender_legal_address_apartment = $request->get('sender_legal_address_apartment');
+            $order->sender_legal_address = $request->get('sender_legal_address');
             $order->sender_contact_person = $request->get('sender_contact_person_legal');
             $order->sender_inn = $request->get('sender_inn');
             $order->sender_kpp = $request->get('sender_kpp');
@@ -360,11 +344,7 @@ class OrderController extends Controller
                     $counterparty->legal_form = $request->get('sender_legal_form');
                     $counterparty->company_name = $request->get('sender_company_name');
                     $counterparty->legal_address_city = $request->get('sender_legal_address_city');
-                    $counterparty->legal_address_street = $request->get('sender_legal_address_street');
-                    $counterparty->legal_address_house = $request->get('sender_legal_address_house');
-                    $counterparty->legal_address_block = $request->get('sender_legal_address_block');
-                    $counterparty->legal_address_building = $request->get('sender_legal_address_building');
-                    $counterparty->legal_address_apartment = $request->get('sender_legal_address_apartment');
+                    $counterparty->legal_address = $request->get('sender_legal_address');
                     $counterparty->inn = $request->get('sender_inn');
                     $counterparty->kpp = $request->get('sender_kpp');
 
@@ -425,11 +405,7 @@ class OrderController extends Controller
             $order->recipient_legal_form = $request->get('recipient_legal_form');
             $order->recipient_company_name = $request->get('recipient_company_name');
             $order->recipient_legal_address_city = $request->get('recipient_legal_address_city');
-            $order->recipient_legal_address_street = $request->get('recipient_legal_address_street');
-            $order->recipient_legal_address_house = $request->get('recipient_legal_address_house');
-            $order->recipient_legal_address_block = $request->get('recipient_legal_address_block');
-            $order->recipient_legal_address_building = $request->get('recipient_legal_address_building');
-            $order->recipient_legal_address_apartment = $request->get('recipient_legal_address_apartment');
+            $order->recipient_legal_address = $request->get('recipient_legal_address');
             $order->recipient_contact_person = $request->get('recipient_contact_person_legal');
             $order->recipient_inn = $request->get('recipient_inn');
             $order->recipient_kpp = $request->get('recipient_kpp');
@@ -452,11 +428,7 @@ class OrderController extends Controller
                     $counterparty->legal_form = $request->get('recipient_legal_form');
                     $counterparty->company_name = $request->get('recipient_company_name');
                     $counterparty->legal_address_city = $request->get('recipient_legal_address_city');
-                    $counterparty->legal_address_street = $request->get('recipient_legal_address_street');
-                    $counterparty->legal_address_house = $request->get('recipient_legal_address_house');
-                    $counterparty->legal_address_block = $request->get('recipient_legal_address_block');
-                    $counterparty->legal_address_building = $request->get('recipient_legal_address_building');
-                    $counterparty->legal_address_apartment = $request->get('recipient_legal_address_apartment');
+                    $counterparty->legal_address = $request->get('recipient_legal_address');
                     $counterparty->inn = $request->get('recipient_inn');
                     $counterparty->kpp = $request->get('recipient_kpp');
 
@@ -521,11 +493,7 @@ class OrderController extends Controller
                 $order->payer_legal_form = $request->get('payer_legal_form');
                 $order->payer_company_name = $request->get('payer_company_name');
                 $order->payer_legal_address_city = $request->get('payer_legal_address_city');
-                $order->payer_legal_address_street = $request->get('payer_legal_address_street');
-                $order->payer_legal_address_house = $request->get('payer_legal_address_house');
-                $order->payer_legal_address_block = $request->get('payer_legal_address_block');
-                $order->payer_legal_address_building = $request->get('payer_legal_address_building');
-                $order->payer_legal_address_apartment = $request->get('payer_legal_address_apartment');
+                $order->payer_legal_address = $request->get('payer_legal_address');
                 $order->payer_contact_person = $request->get('payer_contact_person_legal');
                 $order->payer_inn = $request->get('payer_inn');
                 $order->payer_kpp = $request->get('payer_kpp');
@@ -548,11 +516,7 @@ class OrderController extends Controller
                         $counterparty->legal_form = $request->get('payer_legal_form');
                         $counterparty->company_name = $request->get('payer_company_name');
                         $counterparty->legal_address_city = $request->get('payer_legal_address_city');
-                        $counterparty->legal_address_street = $request->get('payer_legal_address_street');
-                        $counterparty->legal_address_house = $request->get('payer_legal_address_house');
-                        $counterparty->legal_address_block = $request->get('payer_legal_address_block');
-                        $counterparty->legal_address_building = $request->get('payer_legal_address_building');
-                        $counterparty->legal_address_apartment = $request->get('payer_legal_address_apartment');
+                        $counterparty->legal_address = $request->get('payer_legal_address');
                         $counterparty->inn = $request->get('payer_inn');
                         $counterparty->kpp = $request->get('payer_kpp');
 
@@ -574,11 +538,7 @@ class OrderController extends Controller
             $order->payer_legal_form = null;
             $order->payer_company_name = null;
             $order->payer_legal_address_city = null;
-            $order->payer_legal_address_street = null;
-            $order->payer_legal_address_house = null;
-            $order->payer_legal_address_block = null;
-            $order->payer_legal_address_building = null;
-            $order->payer_legal_address_apartment = null;
+            $order->payer_legal_address = null;
             $order->payer_contact_person = null;
             $order->payer_inn = null;
             $order->payer_kpp = null;
