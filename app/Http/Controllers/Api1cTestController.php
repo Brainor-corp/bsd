@@ -366,8 +366,8 @@ class Api1cTestController extends Controller
             ],
             "ЮридическийАдресЗначениеJSON" => [
                 "type" => "Адрес",
-                "value" => "$counterparty->legal_address_city, $counterparty->legal_address_street, д. $counterparty->legal_address_house, корп. $counterparty->legal_address_block, стр. $counterparty->legal_address_building, кв. $counterparty->legal_address_apartment",
-                "Страна" => "РОССИЯ",
+                "value" => $counterparty->legal_address ?? "",
+                "Страна" => "",
                 "Город" => $counterparty->legal_address_city ?? "",
                 "НомерТелефона" => "",
                 "НомерТелефонаБезКодов" => ""
