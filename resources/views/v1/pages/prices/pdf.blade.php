@@ -25,9 +25,23 @@
         .border {
             border-bottom: 2px solid black;
         }
+        @page { margin: 80px 25px; }
+        header { position: fixed; top: -60px; left: 0px; right: 0px; height: 50px; }
     </style>
 </head>
 <body>
+    <header>
+        <table style="width: 100%; font-family: 'DejaVu Sans'; font-size: 7pt">
+            <tbody>
+            <tr>
+                <td style="border: 1px white; text-align: left;">
+                    <img src="{{ asset('/images/img/pdflogo.jpg') }}" style="width: 100px; height: auto">
+                </td>
+                <td style="border: 1px white; text-align: right;">Прайс-лист на {{ \Carbon\Carbon::now()->format('d.m.Y') }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </header>
     @include('v1.pages.prices.prices-content')
 </body>
 </html>

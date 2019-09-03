@@ -29,11 +29,11 @@
                     )
                         <tr>
                             @foreach($route->route_tariffs->where('rate.slug', 'ves') as $routeTariff)
-                                <td class="align-middle">До {{ $routeTariff->threshold->value }}кг</td>
+                                <td class="align-middle">До {{ str_replace('.00', '', $routeTariff->threshold->value) }}кг</td>
                             @endforeach
                             @foreach($route->route_tariffs->where('rate.slug', 'obem') as $routeTariff)
                                 <td class="align-middle">
-                                    До {{ $routeTariff->threshold->value }}м<sup>3</sup>
+                                    До {{ str_replace('.00', '', $routeTariff->threshold->value) }}м<sup>3</sup>
                                 </td>
                             @endforeach
                         </tr>
@@ -69,7 +69,7 @@
                             <td class="align-middle">Город</td>
                             @foreach($insideForwardingsCities as $insideForwarding)
                                 <td class="align-middle">
-                                    {{ $insideForwarding->forwardThreshold->name }}
+                                    {{ $loop->first ? $insideForwarding->forwardThreshold->name : str_replace('1-', 'До ', $insideForwarding->forwardThreshold->name) }}
                                 </td>
                             @endforeach
                         </tr>

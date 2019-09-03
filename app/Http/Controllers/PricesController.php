@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\City;
 use App\InsideForwarding;
 use App\Route;
-use Elibyy\TCPDF\Facades\TCPDF;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
 
 class PricesController extends Controller {
     public function pricesPage(Request $request) {
@@ -47,24 +46,15 @@ class PricesController extends Controller {
                 ->with(compact('routes','insideForwardings', 'shipCities', 'destCities', 'shipCityIds', 'destCityIds'));
         } else {
             $documentName = "Прайс-лист.pdf";
+            $pdf = PDF::loadView('v1.pages.prices.pdf', [
+                'routes' => $routes,
+                'insideForwardings' => $insideForwardings,
+                'shipCityIds' => $shipCityIds,
+                'destCityIds' => $destCityIds
+            ]);
+            $pdf->setPaper('A4', 'landscape');
 
-            $view = View::make('v1.pages.prices.pdf')
-                ->with(compact('routes','insideForwardings', 'shipCityIds', 'destCityIds'));
-            $html = $view->render();
-
-            $pdf = new TCPDF();
-            $pdf::SetTitle("Прайс-лист");
-            $pdf::AddPage();
-            $pdf::writeHTML($html, true, false, true, false, '');
-            $pdf::Output(storage_path($documentName), 'F');
-
-            $file = [
-                'tempFile' => storage_path($documentName),
-                'fileName' => $documentName
-            ];
-
-            return response()->download($file['tempFile'], $file['fileName'])
-                ->deleteFileAfterSend(true);
+            return $pdf->download('Прайс-лист.pdf');
         }
     }
 
