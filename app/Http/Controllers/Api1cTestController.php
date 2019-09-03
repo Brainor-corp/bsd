@@ -39,10 +39,18 @@ class Api1cTestController extends Controller
 
     public function createOrder() {
         $orders = Order::where('sync_need', true)
-            ->whereHas('status', function ($statusQ) {
-                return $statusQ->where('slug', '<>', 'chernovik');
-            })
+            ->whereHas(
+                'user', function ($userQ) {
+                    return $userQ->whereNotNull('guid');
+                }
+            )
+            ->whereHas(
+                'status', function ($statusQ) {
+                    return $statusQ->where('slug', '<>', 'chernovik');
+                }
+            )
             ->with(
+                'user',
                 'recipient_type',
                 'sender_type',
                 'payer_form_type',
@@ -88,6 +96,8 @@ class Api1cTestController extends Controller
             ];
 
             $mapOrder['Идентификатор_пользователя_на_сайте'] = intval($order->user_id);
+            $mapOrder['Идентификатор_пользователя_в_1с'] = $order->user->guid;
+
             $mapOrder['Способ_оплаты'] = $order->payment->name ?? "";
 
             if(!empty($order->code_1c)) {
