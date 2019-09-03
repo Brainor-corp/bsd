@@ -34,14 +34,16 @@ class OrdersSyncTo1c implements ShouldQueue
     public function handle()
     {
         $orders = Order::where('sync_need', true)
-            ->whereHas([
-                'user' => function ($userQ) {
-                    return $userQ->whereNotNull('guid');
-                },
-                'status' => function ($statusQ) {
-                    return $statusQ->where('slug', '<>', 'chernovik');
-                }
-            ])
+            ->whereHas(
+                'user', function ($userQ) {
+                return $userQ->whereNotNull('guid');
+            }
+            )
+            ->whereHas(
+                'status', function ($statusQ) {
+                return $statusQ->where('slug', '<>', 'chernovik');
+            }
+            )
             ->with(
                 'user',
                 'recipient_type',
