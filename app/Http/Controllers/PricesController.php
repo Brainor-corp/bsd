@@ -45,7 +45,6 @@ class PricesController extends Controller {
             return view('v1.pages.prices.prices-page')
                 ->with(compact('routes','insideForwardings', 'shipCities', 'destCities', 'shipCityIds', 'destCityIds'));
         } else {
-            $documentName = "Прайс-лист.pdf";
             $pdf = PDF::loadView('v1.pages.prices.pdf', [
                 'routes' => $routes,
                 'insideForwardings' => $insideForwardings,
