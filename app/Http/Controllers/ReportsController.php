@@ -114,15 +114,15 @@ class ReportsController extends Controller
         	return redirect(route('login'));
         }
 
+        $document_type_id_1c = 2; // todo убрать
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'document/id',
             [
 //                "user_id" => $user->guid,
 //                "document_id" => $document_id_1c,
-//                "type" => intval($document_type_id_1c),
+                "type" => intval($document_type_id_1c),
                 "user_id" => "77feff2c-14dc-11e9-a990-000d3a28f168",
                 "document_id" => "5d4529c8-b21e-11e9-2683-001c4208e0b2",
-                "type" => 2,
                 "empty_fields" => true
             ]
         );
@@ -141,8 +141,6 @@ class ReportsController extends Controller
                     $documentData['Представление'],
                     $documentData
                 );
-
-                dd($file);
                 break;
             case 3:
                 // Заявка на экспедирование
