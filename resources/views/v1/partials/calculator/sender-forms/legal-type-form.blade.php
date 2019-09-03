@@ -31,13 +31,7 @@
     <label class="col-auto calc__label">Юридический адрес*</label>
     <div class="col">
         <input type="text" name="sender_legal_address_city" value="{{ old('sender_legal_address_city') ?? ($order->sender_legal_address_city ?? '') }}" class="form-control form-item req"  placeholder="Город" {{ isset($disabled) ? 'disabled' : 'required' }}/>
-        <input type="text" name="sender_legal_address_street" value="{{ old('sender_legal_address_street') ?? ($order->sender_legal_address_street ?? '') }}" class="form-control form-item req"  placeholder="Улица" {{ isset($disabled) ? 'disabled' : 'required' }}/>
-        <div class="input-group">
-            <input type="text" name="sender_legal_address_house" value="{{ old('sender_legal_address_house') ?? ($order->sender_legal_address_house ?? '') }}" class="form-control text-center form-item" placeholder="Дом" {{ isset($disabled) ? 'disabled' : '' }}/>
-            <input type="text" name="sender_legal_address_block" value="{{ old('sender_legal_address_block') ?? ($order->sender_legal_address_block ?? '') }}" class="form-control text-center form-item" placeholder="Корп." {{ isset($disabled) ? 'disabled' : '' }}/>
-            <input type="text" name="sender_legal_address_building" value="{{ old('sender_legal_address_building') ?? ($order->sender_legal_address_building ?? '') }}" class="form-control text-center form-item" placeholder="Стр." {{ isset($disabled) ? 'disabled' : '' }}/>
-            <input type="text" name="sender_legal_address_apartment" value="{{ old('sender_legal_address_apartment') ?? ($order->sender_legal_address_apartment ?? '') }}" class="form-control text-center" placeholder="Кв./оф." {{ isset($disabled) ? 'disabled' : '' }}/>
-        </div>
+        <input type="text" name="sender_legal_address" value="{{ old('sender_legal_address') ?? ($order->sender_legal_address ?? '') }}" class="form-control form-item req"  placeholder="Адрес" {{ isset($disabled) ? 'disabled' : 'required' }}/>
     </div>
 </div>
 <div class="form-item row align-items-center">
