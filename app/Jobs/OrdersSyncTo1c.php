@@ -56,7 +56,7 @@ class OrdersSyncTo1c implements ShouldQueue
                 'dest_city',
                 'status',
                 'order_items'
-            )->get()->toArray();
+            )->get();
 
         // Преобразуем данные модели в вид, необходимый для отправки в 1с
         // Преобразуем данные в нужный 1с вид
