@@ -58,12 +58,22 @@ class CounterpartiesController extends Controller
             }
         }
 
+        $legalForms = ['ИП', 'ООО', 'ОДО', 'ОАО', 'ЗАО', 'ПК', 'КФХ', 'ГУП', 'ОО', 'ОД', 'АНО', 'СНТ', 'ДНП', 'ТСЖ'];
+        $legalForm = '';
+
+        foreach($legalForms as $form) {
+            if(preg_match("/^($form )/i", $data['НаименованиеПолное'])) {
+                $legalForm = $form;
+                break;
+            };
+        }
+
         Counterparty::updateOrCreate(
             ['code_1c' => $data['Ref']],
             [
                 'active' => true,
                 'type_id' => $type->id,
-                'legal_form' => '',
+                'legal_form' => $legalForm,
                 'company_name' => $data['ЮридическоеФизическоеЛицо'] === 'ЮридическоеЛицо' && isset($data['НаименованиеПолное']) ?
                     $data['НаименованиеПолное'] :
                     null,
