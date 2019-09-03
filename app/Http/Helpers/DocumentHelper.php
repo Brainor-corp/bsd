@@ -126,24 +126,35 @@ class DocumentHelper
 
     public static function generateTransferDocument($documentData, $documentName)
     {
-//        foreach($documentData['Товары'] as $index => $item) {
-//            $items['number'][] = $index + 1;
-//            $items['name'][] = $item['Содержание'];
-//            $items['quantity'][] = $item['Количество'];
-//            $items['points'][] = 'шт.';
-//            $items['price'][] = $item['Цена'];
-//            $items['sum'][] = $item['Сумма'];
-//        }
         foreach($documentData as $key => $var) {
             $params["{{$key}}"] = new ExcelParam(CellSetterStringValue::class, $var);
         }
 
-//        $params['[service_number]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['number']);
-//        $params['[service_name]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['name']);
-//        $params['[service_quantity]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['quantity']);
-//        $params['[service_point]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['points']);
-//        $params['[service_price]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['price']);
-//        $params['[service_summary]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $items['sum']);
+        $params['[СтоимостьБезНалога]'] = 0;
+        $params['[СуммаНалога]'] = 0;
+        $params['[Стоимость работ]'] = 0;
+
+        $documentData['Услуги'] = array_map(function ($key, $el) {
+            $el['СуммаБезНдс'] = floatval($el['Сумма']) - floatval($el['СуммаНДС']);
+
+            return $el;
+        }, $documentData['Услуги']);
+
+        foreach($documentData['Услуги'] as $datum) {
+            $params['[СтоимостьБезНалога]'] += $datum['СуммаБезНдс'];
+            $params['[СуммаНалога]'] += $datum['СуммаНДС'];
+            $params['[Стоимость работ]'] += $datum['Сумма'];
+        }
+
+        $params['[Номер]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_keys($documentData['Услуги']));
+        $params['[Содержание]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['Содержание']);
+        $params['[Номенклатура]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['Номенклатура']);
+        $params['[Количество]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['Количество']);
+        $params['[Цена]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['Цена']);
+        $params['[Сумма]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['Сумма']);
+        $params['[СуммаБезНдс]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['СуммаБезНдс']);
+        $params['[СтавкаНДС]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['СтавкаНДС']);
+        $params['[СуммаНДС]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['СуммаНДС']);
 
         $name = md5('docs bsd' . time()) . '.xlsx';
         $path = storage_path('app/public/documents/');
