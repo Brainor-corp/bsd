@@ -34,10 +34,16 @@ class OrdersSyncTo1c implements ShouldQueue
     public function handle()
     {
         $orders = Order::where('sync_need', true)
-            ->whereHas('status', function ($statusQ) {
-                return $statusQ->where('slug', '<>', 'chernovik');
-            })
+            ->whereHas([
+                'user' => function ($userQ) {
+                    return $userQ->whereNotNull('guid');
+                },
+                'status' => function ($statusQ) {
+                    return $statusQ->where('slug', '<>', 'chernovik');
+                }
+            ])
             ->with(
+                'user',
                 'recipient_type',
                 'sender_type',
                 'payer_form_type',
@@ -81,6 +87,7 @@ class OrdersSyncTo1c implements ShouldQueue
             ];
 
             $mapOrder['Идентификатор_пользователя_на_сайте'] = intval($order->user_id);
+            $mapOrder['Идентификатор_пользователя_в_1с'] = $order->user->guid;
             $mapOrder['Способ_оплаты'] = $order->payment->name ?? "";
 
             if(!empty($order->code_1c)) {
