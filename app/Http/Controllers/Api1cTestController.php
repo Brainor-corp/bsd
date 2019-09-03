@@ -117,11 +117,7 @@ class Api1cTestController extends Controller
                 'Наименование' => strlen($order->payer_company_name) >= 3 ? $order->payer_company_name : "---",
                 'Адрес' => [
                     'Город' => $order->payer_legal_address_city ?? "",
-                    'Улица' => $order->payer_legal_address_street ?? "",
-                    'Дом' => $order->payer_legal_address_house ?? "",
-                    'Корпус' => $order->payer_legal_address_block ?? "",
-                    'Строение' => $order->payer_legal_address_building ?? "",
-                    'Квартира_офис' => $order->payer_legal_address_apartment ?? "",
+                    'Адрес' => $order->payer_legal_address ?? ""
                 ],
                 'ИНН' => strlen($order->payer_inn) >= 0 && strlen($order->payer_inn) <= 12 ? strval($order->payer_inn) : "",
                 'КПП' => strlen($order->payer_kpp) >= 0 && strlen($order->payer_kpp) <= 9 ? strval($order->payer_kpp) : "",
@@ -198,11 +194,7 @@ class Api1cTestController extends Controller
                 'Наименование' => strlen($order->sender_company_name) >= 3 ? $order->sender_company_name : "---",
                 'Адрес' => [
                     'Город' => $order->sender_legal_address_city ?? "",
-                    'Улица' => $order->sender_legal_address_street ?? "",
-                    'Дом' => $order->sender_legal_address_house ?? "",
-                    'Корпус' => $order->sender_legal_address_block ?? "",
-                    'Строение' => $order->sender_legal_address_building ?? "",
-                    'Квартира_офис' => $order->sender_legal_address_apartment ?? "",
+                    'Адрес' => $order->sender_legal_address ?? ""
                 ],
                 'ИНН' => strlen($order->sender_inn) >= 0 && strlen($order->sender_inn) <= 12 ? strval($order->sender_inn) : "",
                 'КПП' => strlen($order->sender_kpp) >= 0 && strlen($order->sender_kpp) <= 9 ? strval($order->sender_kpp) : "",
@@ -223,11 +215,7 @@ class Api1cTestController extends Controller
                 'Наименование' => strlen($order->recipient_company_name) >= 3 ? $order->recipient_company_name : "---",
                 'Адрес' => [
                     'Город' => $order->recipient_legal_address_city ?? "",
-                    'Улица' => $order->recipient_legal_address_street ?? "",
-                    'Дом' => $order->recipient_legal_address_house ?? "",
-                    'Корпус' => $order->recipient_legal_address_block ?? "",
-                    'Строение' => $order->recipient_legal_address_building ?? "",
-                    'Квартира_офис' => $order->recipient_legal_address_apartment ?? "",
+                    'Адрес' => $order->recipient_legal_address ?? ""
                 ],
                 'ИНН' => strlen($order->recipient_inn) >= 0 && strlen($order->recipient_inn) <= 12 ? strval($order->recipient_inn) : "",
                 'КПП' => strlen($order->recipient_kpp) >= 0 && strlen($order->recipient_kpp) <= 9 ? strval($order->recipient_kpp) : "",
