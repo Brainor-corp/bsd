@@ -68,11 +68,7 @@ class CounterpartiesController extends Controller
                     $data['НаименованиеПолное'] :
                     null,
                 'legal_address_city' => $address['city'] ?? '',
-//                'legal_address_street' => '', // todo запросить у 1с
-//                'legal_address_house' => '', // todo запросить у 1с
-//                'legal_address_block' => '', // todo запросить у 1с
-//                'legal_address_building' => '', // todo запросить у 1с
-//                'legal_address_apartment' => '', // todo запросить у 1с
+                'legal_address' => $address['address'] ?? '',
                 'inn' => $data['ИНН'] ?? null,
                 'kpp' => $data['КПП'] ?? null,
                 'phone' => $phone ?? '',
