@@ -114,7 +114,7 @@ class ReportsController extends Controller
         	return redirect(route('login'));
         }
 
-        $document_type_id_1c = 2; // todo убрать
+        $document_type_id_1c = 3; // todo убрать
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'document/id',
             [
@@ -122,7 +122,7 @@ class ReportsController extends Controller
 //                "document_id" => $document_id_1c,
                 "type" => intval($document_type_id_1c),
                 "user_id" => "77feff2c-14dc-11e9-a990-000d3a28f168",
-                "document_id" => "5d4529c8-b21e-11e9-2683-001c4208e0b2",
+                "document_id" => "aaea8a04-afa5-11e9-1d9c-001c4208e0b2",
                 "empty_fields" => true
             ]
         );
