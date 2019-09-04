@@ -132,7 +132,16 @@ class DocumentHelper
 
         $params['[СтоимостьБезНалога]'] = 0;
         $params['[СуммаНалога]'] = 0;
-        $params['[Стоимость работ]'] = 0;
+        $params['[СтоимостьРабот]'] = 0;
+
+        $params['[КодТовара]'] = '';
+        $params['[КодВидаТовара]'] = '';
+        $params['[КодЕдиницыИзмерения]'] = '';
+        $params['[УсловноеОбозначениеЕдиницыИзмерения]'] = '';
+        $params['[СуммаАкциза]'] = '';
+        $params['[ЦифровойКодСтраны]'] = '';
+        $params['[КраткоеНаименованиеСтраны]'] = '';
+        $params['[РегистрационныйНомер]'] = '';
 
         $documentData['Услуги'] = array_map(function ($el) {
             $el['СуммаБезНдс'] = floatval($el['Сумма']) - floatval($el['СуммаНДС']);
@@ -143,10 +152,10 @@ class DocumentHelper
         foreach($documentData['Услуги'] as $datum) {
             $params['[СтоимостьБезНалога]'] += floatval($datum['СуммаБезНдс']);
             $params['[СуммаНалога]'] += floatval($datum['СуммаНДС']);
-            $params['[Стоимость работ]'] += floatval($datum['Сумма']);
+            $params['[СтоимостьРабот]'] += floatval($datum['Сумма']);
         }
 
-        $params['[Номер]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_keys($documentData['Услуги']));
+        $params['[Номер]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_map(function ($el) { return $el++; }, array_keys($documentData['Услуги'])));
         $params['[Содержание]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'Содержание'));
         $params['[Номенклатура]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'Номенклатура'));
         $params['[Количество]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'Количество'));
