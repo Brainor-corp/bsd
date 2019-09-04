@@ -165,6 +165,15 @@ class DocumentHelper
         $params['[СтавкаНДС]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'СтавкаНДС'));
         $params['[СуммаНДС]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'СуммаНДС'));
 
+        $params['[КодТовара]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'КодТовара'));
+        $params['[КодВидаТовара]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'КодВидаТовара'));
+        $params['[КодЕдиницыИзмерения]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'КодЕдиницыИзмерения'));
+        $params['[УсловноеОбозначениеЕдиницыИзмерения]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'УсловноеОбозначениеЕдиницыИзмерения'));
+        $params['[СуммаАкциза]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'СуммаАкциза'));
+        $params['[ЦифровойКодСтраны]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'ЦифровойКодСтраны'));
+        $params['[КраткоеНаименованиеСтраны]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'КраткоеНаименованиеСтраны'));
+        $params['[РегистрационныйНомер]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'РегистрационныйНомер'));
+
         $name = md5('docs bsd' . time()) . '.xlsx';
         $path = storage_path('app/public/documents/');
 
