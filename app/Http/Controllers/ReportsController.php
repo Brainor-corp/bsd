@@ -156,6 +156,7 @@ class ReportsController extends Controller
                 );
                 break;
             case 6:
+                dd($documentData);
                 // Реализация (акт, накладная) (УПД)
                 // Счет-фактура(УПД???)
                 $file = DocumentHelper::generateTransferDocument(
