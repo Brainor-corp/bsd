@@ -134,6 +134,8 @@ class DocumentHelper
         $params['[СуммаНалога]'] = 0;
         $params['[СтоимостьРабот]'] = 0;
 
+        $params['[Статус]'] = $params['ДокументБезНДС'] === 'Да' ? 2 : 1;
+
         $documentData['Услуги'] = array_map(function ($el) {
             $el['СуммаБезНдс'] = floatval($el['Сумма']) - floatval($el['СуммаНДС']);
 
