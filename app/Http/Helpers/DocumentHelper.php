@@ -141,9 +141,9 @@ class DocumentHelper
         }, $documentData['Услуги']);
 
         foreach($documentData['Услуги'] as $datum) {
-            $params['[СтоимостьБезНалога]'] += $datum['СуммаБезНдс'];
-            $params['[СуммаНалога]'] += $datum['СуммаНДС'];
-            $params['[Стоимость работ]'] += $datum['Сумма'];
+            $params['[СтоимостьБезНалога]'] += floatval($datum['СуммаБезНдс']);
+            $params['[СуммаНалога]'] += floatval($datum['СуммаНДС']);
+            $params['[Стоимость работ]'] += floatval($datum['Сумма']);
         }
 
         $params['[Номер]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_keys($documentData['Услуги']));
