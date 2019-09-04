@@ -29,11 +29,13 @@
                     )
                         <tr>
                             @foreach($route->route_tariffs->where('rate.slug', 'ves') as $routeTariff)
-                                <td class="align-middle">До {{ str_replace('.00', '', $routeTariff->threshold->value) }}кг</td>
+                                <td class="align-middle">
+                                    До {{ (float)($routeTariff->threshold->value) }}кг
+                                </td>
                             @endforeach
                             @foreach($route->route_tariffs->where('rate.slug', 'obem') as $routeTariff)
                                 <td class="align-middle">
-                                    До {{ str_replace('.00', '', $routeTariff->threshold->value) }}м<sup>3</sup>
+                                    До {{ (float)($routeTariff->threshold->value) }}м<sup>3</sup>
                                 </td>
                             @endforeach
                         </tr>
