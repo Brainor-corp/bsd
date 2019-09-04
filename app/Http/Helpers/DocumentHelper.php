@@ -155,7 +155,7 @@ class DocumentHelper
             $params['[СтоимостьРабот]'] += floatval($datum['Сумма']);
         }
 
-        $params['[Номер]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_map(function ($el) { return $el++; }, array_keys($documentData['Услуги'])));
+        $params['[Номер]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_map(function ($el) { return $el + 1; }, array_keys($documentData['Услуги'])));
         $params['[Содержание]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'Содержание'));
         $params['[Номенклатура]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'Номенклатура'));
         $params['[Количество]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'Количество'));
