@@ -52,30 +52,34 @@
     <span>Характер груза:  <i><b><u>{{ $documentData['Груз'] }}</u></b></i></span>
     <br>
     <span>Вес: <i><b><u>{{ $documentData['Вес'] }} кг</u></b></i> Обьем: <i><b><u>{{ $documentData['Объем'] }} м<sup><small>3</small></sup></u></b></i> Количество мест: <i><b><u>{{ $documentData['КоличествоМест'] }} шт</u></b></i></span>
-    <div class="table-block">
-        <table>
-            <thead>
-            <tr>
-                <td>Длина, м</td>
-                <td>Ширина, м</td>
-                <td>Высота, м</td>
-                <td>Объем, м3</td>
-                <td>Вес, кг</td>
-                <td>Количество</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="hl">
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-                <td>5</td>
-                <td>6</td>
-                <td>7</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    @if(isset($documentData['Места']) && count($documentData['Места']))
+        <div class="table-block">
+            <table>
+                <thead>
+                <tr>
+                    <td>Длина, м</td>
+                    <td>Ширина, м</td>
+                    <td>Высота, м</td>
+                    <td>Объем, м3</td>
+                    <td>Вес, кг</td>
+                    <td>Количество</td>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($documentData['Места'] as $package)
+                    <tr>
+                        <td>{{ $package['Длина'] }}</td>
+                        <td>{{ $package['Ширина'] }}</td>
+                        <td>{{ $package['Высота'] }}</td>
+                        <td>{{ $package['Объем'] }}</td>
+                        <td>{{ $package['Вес'] }}</td>
+                        <td>{{ $package['Количество'] }}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
     <span>Примечания по грузу:</span>
     <p class="header-2"><b>Отправитель</b></p>
     <span>Направление (город) отправления: <i><b><u>{{ $documentData['ГородОтправления'] }}</u></b></i></span><br>
@@ -95,7 +99,7 @@
     <span>Форма оплаты: <i><b><u>{{ $documentData['ФормаОплаты'] }}</u></b></i></span><br>
     <span>Реквизиты: <i><b><u></u></b></i></span><br>
     <span>Заявку заполнил: <i><b><u>{{ $documentData['Заявку_заполнил'] }}</u></b></i></span>
-    <span class="hl">E-mail: <i><b><u>?</u></b></i></span><br>
+    <span>E-mail: <i><b><u>{{ $documentData['ПлательщикEmail'] }}</u></b></i></span><br>
     <p class="header-2 mb-0"><b>ВНИМАНИЕ!</b></p>
     <hr>
     <span>ЗАЯВКИ ПРИНИМАЮТСЯ с 9.00 до 16.00 за сутки до исполнения.</span><br>

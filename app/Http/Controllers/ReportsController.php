@@ -118,7 +118,6 @@ class ReportsController extends Controller
             'document/id',
             [
                 "user_id" => $user->guid,
-//                "user_id" => "77feff2c-14dc-11e9-a990-000d3a28f168",
                 "document_id" => $document_id_1c,
                 "type" => intval($document_type_id_1c),
                 "empty_fields" => true
