@@ -25,8 +25,13 @@
         .border {
             border-bottom: 2px solid black;
         }
+        h4 {
+            font-size: 14px !important;
+            font-weight: normal !important;
+        }
         @page { margin: 80px 25px; }
         header { position: fixed; top: -60px; left: 0px; right: 0px; height: 50px; }
+        footer { position: fixed; bottom: -60px; left: 0px; right: 0px; height: 50px; }
     </style>
 </head>
 <body>
@@ -42,6 +47,11 @@
             </tbody>
         </table>
     </header>
+    <footer style="text-align: right;">
+        <span>
+            Стоимость включает НДС 20%. Исключение, стоимость экспедирования в городе Санкт-Петербург указана без НДС
+        </span>
+    </footer>
     @include('v1.pages.prices.prices-content')
 </body>
 </html>
