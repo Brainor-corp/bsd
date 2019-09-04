@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\City;
 use App\Order;
+use App\OrderItem;
 use App\Type;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -63,10 +64,10 @@ class UserOrderSyncFrom1c implements ShouldQueue
             $order->total_weight = floatval($response1c['response']['Вес'] ?? 0);
             $order->status_id = Type::where([
                     ['class', 'order_status'],
-                    ['name', $response1c['response']['Статус']] ?? 'Не определён' // todo Добавить статус
+                    ['name', $response1c['response']['Статус']] ?? 'Не определён'
                 ])->first()->id ?? Type::where([
                     ['class', 'order_status'],
-                    ['name', 'Не определён'] // todo Добавить статус
+                    ['name', 'Не определён']
                 ])->first()->id;
             $order->ship_city_id = City::where('name', $response1c['response']['ГородОтправления'] ?? "-")->first()->id ?? null;
             $order->ship_city_name = $response1c['response']['ГородОтправления'] ?? "-";
@@ -90,20 +91,22 @@ class UserOrderSyncFrom1c implements ShouldQueue
             $order->sync_need = false;
 
             $order->save();
-        } else {
-            if($response1c['status'] != 200) {
-                // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
-                throw new \Exception(
-                    "Для пользователя " . $user->guid . " не удалось получить информацию о заказе (Api вернуло ошибку) " . $document['id']
-                );
+
+            $packages = [];
+            if(isset($response1c['response']['Места']) && count($response1c['response']['Места'])) {
+                foreach($response1c['response']['Места'] as $package) {
+                    $packages[] = new OrderItem([
+                        'length' => $package['Длина'] ?? 0,
+                        'width' => $package['Ширина'] ?? 0,
+                        'height' => $package['Высота'] ?? 0,
+                        'volume' => $package['Объем'] ?? 0,
+                        'weight' => $package['Вес'] ?? 0,
+                        'quantity' => $package['Количество'] ?? 0,
+                    ]);
+                }
             }
 
-            if(empty($response1c['response'])) {
-                // Тригерим ошибку, чтобы job с неудачным заказом упал в failed jobs
-                throw new \Exception(
-                    "Для пользователя " . $user->guid . " не удалось получить информацию о заказе (Api не вернуло данные) " . $document['id']
-                );
-            }
+            $order->order_items()->saveMany($packages);
         }
     }
 }
