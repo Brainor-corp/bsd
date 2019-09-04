@@ -134,7 +134,7 @@ class DocumentHelper
         $params['[СуммаНалога]'] = 0;
         $params['[Стоимость работ]'] = 0;
 
-        $documentData['Услуги'] = array_map(function ($key, $el) {
+        $documentData['Услуги'] = array_map(function ($el) {
             $el['СуммаБезНдс'] = floatval($el['Сумма']) - floatval($el['СуммаНДС']);
 
             return $el;
