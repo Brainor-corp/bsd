@@ -147,14 +147,14 @@ class DocumentHelper
         }
 
         $params['[Номер]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_keys($documentData['Услуги']));
-        $params['[Содержание]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['Содержание']);
-        $params['[Номенклатура]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['Номенклатура']);
-        $params['[Количество]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['Количество']);
-        $params['[Цена]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['Цена']);
-        $params['[Сумма]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['Сумма']);
-        $params['[СуммаБезНдс]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['СуммаБезНдс']);
-        $params['[СтавкаНДС]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['СтавкаНДС']);
-        $params['[СуммаНДС]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $documentData['Услуги']['СуммаНДС']);
+        $params['[Содержание]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'Содержание'));
+        $params['[Номенклатура]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'Номенклатура'));
+        $params['[Количество]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'Количество'));
+        $params['[Цена]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'Цена'));
+        $params['[Сумма]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'Сумма'));
+        $params['[СуммаБезНдс]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'СуммаБезНдс'));
+        $params['[СтавкаНДС]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'СтавкаНДС'));
+        $params['[СуммаНДС]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_column($documentData['Услуги'], 'СуммаНДС'));
 
         $name = md5('docs bsd' . time()) . '.xlsx';
         $path = storage_path('app/public/documents/');
