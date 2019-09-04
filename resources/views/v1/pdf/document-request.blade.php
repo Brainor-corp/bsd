@@ -95,7 +95,7 @@
     <span>Форма оплаты: <i><b><u>{{ $documentData['ФормаОплаты'] }}</u></b></i></span><br>
     <span>Реквизиты: <i><b><u></u></b></i></span><br>
     <span>Заявку заполнил: <i><b><u>{{ $documentData['Заявку_заполнил'] }}</u></b></i></span>
-    <span class="hl">E-mail: <i><b><u>?</u></b></i></span><br>
+    <span>E-mail: <i><b><u>{{ $documentData['ПлательщикEmail'] }}</u></b></i></span><br>
     <p class="header-2 mb-0"><b>ВНИМАНИЕ!</b></p>
     <hr>
     <span>ЗАЯВКИ ПРИНИМАЮТСЯ с 9.00 до 16.00 за сутки до исполнения.</span><br>
