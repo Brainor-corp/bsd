@@ -73,9 +73,13 @@
             </div>
         </div>
     @endforeach
-    {{--@php($cities = $insideForwardings->pluck('city')->unique('id'))--}}
+@else
+    <span>Информация по маршрутам выбранных городов отсутствует</span>
+@endif
+
+@if(!empty($insideForwardings->groupBy('city_id')))
     <h4 style="text-align: center;">Стоимость экспедирования в черте города</h4>
-    @forelse($insideForwardings->groupBy('city_id') as $insideForwardingsCities)
+    @foreach($insideForwardings->groupBy('city_id') as $insideForwardingsCities)
         <div class="table-responsive mb-3">
             <table class="table table-bordered text-center">
                 <thead>
@@ -100,9 +104,7 @@
                 </tbody>
             </table>
         </div>
-    @empty
-        <span>Информация отсутствует</span>
-    @endforelse
+    @endforeach
 @else
-    <span>Информация по выбранным городам отсутствует</span>
+    <span>Информация по стоимости экспедирования в выбранных городах отсутствует</span>
 @endif
