@@ -229,7 +229,12 @@ $(document).ready(function () {
     $(document).on('change', '#insurance', function (e) {
         $('#insurance-amount').attr('value', '');
         $('#insurance-amount').val('');
-        $('#insurance-amount-wrapper').toggle();
+
+        if($(this).is(':checked')) {
+            $('#insurance-amount-wrapper').show();
+        } else {
+            $('#insurance-amount-wrapper').hide();
+        }
     });
 
     $(document).on('change', '#insurance-amount', function (e) {
