@@ -60,7 +60,8 @@ class Api1cTestController extends Controller
                 'ship_city',
                 'dest_city',
                 'status',
-                'order_items'
+                'order_items',
+                'order_creator_type_model'
             )
             ->orderBy('created_at', 'desc')
             ->limit(1)
@@ -84,6 +85,7 @@ class Api1cTestController extends Controller
             $mapOrder['Итоговая_цена'] = is_numeric($order->total_price) ? intval($order->total_price) : 0;
             $mapOrder['Базовая_цена_маршрута'] = is_numeric($order->base_price) ? intval($order->base_price) : 0;
             $mapOrder['Заявку_заполнил'] = $order->order_creator;
+            $mapOrder['Тип_заполнителя_заявки'] = $order->order_creator_type_model->name ?? '';
 
             $mapOrder['Страховка'] = [
                 'Сумма_страховки' => is_numeric($order->insurance) ? intval($order->insurance) : 0,
@@ -95,8 +97,8 @@ class Api1cTestController extends Controller
                 'Сумма_скидки' => is_numeric($order->discount_amount) ? intval($order->discount_amount) : 0,
             ];
 
-            $mapOrder['Идентификатор_пользователя_на_сайте'] = intval($order->user_id);
-            $mapOrder['Идентификатор_пользователя_в_1с'] = $order->user->guid;
+            $mapOrder['Идентификатор_пользователя_на_сайте'] = intval($order->user_id) ?? null;
+            $mapOrder['Идентификатор_пользователя_в_1с'] = $order->user->guid ?? '';
 
             $mapOrder['Способ_оплаты'] = $order->payment->name ?? "";
 

@@ -63,6 +63,7 @@ class CalculatorController extends Controller
                     'order_services',
                     'ship_city',
                     'dest_city',
+                    'order_creator_type_model',
                 ])
                 ->firstOrFail();
 

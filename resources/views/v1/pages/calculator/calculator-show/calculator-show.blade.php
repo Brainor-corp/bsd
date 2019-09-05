@@ -25,8 +25,7 @@
     <div class="breadcrumb__list d-flex">
         <div class="container">
             <span class="breadcrumb__item"><a href="{{ route('index') }}" class="">Главная</a></span>
-            <span class="breadcrumb__item"><a href="##" class="">Услуги</a></span>
-            <span class="breadcrumb__item">Страхование</span>
+            <span class="breadcrumb__item">Калькулятор</span>
         </div>
     </div>
     <section class="wrapper">
