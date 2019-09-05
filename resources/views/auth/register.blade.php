@@ -103,7 +103,7 @@
 @section('footScripts')
     <script>
         grecaptcha.ready(function() {
-            grecaptcha.execute('{{ env('GOOGLE_CAPTCHA_KEY') }}', {action: 'feedbackForm'}).then(function(token) {
+            grecaptcha.execute('{{ env('GOOGLE_CAPTCHA_KEY') }}', {action: 'registerForm'}).then(function(token) {
                 $('#registerForm').append('<input type="hidden" name="gToken" value="'+token+'">')
             });
         });
