@@ -75,12 +75,7 @@ class ReportsController extends Controller
             })->firstOrFail();
 
         $user_1c = $order->user->guid ?? null;
-//        $user_1c = "f008aa7f-29d6-11e9-80c7-000d3a396ad2";
-//        $user_1c = "77feff2c-14dc-11e9-a990-000d3a28f168";
-
         $code1c = $order->code_1c;
-//        $code1c = "2ef09a62-8dbb-11e9-a688-001c4208e0b2";
-//        $code1c = "aaea8a04-afa5-11e9-1d9c-001c4208e0b2";
 
         $documents = [];
 
