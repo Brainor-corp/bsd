@@ -33,7 +33,6 @@ class Kernel extends ConsoleKernel
         $schedule->job(new UsersSyncTo1c())->everyFiveMinutes();
         $schedule->job(new OrdersSyncTo1c())->everyFiveMinutes();
         $schedule->job(new UsersOrdersSyncFrom1c())->everyFiveMinutes();
-        $schedule->job(new SendCounterpartiesTo1c())->everyFiveMinutes();
     }
 
     /**
