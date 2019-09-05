@@ -40,11 +40,6 @@ class Api1cTestController extends Controller
     public function createOrder() {
         $orders = Order::where('sync_need', true)
             ->whereHas(
-                'user', function ($userQ) {
-                    return $userQ->whereNotNull('guid');
-                }
-            )
-            ->whereHas(
                 'status', function ($statusQ) {
                     return $statusQ->where('slug', '<>', 'chernovik');
                 }
