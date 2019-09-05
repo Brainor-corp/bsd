@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+    <style>
+        table th {
+            text-align: left;
+        }
+    </style>
+</head>
+
 <body>
+
 <h1>Новая заявка.</h1>
 <table>
     <tbody>
     <tr>
         <th>Наименование груза</th>
-        <td>{{ $order->name }}</td>
+        <td>{{ $order->shipping_name }}</td>
     </tr>
     <tr>
         <th>Габариты (м)</th>
