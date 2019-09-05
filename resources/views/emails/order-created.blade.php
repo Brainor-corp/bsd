@@ -11,7 +11,7 @@
 
 <body>
 
-<h1>Новая заявка.</h1>
+<h1>Новая заявка</h1>
 <table>
     <tbody>
     <tr>
@@ -59,7 +59,7 @@
     </tr>
     <tr>
         <th>Сумма страховки</th>
-        <td>{{ $order->insurance_amount }}</td>
+        <td>{{ $order->insurance }}</td>
     </tr>
     <tr>
         <th>Скидка (%)</th>
