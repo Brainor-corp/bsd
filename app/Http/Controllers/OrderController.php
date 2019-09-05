@@ -182,6 +182,7 @@ class OrderController extends Controller
 
         $allTypes = Type::where('class', 'payer_type')
             ->orWhere('class', 'payment_type')
+            ->orWhere('class', 'OrderCreatorType')
             ->orWhere(function ($q) {
                 return $q->where('class', 'order_status')
                     ->whereIn('slug', ['chernovik', 'ozhidaet-moderacii']);
@@ -210,6 +211,14 @@ class OrderController extends Controller
 
         if(!$paymentType) {
             return abort(500, 'Тип оплаты не найден.');
+        }
+
+        $orderCreatorType = $allTypes->where('class', 'OrderCreatorType')
+                ->where('slug', $request->get('order-creator-type'))
+                ->first() ?? false;
+
+        if(!$orderCreatorType) {
+            return abort(500, 'Тип заполнителя заявки не найден.');
         }
 
         $order = null;
@@ -274,6 +283,7 @@ class OrderController extends Controller
         $order->dest_city_name = $destCity->name;
         $order->take_need = $request->get('need-to-take') === "on"; // Нужен ли забор груза
         $order->delivery_need = $request->get('need-to-bring') === "on"; // Нужна ли доставка груза
+        $order->order_creator_type = $orderCreatorType->id;
 
         // Получатель ///////////////////////////////////////////////////////////////////////////
         $senderType = $userTypes->where('id', $request->get('sender_type_id'))->first();

@@ -315,17 +315,59 @@
                                     <input disabled @if(isset($order->payment) && $order->payment->slug === 'beznalichnyy-raschet') checked @endif type="radio" class="custom-control-input" id="non-cash">
                                     <label class="custom-control-label" for="non-cash">Безналичный расчет</label>
                                 </div>
-                                <div class="calc__title">Прочее</div>
+                                <div class="calc__title">Заявку заполнил</div>
                                 <div id="order-creator-wrapper">
-                                    <label class="" for="order-creator">Заявку заполнил</label>
+                                    <label class="" for="order-creator">ФИО</label>
                                     <input type="text"
                                            class="form-control"
                                            id="order-creator"
                                            name="order-creator"
                                            placeholder="ФИО"
-                                           value="{{ $order->order_creator ?? '' }}"
+                                           value="{{ old('order-creator') ?? ($order->order_creator ?? (\Illuminate\Support\Facades\Auth::check() ? \Illuminate\Support\Facades\Auth::user()->full_name : '')) }}"
                                            disabled>
                                     <br>
+                                </div>
+                                <div>
+                                    <label class="mb-0" for="">Тип</label>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio"
+                                               class="custom-control-input"
+                                               id="order-creator-type-sender"
+                                               value="otpravitel-1"
+                                               name="order-creator-type"
+                                               @if(isset($order->order_creator_type_model->slug) && $order->order_creator_type_model->slug === 'otpravitel-1')
+                                               checked
+                                               @endif
+                                               disabled
+                                        />
+                                        <label class="custom-control-label" for="order-creator-type-sender">Отправитель</label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio"
+                                               class="custom-control-input"
+                                               id="order-creator-type-recipient"
+                                               value="poluchatel-1"
+                                               name="order-creator-type"
+                                               @if(isset($order->order_creator_type_model->slug) && $order->order_creator_type_model->slug === 'poluchatel-1')
+                                               checked
+                                               @endif
+                                               disabled
+                                        />
+                                        <label class="custom-control-label" for="order-creator-type-recipient">Получатель</label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio"
+                                               class="custom-control-input"
+                                               id="order-creator-type-payer"
+                                               value="platelshchik"
+                                               name="order-creator-type"
+                                               @if(isset($order->order_creator_type_model->slug) && $order->order_creator_type_model->slug === 'platelshchik')
+                                               checked
+                                               @endif
+                                               disabled
+                                        />
+                                        <label class="custom-control-label" for="order-creator-type-payer">Плательщик</label>
+                                    </div>
                                 </div>
 {{--                                <div class="form-item d-flex">--}}
 {{--                                    <button class="btn margin-item btn-danger">Оформить заказ</button>--}}

@@ -19,7 +19,7 @@ class Order extends Model
         'recipient_name', 'recipient_phone', 'payer_id', 'payer_name', 'payer_phone',
         'payment_type', 'code_1c', 'manager_id', 'operator_id', 'order_date',
         'order_finish_date', 'discount', 'discount_amount', 'insurance', 'insurance_amount', 'estimated_delivery_date',
-        'take_polygon_id', 'bring_polygon_id', 'payer_email', 'order_creator'
+        'take_polygon_id', 'bring_polygon_id', 'payer_email', 'order_creator', 'order_creator_type'
     ];
 
     protected $encryptable = [
@@ -101,6 +101,10 @@ class Order extends Model
 
     public function order_services(){
         return $this->belongsToMany(Service::class)->withPivot('price');
+    }
+
+    public function order_creator_type_model() {
+        return $this->belongsTo(Type::class, 'order_creator_type', 'id');
     }
 
     public function ship_city(){
