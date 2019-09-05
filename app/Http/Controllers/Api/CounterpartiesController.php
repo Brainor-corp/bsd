@@ -68,31 +68,46 @@ class CounterpartiesController extends Controller
             };
         }
 
-        Counterparty::updateOrCreate(
-            ['code_1c' => $data['Ref']],
-            [
-                'active' => true,
-                'type_id' => $type->id,
-                'legal_form' => $legalForm,
-                'company_name' => $data['ЮридическоеФизическоеЛицо'] === 'ЮридическоеЛицо' && isset($data['НаименованиеПолное']) ?
-                    $data['НаименованиеПолное'] :
-                    null,
-                'legal_address_city' => $address['city'] ?? '',
-                'legal_address' => $address['address'] ?? '',
-                'inn' => $data['ИНН'] ?? null,
-                'kpp' => $data['КПП'] ?? null,
-                'phone' => $phone ?? '',
-                'name' => $data['ЮридическоеФизическоеЛицо'] === 'ФизическоеЛицо' && isset($data['НаименованиеПолное']) ?
-                    $data['НаименованиеПолное'] :
-                    null,
-                'passport_series' => $passportParts[0] ?? null,
-                'passport_number' => $passportParts[1] ?? null,
-                'addition_info' => $data['Description'] ?? null,
+        $name = $data['ЮридическоеФизическоеЛицо'] === 'ФизическоеЛицо' && isset($data['НаименованиеПолное']) ?
+            $data['НаименованиеПолное'] :
+            null;
+
+        $counterparty = Counterparty::where('code_1c', $data['Ref'])
+            ->when(!empty($data['ИНН']), function ($counterpartyQ) use ($data) {
+                return $counterpartyQ->orWhere('hash_inn', md5($data['ИНН'] . config('app.key')));
+            })
+            ->when(!empty($name), function ($counterpartyQ) use ($name) {
+                return $counterpartyQ->orWhere('hash_name', md5($name . config('app.key')));
+            })
+            ->first();
+
+        $fields = [
+            'active' => true,
+            'code_1c' => $data['Ref'],
+            'type_id' => $type->id,
+            'legal_form' => $legalForm,
+            'company_name' => $data['ЮридическоеФизическоеЛицо'] === 'ЮридическоеЛицо' && isset($data['НаименованиеПолное']) ?
+                $data['НаименованиеПолное'] :
+                null,
+            'legal_address_city' => $address['city'] ?? '',
+            'legal_address' => $address['address'] ?? '',
+            'inn' => $data['ИНН'] ?? null,
+            'kpp' => $data['КПП'] ?? null,
+            'phone' => $phone ?? '',
+            'name' => $name ?? '',
+            'passport_series' => $passportParts[0] ?? null,
+            'passport_number' => $passportParts[1] ?? null,
+            'addition_info' => $data['Description'] ?? null,
 //                'contact_person' => '', // 1c не возвращает
-                'hash_name' => $data['ИНН'] ? md5($data['ИНН'] . config('app.key')) : null,
-                'hash_inn' => $data['КПП'] ? md5($data['КПП'] . config('app.key')) : null
-            ]
-        );
+            'hash_name' => $name ? md5($name . config('app.key')) : null,
+            'hash_inn' => $data['ИНН'] ? md5($data['ИНН'] . config('app.key')) : null
+        ];
+
+        if(isset($counterparty)) {
+            $counterparty->update($fields);
+        } else {
+            Counterparty::create($fields);
+        }
 
         return [
             "status" => "success"
