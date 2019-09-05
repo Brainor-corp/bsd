@@ -16,7 +16,7 @@ class OrderSave
      */
     public function handle($request, Closure $next)
     {
-        if($request->get('status') !== "chernovik" && !Auth::check()) {
+        if($request->get('status') == "order_auth" && !Auth::check()) {
             session()->put('process_order', json_encode($request->all()));
             session()->put('process_order_modal', 1);
 

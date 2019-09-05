@@ -12,6 +12,7 @@ use App\Order;
 use App\OrderItem;
 use App\Polygon;
 use App\Route;
+use App\Rules\GoogleReCaptchaV3;
 use App\Rules\INN;
 use App\Type;
 use Carbon\Carbon;
@@ -34,6 +35,7 @@ class OrderController extends Controller
         ]);
 
         $rules = [
+            "gToken" => ['required', new GoogleReCaptchaV3()],
             "ship_city" => ['required', 'string', 'max:255'],                                   // Город_отправления (название)
             "take_city_name" => ['nullable', 'string', 'max:255'],                              // Название_города_экспедиции (забор)
             "take_distance" => ['nullable', 'numeric'],                                         // Дистанция_экспедиции (забор)
@@ -103,7 +105,7 @@ class OrderController extends Controller
             "payer_addition_info_individual" => ['nullable', 'string'],                         // Плательщик (Дополнительная_информация) -- Для физ.лиц
 
             "payment" => ['required', 'string'],                                                // Способ_оплаты
-            "status" => ['required', 'string'],                                                 // Статус_заказа
+            "status" => ['required', 'string', 'in:chernovik,order_auth,order_guest'],          // Черновик|Заявка с авторизацей|Заявка без регистрации                                       // Статус_заказа
             "order-creator" => ['required', 'string'],                                          // Заявку_заполнил
         ];
 
@@ -197,8 +199,16 @@ class OrderController extends Controller
             return abort(500, 'Тип плательщика не найден.');
         }
 
+        $status = 'chernovik';
+        if(
+            $request->get('status') === 'order_auth' ||
+            $request->get('status') === 'order_guest'
+        ) {
+            $status = 'ozhidaet-moderacii';
+        }
+
         $orderStatus = $allTypes->where('class', 'order_status')
-                ->where('slug', $request->get('status'))
+                ->where('slug', $status)
                 ->first() ?? false;
 
         if(!$orderStatus) {

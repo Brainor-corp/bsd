@@ -36,28 +36,14 @@ class CalculatorController extends Controller
             ]))->withInput($continueOrder);
         }
 
-        $shipCities = City::where('is_ship', true)->with('terminal','kladr')->get();
+        $shipCities = City::where('is_ship', true)->with('terminal', 'kladr')->get();
 
         $citiesIdsToFindRoute = [];
         $order = null;
 
         if(isset($id)) { // Если открыли страницу черновика
-            $order = Order::where('id', $id)
-                ->when(
-                    Auth::check(),
-                    function ($orderQuery) {
-                        return $orderQuery->where(function ($orderSubQuery) {
-                            return $orderSubQuery->where('user_id', Auth::user()->id)
-                                ->orWhere('enter_id', $_COOKIE['enter_id']);
-                        });
-                    }
-                )
-                ->when(
-                    !Auth::check(),
-                    function ($orderQuery) {
-                        return $orderQuery->where('enter_id', $_COOKIE['enter_id']);
-                    }
-                )
+            $order = Order::available()
+                ->where('id', $id)
                 ->with([
                     'order_items',
                     'order_services',

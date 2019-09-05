@@ -40,13 +40,9 @@ class ReportsController extends Controller
     }
 
     public function showReportPage($id) {
-        $order = Order::where('id', $id)
-            ->where(function ($ordersQuery) {
-                return Auth::check() ? $ordersQuery
-                    ->where('user_id', Auth::id())
-                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
-                    $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
-            })->with([
+        $order = Order::available()
+            ->where('id', $id)
+            ->with([
                 'status',
                 'cargo_type',
                 'order_items',
@@ -56,9 +52,11 @@ class ReportsController extends Controller
                 'order_services' => function ($services) {
                     return $services->withPivot('price');
                 }
-            ])->whereDoesntHave('status', function ($statusQuery) {
+            ])
+            ->whereDoesntHave('status', function ($statusQuery) {
                 return $statusQuery->where('slug', 'chernovik');
-            })->firstOrFail();
+            })
+            ->firstOrFail();
 
         $userTypes = Type::where('class', 'UserType')->get();
 
@@ -66,13 +64,9 @@ class ReportsController extends Controller
     }
 
     public function getDownloadDocumentsModal(Request $request) {
-        $order = Order::where('id', $request->get('order_id'))
-            ->where(function ($ordersQuery) {
-                return Auth::check() ? $ordersQuery
-                    ->where('user_id', Auth::id())
-                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
-                    $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
-            })->firstOrFail();
+        $order = Order::available()
+            ->where('id', $request->get('order_id'))
+            ->firstOrFail();
 
         $user_1c = $order->user->guid ?? null;
         $code1c = $order->code_1c;
@@ -168,13 +162,8 @@ class ReportsController extends Controller
     }
 
     public function actionDownloadReports(Request $request) {
-        $orders = Order::with('status', 'ship_city', 'dest_city')
-            ->where(function ($orderQuery) {
-                return Auth::check() ? $orderQuery
-                    ->where('user_id', Auth::user()->id)
-                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
-                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
-            })
+        $orders = Order::available()
+            ->with('status', 'ship_city', 'dest_city')
             ->when($request->get('id'), function ($order) use ($request) {
                 return $order->where('id', 'LIKE', '%' . $request->get('id') . '%');
             })

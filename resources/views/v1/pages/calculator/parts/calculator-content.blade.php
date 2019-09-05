@@ -641,8 +641,14 @@
                    id="order-creator-type-sender"
                    value="otpravitel-1"
                    name="order-creator-type"
-                   @if(isset($order->order_creator_type_model->slug) && $order->order_creator_type_model->slug === 'otpravitel-1')
-                       checked
+                   @if(!empty(old('order-creator-type')))
+                        @if(old('order-creator-type') === 'otpravitel-1')
+                            checked
+                        @endif
+                   @else
+                       @if(isset($order->order_creator_type_model->slug) && $order->order_creator_type_model->slug === 'otpravitel-1')
+                            checked
+                       @endif
                    @endif
                    required
             />
@@ -654,8 +660,14 @@
                    id="order-creator-type-recipient"
                    value="poluchatel-1"
                    name="order-creator-type"
-                   @if(isset($order->order_creator_type_model->slug) && $order->order_creator_type_model->slug === 'poluchatel-1')
-                       checked
+                   @if(!empty(old('order-creator-type')))
+                       @if(old('order-creator-type') === 'poluchatel-1')
+                            checked
+                       @endif
+                   @else
+                       @if(isset($order->order_creator_type_model->slug) && $order->order_creator_type_model->slug === 'poluchatel-1')
+                            checked
+                       @endif
                    @endif
                    required
             />
@@ -667,8 +679,14 @@
                    id="order-creator-type-payer"
                    value="platelshchik"
                    name="order-creator-type"
-                   @if(isset($order->order_creator_type_model->slug) && $order->order_creator_type_model->slug === 'platelshchik')
-                       checked
+                   @if(!empty(old('order-creator-type')))
+                       @if(old('order-creator-type') === 'platelshchik')
+                            checked
+                       @endif
+                   @else
+                       @if(isset($order->order_creator_type_model->slug) && $order->order_creator_type_model->slug === 'platelshchik')
+                            checked
+                       @endif
                    @endif
                    required
             />
@@ -676,8 +694,11 @@
         </div>
     </div>
     <div class="form-item d-flex">
-        <button type="submit" name="status" value="ozhidaet-moderacii" class="btn margin-item btn-danger">Оформить заказ</button>
         <button type="submit" name="status" value="chernovik" class="btn margin-item btn-default">Сохранить черновик</button>
+        <button type="submit" name="status" value="order_auth" class="btn margin-item btn-danger">Оформить заявку</button>
+        @if(\Illuminate\Support\Facades\Auth::guest())
+            <button type="submit" name="status" value="order_guest" class="btn margin-item btn-danger">Оформить заявку без регистрации</button>
+        @endif
     </div>
     @csrf
 </form>

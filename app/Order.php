@@ -4,6 +4,7 @@ namespace App;
 
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Order extends Model
@@ -132,6 +133,20 @@ class Order extends Model
 
     public function getComprehensibleDeliveryNeed(){
         return $this->delivery_need ? 'Да' : 'Нет';
+    }
+
+    public function scopeAvailable($query) {
+        return $query->where(function ($orderQuery) {
+            if(Auth::check()) {
+                $orderQuery->where('user_id', Auth::id());
+            }
+
+            if(isset($_COOKIE['enter_id'])) {
+                $orderQuery->orWhere('enter_id', $_COOKIE['enter_id']);
+            }
+
+            return $orderQuery;
+        });
     }
 
     protected static function boot()
