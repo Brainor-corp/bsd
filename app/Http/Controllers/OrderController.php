@@ -103,7 +103,7 @@ class OrderController extends Controller
             "payer_addition_info_individual" => ['nullable', 'string'],                         // Плательщик (Дополнительная_информация) -- Для физ.лиц
 
             "payment" => ['required', 'string'],                                                // Способ_оплаты
-            "status" => ['required', 'string'],                                                 // Статус_заказа
+            "status" => ['required', 'string', 'in:chernovik,order_auth,order_guest'],          // Черновик|Заявка с авторизацей|Заявка без регистрации                                       // Статус_заказа
             "order-creator" => ['required', 'string'],                                          // Заявку_заполнил
         ];
 
@@ -197,8 +197,16 @@ class OrderController extends Controller
             return abort(500, 'Тип плательщика не найден.');
         }
 
+        $status = 'chernovik';
+        if(
+            $request->get('status') === 'order_auth' ||
+            $request->get('status') === 'order_guest'
+        ) {
+            $status = 'ozhidaet-moderacii';
+        }
+
         $orderStatus = $allTypes->where('class', 'order_status')
-                ->where('slug', $request->get('status'))
+                ->where('slug', $status)
                 ->first() ?? false;
 
         if(!$orderStatus) {
