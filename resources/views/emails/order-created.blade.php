@@ -157,9 +157,9 @@
         <th>Плательщик</th>
         <td>
             <strong>Email:</strong> {{ $order->payer_email ?? '-' }}
-            @if(isset($order->payer) && $order->payer->slug === 'otpravitel') <strong>Отправитель</strong> @endif
-            @if(isset($order->payer) && $order->payer->slug === 'poluchatel') <strong>Получатель</strong> @endif
-            @if(isset($order->payer) && $order->payer->slug === '3-e-lico') <strong>3-е лицо</strong> @endif
+            {{--@if(isset($order->payer) && $order->payer->slug === 'otpravitel') <strong>Отправитель</strong> @endif--}}
+            {{--@if(isset($order->payer) && $order->payer->slug === 'poluchatel') <strong>Получатель</strong> @endif--}}
+            {{--@if(isset($order->payer) && $order->payer->slug === '3-e-lico') <strong>3-е лицо</strong> @endif--}}
 
             {{--@if(isset($order->payer) && $order->payer->slug === '3-e-lico')--}}
                 {{--<strong>Тип:</strong> {{ $order->payer_type->name ?? '-' }}. <br>--}}
