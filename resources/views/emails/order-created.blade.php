@@ -5,7 +5,6 @@
     <style>
         table {
             width: 100%;
-            text-align: center;
             border-collapse: collapse;
             border-spacing: 0;
             margin-bottom: 5px;
