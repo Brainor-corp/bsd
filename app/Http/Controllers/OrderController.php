@@ -12,6 +12,7 @@ use App\Order;
 use App\OrderItem;
 use App\Polygon;
 use App\Route;
+use App\Rules\Discount1c;
 use App\Rules\GoogleReCaptchaV3;
 use App\Rules\INN;
 use App\Type;
@@ -49,7 +50,7 @@ class OrderController extends Controller
             "bring_polygon" => ['nullable'],                                                    // Полигон экспедиции (доставка)
 
             "insurance_amount" => ['required', 'numeric', 'min:50000'],                         // Страховка (Цена_страхования)
-            "discount" => ['nullable', 'numeric'],                                              // Скидка (Процент_скидки)
+            "discount" => ['nullable', 'numeric', new Discount1c()],                            // Скидка (Процент_скидки)
 
             "sender_type_id" => ['required', 'numeric'],                                        // Отправитель (Тип_контрагента)
             "sender_legal_form" => ['nullable', 'string', 'max:255'],                           // Отправитель (Правовая_форма)
