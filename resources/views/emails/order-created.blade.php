@@ -161,30 +161,30 @@
             @if(isset($order->payer->slug) && $order->payer->slug === 'poluchatel') <strong>Получатель</strong> @endif
             @if(isset($order->payer->slug) && $order->payer->slug === '3-e-lico') <strong>3-е лицо</strong> @endif
 
-            {{--@if(isset($order->payer) && $order->payer->slug === '3-e-lico')--}}
-                {{--<strong>Тип:</strong> {{ $order->payer_type->name ?? '-' }}. <br>--}}
-                {{--@if(isset($order->payer_type) && $order->payer_type->slug == 'yuridicheskoe-lico')--}}
-                    {{--<strong>Правовая форма:</strong> {{ $order->payer_legal_form ?? '-' }} <br>--}}
-                    {{--<strong>Название организации:</strong> {{ $order->payer_company_name ?? '-' }} <br>--}}
-                    {{--<strong>Юридический адрес:</strong>--}}
-                    {{--Город - {{ $order->payer_legal_address_city ?? '-' }},--}}
-                    {{--Адрес - {{ $order->payer_legal_address ?? '-' }} <br>--}}
+            @if(isset($order->payer->slug) && $order->payer->slug === '3-e-lico')
+                <strong>Тип:</strong> {{ $order->payer_type->name ?? '-' }}. <br>
+                @if(isset($order->payer_type) && $order->payer_type->slug == 'yuridicheskoe-lico')
+                    <strong>Правовая форма:</strong> {{ $order->payer_legal_form ?? '-' }} <br>
+                    <strong>Название организации:</strong> {{ $order->payer_company_name ?? '-' }} <br>
+                    <strong>Юридический адрес:</strong>
+                    Город - {{ $order->payer_legal_address_city ?? '-' }},
+                    Адрес - {{ $order->payer_legal_address ?? '-' }} <br>
 
-                    {{--<strong>ИНН:</strong> {{ $order->payer_inn ?? '-' }} <br>--}}
-                    {{--<strong>КПП:</strong> {{ $order->payer_kpp ?? '-' }} <br>--}}
-                    {{--<strong>Контактное лицо:</strong> {{ $order->payer_contact_person ?? '-' }} <br>--}}
-                    {{--<strong>Телефон:</strong> {{ $order->payer_phone ?? '-' }} <br>--}}
-                    {{--<strong>Дополнительная информация:</strong> {{ $order->payer_addition_info ?? '-' }}--}}
-                {{--@endif--}}
+                    <strong>ИНН:</strong> {{ $order->payer_inn ?? '-' }} <br>
+                    <strong>КПП:</strong> {{ $order->payer_kpp ?? '-' }} <br>
+                    <strong>Контактное лицо:</strong> {{ $order->payer_contact_person ?? '-' }} <br>
+                    <strong>Телефон:</strong> {{ $order->payer_phone ?? '-' }} <br>
+                    <strong>Дополнительная информация:</strong> {{ $order->payer_addition_info ?? '-' }}
+                @endif
 
-                {{--@if(isset($order->payer_type) && $order->payer_type->slug == 'fizicheskoe-lico')--}}
-                    {{--<strong>ФИО:</strong> {{ $order->payer_name ?? '-' }} <br>--}}
-                    {{--<strong>Паспорт:</strong> {{ $order->payer_passport_series ?? '-' }} {{ $order->payer_passport_number ?? '-' }} <br>--}}
-                    {{--<strong>Контактное лицо:</strong> {{ $order->payer_contact_person ?? '-' }} <br>--}}
-                    {{--<strong>Телефон:</strong> {{ $order->payer_phone ?? '-' }} <br>--}}
-                    {{--<strong>Дополнительная информация:</strong> {{ $order->payer_addition_info ?? '-' }}--}}
-                {{--@endif--}}
-            {{--@endif--}}
+                @if(isset($order->payer_type) && $order->payer_type->slug == 'fizicheskoe-lico')
+                    <strong>ФИО:</strong> {{ $order->payer_name ?? '-' }} <br>
+                    <strong>Паспорт:</strong> {{ $order->payer_passport_series ?? '-' }} {{ $order->payer_passport_number ?? '-' }} <br>
+                    <strong>Контактное лицо:</strong> {{ $order->payer_contact_person ?? '-' }} <br>
+                    <strong>Телефон:</strong> {{ $order->payer_phone ?? '-' }} <br>
+                    <strong>Дополнительная информация:</strong> {{ $order->payer_addition_info ?? '-' }}
+                @endif
+            @endif
         </td>
     </tr>
     <tr>
