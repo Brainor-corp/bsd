@@ -197,7 +197,7 @@
                        @if((!empty(old('need-to-take')) && !empty(old('ship-from-point'))) || (isset($order) && $order->take_need && $order->take_point)) checked @endif
                        @if(empty(old('need-to-take')) && !isset($order) && !isset($deliveryPoint) || (isset($order) && !$order->take_need)) disabled @endif>
                 {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
-                <label class="custom-control-label" for="ship-from-point">Доставку груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
+                <label class="custom-control-label" for="ship-from-point">Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
             </div>
         </div>
     </div>
@@ -226,7 +226,7 @@
                 <input type="radio" class="custom-control-input need-to-bring-input" id="need-to-bring-type-in" name="need-to-bring-type" value="in"
                        @if((!empty(old('need-to-bring')) && old('need-to-bring-type') == 'in') || (isset($order) && $order->delivery_need && $order->delivery_in_city)) checked @endif
                        @if(empty(old('need-to-bring')) && (!isset($order) && !isset($bringPoint) || (isset($order) && !$order->delivery_need))) disabled @endif/>
-                <label class="custom-control-label" for="need-to-bring-type-in">в пределах города отправления</label>
+                <label class="custom-control-label" for="need-to-bring-type-in">в пределах города назначения</label>
             </div>
             <div class="custom-control custom-radio">
                 <input type="radio" class="custom-control-input need-to-bring-input" id="need-to-bring-type-from" name="need-to-bring-type" value="from"
@@ -266,7 +266,7 @@
                        @if(empty(old('need-to-bring')) && !isset($order) && !isset($bringPoint) || (isset($order) && !$order->delivery_need)) disabled @endif
                 >
                 {{--<label class="custom-control-label" for="you-can-pick">Самостоятельно забрать груз  на терминал (100 <span class="rouble">p</span>)</label>--}}
-                <label class="custom-control-label" for="bring-to-point">Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
+                <label class="custom-control-label" for="bring-to-point">Доставку груза необходимо произвести в гипермаркет, распределительный центр или в точное время (временно́е "окно" менее 1 часа).</label>
             </div>
         </div>
     </div>

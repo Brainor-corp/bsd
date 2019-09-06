@@ -47,11 +47,39 @@
     </tr>
     <tr>
         <th>Откуда</th>
-        <td>-</td>
+        <td>
+            {{ $order->ship_city_name ?? ($order->ship_city->name ?? '') }}
+            @if($order->take_need)
+                Нужно забрать груз.
+                @if($order->take_in_city)
+                    В пределах города отправления
+                @else
+                    Из: {{ $order->take_address }}
+                @endif
+
+                @if($order->take_point)
+                    Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).
+                @endif
+            @endif
+        </td>
     </tr>
     <tr>
         <th>Куда</th>
-        <td>-</td>
+        <td>
+            {{ $order->dest_city_name ?? ($order->dest_city->name ?? '') }}
+            @if($order->delivery_need)
+                Нужно доставить груз.
+                @if($order->delivery_in_city)
+                    В пределах города назначения
+                @else
+                    В: {{ $order->delivery_address }}
+                @endif
+
+                @if($order->delivery_point)
+                    Доставку груза необходимо произвести в гипермаркет, распределительный центр или в точное время (временно́е "окно" менее 1 часа).
+                @endif
+            @endif
+        </td>
     </tr>
     <tr>
         <th>Дополнительные услуги</th>
