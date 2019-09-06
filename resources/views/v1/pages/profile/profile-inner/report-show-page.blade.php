@@ -125,7 +125,7 @@
                                     <div class="col delivery-block">
                                         <div class="form-item">
                                             <select id="ship_city" class="form-control point-select">
-                                                <option value="">{{ $order->ship_city_name ?? $order->ship_city->name ?? '' }}</option>
+                                                <option value="">{{ $order->ship_city_name ?? ($order->ship_city->name ?? '') }}</option>
                                             </select>
                                         </div>
                                         <div class="custom-control custom-checkbox">
@@ -147,8 +147,8 @@
                                             </div>
                                         </div>
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" @if($order->take_need && !$order->take_point) checked @endif class="custom-control-input need-to-take-input x2-check" id="ship-from-point" disabled>
-                                            <label class="custom-control-label" for="ship-from-point">Доставку груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
+                                            <input type="checkbox" @if($order->take_need && $order->take_point) checked @endif class="custom-control-input need-to-take-input x2-check" id="ship-from-point" disabled>
+                                            <label class="custom-control-label" for="ship-from-point">Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
                                         </div>
                                     </div>
                                 </div>
@@ -157,7 +157,7 @@
                                     <div class="col delivery-block">
                                         <div class="form-item">
                                             <select id="dest_city" class="form-control point-select" name="dest_city">
-                                                <option value="">{{ $order->dest_city_name ?? $order->dest_city->name ?? '' }}</option>
+                                                <option value="">{{ $order->dest_city_name ?? ($order->dest_city->name ?? '') }}</option>
                                             </select>
                                         </div>
                                         <div class="custom-control custom-checkbox">
@@ -166,7 +166,7 @@
                                         </div>
                                         <div class="custom-control custom-radio">
                                             <input type="radio" @if($order->delivery_need && $order->delivery_in_city) checked @endif class="custom-control-input need-to-bring-input" disabled/>
-                                            <label class="custom-control-label" for="need-to-bring-type-in">в пределах города отправления</label>
+                                            <label class="custom-control-label" for="need-to-bring-type-in">в пределах города назначения</label>
                                         </div>
                                         <div class="custom-control custom-radio">
                                             <input @if($order->delivery_need && !$order->delivery_in_city) checked @endif type="radio" class="custom-control-input need-to-bring-input" disabled/>
@@ -180,7 +180,7 @@
                                         </div>
                                         <div class="custom-control custom-checkbox">
                                             <input @if($order->delivery_need && $order->delivery_point) checked @endif type="checkbox" class="custom-control-input need-to-bring-input x2-check" disabled>
-                                            <label class="custom-control-label" for="bring-to-point">Забор груза необходимо произвести в гипермаркете, распределительном центре или в точное время (временно́е "окно" менее 1 часа).</label>
+                                            <label class="custom-control-label" for="bring-to-point">Доставку груза необходимо произвести в гипермаркет, распределительный центр или в точное время (временно́е "окно" менее 1 часа).</label>
                                         </div>
                                     </div>
                                 </div>
