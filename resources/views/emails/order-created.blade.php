@@ -163,7 +163,7 @@
 
             @if(isset($order->payer->slug) && $order->payer->slug === '3-e-lico')
                 <strong>Тип:</strong> {{ $order->payer_type->name ?? '-' }}. <br>
-                @if(isset($order->payer_type) && $order->payer_type->slug == 'yuridicheskoe-lico')
+                @if(isset($order->payer_type->slug) && $order->payer_type->slug == 'yuridicheskoe-lico')
                     <strong>Правовая форма:</strong> {{ $order->payer_legal_form ?? '-' }} <br>
                     <strong>Название организации:</strong> {{ $order->payer_company_name ?? '-' }} <br>
                     <strong>Юридический адрес:</strong>
@@ -177,7 +177,7 @@
                     <strong>Дополнительная информация:</strong> {{ $order->payer_addition_info ?? '-' }}
                 @endif
 
-                @if(isset($order->payer_type) && $order->payer_type->slug == 'fizicheskoe-lico')
+                @if(isset($order->payer_type->slug) && $order->payer_type->slug == 'fizicheskoe-lico')
                     <strong>ФИО:</strong> {{ $order->payer_name ?? '-' }} <br>
                     <strong>Паспорт:</strong> {{ $order->payer_passport_series ?? '-' }} {{ $order->payer_passport_number ?? '-' }} <br>
                     <strong>Контактное лицо:</strong> {{ $order->payer_contact_person ?? '-' }} <br>
