@@ -161,8 +161,9 @@
             @if(isset($order->payer->slug) && $order->payer->slug === 'poluchatel') <strong>Получатель</strong> @endif
             @if(isset($order->payer->slug) && $order->payer->slug === '3-e-lico') <strong>3-е лицо</strong> @endif
 
-            @if(isset($order->payer_form_type->slug) && $order->payer_form_type->slug === '3-e-lico')
+            @if(isset($order->payer->slug) && $$order->payer->slug === '3-e-lico')
                 <strong>Тип:</strong> {{ $order->payer_form_type->name ?? '-' }}. <br>
+
                 @if(isset($order->payer_form_type->slug) && $order->payer_form_type->slug == 'yuridicheskoe-lico')
                     <strong>Правовая форма:</strong> {{ $order->payer_legal_form ?? '-' }} <br>
                     <strong>Название организации:</strong> {{ $order->payer_company_name ?? '-' }} <br>
