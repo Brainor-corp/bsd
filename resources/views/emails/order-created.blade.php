@@ -48,7 +48,7 @@
     <tr>
         <th>Откуда</th>
         <td>
-            {{ $order->ship_city_name ?? ($order->ship_city->name ?? '') }}
+            {{ $order->ship_city_name ?? ($order->ship_city->name ?? '-') }}.
             @if($order->take_need)
                 Нужно забрать груз.
                 @if($order->take_in_city)
@@ -66,7 +66,7 @@
     <tr>
         <th>Куда</th>
         <td>
-            {{ $order->dest_city_name ?? ($order->dest_city->name ?? '') }}
+            {{ $order->dest_city_name ?? ($order->dest_city->name ?? '-') }}.
             @if($order->delivery_need)
                 Нужно доставить груз.
                 @if($order->delivery_in_city)
@@ -99,19 +99,97 @@
     </tr>
     <tr>
         <th>Отправитель</th>
-        <td>-</td>
+        <td>
+            Тип: {{ $order->sender_type->name ?? '-' }}. <br>
+
+            @if(isset($order->sender_type) && $order->sender_type->slug == 'yuridicheskoe-lico')
+                <strong>Правовая форма:</strong> {{ $order->sender_legal_form ?? '-' }} <br>
+                <strong>Название организации:</strong> {{ $order->sender_company_name ?? '-' }} <br>
+                <strong>Юридический адрес:</strong>
+                Город - {{ $order->sender_legal_address_city ?? '-' }},
+                Адрес - {{ $order->sender_legal_address ?? '-' }} <br>
+
+                <strong>ИНН:</strong> {{ $order->sender_inn ?? '-' }} <br>
+                <strong>КПП:</strong> {{ $order->sender_kpp ?? '-' }} <br>
+                <strong>Контактное лицо:</strong> {{ $order->sender_contact_person ?? '-' }} <br>
+                <strong>Телефон:</strong> {{ $order->sender_phone ?? '-' }} <br>
+                <strong>Дополнительная информация:</strong> {{ $order->sender_addition_info ?? '-' }}
+            @endif
+
+            @if(isset($order->sender_type) && $order->sender_type->slug == 'fizicheskoe-lico')
+                <strong>ФИО:</strong> {{ $order->sender_name ?? '-' }} <br>
+                <strong>Паспорт:</strong> {{ $order->sender_passport_series ?? '-' }} {{ $order->sender_passport_number ?? '-' }} <br>
+                <strong>Контактное лицо:</strong> {{ $order->sender_contact_person ?? '-' }} <br>
+                <strong>Телефон:</strong> {{ $order->sender_phone ?? '-' }} <br>
+                <strong>Дополнительная информация:</strong> {{ $order->sender_addition_info ?? '-' }}
+            @endif
+        </td>
     </tr>
     <tr>
         <th>Получатель</th>
-        <td>-</td>
+        <td>
+            @if(isset($order->recipient_type) && $order->recipient_type->slug == 'yuridicheskoe-lico')
+                <strong>Правовая форма:</strong> {{ $order->recipient_legal_form ?? '-' }} <br>
+                <strong>Название организации:</strong> {{ $order->recipient_company_name ?? '-' }} <br>
+                <strong>Юридический адрес:</strong>
+                Город - {{ $order->recipient_legal_address_city ?? '-' }},
+                Адрес - {{ $order->recipient_legal_address ?? '-' }} <br>
+
+                <strong>ИНН:</strong> {{ $order->recipient_inn ?? '-' }} <br>
+                <strong>КПП:</strong> {{ $order->recipient_kpp ?? '-' }} <br>
+                <strong>Контактное лицо:</strong> {{ $order->recipient_contact_person ?? '-' }} <br>
+                <strong>Телефон:</strong> {{ $order->recipient_phone ?? '-' }} <br>
+                <strong>Дополнительная информация:</strong> {{ $order->recipient_addition_info ?? '-' }}
+            @endif
+
+            @if(isset($order->recipient_type) && $order->recipient_type->slug == 'fizicheskoe-lico')
+                <strong>ФИО:</strong> {{ $order->recipient_name ?? '-' }} <br>
+                <strong>Паспорт:</strong> {{ $order->recipient_passport_series ?? '-' }} {{ $order->recipient_passport_number ?? '-' }} <br>
+                <strong>Контактное лицо:</strong> {{ $order->recipient_contact_person ?? '-' }} <br>
+                <strong>Телефон:</strong> {{ $order->recipient_phone ?? '-' }} <br>
+                <strong>Дополнительная информация:</strong> {{ $order->recipient_addition_info ?? '-' }}
+            @endif
+        </td>
     </tr>
     <tr>
         <th>Плательщик</th>
-        <td>-</td>
+        <td>
+            <strong>Email:</strong> {{ $order->payer_email ?? '-' }}
+            <strong>Тип:</strong>
+            @if(isset($order->payer) && $order->payer->slug === 'otpravitel') Отправитель @endif
+            @if(isset($order->payer) && $order->payer->slug === 'poluchatel') Получатель @endif
+            @if(isset($order->payer) && $order->payer->slug === '3-e-lico') 3-е лицо @endif
+
+            @if(!isset($order->payer) || $order->payer->slug !== '3-e-lico')
+                @if(isset($order->payer_type) && $order->payer_type->slug == 'yuridicheskoe-lico')
+                    <strong>Правовая форма:</strong> {{ $order->payer_legal_form ?? '-' }} <br>
+                    <strong>Название организации:</strong> {{ $order->payer_company_name ?? '-' }} <br>
+                    <strong>Юридический адрес:</strong>
+                    Город - {{ $order->payer_legal_address_city ?? '-' }},
+                    Адрес - {{ $order->payer_legal_address ?? '-' }} <br>
+
+                    <strong>ИНН:</strong> {{ $order->payer_inn ?? '-' }} <br>
+                    <strong>КПП:</strong> {{ $order->payer_kpp ?? '-' }} <br>
+                    <strong>Контактное лицо:</strong> {{ $order->payer_contact_person ?? '-' }} <br>
+                    <strong>Телефон:</strong> {{ $order->payer_phone ?? '-' }} <br>
+                    <strong>Дополнительная информация:</strong> {{ $order->payer_addition_info ?? '-' }}
+                @endif
+
+                @if(isset($order->payer_type) && $order->payer_type->slug == 'fizicheskoe-lico')
+                    <strong>ФИО:</strong> {{ $order->payer_name ?? '-' }} <br>
+                    <strong>Паспорт:</strong> {{ $order->payer_passport_series ?? '-' }} {{ $order->payer_passport_number ?? '-' }} <br>
+                    <strong>Контактное лицо:</strong> {{ $order->payer_contact_person ?? '-' }} <br>
+                    <strong>Телефон:</strong> {{ $order->payer_phone ?? '-' }} <br>
+                    <strong>Дополнительная информация:</strong> {{ $order->payer_addition_info ?? '-' }}
+                @endif
+            @endif
+        </td>
     </tr>
     <tr>
         <th>Форма оплаты</th>
-        <td>-</td>
+        <td>
+            {{ $order->payment->name ?? '-' }}
+        </td>
     </tr>
     <tr>
         <th>Заявку заполнил</th>
