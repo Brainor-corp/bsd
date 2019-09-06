@@ -4,7 +4,7 @@
 <head>
     <style>
         table {
-            width: 100%;
+            width: 600px;
             border-collapse: collapse;
             border-spacing: 0;
             margin-bottom: 5px;
@@ -13,13 +13,19 @@
 
         table th {
             text-align: left;
+            vertical-align: text-top;
+        }
+
+        table th,
+        table td {
+            padding: 7px;
         }
     </style>
 </head>
 
 <body>
 
-<h1>Новая заявка</h1>
+<h1 style="padding-left: 7px">Новая заявка</h1>
 <table>
     <tbody>
     <tr>
