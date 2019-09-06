@@ -100,7 +100,7 @@
     <tr>
         <th>Отправитель</th>
         <td>
-            Тип: {{ $order->sender_type->name ?? '-' }}. <br>
+            <strong>Тип:</strong> {{ $order->sender_type->name ?? '-' }}. <br>
 
             @if(isset($order->sender_type) && $order->sender_type->slug == 'yuridicheskoe-lico')
                 <strong>Правовая форма:</strong> {{ $order->sender_legal_form ?? '-' }} <br>
@@ -128,6 +128,8 @@
     <tr>
         <th>Получатель</th>
         <td>
+            <strong>Тип:</strong> {{ $order->recipient_type->name ?? '-' }}. <br>
+
             @if(isset($order->recipient_type) && $order->recipient_type->slug == 'yuridicheskoe-lico')
                 <strong>Правовая форма:</strong> {{ $order->recipient_legal_form ?? '-' }} <br>
                 <strong>Название организации:</strong> {{ $order->recipient_company_name ?? '-' }} <br>
@@ -155,12 +157,12 @@
         <th>Плательщик</th>
         <td>
             <strong>Email:</strong> {{ $order->payer_email ?? '-' }}
-            <strong>Тип:</strong>
-            @if(isset($order->payer) && $order->payer->slug === 'otpravitel') Отправитель @endif
-            @if(isset($order->payer) && $order->payer->slug === 'poluchatel') Получатель @endif
-            @if(isset($order->payer) && $order->payer->slug === '3-e-lico') 3-е лицо @endif
+            @if(isset($order->payer) && $order->payer->slug === 'otpravitel') <strong>Отправитель</strong> @endif
+            @if(isset($order->payer) && $order->payer->slug === 'poluchatel') <strong>Получатель</strong> @endif
+            @if(isset($order->payer) && $order->payer->slug === '3-e-lico') <strong>3-е лицо</strong> @endif
 
-            {{--@if(!isset($order->payer) || $order->payer->slug !== '3-e-lico')--}}
+            @if(!isset($order->payer) || $order->payer->slug !== '3-e-lico')
+                {{--<strong>Тип:</strong> {{ $order->payer_type->name ?? '-' }}. <br>--}}
                 {{--@if(isset($order->payer_type) && $order->payer_type->slug == 'yuridicheskoe-lico')--}}
                     {{--<strong>Правовая форма:</strong> {{ $order->payer_legal_form ?? '-' }} <br>--}}
                     {{--<strong>Название организации:</strong> {{ $order->payer_company_name ?? '-' }} <br>--}}
@@ -182,7 +184,7 @@
                     {{--<strong>Телефон:</strong> {{ $order->payer_phone ?? '-' }} <br>--}}
                     {{--<strong>Дополнительная информация:</strong> {{ $order->payer_addition_info ?? '-' }}--}}
                 {{--@endif--}}
-            {{--@endif--}}
+            @endif
         </td>
     </tr>
     <tr>
