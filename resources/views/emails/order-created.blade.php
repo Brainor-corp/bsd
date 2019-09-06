@@ -3,6 +3,15 @@
 
 <head>
     <style>
+        table {
+            width: 100%;
+            text-align: center;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+
         table th {
             text-align: left;
         }
@@ -156,10 +165,10 @@
     <tr>
         <th>Плательщик</th>
         <td>
-            <strong>Email:</strong> {{ $order->payer_email ?? '-' }}
-            @if(isset($order->payer->slug) && $order->payer->slug === 'otpravitel') <strong>Отправитель</strong> @endif
-            @if(isset($order->payer->slug) && $order->payer->slug === 'poluchatel') <strong>Получатель</strong> @endif
-            @if(isset($order->payer->slug) && $order->payer->slug === '3-e-lico') <strong>3-е лицо</strong> @endif
+            <strong>Email:</strong> {{ $order->payer_email ?? '-' }} <br>
+            @if(isset($order->payer->slug) && $order->payer->slug === 'otpravitel') <strong>Отправитель</strong> <br> @endif
+            @if(isset($order->payer->slug) && $order->payer->slug === 'poluchatel') <strong>Получатель</strong> <br> @endif
+            @if(isset($order->payer->slug) && $order->payer->slug === '3-e-lico') <strong>3-е лицо</strong> <br> @endif
 
             @if(isset($order->payer->slug) && $order->payer->slug === '3-e-lico')
                 <strong>Тип:</strong> {{ $order->payer_form_type->name ?? '-' }}. <br>
