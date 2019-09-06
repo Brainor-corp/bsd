@@ -17,6 +17,8 @@ class SendOrderCreatedMailToAdmin implements ShouldQueue
 
     private $recipient, $order;
 
+    public $tries = 1;
+
     /**
      * Create a new job instance.
      *
