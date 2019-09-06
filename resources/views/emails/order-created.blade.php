@@ -52,9 +52,9 @@
             @if($order->take_need)
                 Нужно забрать груз.
                 @if($order->take_in_city)
-                    В пределах города отправления
+                    В пределах города отправления.
                 @else
-                    Из: {{ $order->take_address }}
+                    Из: {{ $order->take_address }}.
                 @endif
 
                 @if($order->take_point)
@@ -70,9 +70,9 @@
             @if($order->delivery_need)
                 Нужно доставить груз.
                 @if($order->delivery_in_city)
-                    В пределах города назначения
+                    В пределах города назначения.
                 @else
-                    В: {{ $order->delivery_address }}
+                    В: {{ $order->delivery_address }}.
                 @endif
 
                 @if($order->delivery_point)
@@ -83,7 +83,11 @@
     </tr>
     <tr>
         <th>Дополнительные услуги</th>
-        <td>-</td>
+        <td>
+            @foreach($order->order_services as $service)
+                {{ $service->name }} <br>
+            @endforeach
+        </td>
     </tr>
     <tr>
         <th>Сумма страховки</th>
