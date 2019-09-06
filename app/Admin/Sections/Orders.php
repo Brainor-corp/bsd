@@ -135,6 +135,13 @@ class Orders extends Section {
                 FormField::bselect('delivery_point', 'Точный забор')
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::input('delivery_price', 'Цена доставки')->setType('number'),
+                FormField::input('order_creator', 'Заявку заполнил (ФИО)'),
+                FormField::select('order_creator_type', 'Заявку заполнил (Тип)')
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($query) {
+                        return $query->where('class', 'OrderCreatorType');
+                    })
+                    ->setDisplay('name'),
                 FormField::custom('<strong>Габариты</strong><hr>'),
                 FormField::custom(View::make('admin.orders.order-items')->with(compact('order'))->render()),
                 FormField::custom('<strong>Услуги</strong><hr>'),
@@ -209,6 +216,7 @@ class Orders extends Section {
                 FormField::input('recipient_legal_address', 'Адрес'),
 
                 FormField::custom('<h4>Плательщик</h4><hr>'),
+                FormField::input('payer_email', 'Email'),
                 FormField::bselect('payer_type', 'Лицо')
                     ->setDataAttributes([
                         'data-live-search="true"'

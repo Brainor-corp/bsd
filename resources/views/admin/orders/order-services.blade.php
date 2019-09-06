@@ -7,20 +7,20 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="row">
-                                    <div class="col">
+                                    <div class="col-4">
                                         Название:
                                     </div>
-                                    <div class="col-5">
+                                    <div class="col">
                                         {{ $service->name }}
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="row">
-                                    <div class="col">
+                                    <div class="col-4">
                                         Цена:
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col">
                                         {{ $service->pivot->price }}
                                     </div>
                                 </div>
