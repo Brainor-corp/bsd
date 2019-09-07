@@ -50,16 +50,6 @@ class UserOrdersSyncFrom1c implements ShouldQueue
                     dispatch(new UserOrderSyncFrom1c($user, $document));
                 }
             }
-        } else {
-            if($response1c['status'] != 200) {
-                // Тригерим ошибку, чтобы job с неудачным пользователем упал в failed jobs
-                throw new \Exception("Для пользователя " . $user->guid . " не удалось получить список заказов (Api вернуло ошибку).");
-            }
-
-            if(empty($response1c['response']['documents'])) {
-                // Тригерим ошибку, чтобы job с неудачным пользователем упал в failed jobs
-                throw new \Exception("Для пользователя " . $user->guid . " не удалось получить список заказов (Api не вернуло документы).");
-            }
         }
     }
 }
