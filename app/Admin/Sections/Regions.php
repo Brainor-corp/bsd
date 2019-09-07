@@ -24,16 +24,18 @@ class Regions extends Section
 
     public static function onDisplay(Request $request){
         $display = Display::table([
+            Column::text('id', '#'),
             Column::text('code', 'Код'),
             Column::link('name', 'Название'),
-            Column::text('fixed_tariff', 'Фикс. тариф'),
-            Column::text('dist_tariff', 'Дист. тариф'),
-            Column::text('inside_tariff', 'Внут. тариф'),
+            Column::text('fixed_tariff_for_human', 'Фикс. тариф'),
+            Column::text('dist_tariff_for_human', 'Дист. тариф'),
+            Column::text('inside_tariff_for_human', 'Внут. тариф'),
             Column::text('destinationCity.name', 'Город назначения'),
             Column::text('tariffZone.name', 'Тарифная зона'),
             Column::text('thresholdGroup.name', 'Группа отправных пунктов'),
         ])
             ->setFilter([
+                null,
                 FilterType::text('code', 'Код'),
                 FilterType::text('name', 'Название'),
                 null,
