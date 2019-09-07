@@ -150,10 +150,8 @@ var getShortBaseTariff = function () {
         volume = $(".short_package-volume").val(),
         totalPrice = 0;
 
-
-    // console.log(shipCityID);
-    // console.log(destCityID);
-    // console.log(formData);
+    // Проверяем, выбраны ли города отправления и назначения
+    if(shipCityID !== "" && destCityID !== "") {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -209,7 +207,7 @@ var getShortBaseTariff = function () {
                 console.log(err);
             }
         });
-
+    }
 };
 
 $(document).on('change', '.short_package-weight', function (e) {
