@@ -55,6 +55,13 @@ class UserOrderSyncFrom1c implements ShouldQueue
         );
 
         if($response1c['status'] == 200 && !empty($response1c['response'])) {
+            $status = Type::firstOrCreate(
+                [
+                    'class' => 'cargo_type',
+                    'name' => $response1c['response']['Груз']
+                ]
+            );
+
             $order = new Order();
             $order->shipping_name = $response1c['response']['Груз'] ?? "-";
             $order->cargo_type = isset($response1c['response']['Груз']) ? (Type::where([
@@ -62,13 +69,7 @@ class UserOrderSyncFrom1c implements ShouldQueue
                     ['name', $response1c['response']['Груз']]
                 ])->first()->id ?? null) : null;
             $order->total_weight = floatval($response1c['response']['Вес'] ?? 0);
-            $order->status_id = Type::where([
-                    ['class', 'order_status'],
-                    ['name', $response1c['response']['Статус']] ?? 'Не определён'
-                ])->first()->id ?? Type::where([
-                    ['class', 'order_status'],
-                    ['name', 'Не определён']
-                ])->first()->id;
+            $order->status_id = $status->id;
             $order->ship_city_id = City::where('name', $response1c['response']['ГородОтправления'] ?? "-")->first()->id ?? null;
             $order->ship_city_name = $response1c['response']['ГородОтправления'] ?? "-";
             $order->dest_city_id = City::where('name', $response1c['response']['ГородНазначения'] ?? "-")->first()->id ?? null;

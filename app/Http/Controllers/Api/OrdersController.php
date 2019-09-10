@@ -41,17 +41,12 @@ class OrdersController extends Controller
             );
         }
 
-        $status = Type::where([
-            ['class', 'order_status'],
-            ['name', $request->get('status')]
-        ])->first();
-
-        if(!isset($status)) {
-            $status = new Type();
-            $status->name = $request->get('status');
-            $status->class = 'order_status';
-            $status->save();
-        }
+        $status = Type::firstOrCreate(
+            [
+                'class' => 'cargo_type',
+                'name' => $request->get('status')
+            ]
+        );
 
         $order->status_id = $status->id;
         $order->actual_weight = $request->get('weight');
