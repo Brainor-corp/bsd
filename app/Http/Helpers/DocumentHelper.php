@@ -123,6 +123,14 @@ class DocumentHelper
         ];
     }
 
+    static function removeSpaces($string) {
+        $string = htmlentities($string, null, 'utf-8');
+        $string = str_replace("&nbsp;", "", $string);
+        $string = html_entity_decode($string);
+
+        return $string;
+    }
+
     public static function generateTransferDocument($documentData, $documentName)
     {
         foreach($documentData as $key => $var) {
@@ -151,9 +159,9 @@ class DocumentHelper
         }, $documentData['Услуги']);
 
         foreach($documentData['Услуги'] as $datum) {
-            $params['[СтоимостьБезНалога]'] += floatval(preg_replace('/\s+/', '', $datum['СуммаБезНдс']));
-            $params['[СуммаНалога]'] += floatval(preg_replace('/\s+/', '', $datum['СуммаНДС']));
-            $params['[СтоимостьРабот]'] += floatval(preg_replace('/\s+/', '', $datum['Сумма']));
+            $params['[СтоимостьБезНалога]'] += floatval(self::removeSpaces($datum['СуммаБезНдс']));
+            $params['[СуммаНалога]'] += floatval(self::removeSpaces($datum['СуммаНДС']));
+            $params['[СтоимостьРабот]'] += floatval(self::removeSpaces($datum['Сумма']));
         }
 
         $params['[Номер]'] = new ExcelParam(CellSetterArrayValueSpecial::class, array_map(function ($el) { return $el + 1; }, array_keys($documentData['Услуги'])));
