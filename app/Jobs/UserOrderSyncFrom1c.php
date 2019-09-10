@@ -58,7 +58,7 @@ class UserOrderSyncFrom1c implements ShouldQueue
             $status = Type::firstOrCreate(
                 [
                     'class' => 'cargo_type',
-                    'name' => $response1c['response']['Груз']
+                    'name' => $response1c['response']['Статус'] ?? 'Не определён'
                 ]
             );
 
