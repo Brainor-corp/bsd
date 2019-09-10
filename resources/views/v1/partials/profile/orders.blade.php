@@ -14,8 +14,8 @@
         </td>
         <td>{{ $order->ship_city_name ?? $order->ship_city->name ?? '' }}</td>
         <td>{{ $order->dest_city_name ?? $order->dest_city->name ?? '' }}</td>
-        <td>{{ $order->sender_name }}</td>
-        <td>{{ $order->recipient_name }}</td>
+        <td>{{ $order->sender_name ?? ($order->sender_company_name ?? '') }}</td>
+        <td>{{ $order->recipient_name ?? ($order->recipient_company_name ?? '') }}</td>
         <td>{{ $order->total_price }} <span>р</span></td>
         <td>{{ $order->status->name }}</td>
         <td>
