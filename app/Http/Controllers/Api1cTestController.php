@@ -271,8 +271,8 @@ class Api1cTestController extends Controller
                     break;
             }
 
-            $mapOrder['Email_плательщика'] = $order->payer_email ?? '';
-            $mapOrder['Тип_плательщика'] = $order->payer->name ?? '';
+            $mapOrder['Плательщик']['Email_плательщика'] = $order->payer_email ?? '';
+            $mapOrder['Плательщик']['Тип_плательщика'] = $order->payer->name ?? '';
 
             return $mapOrder;
         })->toArray();
