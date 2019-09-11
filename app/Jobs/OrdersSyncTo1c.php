@@ -103,14 +103,13 @@ class OrdersSyncTo1c implements ShouldQueue
                 'Email_плательщика' => $order->payer_email,
                 'Тип_плательщика' => $order->payer->name,
                 'Правовая_форма' => $order->payer_legal_form ?? "",
-                'Наименование' => strlen($order->payer_company_name) >= 3 ? $order->payer_company_name : "---",
+                'Наименование' => "---",
                 'Адрес' => [
                     'Город' => $order->payer_legal_address_city ?? "",
                     'Адрес' => $order->payer_legal_address ?? ""
                 ],
                 'ИНН' => strlen($order->payer_inn) >= 0 && strlen($order->payer_inn) <= 12 ? strval($order->payer_inn) : "",
                 'КПП' => strlen($order->payer_kpp) >= 0 && strlen($order->payer_kpp) <= 9 ? strval($order->payer_kpp) : "",
-                'Имя' => $order->payer_name ?? "",
                 'Контактное_лицо' => $order->payer_contact_person ?? "",
                 'Телефон' => strlen($order->payer_phone) >= 0 && strlen($order->payer_phone) <= 11 ? strval($order->payer_phone) : "",
                 'Дополнительная_информация' => $order->payer_addition_info ?? "",
@@ -121,7 +120,13 @@ class OrdersSyncTo1c implements ShouldQueue
             switch($order->payer->name) {
                 case "Отправитель": $mapOrder['Плательщик']['Тип_контрагента'] = $order->sender_type->name; break;
                 case "Получатель": $mapOrder['Плательщик']['Тип_контрагента'] = $order->recipient_type->name; break;
-                default: $mapOrder['Плательщик']['Тип_контрагента'] = $order->payer_form_type->name; break;
+                default:    $mapOrder['Плательщик']['Тип_контрагента'] = $order->payer_form_type->name;
+                            if($order->payer_form_type->slug === 'fizicheskoe-lico') {
+                                $mapOrder['Плательщик']['Наименование'] = $order->payer_name ?? "";
+                            } else {
+                                $mapOrder['Плательщик']['Наименование'] = strlen($order->payer_company_name) >= 3 ? $order->payer_company_name : "---";
+                            }
+                            break;
             }
 
             if(isset($order->order_services)) {
@@ -180,14 +185,13 @@ class OrdersSyncTo1c implements ShouldQueue
 
             $mapOrder['Отправитель'] = [
                 'Правовая_форма' => $order->sender_legal_form ?? "",
-                'Наименование' => strlen($order->sender_company_name) >= 3 ? $order->sender_company_name : "---",
+                'Наименование' => '---',
                 'Адрес' => [
                     'Город' => $order->sender_legal_address_city ?? "",
                     'Адрес' => $order->sender_legal_address ?? ""
                 ],
                 'ИНН' => strlen($order->sender_inn) >= 0 && strlen($order->sender_inn) <= 12 ? strval($order->sender_inn) : "",
                 'КПП' => strlen($order->sender_kpp) >= 0 && strlen($order->sender_kpp) <= 9 ? strval($order->sender_kpp) : "",
-                'Имя' => $order->sender_name ?? "",
                 'Контактное_лицо' => $order->sender_contact_person ?? "",
                 'Телефон' => strlen($order->sender_phone) >= 0 && strlen($order->sender_phone) <= 11 ? strval($order->sender_phone) : "",
                 'Дополнительная_информация' => $order->sender_addition_info ?? "",
@@ -197,18 +201,23 @@ class OrdersSyncTo1c implements ShouldQueue
 
             if(isset($order->sender_type->name)) {
                 $mapOrder['Отправитель']['Тип_контрагента'] = $order->sender_type->name;
+
+                if($order->sender_type->slug === 'fizicheskoe-lico') {
+                    $mapOrder['Отправитель']['Наименование'] = $order->sender_name ?? "";
+                } else {
+                    $mapOrder['Отправитель']['Наименование'] = strlen($order->sender_company_name) >= 3 ? $order->sender_company_name : "---";
+                }
             }
 
             $mapOrder['Получатель'] = [
                 'Правовая_форма' => $order->recipient_legal_form ?? "",
-                'Наименование' => strlen($order->recipient_company_name) >= 3 ? $order->recipient_company_name : "---",
+                'Наименование' => "---",
                 'Адрес' => [
                     'Город' => $order->recipient_legal_address_city ?? "",
                     'Адрес' => $order->recipient_legal_address ?? ""
                 ],
                 'ИНН' => strlen($order->recipient_inn) >= 0 && strlen($order->recipient_inn) <= 12 ? strval($order->recipient_inn) : "",
                 'КПП' => strlen($order->recipient_kpp) >= 0 && strlen($order->recipient_kpp) <= 9 ? strval($order->recipient_kpp) : "",
-                'Имя' => $order->recipient_name ?? "",
                 'Контактное_лицо' => $order->recipient_contact_person ?? "",
                 'Телефон' => strlen($order->recipient_phone) >= 0 && strlen($order->recipient_phone) <= 11 ? strval($order->recipient_phone) : "",
                 'Дополнительная_информация' => $order->recipient_addition_info ?? "",
@@ -218,6 +227,12 @@ class OrdersSyncTo1c implements ShouldQueue
 
             if(isset($order->recipient_type->name)) {
                 $mapOrder['Получатель']['Тип_контрагента'] = $order->recipient_type->name;
+
+                if($order->recipient_type->slug === 'fizicheskoe-lico') {
+                    $mapOrder['Получатель']['Наименование'] = $order->recipient_name ?? "";
+                } else {
+                    $mapOrder['Получатель']['Наименование'] = strlen($order->recipient_company_name) >= 3 ? $order->recipient_company_name : "---";
+                }
             }
 
             return $mapOrder;
