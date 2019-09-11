@@ -99,36 +99,6 @@ class OrdersSyncTo1c implements ShouldQueue
                 $mapOrder['Дата_и_время_завершения_заказа'] = Carbon::createFromFormat('Y-m-d H:i:s', $order->order_finish_date)->format('Y-m-d\TH:i:s');
             }
 
-            $mapOrder['Плательщик'] = [
-                'Email_плательщика' => $order->payer_email,
-                'Тип_плательщика' => $order->payer->name,
-                'Правовая_форма' => $order->payer_legal_form ?? "",
-                'Наименование' => "---",
-                'Адрес' => [
-                    'Город' => $order->payer_legal_address_city ?? "",
-                    'Адрес' => $order->payer_legal_address ?? ""
-                ],
-                'ИНН' => strlen($order->payer_inn) >= 0 && strlen($order->payer_inn) <= 12 ? strval($order->payer_inn) : "",
-                'КПП' => strlen($order->payer_kpp) >= 0 && strlen($order->payer_kpp) <= 9 ? strval($order->payer_kpp) : "",
-                'Контактное_лицо' => $order->payer_contact_person ?? "",
-                'Телефон' => strlen($order->payer_phone) >= 0 && strlen($order->payer_phone) <= 11 ? strval($order->payer_phone) : "",
-                'Дополнительная_информация' => $order->payer_addition_info ?? "",
-                'Серия_паспорта' => strlen($order->payer_passport_series) >= 0 && strlen($order->payer_passport_series) <= 4 ? strval($order->payer_passport_series) : "",
-                'Номер_паспорта' => strlen($order->payer_passport_number) >= 0 && strlen($order->payer_passport_number) <= 6 ? strval($order->payer_passport_number) : "",
-            ];
-
-            switch($order->payer->name) {
-                case "Отправитель": $mapOrder['Плательщик']['Тип_контрагента'] = $order->sender_type->name; break;
-                case "Получатель": $mapOrder['Плательщик']['Тип_контрагента'] = $order->recipient_type->name; break;
-                default:    $mapOrder['Плательщик']['Тип_контрагента'] = $order->payer_form_type->name;
-                            if($order->payer_form_type->slug === 'fizicheskoe-lico') {
-                                $mapOrder['Плательщик']['Наименование'] = $order->payer_name ?? "";
-                            } else {
-                                $mapOrder['Плательщик']['Наименование'] = strlen($order->payer_company_name) >= 3 ? $order->payer_company_name : "---";
-                            }
-                            break;
-            }
-
             if(isset($order->order_services)) {
                 $mapOrder['Услуги'] = $order->order_services->map(function ($order_service) {
                     return [
@@ -234,6 +204,68 @@ class OrdersSyncTo1c implements ShouldQueue
                     $mapOrder['Получатель']['Наименование'] = strlen($order->recipient_company_name) >= 3 ? $order->recipient_company_name : "---";
                 }
             }
+
+            switch($order->payer->name) {
+                case "Отправитель":
+                    $mapOrder['Плательщик'] = [
+                        'Тип_контрагента' => $mapOrder['Отправитель']['Тип_контрагента'] ?? '',
+                        'Правовая_форма' => $mapOrder['Отправитель']['Правовая_форма'] ?? '',
+                        'Наименование' => $mapOrder['Отправитель']['Наименование'] ?? '',
+                        'Адрес' => $mapOrder['Отправитель']['Адрес'] ?? '',
+                        'ИНН' => $mapOrder['Отправитель']['ИНН'] ?? '',
+                        'КПП' => $mapOrder['Отправитель']['КПП'] ?? '',
+                        'Контактное_лицо' => $mapOrder['Отправитель']['Контактное_лицо'] ?? '',
+                        'Телефон' => $mapOrder['Отправитель']['Телефон'] ?? '',
+                        'Дополнительная_информация' => $mapOrder['Отправитель']['Дополнительная_информация'] ?? '',
+                        'Серия_паспорта' => $mapOrder['Отправитель']['Серия_паспорта'] ?? '',
+                        'Номер_паспорта' => $mapOrder['Отправитель']['Номер_паспорта'] ?? '',
+                    ];
+                    break;
+
+                case "Получатель":
+                    $mapOrder['Плательщик'] = [
+                        'Тип_контрагента' => $mapOrder['Получатель']['Тип_контрагента'] ?? '',
+                        'Правовая_форма' => $mapOrder['Получатель']['Правовая_форма'] ?? '',
+                        'Наименование' => $mapOrder['Получатель']['Наименование'] ?? '',
+                        'Адрес' => $mapOrder['Получатель']['Адрес'] ?? '',
+                        'ИНН' => $mapOrder['Получатель']['ИНН'] ?? '',
+                        'КПП' => $mapOrder['Получатель']['КПП'] ?? '',
+                        'Контактное_лицо' => $mapOrder['Получатель']['Контактное_лицо'] ?? '',
+                        'Телефон' => $mapOrder['Получатель']['Телефон'] ?? '',
+                        'Дополнительная_информация' => $mapOrder['Получатель']['Дополнительная_информация'] ?? '',
+                        'Серия_паспорта' => $mapOrder['Получатель']['Серия_паспорта'] ?? '',
+                        'Номер_паспорта' => $mapOrder['Получатель']['Номер_паспорта'] ?? '',
+                    ];
+                    break;
+
+                default:
+                    $mapOrder['Плательщик']['Тип_контрагента'] = $order->payer_form_type->name;
+                    $mapOrder['Плательщик'] = [
+                        'Правовая_форма' => $order->payer_legal_form ?? "",
+                        'Наименование' => "---",
+                        'Адрес' => [
+                            'Город' => $order->payer_legal_address_city ?? "",
+                            'Адрес' => $order->payer_legal_address ?? ""
+                        ],
+                        'ИНН' => strlen($order->payer_inn) >= 0 && strlen($order->payer_inn) <= 12 ? strval($order->payer_inn) : "",
+                        'КПП' => strlen($order->payer_kpp) >= 0 && strlen($order->payer_kpp) <= 9 ? strval($order->payer_kpp) : "",
+                        'Контактное_лицо' => $order->payer_contact_person ?? "",
+                        'Телефон' => strlen($order->payer_phone) >= 0 && strlen($order->payer_phone) <= 11 ? strval($order->payer_phone) : "",
+                        'Дополнительная_информация' => $order->payer_addition_info ?? "",
+                        'Серия_паспорта' => strlen($order->payer_passport_series) >= 0 && strlen($order->payer_passport_series) <= 4 ? strval($order->payer_passport_series) : "",
+                        'Номер_паспорта' => strlen($order->payer_passport_number) >= 0 && strlen($order->payer_passport_number) <= 6 ? strval($order->payer_passport_number) : "",
+                    ];
+
+                    if($order->payer_form_type->slug === 'fizicheskoe-lico') {
+                        $mapOrder['Плательщик']['Наименование'] = $order->payer_name ?? "";
+                    } else {
+                        $mapOrder['Плательщик']['Наименование'] = strlen($order->payer_company_name) >= 3 ? $order->payer_company_name : "---";
+                    }
+                    break;
+            }
+
+            $mapOrder['Email_плательщика'] = $order->payer_email ?? '';
+            $mapOrder['Тип_плательщика'] = $order->payer->name ?? '';
 
             return $mapOrder;
         })->toArray();
