@@ -373,4 +373,15 @@ class Api1cTestController extends Controller
             'response' => $response1c
         ]);
     }
+
+    public function clientById(Request $request) {
+        $response1c = \App\Http\Helpers\Api1CHelper::post(
+            'client/by_id',
+            [
+                "user_id" => $request->get('user_id') ?? "d154781b-1a29-11e9-a994-000d3a28f168",
+            ]
+        );
+
+        dd($response1c);
+    }
 }

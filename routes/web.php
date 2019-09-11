@@ -136,6 +136,7 @@ Route::get('/1c/test/orders', 'Api1cTestController@orders');
 Route::get('/1c/test/contract', 'Api1cTestController@contract');
 Route::get('/1c/test/discount', 'Api1cTestController@discount');
 Route::get('/1c/test/new-client', 'Api1cTestController@newClient');
+Route::get('/1c/test/client-by-id', 'Api1cTestController@clientById');
 
 
 //Route::group(['middleware' => ['auth']], function () {
