@@ -59,10 +59,10 @@
                             {{ $route->min_cost }}
                         </th>
                         @foreach($route->route_tariffs->where('rate.slug', 'ves') as $routeTariff)
-                            <th class="align-middle">{{ $routeTariff->price }}</th>
+                            <th class="align-middle">{{ (float)($routeTariff->price) }}</th>
                         @endforeach
                         @foreach($route->route_tariffs->where('rate.slug', 'obem') as $routeTariff)
-                            <th class="align-middle">{{ $routeTariff->price }}</th>
+                            <th class="align-middle">{{ (float)($routeTariff->price) }}</th>
                         @endforeach
                         <th class="align-middle">
                             {{ $route->delivery_time }}

@@ -27,7 +27,6 @@
         }
         h4 {
             font-size: 14px !important;
-            font-weight: normal !important;
         }
         @page { margin: 80px 25px; }
         header { position: fixed; top: -60px; left: 0px; right: 0px; height: 50px; }
