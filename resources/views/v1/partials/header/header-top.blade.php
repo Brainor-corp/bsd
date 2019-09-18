@@ -59,7 +59,12 @@
                             href="#" role="button"
                             data-toggle="dropdown"
                             aria-haspopup="true"
-                            aria-expanded="false">Личный кабинет
+                            aria-expanded="false">
+                            @if(\Illuminate\Support\Facades\Auth::check())
+                                {{ \Illuminate\Support\Facades\Auth::user()->surname_initials }}
+                            @else
+                                Личный кабинет
+                            @endif
                     </a>
                     <!-- <div class="dropdown-menu dropdown-menu__personal-account">
                         <div class="row dropdown-menu__row justify-content-center">
