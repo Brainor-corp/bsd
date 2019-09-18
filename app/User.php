@@ -87,9 +87,14 @@ class User extends Authenticatable
     }
 
     public function getSurnameInitialsAttribute(){
-        return implode(' ', [
-            $this->surname,
-            $this->name[0] . '.' . $this->patronomic[0] . '.',
-        ]);
+        $result = "$this->surname ";
+
+        $result .= empty($this->name) ? '' : (mb_substr($this->name, 0, 1) . '.');
+        $result .= empty($this->patronomic) ? '' : (mb_substr($this->patronomic, 0, 1) . '.');
+
+        $limit = 7;
+        $postfix = '..';
+
+        return mb_strlen($result) > $limit ? mb_substr($result, 0, $limit) . $postfix : $result;
     }
 }
