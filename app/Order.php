@@ -138,14 +138,10 @@ class Order extends Model
     public function scopeAvailable($query) {
         return $query->where(function ($orderQuery) {
             if(Auth::check()) {
-                $orderQuery->where('user_id', Auth::id());
+                return $orderQuery->where('user_id', Auth::id());
             }
 
-            if(isset($_COOKIE['enter_id'])) {
-                $orderQuery->orWhere('enter_id', $_COOKIE['enter_id']);
-            }
-
-            return $orderQuery;
+            return $orderQuery->orWhere('enter_id', $_COOKIE['enter_id'] ?? '-1');
         });
     }
 

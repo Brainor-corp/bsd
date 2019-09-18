@@ -26,7 +26,8 @@ define('SPECIAL_ARRAY_TYPE', CellSetterArrayValueSpecial::class);
 class ReportsController extends Controller
 {
     public function showReportListPage() {
-        $orders = Order::with('status', 'ship_city', 'dest_city')
+        $orders = Order::available()
+            ->with('status', 'ship_city', 'dest_city')
             ->where(function ($ordersQuery) {
                 return Auth::check() ? $ordersQuery
                     ->where('user_id', Auth::id())
