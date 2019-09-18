@@ -13,7 +13,6 @@ use App\OrderItem;
 use App\Polygon;
 use App\Route;
 use App\Rules\Discount1c;
-use App\Rules\GoogleReCaptchaV3;
 use App\Rules\INN;
 use App\Type;
 use Carbon\Carbon;
@@ -36,7 +35,7 @@ class OrderController extends Controller
         ]);
 
         $rules = [
-            "gToken" => ['required', new GoogleReCaptchaV3()],
+//            "gToken" => ['required', new GoogleReCaptchaV3()],
             "ship_city" => ['required', 'string', 'max:255'],                                   // Город_отправления (название)
             "take_city_name" => ['nullable', 'string', 'max:255'],                              // Название_города_экспедиции (забор)
             "take_distance" => ['nullable', 'numeric'],                                         // Дистанция_экспедиции (забор)
