@@ -61,7 +61,7 @@
                             aria-haspopup="true"
                             aria-expanded="false">
                             @if(\Illuminate\Support\Facades\Auth::check())
-                                {{ \Illuminate\Support\Facades\Auth::user()->surname_initials }}
+                                Кабинет {{ \Illuminate\Support\Facades\Auth::user()->surname_initials }}
                             @else
                                 Личный кабинет
                             @endif
