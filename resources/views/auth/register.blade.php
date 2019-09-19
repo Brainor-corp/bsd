@@ -54,6 +54,12 @@
 
                             <div class="col-md-6">
                                 <input id="phone" type="text" placeholder="+7(XXX)XXX-XX-XX" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }} phone-mask" name="phone" value="{{ old('phone') }}" required autofocus>
+
+                                @if ($errors->has('phone'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('phone') }}</strong>
+                                    </span>
+                                @endif
                             </div>
                         </div>
 
