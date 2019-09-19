@@ -28,6 +28,8 @@ class GoogleReCaptchaV3 implements Rule
      */
     public function passes($attribute, $value)
     {
+        return true; // todo Временно, для демонстрации
+
         try{
             $gResponse = GCaptchaRequestHelper::sendRequest($value);
         }
@@ -45,6 +47,6 @@ class GoogleReCaptchaV3 implements Rule
      */
     public function message()
     {
-        return 'При обработке запроса произошла ошибка. Пожалуйста, обновите страницу и попробуйте снова.';
+        return 'При обработке запроса произошла ошибка';
     }
 }
