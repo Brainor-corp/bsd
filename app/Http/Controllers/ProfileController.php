@@ -186,7 +186,7 @@ class ProfileController extends Controller {
 
             if(!empty($response1c['response']) && isset($response1c['response']['УникальныйИдентификатор'])) {
                 $file = DocumentHelper::generateContractDocument(
-                    'Договор от ',
+                    'Договор',
                     $response1c['response']
                 );
 
