@@ -3,7 +3,6 @@
 namespace App\Console;
 
 use App\Jobs\OrdersSyncTo1c;
-use App\Jobs\SendCounterpartiesTo1c;
 use App\Jobs\UsersOrdersSyncFrom1c;
 use App\Jobs\UsersSyncTo1c;
 use Illuminate\Console\Scheduling\Schedule;
