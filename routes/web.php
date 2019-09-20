@@ -25,8 +25,8 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
     // Платежи
-    Route::get('/test-payment', 'PaymentController@testPaymentPage')->name('test-payment');
-    Route::post('/make-payment', 'PaymentController@makePayment')->name('make-payment');
+//    Route::get('/test-payment', 'PaymentController@testPaymentPage')->name('test-payment');
+    Route::get('/make-payment/{order_id}', 'PaymentController@makePayment')->name('make-payment');
 
     Route::group(['middleware' => ['password_reset']], function () {
         // Главная

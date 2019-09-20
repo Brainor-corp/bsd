@@ -30,15 +30,19 @@ class Orders extends Section {
             Column::text('real_status', 'Статус'),
             Column::text('ship_city_name', 'Город отправки'),
             Column::text('dest_city_name', 'Город доставки'),
-            Column::text('total_price', 'Сумма'),
+            Column::text('total_price', 'Цена калькулятора'),
+            Column::text('actual_price', 'Фактическая цена'),
+            Column::text('payment_id', 'Идентификатор платежа'),
             Column::text('code_1c', 'Код 1с'),
-            Column::text('order_date', 'Дата заказа')->setSortable(1),
+            Column::text('order_date', 'Дата заявки')->setSortable(1),
         ])->setFilter([
             FilterType::text('id', '#'),
             null,
             null,
             null,
             null,
+            null,
+            FilterType::text('payment_id', 'Идентификатор платежа'),
             FilterType::text('code_1c', 'Код 1с'),
             null,
         ])->setPagination(10);
@@ -69,13 +73,13 @@ class Orders extends Section {
             FormColumn::column([
                 FormField::custom('<h4>Основное</h4><hr>'),
                 FormField::input('shipping_name', 'Название груза')->setRequired(1),
-                FormField::datepicker('order_date', 'Дата заказа')
+                FormField::datepicker('order_date', 'Дата заявки')
                     ->setTodayBtn(true)
                     ->setFormat('yyyy-mm-dd hh:ii:ss')
                     ->setLanguage('ru')
                     ->setClearBtn(true)
                     ->setRequired(1),
-                FormField::bselect('status_id', 'Статус заказа')
+                FormField::bselect('status_id', 'Статус заявки')
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
@@ -84,6 +88,15 @@ class Orders extends Section {
                     ->setQueryFunctionForModel(function ($query){
                         return $query->where('class', 'order_status');
                     })->setDisplay('name'),
+                FormField::bselect('payment_status_id', 'Статус оплаты')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($query){
+                        return $query->where('class', 'OrderPaymentStatus');
+                    })->setDisplay('name'),
+                FormField::input('payment_id', 'Идентификатор платежа')->setType('number'),
                 FormField::custom(View::make('admin.orders.order-user')->with(compact('order'))->render()),
                 FormField::bselect('ship_city_id', 'Город отправления')
                     ->setDataAttributes([
@@ -100,7 +113,8 @@ class Orders extends Section {
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
                 FormField::input('total_weight', 'Общий вес')->setType('number')->setRequired(1),
-                FormField::input('total_price', 'Итоговая цена')->setType('number')->setRequired(1),
+                FormField::input('total_price', 'Цена калькулятора')->setType('number')->setRequired(1),
+                FormField::input('actual_price', 'Фактическая цена')->setType('number')->setRequired(1),
                 FormField::input('base_price', 'Цена маршрута')->setType('number')->setRequired(1),
                 FormField::bselect('sync_need', 'Нужна ли синхронизация с 1с')
                     ->setRequired(1)

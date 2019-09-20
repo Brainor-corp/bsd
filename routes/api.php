@@ -50,3 +50,6 @@ Route::get('/upload-csv-order-types', 'UploadCsvController@loadOrderTypes');
 Route::post('/1c/order/update', 'Api\OrdersController@updateOrder');
 Route::post('/1c/user/create', 'Api\UsersController@createUser');
 Route::post('/1c/client/update', 'Api\CounterpartiesController@updateCounterparty');
+
+// Эквайринг
+Route::post('/paykeeper/order/update', 'PaymentController@updateOrder')->name('update-order-payment');
