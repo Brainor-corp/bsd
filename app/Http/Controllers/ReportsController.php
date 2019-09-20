@@ -27,7 +27,13 @@ class ReportsController extends Controller
 {
     public function showReportListPage() {
         $orders = Order::available()
-            ->with('status', 'ship_city', 'dest_city')
+            ->with(
+                'status',
+                'ship_city',
+                'dest_city',
+                'payment_status',
+                'payment'
+            )
             ->where(function ($ordersQuery) {
                 return Auth::check() ? $ordersQuery
                     ->where('user_id', Auth::id())

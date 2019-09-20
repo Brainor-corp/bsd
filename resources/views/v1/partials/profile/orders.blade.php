@@ -16,7 +16,20 @@
         <td>{{ $order->dest_city_name ?? $order->dest_city->name ?? '' }}</td>
         <td>{{ $order->sender_name ?? ($order->sender_company_name ?? '') }}</td>
         <td>{{ $order->recipient_name ?? ($order->recipient_company_name ?? '') }}</td>
-        <td>{{ $order->total_price }} <span>р</span></td>
+        <td>
+            {{ $order->actual_price ?? ($order->total_price ?? '-' )}} <span>р</span>
+            @if(
+                $order->status &&
+                $order->status->slug === 'ispolnyaetsya' &&
+                $order->payment_status &&
+                $order->payment_status->slug === 'ne-oplachen' &&
+                $order->payment &&
+                $order->payment->slug === 'nalichnyy-raschet'
+            )
+                <br>
+                <a href="{{ route('make-payment', ['order_id' => $order->id]) }}">Оплатить</a>
+            @endif
+        </td>
         <td>{{ $order->status->name }}</td>
         <td>
             <a href="#" class="table-text-link show-order-documents" data-order-id="{{ $order->id }}">
