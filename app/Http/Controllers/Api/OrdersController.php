@@ -17,6 +17,7 @@ class OrdersController extends Controller
             "weight" => "required|numeric",
             "volume" => "required|numeric",
             "price" => "required|numeric",
+            "payment_status" => "required|string|in:Оплачен,Не оплачен",
         ]);
 
         if ($validator->fails()) {
@@ -48,7 +49,13 @@ class OrdersController extends Controller
             ]
         );
 
+        $paymentStatus = Type::where([
+            ['class', 'OrderPaymentStatus'],
+            ['name', $request->get('payment_status')],
+        ])->firstOrFail();
+
         $order->status_id = $status->id;
+        $order->payment_status_id = $paymentStatus->id;
         $order->actual_weight = $request->get('weight');
         $order->actual_volume = $request->get('volume');
         $order->actual_price = $request->get('price');
