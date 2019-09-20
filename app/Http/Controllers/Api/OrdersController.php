@@ -43,7 +43,7 @@ class OrdersController extends Controller
 
         $status = Type::firstOrCreate(
             [
-                'class' => 'cargo_type',
+                'class' => 'order_status',
                 'name' => $request->get('status')
             ]
         );
