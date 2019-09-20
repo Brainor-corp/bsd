@@ -78,6 +78,7 @@ class Api1cTestController extends Controller
             $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order->order_date)->format('Y-m-d\TH:i:s');
             $mapOrder['Количество_мест'] = count($order->order_items);
             $mapOrder['Итоговая_цена'] = is_numeric($order->total_price) ? intval($order->total_price) : 0;
+            $mapOrder['СтатусОплаты'] = $order->payment_status->name ?? '';
             $mapOrder['Базовая_цена_маршрута'] = is_numeric($order->base_price) ? intval($order->base_price) : 0;
             $mapOrder['Заявку_заполнил'] = $order->order_creator;
             $mapOrder['Тип_заполнителя_заявки'] = $order->order_creator_type_model->name ?? '';

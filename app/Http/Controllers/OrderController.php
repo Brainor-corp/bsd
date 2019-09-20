@@ -272,6 +272,11 @@ class OrderController extends Controller
             $order = new Order;
         }
 
+        $paymentStatus = Type::where([
+            ['class', 'OrderPaymentStatus'],
+            ['slug', 'ne-oplachen'],
+        ])->firstOrFail();
+
         $cargoType = Type::where('id', $request->get('cargo')['name'])->first();
         if($cargoType){
             $cargoTypeName = $cargoType->name;
@@ -573,6 +578,7 @@ class OrderController extends Controller
         $order->enter_id = $_COOKIE['enter_id'];
         $order->payment_type = $paymentType->id;
         $order->status_id = $orderStatus->id;
+        $order->payment_status_id = $paymentStatus->id;
         $order->order_date = Carbon::now();
         $order->order_creator = $request->get('order-creator');
 
