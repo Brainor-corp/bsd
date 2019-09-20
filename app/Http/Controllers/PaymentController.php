@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\PayKeeperHelper;
 use App\Order;
+use App\Type;
+use Illuminate\Support\Facades\Request;
 
 class PaymentController extends Controller
 {
@@ -46,5 +48,34 @@ class PaymentController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function updateOrder(Request $request) {
+        $secret_seed = env('PAYKEEPER_SECRET');
+        $id = $request->get('id');
+        $sum = $request->get('sum');
+        $clientid = $request->get('clientid');
+        $orderid = $request->get('orderid');
+        $key = $request->get('key');
+
+        if ($key != md5 ($id.number_format($sum, 2, ".", "")
+                .$clientid.$orderid.$secret_seed))
+        {
+            echo "Error! Hash mismatch";
+            exit;
+        }
+
+        $order = Order::where('id', $orderid)->firstOrFail();
+        $status = Type::where([
+            ['class', 'OrderPaymentStatus'],
+            ['slug', 'oplachen']
+        ])->firstOrFail();
+
+        $order->update([
+            'payment_id' => $id,
+            'payment_status_id' => $status->id
+        ]);
+
+        echo "OK ".md5($id.$secret_seed);
     }
 }
