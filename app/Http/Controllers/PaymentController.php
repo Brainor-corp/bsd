@@ -65,13 +65,12 @@ class PaymentController extends Controller
             exit;
         }
 
-        $order = Order::where('id', $orderid)->firstOrFail();
         $status = Type::where([
             ['class', 'OrderPaymentStatus'],
             ['slug', 'oplachen']
         ])->firstOrFail();
 
-        $order->update([
+        Order::where('id', $orderid)->update([
             'payment_id' => $id,
             'payment_status_id' => $status->id
         ]);
