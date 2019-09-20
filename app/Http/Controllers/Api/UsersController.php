@@ -24,6 +24,7 @@ class UsersController extends Controller
     }
 
     public function createUser(Request $request) {
+        $request->merge(['tel' => $request->get('tel')]);
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -57,7 +58,9 @@ class UsersController extends Controller
 
         $user->save();
 
-        Mail::to($user->email)->send(new User1CRegister($user, $password));
+        try {
+            Mail::to($user->email)->send(new User1CRegister($user, $password));
+        } catch (\Exception $e) {}
 
         return [
             'status' => 'success'
