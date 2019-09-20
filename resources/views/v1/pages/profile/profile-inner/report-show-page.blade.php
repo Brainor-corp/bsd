@@ -508,6 +508,10 @@
                                             </span>
                                         </footer>
                                     @endif
+                                    <div class="text-right">
+                                        <br>
+                                        {{ $order->payment_status->name ?? '' }}
+                                    </div>
                                 </div>
                                 <div class="annotation-text">* - Предварительный расчет. Точная стоимость доставки будет определена после обмера груза специалистами компании БСД на складе.</div>
                             </section>

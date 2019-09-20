@@ -68,6 +68,10 @@ class Order extends Model
         return $this->belongsTo(Type::class, 'status_id');
     }
 
+    public function payment_status(){
+        return $this->belongsTo(Type::class, 'payment_status_id');
+    }
+
     public function cargo_type(){
         return $this->belongsTo(Type::class, 'cargo_type');
     }
