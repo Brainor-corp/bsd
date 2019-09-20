@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\PayKeeperHelper;
 use App\Order;
 use App\Type;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
