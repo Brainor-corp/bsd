@@ -37,7 +37,7 @@ class PaymentController extends Controller
         $payment_data = array (
             "pay_amount" => $amount,
             "clientid" => $order->payer->guid ?? '',
-            "orderid" => "Заказ № $order->id",
+            "orderid" => "$order->id",
             "client_email" => $order->payer->email ?? '',
             "service_name" => "Услуга",
             "client_phone" => $order->payer->phone ?? ''
