@@ -117,12 +117,12 @@ class UserOrderSyncFrom1c implements ShouldQueue
             if(isset($response1c['response']['Места']) && count($response1c['response']['Места'])) {
                 foreach($response1c['response']['Места'] as $package) {
                     $packages[] = new OrderItem([
-                        'length' => $package['Длина'] ?? 0,
-                        'width' => $package['Ширина'] ?? 0,
-                        'height' => $package['Высота'] ?? 0,
-                        'volume' => $package['Объем'] ?? 0,
-                        'weight' => $package['Вес'] ?? 0,
-                        'quantity' => $package['Количество'] ?? 0,
+                        'length' => floatval($package['Длина']  ?? 0),
+                        'width' => floatval($package['Ширина']  ?? 0),
+                        'height' => floatval($package['Высота']  ?? 0),
+                        'volume' => floatval($package['Объем']  ?? 0),
+                        'weight' => floatval($package['Вес']  ?? 0),
+                        'quantity' => intval($package['Количество']  ?? 0),
                     ]);
                 }
             }
