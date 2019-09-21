@@ -36,6 +36,10 @@ class DocumentHelper
             default: break;
         }
 
+        if(empty($type)) {
+            return redirect()->back();
+        }
+
         $TBS->LoadTemplate(public_path("templates/ContractTemplate-$type.docx"));
 
         $TBS->SetOption('charset', 'UTF-8');
