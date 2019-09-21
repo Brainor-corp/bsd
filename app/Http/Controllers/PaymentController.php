@@ -72,7 +72,8 @@ class PaymentController extends Controller
 
         Order::where('id', $orderid)->update([
             'payment_id' => $id,
-            'payment_status_id' => $status->id
+            'payment_status_id' => $status->id,
+            'payment_sync_need' => true
         ]);
 
         echo "OK ".md5($id.$secret_seed);
