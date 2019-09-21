@@ -431,4 +431,32 @@ class Api1cTestController extends Controller
 
         dd($response1c);
     }
+
+    public function updateOrderPaymentStatus(Request $request) {
+        $order = !empty($request->get('id')) ?
+            Order::where('id', $request->get('id'))->firstOrFail() :
+            Order::orderBy('created_at', 'desc')->firstOrFail();
+
+        $data = [
+            'order_id' => $order->code_1c,
+            'user_id' => $order->user->guid ?? '',
+            'status' => $order->payment_status->name ?? ''
+        ];
+
+        $response1c = Api1CHelper::post('order/update_payment_status', $data);
+
+        dd([
+            'response' => $response1c,
+            'data' => $data
+        ]);
+
+        if(
+            $response1c['status'] == 200 &&
+            $response1c['response']['status'] === 'success'
+        ) {
+            DB::table('orders')->where('id', $order->id)->update([
+                'payment_sync_need' => false
+            ]);
+        }
+    }
 }
