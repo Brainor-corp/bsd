@@ -114,7 +114,7 @@ class Orders extends Section {
                     ->setDisplay('name'),
                 FormField::input('total_weight', 'Общий вес')->setType('number')->setRequired(1),
                 FormField::input('total_price', 'Цена калькулятора')->setType('number')->setRequired(1),
-                FormField::input('actual_price', 'Фактическая цена')->setType('number')->setRequired(1),
+                FormField::input('actual_price', 'Фактическая цена')->setType('number'),
                 FormField::input('base_price', 'Цена маршрута')->setType('number')->setRequired(1),
                 FormField::bselect('sync_need', 'Нужна ли синхронизация с 1с')
                     ->setRequired(1)
