@@ -17,15 +17,29 @@ class DocumentHelper
         $TBS = new \clsTinyButStrong();
         $TBS->Plugin(TBS_INSTALL, \clsOpenTBS::class);
 
-        $TBS->LoadTemplate(public_path('templates/ContractTemplate.docx'));
+        $type = '';
+        switch ($parameters['ЮридическоеФизическоеЛицо']) {
+            case 'Юридическое лицо':
+                $type = 'ur';
+                $parameters['ПостфиксПолаКонтрагента'] = 'его';
+                if(isset($parameters['ПолРуководителяКонтрагента']) && $parameters['ПолРуководителяКонтрагента'] == 'Женский') {
+                    $parameters['ПостфиксПолаКонтрагента'] = 'ей';
+                }
+                break;
+            case 'Физическое лицо':
+                $parameters['ПостфиксПолаКонтрагента'] = 'инина';
+                if(isset($parameters['ПолРуководителяКонтрагента']) && $parameters['ПолРуководителяКонтрагента'] == 'Женский') {
+                    $parameters['ПостфиксПолаКонтрагента'] = 'нки';
+                }
+                $type = 'fiz';
+                break;
+            default: break;
+        }
+
+        $TBS->LoadTemplate(public_path("templates/ContractTemplate-$type.docx"));
 
         $TBS->SetOption('charset', 'UTF-8');
         $TBS->SetOption('render', TBS_OUTPUT);
-
-        $parameters['ПостфиксПолаКонтрагента'] = 'го';
-        if(isset($parameters['ПолРуководителяКонтрагента']) && $parameters['ПолРуководителяКонтрагента'] == 'Женский') {
-            $parameters['ПостфиксПолаКонтрагента'] = 'ей';
-        }
 
         foreach ($parameters as $name => $value) {
             $TBS->MergeField($name, $value);
