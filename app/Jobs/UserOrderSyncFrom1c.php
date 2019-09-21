@@ -57,7 +57,7 @@ class UserOrderSyncFrom1c implements ShouldQueue
         if($response1c['status'] == 200 && !empty($response1c['response'])) {
             $status = Type::firstOrCreate(
                 [
-                    'class' => 'cargo_type',
+                    'class' => 'order_status',
                     'name' => $response1c['response']['Статус'] ?? 'Не определён'
                 ]
             );
@@ -81,13 +81,33 @@ class UserOrderSyncFrom1c implements ShouldQueue
                 Carbon::createFromFormat("d.m.Y h:i:s", $response1c['response']['ДатаИсполнения'])->format("Y-m-d H:i:s") :
                 null;
 
-            $order->total_price = 0; // todo Нет в API?
+            $order->total_price = $response1c['response']['Итоговая_цена'] ?? 0;
             $order->base_price = 0; // todo Нет в API?
             $order->insurance = 0; // todo Нет в API?
             $order->insurance_amount = 0; // todo Нет в API?
 
             $order->user_id = $user->id;
             $order->code_1c = $response1c['response']['УникальныйИдентификатор'] ?? '';
+
+            $paymentStatusName = $response1c['response']['СтатусОплаты'] ?? '';
+            if(!empty($paymentStatusName) && in_array($paymentStatusName, ['Оплачен', 'Не оплачен'])) {
+                $paymentStatus = Type::where([
+                    ['class', 'OrderPaymentStatus'],
+                    ['name', $paymentStatusName]
+                ])->firstOrFail();
+
+                $order->payment_status_id = $paymentStatus->id;
+            }
+
+            $paymentTypeName = $response1c['response']['ФормаОплаты'] ?? '';
+            if(!empty($paymentTypeName) && in_array($paymentTypeName, ['Наличная', 'Безналичная'])) {
+                $paymentType = Type::where([
+                    ['class', 'payment_type'],
+                    ['slug', $paymentTypeName === 'Наличная' ? 'nalichnyy-raschet' : 'beznalichnyy-raschet']
+                ])->firstOrFail();
+
+                $order->payment_type = $paymentType->id;
+            }
 
             $order->sync_need = false;
 
@@ -97,12 +117,12 @@ class UserOrderSyncFrom1c implements ShouldQueue
             if(isset($response1c['response']['Места']) && count($response1c['response']['Места'])) {
                 foreach($response1c['response']['Места'] as $package) {
                     $packages[] = new OrderItem([
-                        'length' => $package['Длина'] ?? 0,
-                        'width' => $package['Ширина'] ?? 0,
-                        'height' => $package['Высота'] ?? 0,
-                        'volume' => $package['Объем'] ?? 0,
-                        'weight' => $package['Вес'] ?? 0,
-                        'quantity' => $package['Количество'] ?? 0,
+                        'length' => floatval($package['Длина']  ?? 0),
+                        'width' => floatval($package['Ширина']  ?? 0),
+                        'height' => floatval($package['Высота']  ?? 0),
+                        'volume' => floatval($package['Объем']  ?? 0),
+                        'weight' => floatval($package['Вес']  ?? 0),
+                        'quantity' => intval($package['Количество']  ?? 0),
                     ]);
                 }
             }
