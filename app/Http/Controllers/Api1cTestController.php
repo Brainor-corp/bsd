@@ -352,14 +352,19 @@ class Api1cTestController extends Controller
     }
 
     public function contract(Request $request) {
+        $send = [
+            "user_id" => $request->get('guid') ?? 'e9795c33-97f7-11e8-a972-000d3a28f168',
+        ];
+
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'client/contract',
-            [
-                "user_id" => $request->get('guid') ?? 'e9795c33-97f7-11e8-a972-000d3a28f168',
-            ]
+            $send
         );
 
-        dd($response1c);
+        dd([
+            'send' => $send,
+            'response' => $response1c
+        ]);
     }
 
     public function discount(Request $request) {
