@@ -34,7 +34,7 @@
                                             <div class="col-11 form-item row align-items-center"
                                                  style="padding-right: 0;">
                                                 <label class="col-auto calc__label"></label>
-                                                <div class="col calc__inpgrp relative row__inf"
+                                                <div class="col-sm col-12 d-none d-sm-block calc__inpgrp relative row__inf"
                                                      style="padding-right: 0;">
                                                     <div class="input-group">
                                                         <span class="form-control dimensions-label text-center">Д</span>
@@ -51,7 +51,7 @@
                                                 <div class="col-11 form-item row align-items-center package-item"
                                                      id="package-1" style="padding-right: 0;">
                                                     <label class="col-auto calc__label">@if($key == 0)Габариты (м)*@endif</label>
-                                                    <div class="col calc__inpgrp relative row__inf"
+                                                    <div class="col-sm col-12 calc__inpgrp relative row__inf"
                                                          style="padding-right: 0;">
                                                         <div class="input-group">
                                                             <input type="text" readonly id="packages_1_length"
