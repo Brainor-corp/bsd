@@ -36,10 +36,10 @@
                         <h1>Расчет стоимости</h1>
                     </header>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-lg-6">
                             @include('v1.pages.calculator.parts.calculator-content')
                         </div>
-                        <div class="col-md-4 offset-md-2">
+                        <div class="ml-lg-auto col-lg-4">
                             <section class="block__itogo">
                                 <div id="calculator-data-preloader" style="
                                     position:absolute;
