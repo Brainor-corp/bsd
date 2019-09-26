@@ -73,14 +73,12 @@ class Api1cTestController extends Controller
 
             $mapOrder = [];
 
-            dd($order->order_items->toArray());
-
             $mapOrder['Идентификатор_на_сайте'] = intval($order->id);
             $mapOrder['Название_груза'] = $order->shipping_name ?? "";
             $mapOrder['Общий_вес'] = floatval($order->total_weight);
             $mapOrder['Общий_объем'] = floatval($totalVolume);
             $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order->order_date)->format('Y-m-d\TH:i:s');
-            $mapOrder['Количество_мест'] = array_sum(array_column($order->order_items->toArray(), 'count'));
+            $mapOrder['Количество_мест'] = array_sum(array_column($order->order_items->toArray(), 'quantity'));
             $mapOrder['Итоговая_цена'] = is_numeric($order->total_price) ? intval($order->total_price) : 0;
             $mapOrder['СтатусОплаты'] = $order->payment_status->name ?? '';
             $mapOrder['Базовая_цена_маршрута'] = is_numeric($order->base_price) ? intval($order->base_price) : 0;
