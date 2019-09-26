@@ -75,6 +75,8 @@ class DocumentHelper
 
     public static function generateReceiptDocument($documentName, Array $parameters = null)
     {
+        $documentName = str_replace('/', '.', $documentName);
+
         $params = [];
         $keys = array_keys($parameters);
         foreach($keys as $key) {
@@ -100,6 +102,8 @@ class DocumentHelper
 
     public static function generateInvoiceDocument($documentData, $documentName)
     {
+        $documentName = str_replace('/', '.', $documentName);
+
         foreach($documentData['Товары'] as $index => $item) {
             $items['number'][] = $index + 1;
             $items['name'][] = $item['Содержание'];
@@ -135,6 +139,8 @@ class DocumentHelper
 
     public static function generateRequestDocument($documentData, $documentName)
     {
+        $documentName = str_replace('/', '.', $documentName);
+
         $view = View::make('v1.pdf.document-request')->with(compact('documentData'));
         $html = $view->render();
 
@@ -160,6 +166,8 @@ class DocumentHelper
 
     public static function generateTransferDocument($documentData, $documentName)
     {
+        $documentName = str_replace('/', '.', $documentName);
+
         foreach($documentData as $key => $var) {
             $params["{{$key}}"] = new ExcelParam(CellSetterStringValue::class, $var);
         }
