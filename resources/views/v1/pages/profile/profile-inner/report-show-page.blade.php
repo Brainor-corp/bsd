@@ -50,7 +50,12 @@
                                                 @php($totalVolume += $item->volume * $item->quantity)
                                                 <div class="col-11 form-item row align-items-center package-item"
                                                      id="package-1" style="padding-right: 0;">
-                                                    <label class="col-auto calc__label">@if($key == 0)Габариты (м)*@endif</label>
+                                                    <label class="col-auto calc__label">
+                                                        @if($loop->first)
+                                                            <span>Габариты (м)*</span>
+                                                            <span class="d-md-none d-inline-block">(Д/Ш/В/Вес/Кол-во)</span>
+                                                        @endif
+                                                    </label>
                                                     <div class="col-sm col-12 calc__inpgrp relative row__inf"
                                                          style="padding-right: 0;">
                                                         <div class="input-group">
