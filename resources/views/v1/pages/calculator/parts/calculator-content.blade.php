@@ -38,7 +38,7 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="row">
+            <div class="row d-none d-sm-block">
                 <div class="col-11 form-item row align-items-center" style="padding-right: 0;">
                     <label class="col-auto calc__label"></label>
                     <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
