@@ -17,15 +17,42 @@ class DocumentHelper
         $TBS = new \clsTinyButStrong();
         $TBS->Plugin(TBS_INSTALL, \clsOpenTBS::class);
 
-        $TBS->LoadTemplate(public_path('templates/ContractTemplate.docx'));
+        $type = '';
+        switch ($parameters['ЮридическоеФизическоеЛицо']) {
+            case 'Юридическое лицо':
+                $type = 'ur';
+                $parameters['ПостфиксПолаКонтрагента'] = 'его';
+                if(isset($parameters['ПолРуководителяКонтрагента']) && $parameters['ПолРуководителяКонтрагента'] == 'Женский') {
+                    $parameters['ПостфиксПолаКонтрагента'] = 'ей';
+                }
+
+                break;
+            case 'Физическое лицо':
+                $type = 'fiz';
+
+                $parameters['ДокументУдостоверяющийЛичностьСерия'] = '';
+                $parameters['ДокументУдостоверяющийЛичностьНомер'] = '';
+
+                if(!empty($parameters['ДокументУдостоверяющийЛичность'])) {
+                    $passportParts = explode(' ', $parameters['ДокументУдостоверяющийЛичность']);
+
+                    $parameters['ДокументУдостоверяющийЛичностьСерия'] = $passportParts[0] ?? '';
+                    $parameters['ДокументУдостоверяющийЛичностьНомер'] = $passportParts[1] ?? '';
+                }
+
+                break;
+
+            default: break;
+        }
+
+        if(empty($type)) {
+            return redirect()->back();
+        }
+
+        $TBS->LoadTemplate(public_path("templates/ContractTemplate-$type.docx"));
 
         $TBS->SetOption('charset', 'UTF-8');
         $TBS->SetOption('render', TBS_OUTPUT);
-
-        $parameters['ПостфиксПолаКонтрагента'] = 'го';
-        if(isset($parameters['ПолРуководителяКонтрагента']) && $parameters['ПолРуководителяКонтрагента'] == 'Женский') {
-            $parameters['ПостфиксПолаКонтрагента'] = 'ей';
-        }
 
         foreach ($parameters as $name => $value) {
             $TBS->MergeField($name, $value);
@@ -48,6 +75,8 @@ class DocumentHelper
 
     public static function generateReceiptDocument($documentName, Array $parameters = null)
     {
+        $documentName = str_replace('/', '.', $documentName);
+
         $params = [];
         $keys = array_keys($parameters);
         foreach($keys as $key) {
@@ -73,6 +102,8 @@ class DocumentHelper
 
     public static function generateInvoiceDocument($documentData, $documentName)
     {
+        $documentName = str_replace('/', '.', $documentName);
+
         foreach($documentData['Товары'] as $index => $item) {
             $items['number'][] = $index + 1;
             $items['name'][] = $item['Содержание'];
@@ -108,6 +139,8 @@ class DocumentHelper
 
     public static function generateRequestDocument($documentData, $documentName)
     {
+        $documentName = str_replace('/', '.', $documentName);
+
         $view = View::make('v1.pdf.document-request')->with(compact('documentData'));
         $html = $view->render();
 
@@ -133,6 +166,8 @@ class DocumentHelper
 
     public static function generateTransferDocument($documentData, $documentName)
     {
+        $documentName = str_replace('/', '.', $documentName);
+
         foreach($documentData as $key => $var) {
             $params["{{$key}}"] = new ExcelParam(CellSetterStringValue::class, $var);
         }
