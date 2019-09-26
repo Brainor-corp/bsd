@@ -135,7 +135,7 @@
     </div>
     <div class="form-item row block-for-distance">
         <label class="col-auto calc__label big">Откуда</label>
-        <div class="col delivery-block">
+        <div class="col-md col-12 delivery-block">
             <div class="form-item">
                 <select id="ship_city" class="form-control point-select" name="ship_city" placeholder="Выберите город" required>
                     <option value=""></option>
@@ -210,7 +210,7 @@
     </div>
     <div class="form-item row block-for-distance">
         <label class="col-auto calc__label big">Куда</label>
-        <div class="col delivery-block">
+        <div class="col-md col-12 delivery-block">
             <div class="form-item">
                 {{--<input type="text" class="form-control" placeholder="email@example.com">--}}
                 <select id="dest_city" class="form-control point-select" name="dest_city" placeholder="Выберите город" required>
