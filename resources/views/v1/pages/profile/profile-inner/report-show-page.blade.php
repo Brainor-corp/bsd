@@ -47,7 +47,7 @@
                                             </div>
                                             @php($totalVolume = 0)
                                             @foreach($order->order_items as $key => $item)
-                                                @php($totalVolume += $item->volume)
+                                                @php($totalVolume += $item->volume * $item->quantity)
                                                 <div class="col-11 form-item row align-items-center package-item"
                                                      id="package-1" style="padding-right: 0;">
                                                     <label class="col-auto calc__label">@if($key == 0)Габариты (м)*@endif</label>

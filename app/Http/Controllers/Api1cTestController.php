@@ -38,27 +38,29 @@ class Api1cTestController extends Controller
     }
 
     public function createOrder() {
-        $orders = Order::where('sync_need', true)
-            ->whereHas(
-                'status', function ($statusQ) {
-                    return $statusQ->where('slug', '<>', 'chernovik');
-                }
-            )
-            ->with(
-                'user',
-                'recipient_type',
-                'sender_type',
-                'payer_form_type',
-                'payer',
-                'payment',
-                'order_services',
-                'ship_city',
-                'dest_city',
-                'status',
-                'order_items',
-                'order_creator_type_model'
-            )
-            ->orderBy('created_at', 'desc')
+        $orders = Order::
+//            where('sync_need', true)
+//            ->whereHas(
+//                'status', function ($statusQ) {
+//                    return $statusQ->where('slug', '<>', 'chernovik');
+//                }
+//            )
+//            ->with(
+//                'user',
+//                'recipient_type',
+//                'sender_type',
+//                'payer_form_type',
+//                'payer',
+//                'payment',
+//                'order_services',
+//                'ship_city',
+//                'dest_city',
+//                'status',
+//                'order_items',
+//                'order_creator_type_model'
+//            )
+//            ->orderBy('created_at', 'desc')
+            where('id', 620)
             ->limit(1)
             ->get();
 
@@ -76,7 +78,7 @@ class Api1cTestController extends Controller
             $mapOrder['Общий_вес'] = floatval($order->total_weight);
             $mapOrder['Общий_объем'] = floatval($totalVolume);
             $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order->order_date)->format('Y-m-d\TH:i:s');
-            $mapOrder['Количество_мест'] = count($order->order_items);
+            $mapOrder['Количество_мест'] = array_sum(array_column($order->order_items->toArray(), 'quantity'));
             $mapOrder['Итоговая_цена'] = is_numeric($order->total_price) ? intval($order->total_price) : 0;
             $mapOrder['СтатусОплаты'] = $order->payment_status->name ?? '';
             $mapOrder['Базовая_цена_маршрута'] = is_numeric($order->base_price) ? intval($order->base_price) : 0;
@@ -279,6 +281,7 @@ class Api1cTestController extends Controller
         })->toArray();
 
         foreach($orders as $order) {
+            dd($order);
             $response1c = Api1CHelper::post('create_order', $order);
 
             if(
