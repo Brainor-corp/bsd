@@ -29,6 +29,9 @@
                 <br>
                 <a href="{{ route('make-payment', ['order_id' => $order->id]) }}">Оплатить</a>
             @endif
+            @if($order->payment_status->slug === 'oplachen')
+                ({{ $order->payment_status->name }})
+            @endif
         </td>
         <td>{{ $order->status->name }}</td>
         <td>
