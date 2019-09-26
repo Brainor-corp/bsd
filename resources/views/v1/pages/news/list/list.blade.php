@@ -20,16 +20,16 @@
                     <header class="wrapper__header">
                         <h1>Новости</h1>
                     </header>
-                    <div class="row">
-                        <div class="col-8">
+                    <div class="row d-flex flex-column flex-lg-row">
+                        <div class="col-lg-8 col-12">
                             <form id="filter-form" action="">
-                                <div id="news-page__filter-block" class="sort__block d-flex align-items-center">
+                                <div id="news-page__filter-block" class="sort__block d-flex flex-column flex-md-row align-items-center">
                                     <span class="sort__label margin-item">Фильтровать по:</span>
-                                    <div class="input-group d-flex margin-item">
+                                    <div class="input-group d-flex flex-column flex-md-row margin-item">
                                         <div class="input-group__item relative">
                                             <select name="categories[]" id="category_select"
                                                     class="filter-select" title="Категории"
-                                                    data-selected-text-format="static" data-style="custom-select"
+                                                    data-selected-text-format="static" data-style="custom-select" data-width="100%"
                                                     multiple>
                                                 @foreach($newsTerms as $term)
                                                     <option @if(isset($request->categories) && in_array($term->id, $request->categories)) selected @endif value="{{ $term->id }}">{{ $term->title }}</option>
@@ -45,7 +45,7 @@
                                             <select name="cities[]" id="city_select"
                                                     class="filter-select" title="Город"
                                                     data-live-search="true"
-                                                    data-selected-text-format="static" data-style="custom-select"
+                                                    data-selected-text-format="static" data-style="custom-select" data-width="100%"
                                                     multiple>
                                                 @foreach($cities as $city)
                                                     <option @if(isset($request->cities) && in_array($city->id, $request->cities)) selected @endif value="{{ $city->id }}">{{ $city->name }}</option>
@@ -59,7 +59,7 @@
                                 @include('v1.partials.news-page.news')
                             </div>
                         </div>
-                        <div class="col-3 offset-md-1">
+                        <div class="ml-lg-auto col-md-3 col-12 mt-3 mt-lg-0">
                             <div class="sidebar__block">
                                 <div class="sidebar__image">
                                     <img src="{{ asset('/images/img/news-img.png') }}" alt="С новым годом">

@@ -41,7 +41,7 @@
             <div class="row">
                 <div class="col-11 form-item row align-items-center" style="padding-right: 0;">
                     <label class="col-auto calc__label"></label>
-                    <div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">
+                    <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                         <div class="input-group">
                             <span class="form-control dimensions-label text-center">Д</span>
                             <span class="form-control dimensions-label text-center">Ш</span>
@@ -58,7 +58,7 @@
                         <div class="row package-wrapper" id="package-wrapper-{{ $key }}">
                             <div class="col-11 form-item row align-items-center package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
                                 <label class="col-auto calc__label"><span class="content">Габариты (м)*</span></label>
-                                <div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">
+                                <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                                     <div class="input-group">
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
@@ -69,10 +69,10 @@
                                     <input type="number" hidden="hidden" id="packages_{{ $key }}_volume" class="form-control text-center package-params package-volume" name="cargo[packages][{{ $key }}][volume]" data-package-id="{{ $key }}"  data-dimension-type="volume" value="{{ $package['volume'] }}"/>
                                 </div>
                             </div>
-                            <a href="#" id="add-package-btn" class="col-1 add_anotherplace">
+                            <a href="#" id="add-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace">
                                 <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
                             </a>
-                            <a href="#" id="delete-package-btn" class="col-1 add_anotherplace">
+                            <a href="#" id="delete-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace">
                                 <span class="badge calc_badge"><i class="fa fa-minus"></i></span>
                             </a>
                         </div>
@@ -82,7 +82,7 @@
                         <div class="row package-wrapper" id="package-wrapper-{{ $key }}">
                             <div class="col-11 form-item row align-items-center package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
                                 <label class="col-auto calc__label"><span class="content">Габариты (м)*</span></label>
-                                <div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">
+                                <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                                     <div class="input-group">
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
@@ -93,10 +93,10 @@
                                     <input type="number" hidden="hidden" id="packages_{{ $key }}_volume" class="form-control text-center package-params package-volume" name="cargo[packages][{{ $key }}][volume]" data-package-id="{{ $key }}"  data-dimension-type="volume" value="{{ $package['volume'] }}"/>
                                 </div>
                             </div>
-                            <a href="#" id="add-package-btn" class="col-1 add_anotherplace">
+                            <a href="#" id="add-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace">
                                 <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
                             </a>
-                            <a href="#" id="delete-package-btn" class="col-1 add_anotherplace">
+                            <a href="#" id="delete-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace">
                                 <span class="badge calc_badge"><i class="fa fa-minus"></i></span>
                             </a>
                         </div>
@@ -693,11 +693,11 @@
             <label class="custom-control-label" for="order-creator-type-payer">Плательщик</label>
         </div>
     </div>
-    <div class="form-item d-flex">
-        <button type="submit" name="status" value="chernovik" class="btn margin-item btn-default">Сохранить черновик</button>
-        <button type="submit" name="status" value="order_auth" class="btn margin-item btn-danger">Оформить заявку</button>
+    <div class="form-item d-flex flex-column flex-md-row">
+        <button type="submit" name="status" value="chernovik" class="btn margin-item btn-default my-2 my-lg-0">Сохранить черновик</button>
+        <button type="submit" name="status" value="order_auth" class="btn margin-item btn-danger my-2 my-lg-0">Оформить заявку</button>
         @if(\Illuminate\Support\Facades\Auth::guest())
-            <button type="submit" name="status" value="order_guest" class="btn margin-item btn-danger">Оформить заявку без регистрации</button>
+            <button type="submit" name="status" value="order_guest" class="btn margin-item btn-danger my-2 my-lg-0">Оформить заявку без регистрации</button>
         @endif
     </div>
     @csrf

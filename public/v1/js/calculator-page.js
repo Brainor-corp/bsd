@@ -169,7 +169,7 @@ $(document).ready(function () {
             '<div class="row package-wrapper" id="package-wrapper-'+ nextId +'">'+
             '<div class="col-11 form-item row align-items-center package-item" id="package-'+ nextId +'" data-package-id="'+ nextId +'" style="padding-right: 0;">' +
             '<label class="col-auto calc__label"><span class="content">Габариты (м)*</span></label>' +
-            '<div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">' +
+            '<div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">' +
             '<div class="input-group">' +
             '<input type="number" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
             '<input type="number" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][width]" data-package-id="'+ nextId +'"  data-dimension-type="width" placeholder="Ширина" value="0.1">' +
@@ -180,10 +180,10 @@ $(document).ready(function () {
             '<input type="number" hidden="hidden" id="packages_'+ nextId +'_volume" class="form-control text-center package-params package-volume" name="cargo[packages]['+ nextId +'][volume]" data-package-id="'+ nextId +'"  data-dimension-type="volume"  value="0.001">' +
             '</div>' +
             '</div>'+
-            '<a href="#" id="delete-package-btn" class=" col-1 add_anotherplace">' +
+            '<a href="#" id="delete-package-btn" class=" col-1 align-self-sm-auto align-self-center add_anotherplace">' +
             '<span class="badge calc_badge"><i class="fa fa-minus"></i></span>' +
             '</a>'+
-            '<a href="#" id="add-package-btn" class=" col-1 add_anotherplace">' +
+            '<a href="#" id="add-package-btn" class=" col-1 align-self-sm-auto align-self-center add_anotherplace">' +
             '<span class="badge calc_badge"><i class="fa fa-plus"></i></span>' +
             '</a>'+
             '</div>'
