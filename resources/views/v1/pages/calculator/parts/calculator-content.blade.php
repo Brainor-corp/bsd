@@ -57,7 +57,9 @@
                     @foreach(old('cargo.packages') as $key => $package)
                         <div class="row package-wrapper" id="package-wrapper-{{ $key }}">
                             <div class="col-11 form-item row align-items-center package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
-                                <label class="col-auto calc__label"><span class="content">Габариты (м)*</span></label>
+                                <label class="col-sm-auto calc__label">
+                                    <span class="content">Габариты (м)*</span>
+                                </label>
                                 <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                                     <div class="input-group">
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
@@ -81,7 +83,12 @@
                     @foreach($packages as $key => $package)
                         <div class="row package-wrapper" id="package-wrapper-{{ $key }}">
                             <div class="col-11 form-item row align-items-center package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
-                                <label class="col-auto calc__label"><span class="content">Габариты (м)*</span></label>
+                                <label class="col-sm-auto calc__label">
+                                    <span class="content">Габариты (м)*</span>
+                                    @if($loop->first)
+                                        <span class="d-md-none d-inline-block">(Д/Ш/В/Вес/Кол-во)</span>
+                                    @endif
+                                </label>
                                 <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                                     <div class="input-group">
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
