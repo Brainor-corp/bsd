@@ -73,6 +73,8 @@ class Api1cTestController extends Controller
 
             $mapOrder = [];
 
+            dd($order->order_items->toArray());
+
             $mapOrder['Идентификатор_на_сайте'] = intval($order->id);
             $mapOrder['Название_груза'] = $order->shipping_name ?? "";
             $mapOrder['Общий_вес'] = floatval($order->total_weight);
