@@ -18,6 +18,7 @@
         <td>{{ $order->recipient_name ?? ($order->recipient_company_name ?? '') }}</td>
         <td>
             {{ $order->actual_price ?? ($order->total_price ?? '-' )}} <span>р</span>
+            <br>
             {{ $order->payment_status->name ?? '' }}
             @if(
                 $order->status &&
