@@ -157,7 +157,7 @@ class Api1cTestController extends Controller
                     "Длина" => floatval($order_item->length),
                     "Ширина" => floatval($order_item->width),
                     "Высота" => floatval($order_item->height),
-                    "Объем" => floatval($order_item->volume),
+                    "Объем" => floatval($order_item->volume * $order_item->quantity),
                     "Вес" => floatval($order_item->weight),
                     "Количество" => intval($order_item->quantity),
                 ];
