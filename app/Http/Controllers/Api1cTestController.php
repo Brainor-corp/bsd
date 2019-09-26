@@ -38,27 +38,29 @@ class Api1cTestController extends Controller
     }
 
     public function createOrder() {
-        $orders = Order::where('sync_need', true)
-            ->whereHas(
-                'status', function ($statusQ) {
-                    return $statusQ->where('slug', '<>', 'chernovik');
-                }
-            )
-            ->with(
-                'user',
-                'recipient_type',
-                'sender_type',
-                'payer_form_type',
-                'payer',
-                'payment',
-                'order_services',
-                'ship_city',
-                'dest_city',
-                'status',
-                'order_items',
-                'order_creator_type_model'
-            )
-            ->orderBy('created_at', 'desc')
+        $orders = Order::
+//            where('sync_need', true)
+//            ->whereHas(
+//                'status', function ($statusQ) {
+//                    return $statusQ->where('slug', '<>', 'chernovik');
+//                }
+//            )
+//            ->with(
+//                'user',
+//                'recipient_type',
+//                'sender_type',
+//                'payer_form_type',
+//                'payer',
+//                'payment',
+//                'order_services',
+//                'ship_city',
+//                'dest_city',
+//                'status',
+//                'order_items',
+//                'order_creator_type_model'
+//            )
+//            ->orderBy('created_at', 'desc')
+            where('id', 620)
             ->limit(1)
             ->get();
 
@@ -279,6 +281,7 @@ class Api1cTestController extends Controller
         })->toArray();
 
         foreach($orders as $order) {
+            dd($order);
             $response1c = Api1CHelper::post('create_order', $order);
 
             if(
