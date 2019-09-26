@@ -18,6 +18,7 @@
         <td>{{ $order->recipient_name ?? ($order->recipient_company_name ?? '') }}</td>
         <td>
             {{ $order->actual_price ?? ($order->total_price ?? '-' )}} <span>р</span>
+            {{ $order->payment_status->name ?? '' }}
             @if(
                 $order->status &&
                 $order->status->slug === 'ispolnyaetsya' &&
@@ -28,9 +29,6 @@
             )
                 <br>
                 <a href="{{ route('make-payment', ['order_id' => $order->id]) }}">Оплатить</a>
-            @endif
-            @if($order->payment_status->slug === 'oplachen')
-                ({{ $order->payment_status->name }})
             @endif
         </td>
         <td>{{ $order->status->name }}</td>
