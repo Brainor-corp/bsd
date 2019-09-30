@@ -228,34 +228,52 @@ class CalculatorController extends Controller
             $totalWeight += $package['weight'] * $package['quantity'];
             $totalVolume += $package['volume'] * $package['quantity'];
         }
+        $ship_city = $cities->where('name', $request->get('ship_city'))->first();
+        $dest_city = $cities->where('name', $request->get('dest_city'))->first();
+
+        //Определяем дистанцию доставки в случае если пункт есть в Points
+        $take_distance = $request->get('take_distance');
+        $takeCityName = $request->get('need-to-take-type') === "in" ?
+            $cities->where('name', $request->get('ship_city'))->first()->name :
+            $request->get('take_city_name');
+        $takePoint = Point::where('name', $takeCityName)
+            ->where('city_id',$ship_city->id)
+            ->first();
+        if($takePoint){$take_distance = $takePoint->distance;}
+
+        $bring_distance = $request->get('bring_distance');
+        $bringCityName = $request->get('need-to-bring-type') === "in" ?
+            $cities->where('name', $request->get('dest_city'))->first()->name :
+            $request->get('bring_city_name');
+        $bringPoint = Point::where('name', $bringCityName)
+            ->where('city_id',$dest_city->id)
+            ->first();
+        if($bringPoint){$bring_distance = $bringPoint->distance;}
+        //Конец -- Определяем дистанцию доставки в случае если пункт есть в Points
 
         return CalculatorHelper::getAllCalculatedData(
-            $cities->where('name', $request->get('ship_city'))->first(),
-            $cities->where('name', $request->get('dest_city'))->first(),
+            $ship_city,
+            $dest_city,
             $request->get('cargo')['packages'],
             $request->get('service'),
             $request->get('need-to-take') === "on" ?
             [
-                'cityName' => $request->get('need-to-take-type') === "in" ?
-                    $cities->where('name', $request->get('ship_city'))->first()->name :
-                    $request->get('take_city_name'),
+                'cityName' => $takeCityName,
                 'weight' => $totalWeight,
                 'volume' => $totalVolume,
                 'isWithinTheCity' => $request->get('need-to-take-type') === "in",
                 'x2' => $request->get('ship-from-point') === "on",
-                'distance' => $request->get('take_distance'),
+                'distance' => $take_distance,
                 'polygonId' => $request->get('take_polygon')
             ] : [],
             $request->get('need-to-bring') === "on" ?
             [
-                'cityName' => $request->get('need-to-bring-type') === "in" ?
-                    $cities->where('name', $request->get('dest_city'))->first()->name :
-                    $request->get('bring_city_name'),
+                'cityName' => $bringCityName,
                 'weight' => $totalWeight,
                 'volume' => $totalVolume,
                 'isWithinTheCity' => $request->get('need-to-bring-type') === "in",
                 'x2' => $request->get('bring-to-point') === "on",
-                'distance' => $request->get('bring_distance'),
+                'distance' => $bring_distance,
                 'polygonId' => $request->get('bring_polygon')
             ] : [],
             $request->get('insurance_amount'),
