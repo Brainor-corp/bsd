@@ -45,7 +45,7 @@
                                         <table class="table table-bordered reports-table" data-documents-modal-url="{{ route('get-download-documents-modal') }}">
                                             <thead>
                                             <tr>
-                                                <th>№</th>
+                                                <th>№ заявки</th>
                                                 <th>Дата</th>
                                                 <th>Параметры груза</th>
                                                 <th>Город отправителя</th>

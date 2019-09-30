@@ -32,7 +32,8 @@ class ReportsController extends Controller
                 'ship_city',
                 'dest_city',
                 'payment_status',
-                'payment'
+                'payment',
+                'order_items'
             )
             ->where(function ($ordersQuery) {
                 return Auth::check() ? $ordersQuery

@@ -3,14 +3,25 @@
         <td>{{ $order->id }}</td>
         <td>{{ $order->created_at->format('d.m.Y') }}</td>
         <td>
+
+            @if($order->order_items && count($order->order_items)>0)
+            <div>
+                <span class="label">Кол-во мест:</span>
+                <span>{{ count($order->order_items) }}</span>
+            </div>
+            <div style="min-width: 100px;">
+                <span class="label">Объем:</span>
+                <span>{{ $order->order_items->sum('volume') }} м<sup>3</sup></span>
+            </div>
+            @endif
             <div>
                 <span class="label">Вес:</span>
                 <span>{{ $order->total_weight }} кг</span>
             </div>
-            <div>
-                <a class="show-order-items" data-order-id="{{ $order->id }}"
-                   href="#">Показать габариты</a>
-            </div>
+            {{--<div>--}}
+                {{--<a class="show-order-items" data-order-id="{{ $order->id }}"--}}
+                   {{--href="#">Показать габариты</a>--}}
+            {{--</div>--}}
         </td>
         <td>{{ $order->ship_city_name ?? $order->ship_city->name ?? '' }}</td>
         <td>{{ $order->dest_city_name ?? $order->dest_city->name ?? '' }}</td>
