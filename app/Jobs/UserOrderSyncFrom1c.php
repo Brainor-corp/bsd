@@ -78,7 +78,7 @@ class UserOrderSyncFrom1c implements ShouldQueue
             $order->take_address = $response1c['response']['АдресЗабора'] ?? "";
             $order->delivery_address = $response1c['response']['АдресДоставки'] ?? "";
             $order->order_date = isset($response1c['response']['ДатаИсполнения']) ?
-                Carbon::createFromFormat("d.m.Y h:i:s", $response1c['response']['ДатаИсполнения'])->format("Y-m-d H:i:s") :
+                Carbon::parse("d.m.Y h:i:s", $response1c['response']['ДатаИсполнения'])->format("Y-m-d H:i:s") :
                 null;
 
             $order->total_price = $response1c['response']['Итоговая_цена'] ?? 0;
