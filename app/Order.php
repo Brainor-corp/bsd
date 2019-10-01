@@ -20,7 +20,8 @@ class Order extends Model
         'recipient_name', 'recipient_phone', 'payer_id', 'payer_name', 'payer_phone',
         'payment_type', 'code_1c', 'manager_id', 'operator_id', 'order_date',
         'order_finish_date', 'discount', 'discount_amount', 'insurance', 'insurance_amount', 'estimated_delivery_date',
-        'take_polygon_id', 'bring_polygon_id', 'payer_email', 'order_creator', 'order_creator_type'
+        'take_polygon_id', 'bring_polygon_id', 'payer_email', 'order_creator', 'order_creator_type',
+        'cargo_status', 'cargo_number'
     ];
 
     protected $encryptable = [
@@ -70,6 +71,10 @@ class Order extends Model
 
     public function payment_status(){
         return $this->belongsTo(Type::class, 'payment_status_id');
+    }
+
+    public function cargo_status(){
+        return $this->belongsTo(Type::class, 'cargo_status_id');
     }
 
     public function cargo_type(){

@@ -1,6 +1,8 @@
 @foreach($orders as $order)
     <tr>
         <td>{{ $order->id }}</td>
+        <td>{{ $order->cargo_number }}</td>
+        <td>{{ $order->cargo_status->name ?? '' }}</td>
         <td>{{ $order->created_at->format('d.m.Y') }}</td>
         <td>
 
@@ -28,8 +30,6 @@
         <td>{{ $order->sender_name ?? ($order->sender_company_name ?? '') }}</td>
         <td>{{ $order->recipient_name ?? ($order->recipient_company_name ?? '') }}</td>
         <td>
-            {{ $order->actual_price ?? ($order->total_price ?? '-' )}} <span>р</span>
-            <br>
             {{ $order->payment_status->name ?? '' }}
             @if(
                 $order->status &&
