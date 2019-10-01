@@ -206,7 +206,7 @@ class ReportsController extends Controller
             'Город получателя',             // G
             'Отправитель',                  // H
             'Получатель',                   // I
-            'Стоимость',                    // J
+            'Оплата услуги',                // J
             'Статус заявки',                // K
         ];
 
@@ -230,7 +230,7 @@ class ReportsController extends Controller
             $sheet->setCellValue('G' . ($key + 2), $order->dest_city_name ?? $order->dest_city->name ?? '-');
             $sheet->setCellValue('H' . ($key + 2), $order->sender_name ?? ($order->sender_company_name ?? '-'));
             $sheet->setCellValue('I' . ($key + 2), $order->recipient_name ?? ($order->recipient_company_name ?? '-'));
-            $sheet->setCellValue('J' . ($key + 2), $order->total_price . 'р');
+            $sheet->setCellValue('J' . ($key + 2), $order->payment_status->name ?? '');
             $sheet->setCellValue('K' . ($key + 2), $order->status->name);
         }
 
