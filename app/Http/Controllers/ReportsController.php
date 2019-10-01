@@ -205,7 +205,7 @@ class ReportsController extends Controller
             'Отправитель',
             'Получатель',
             'Стоимость',
-            'Статус заказа',
+            'Статус заявки',
         ];
 
         $x = range('A', 'Z');
@@ -224,8 +224,8 @@ class ReportsController extends Controller
             $sheet->setCellValue('C' . ($key + 2), $items);
             $sheet->setCellValue('D' . ($key + 2), $order->ship_city_name ?? $order->ship_city->name ?? '-');
             $sheet->setCellValue('E' . ($key + 2), $order->dest_city_name ?? $order->dest_city->name ?? '-');
-            $sheet->setCellValue('F' . ($key + 2), $order->sender_name ?? '-');
-            $sheet->setCellValue('G' . ($key + 2), $order->recipient_name ?? '-');
+            $sheet->setCellValue('F' . ($key + 2), $order->sender_name ?? ($order->sender_company_name ?? '-'));
+            $sheet->setCellValue('G' . ($key + 2), $order->recipient_name ?? ($order->recipient_company_name ?? '-'));
             $sheet->setCellValue('H' . ($key + 2), $order->total_price . 'р');
             $sheet->setCellValue('I' . ($key + 2), $order->status->name);
         }
