@@ -26,7 +26,8 @@ class Orders extends Section {
 
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::link('id', '#')->setSortable(1),
+            Column::link('id', '№ заявки')->setSortable(1),
+            Column::text('cargo_number', '№ ЭР')->setSortable(1),
             Column::text('real_status', 'Статус'),
             Column::text('ship_city_name', 'Город отправки'),
             Column::text('dest_city_name', 'Город доставки'),
@@ -37,6 +38,7 @@ class Orders extends Section {
             Column::text('order_date', 'Дата заявки')->setSortable(1),
         ])->setFilter([
             FilterType::text('id', '#'),
+            FilterType::text('cargo_number', '#'),
             null,
             null,
             null,
@@ -72,6 +74,7 @@ class Orders extends Section {
         $form = Form::panel([
             FormColumn::column([
                 FormField::custom('<h4>Основное</h4><hr>'),
+                FormField::input('cargo_number', '№ ЭР'),
                 FormField::input('shipping_name', 'Название груза')->setRequired(1),
                 FormField::datepicker('order_date', 'Дата заявки')
                     ->setTodayBtn(true)
@@ -79,6 +82,14 @@ class Orders extends Section {
                     ->setLanguage('ru')
                     ->setClearBtn(true)
                     ->setRequired(1),
+                FormField::bselect('cargo_status_id', 'Статус груза')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($query){
+                        return $query->where('class', 'cargo_status');
+                    })->setDisplay('name'),
                 FormField::bselect('status_id', 'Статус заявки')
                     ->setDataAttributes([
                         'data-live-search="true"'

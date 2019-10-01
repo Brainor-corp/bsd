@@ -197,15 +197,17 @@ class ReportsController extends Controller
         $sheet->setTitle('Отчеты');
 
         $headers = [
-            '№ ',
-            'Дата',
-            'Параметры груза',
-            'Город отправителя',
-            'Город получателя',
-            'Отправитель',
-            'Получатель',
-            'Стоимость',
-            'Статус заявки',
+            '№ заявки',                     // A
+            '№ Экспедиторский расписки',    // B
+            'Статус груза',                 // C
+            'Дата',                         // D
+            'Параметры груза',              // E
+            'Город отправителя',            // F
+            'Город получателя',             // G
+            'Отправитель',                  // H
+            'Получатель',                   // I
+            'Стоимость',                    // J
+            'Статус заявки',                // K
         ];
 
         $x = range('A', 'Z');
@@ -220,14 +222,16 @@ class ReportsController extends Controller
             }
 
             $sheet->setCellValue('A' . ($key + 2), $order->id);
-            $sheet->setCellValue('B' . ($key + 2), $order->created_at->format('d.m.Y'));
-            $sheet->setCellValue('C' . ($key + 2), $items);
-            $sheet->setCellValue('D' . ($key + 2), $order->ship_city_name ?? $order->ship_city->name ?? '-');
-            $sheet->setCellValue('E' . ($key + 2), $order->dest_city_name ?? $order->dest_city->name ?? '-');
-            $sheet->setCellValue('F' . ($key + 2), $order->sender_name ?? ($order->sender_company_name ?? '-'));
-            $sheet->setCellValue('G' . ($key + 2), $order->recipient_name ?? ($order->recipient_company_name ?? '-'));
-            $sheet->setCellValue('H' . ($key + 2), $order->total_price . 'р');
-            $sheet->setCellValue('I' . ($key + 2), $order->status->name);
+            $sheet->setCellValue('B' . ($key + 2), $order->cargo_number);
+            $sheet->setCellValue('C' . ($key + 2), $order->cargo_status->name ?? '');
+            $sheet->setCellValue('D' . ($key + 2), $order->created_at->format('d.m.Y'));
+            $sheet->setCellValue('E' . ($key + 2), $items);
+            $sheet->setCellValue('F' . ($key + 2), $order->ship_city_name ?? $order->ship_city->name ?? '-');
+            $sheet->setCellValue('G' . ($key + 2), $order->dest_city_name ?? $order->dest_city->name ?? '-');
+            $sheet->setCellValue('H' . ($key + 2), $order->sender_name ?? ($order->sender_company_name ?? '-'));
+            $sheet->setCellValue('I' . ($key + 2), $order->recipient_name ?? ($order->recipient_company_name ?? '-'));
+            $sheet->setCellValue('J' . ($key + 2), $order->total_price . 'р');
+            $sheet->setCellValue('K' . ($key + 2), $order->status->name);
         }
 
         $rowIterator = $sheet->getRowIterator()->resetStart();
