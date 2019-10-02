@@ -671,7 +671,16 @@ class OrderController extends Controller
             redirect(route('orders-list'));
     }
 
-    public function shipmentSearch(Request $request){
+    public function shipmentSearch(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|string|in:id,cargo_number',
+            'query' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back();
+        }
+
         $orders = Order::with('status', 'cargo_status')
             ->whereDoesntHave('status', function ($statusQuery) {
                 return $statusQuery->where('slug', "chernovik");

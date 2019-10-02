@@ -25,14 +25,15 @@
                                 <div class="col-12">
                                     <span class="reports__header-label">Поиск:</span>
                                     <div id="search-wrapper" class="d-flex flex-wrap control-group">
+                                        @php($currentType = request()->get('type') === 'cargo_number' ? 'cargo_number' : 'id')
                                         <select name="type" class="custom-select">
-                                            <option @if(empty(request()->get('type')) || request()->get('type') === 'id') selected @endif value="id">По номеру заявки</option>
-                                            <option @if(request()->get('type') === 'cargo_number') selected @endif value="cargo_number">По номеру ЭР</option>
+                                            <option @if($currentType === 'id') selected @endif value="id">По номеру заявки</option>
+                                            <option @if($currentType === 'cargo_number') selected @endif value="cargo_number">По номеру ЭР</option>
                                         </select>
                                         <input name="query"
                                                type="text"
                                                class="form-control search-input mr-3 autocomplete"
-                                               placeholder="Введите номер"
+                                               placeholder="{{ $currentType === 'id' ? 'Введите номер (напр.: 123)' : 'Введите номер (напр.: СП-00000)' }}"
                                                value="{{ app('request')->get('query') }}"
                                                data-source="{{ route('get-cargo-numbers') }}"
                                                required
@@ -48,7 +49,7 @@
             <div class="row">
                 <div class="col-12">
                     @if(request()->get('query'))
-                        @if(isset($orders))
+                        @if(isset($orders) && count($orders))
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
@@ -82,7 +83,7 @@
                                 </table>
                             </div>
                         @else
-                            Не найдено заказа с таким номером.
+                            Заявка не найдена.
                         @endif
                     @endif
                 </div>
