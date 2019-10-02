@@ -28,6 +28,8 @@ Route::any('/calculator/get-counterparties', 'CounterpartyController@searchByTer
 Route::any('/calculator/get-discount', 'CalculatorController@getDiscount')->name('getDiscount');
 //END----CALCULATOR
 
+Route::any('/get-cargo-numbers', 'OrderController@getCargoNumbers')->name('get-cargo-numbers');
+
 Route::post('/get-cities-by-term', 'CitiesController@getCitiesByTerm')->name('get-cities-by-name');
 Route::get('/change-city/{city_id?}', 'CitiesController@changeCity')->name('change-city');
 Route::any('/prices/get-destination-cities', 'PricesController@getDestinationCities')->name('getDestinationCitiesForPrices');

@@ -1,5 +1,9 @@
 @extends('v1.layouts.innerPageLayout')
 
+@section('headerStyles')
+    <link rel="stylesheet" href="{{ asset('packages/jquery-ui/jquery-ui.css') }}">
+@endsection
+
 @section('content')
     <div class="breadcrumb__list d-flex">
         <div class="container">
@@ -16,45 +20,64 @@
                         <h1>Статус груза</h1>
                     </header>
                     <form action="{{ route('shipment-search') }}" method="get">
-                        <div class="container status-shipment__header">
+                        <div class="status-shipment__header">
                             <div class="reports__header row align-items-center">
-                                <span class="reports__header-label margin-md-item">Поиск:</span>
-                                <div class="margin-md-item d-flex flex-wrap control-group">
-                                    <input name="order_id" type="text" class="form-control search-input" placeholder="Введите номер" value="{{ request()->get('order_id') }}">
+                                <div class="col-12">
+                                    <span class="reports__header-label">Поиск:</span>
+                                    <div id="search-wrapper" class="d-flex flex-wrap control-group">
+                                        <select name="type" class="custom-select">
+                                            <option @if(empty(request()->get('type')) || request()->get('type') === 'id') selected @endif value="id">По номеру заявки</option>
+                                            <option @if(request()->get('type') === 'cargo_number') selected @endif value="cargo_number">По номеру ЭР</option>
+                                        </select>
+                                        <input name="query"
+                                               type="text"
+                                               class="form-control search-input mr-3 autocomplete"
+                                               placeholder="Введите номер"
+                                               value="{{ app('request')->get('query') }}"
+                                               data-source="{{ route('get-cargo-numbers') }}"
+                                               required
+                                        >
+                                        <button type="submit" class="btn btn-danger">Найти груз</button>
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-danger">Найти груз</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="row">
-                <div class="col-12 col-xl-6">
-                    @if(request()->get('order_id'))
-                        @if(isset($order))
+                <div class="col-12">
+                    @if(request()->get('query'))
+                        @if(isset($orders))
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
                                     <tr>
-                                        <th>№</th>
+                                        <th>№ Заявки</th>
+                                        <th>№ ЭР</th>
                                         <th>Дата доставки</th>
-                                        <th>Статус заказа</th>
+                                        <th>Статус заявки</th>
+                                        <th>Статус получения груза</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td>{{ $order->id }}</td>
-                                        @if(isset($order->estimated_delivery_date))
-                                            <td>
-                                                {{ \Carbon\Carbon::createFromDate($order->estimated_delivery_date)->format('d.m.Y') }}<br><span class="annotation-text">Плановая дата доставки</span>
-                                            </td>
-                                        @else
-                                            <td>
-                                                уточняется
-                                            </td>
-                                        @endif
-                                        <td>{{ $order->status->name }}</td>
-                                    </tr>
+                                    @foreach($orders as $order)
+                                        <tr>
+                                            <td>{{ $order->id }}</td>
+                                            <td>{{ $order->cargo_number }}</td>
+                                            @if(isset($order->estimated_delivery_date))
+                                                <td>
+                                                    {{ \Carbon\Carbon::createFromDate($order->estimated_delivery_date)->format('d.m.Y') }}<br><span class="annotation-text">Плановая дата доставки</span>
+                                                </td>
+                                            @else
+                                                <td>
+                                                    уточняется
+                                                </td>
+                                            @endif
+                                            <td>{{ $order->status->name ?? '' }}</td>
+                                            <td>{{ $order->cargo_status->name ?? '' }}</td>
+                                        </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -66,4 +89,9 @@
             </div>
         </div>
     </section>
+@endsection
+
+@section('footScripts')
+    <script src="{{ asset('packages/jquery-ui/jquery-ui.js') }}"></script>
+    <script src="{{ asset('v1/js/status-page.js') }}"></script>
 @endsection
