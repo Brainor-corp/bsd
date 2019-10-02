@@ -19,7 +19,12 @@
             text-align: center;
         }
         p {
-            text-indent: 100px;
+            text-indent: 50px;
+        }
+        .table-list th {
+            vertical-align: text-top;
+            font-weight: normal;
+            width: 40px;
         }
     </style>
     <meta charset="UTF-8">
