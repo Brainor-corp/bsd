@@ -1,5 +1,9 @@
 @extends('v1.layouts.innerPageLayout')
 
+@section('headerStyles')
+    <link rel="stylesheet" href="{{ asset('packages/jquery-ui/jquery-ui.css') }}">
+@endsection
+
 @section('content')
     <div class="breadcrumb__list d-flex">
         <div class="container">
@@ -27,9 +31,10 @@
                                         </select>
                                         <input name="query"
                                                type="text"
-                                               class="form-control search-input mr-3"
+                                               class="form-control search-input mr-3 autocomplete"
                                                placeholder="Введите номер"
                                                value="{{ app('request')->get('query') }}"
+                                               data-source="{{ route('get-cargo-numbers') }}"
                                                required
                                         >
                                         <button type="submit" class="btn btn-danger">Найти груз</button>
@@ -84,4 +89,9 @@
             </div>
         </div>
     </section>
+@endsection
+
+@section('footScripts')
+    <script src="{{ asset('packages/jquery-ui/jquery-ui.js') }}"></script>
+    <script src="{{ asset('v1/js/status-page.js') }}"></script>
 @endsection

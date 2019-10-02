@@ -19,6 +19,7 @@ use App\Type;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 
@@ -725,5 +726,15 @@ class OrderController extends Controller
     public function actionGetOrderSearchInput() {
         $types = Type::where('class', 'order_status')->get();
         return View::make('v1.partials.profile.order-search-select')->with(compact('types'))->render();
+    }
+
+    public function getCargoNumbers(Request $request) {
+        $cargoNumbers = DB::table('orders')
+            ->where('cargo_number', 'like', "%$request->term%")
+            ->select('cargo_number')
+            ->limit(5)
+            ->get();
+
+        return $cargoNumbers->toArray();
     }
 }
