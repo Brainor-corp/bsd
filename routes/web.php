@@ -118,6 +118,7 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
 
         Route::get('/profile/contract', 'ProfileController@contractPageShow')->name('profile-contract-show');
         Route::post('/profile/contract/download', 'ProfileController@contractDownload')->name('profile-contract-download');
+        Route::get('/profile/contract/download-new', 'ProfileController@contractDownloadNew')->name('profile-contract-download-new');
 
         Route::group(['middleware' => ['sms-confirm']], function () {
             // Работа с оповещениями доступна только авторизованным пользователям.

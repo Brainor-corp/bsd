@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\DocumentHelper;
 use App\Http\Helpers\SMSHelper;
 use App\User;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -199,5 +200,30 @@ class ProfileController extends Controller {
             }
         }
         return redirect()->back()->withErrors(['Произошла ошибка. Обновите страницу или попробуйте позднее.']);
+    }
+
+    public function contractDownloadNew(Request $request)
+    {
+        $user = Auth::user();
+        if($request->get('v') === '1') {
+            return view('v1.pdf.contracts.contract-fiz');
+        }
+
+        // instantiate and use the dompdf class
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml(view('v1.pdf.contracts.contract-fiz')->render());
+
+        // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        $font = $dompdf->getFontMetrics()->get_font("DejaVu Sans", "normal");
+        $dompdf->getCanvas()->page_text(270, 14, "стр. {PAGE_NUM} из {PAGE_COUNT}", $font, 7, [0.333, 0.333, 0.333]);
+
+        $dompdf->stream("Договор.pdf", array("Attachment" => false));
+
+//        return redirect()->back()->withErrors(['Произошла ошибка. Обновите страницу или попробуйте позднее.']);
     }
 }
