@@ -315,7 +315,7 @@ class OrderController extends Controller
             $order->sender_passport_number = $request->get('sender_passport_number');
 
             if(
-                Auth::check()
+            Auth::check()
             ) {
                 $counterparty = Counterparty::where([
                     ['hash_name', md5($request->get('sender_name_individual') . config('app.key'))],
@@ -353,7 +353,7 @@ class OrderController extends Controller
             $order->sender_kpp = $request->get('sender_kpp');
 
             if(
-                Auth::check()
+            Auth::check()
             ) {
                 $counterparty = Counterparty::where([
                     ['hash_inn', md5($request->get('sender_inn') . config('app.key'))],
@@ -399,7 +399,7 @@ class OrderController extends Controller
             $order->recipient_passport_number = $request->get('recipient_passport_number');
 
             if(
-                Auth::check()
+            Auth::check()
             ) {
                 $counterparty = Counterparty::where([
                     ['hash_name', md5($request->get('recipient_name_individual') . config('app.key'))],
@@ -437,7 +437,7 @@ class OrderController extends Controller
             $order->recipient_kpp = $request->get('recipient_kpp');
 
             if(
-                Auth::check()
+            Auth::check()
             ) {
                 $counterparty = Counterparty::where([
                     ['hash_inn', md5($request->get('recipient_inn') . config('app.key'))],
@@ -487,7 +487,7 @@ class OrderController extends Controller
                 $order->payer_passport_number = $request->get('payer_passport_number');
 
                 if(
-                    Auth::check()
+                Auth::check()
                 ) {
                     $counterparty = Counterparty::where([
                         ['hash_name', md5($request->get('payer_name_individual') . config('app.key'))],
@@ -525,7 +525,7 @@ class OrderController extends Controller
                 $order->payer_kpp = $request->get('payer_kpp');
 
                 if(
-                    Auth::check()
+                Auth::check()
                 ) {
                     $counterparty = Counterparty::where([
                         ['hash_inn', md5($request->get('payer_inn') . config('app.key'))],
@@ -671,13 +671,19 @@ class OrderController extends Controller
     }
 
     public function shipmentSearch(Request $request){
-        $order = Order::with('status')
+        $orders = Order::with('status', 'cargo_status')
             ->whereDoesntHave('status', function ($statusQuery) {
                 return $statusQuery->where('slug', "chernovik");
             })
-            ->find($request->get('order_id'));
+            ->when($request->get('type') === "id", function ($orderQ) use ($request) {
+                return $orderQ->where('id', $request->get('query'));
+            })
+            ->when($request->get('type') === "cargo_number", function ($orderQ) use ($request) {
+                return $orderQ->where('cargo_number', $request->get('query'));
+            })
+            ->get();
 
-        return View::make('v1.pages.shipment-status.status-page')->with(compact('order'));
+        return View::make('v1.pages.shipment-status.status-page')->with(compact('orders'));
     }
 
     public function searchOrders(Request $request) {
