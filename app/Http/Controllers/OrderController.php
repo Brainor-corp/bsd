@@ -673,25 +673,28 @@ class OrderController extends Controller
 
     public function shipmentSearch(Request $request) {
         $validator = Validator::make($request->all(), [
-            'type' => 'required|string|in:id,cargo_number',
-            'query' => 'required'
+            'type' => 'string|in:id,cargo_number',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back();
         }
 
-        $orders = Order::with('status', 'cargo_status')
-            ->whereDoesntHave('status', function ($statusQuery) {
-                return $statusQuery->where('slug', "chernovik");
-            })
-            ->when($request->get('type') === "id", function ($orderQ) use ($request) {
-                return $orderQ->where('id', $request->get('query'));
-            })
-            ->when($request->get('type') === "cargo_number", function ($orderQ) use ($request) {
-                return $orderQ->where('cargo_number', $request->get('query'));
-            })
-            ->get();
+        $orders = null;
+
+        if(!empty($request->get('type')) && !empty($request->get('query'))) {
+            $orders = Order::with('status', 'cargo_status')
+                ->whereDoesntHave('status', function ($statusQuery) {
+                    return $statusQuery->where('slug', "chernovik");
+                })
+                ->when($request->get('type') === "id", function ($orderQ) use ($request) {
+                    return $orderQ->where('id', $request->get('query'));
+                })
+                ->when($request->get('type') === "cargo_number", function ($orderQ) use ($request) {
+                    return $orderQ->where('cargo_number', $request->get('query'));
+                })
+                ->get();
+        }
 
         return View::make('v1.pages.shipment-status.status-page')->with(compact('orders'));
     }
