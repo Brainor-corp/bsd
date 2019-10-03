@@ -219,8 +219,8 @@ class ProfileController extends Controller {
         // Render the HTML as PDF
         $dompdf->render();
 
-        $font = $dompdf->getFontMetrics()->get_font("DejaVu Sans", "normal");
-        $dompdf->getCanvas()->page_text(270, 14, "стр. {PAGE_NUM} из {PAGE_COUNT}", $font, 7, [0.333, 0.333, 0.333]);
+        $font = $dompdf->getFontMetrics()->get_font("Times New Roman", "normal");
+        $dompdf->getCanvas()->page_text(270, 14, "стр. {PAGE_NUM} из {PAGE_COUNT}", $font, 8, [0, 0, 0]);
 
         $dompdf->stream("Договор.pdf", array("Attachment" => false));
 
