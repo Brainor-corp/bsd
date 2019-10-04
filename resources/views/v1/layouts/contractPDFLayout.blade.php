@@ -41,43 +41,60 @@
             text-align: center;
         }
         p {
-            text-indent: 50px;
+            text-indent: 40px;
             line-height: 7px;
         }
-        .table-list.bs {
-            border-spacing: 0px 10px;
+        .div-list.bs > div {
+            margin-bottom: 10px;
         }
-        .table-list.bs-0 {
-            border-spacing: 0px 0px;
+        .div-list.bs-0 > div {
+            margin-bottom: 0px;
         }
-        .table-list th,
-        .table-list td {
-            vertical-align: text-top;
+        .div-list {
+            position: relative;
+        }
+        .div-list > div {
+            position: relative;
+        }
+        .div-list .d-inline {
             text-align: justify;
-            padding-top: 0px;
-            padding-bottom: 0px;
         }
-        .table-list td span {
+        .div-list span {
             line-height: 10px;
         }
-        .table-list th {
-            font-weight: normal;
-            width: 30px;
-            line-height: 0.9 !important;
+        .div-list div .d-inline:first-child {
+            width: 40px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            line-height: 1 !important;
+        }
+        .div-list .d-inline:last-child {
+            width: 660px;
+            margin-right: auto;
+            margin-left: 40px;
+        }
+        .d-inline {
+            display: inline-block; !important;
         }
         table.req-table {
-            padding-left: 35px;
+            padding-left: 55px;
             width: 100%;
             text-align: left;
             border-collapse: collapse;
             border-spacing: 0;
             margin-bottom: 5px;
-            margin-top: 5px;
+            margin-top: 30px;
         }
         table.req-table td,
         table.req-table th {
-            border: 1px solid #777777;
+            border: 1px solid black;
             vertical-align: text-top;
+            padding-left: 8px;
+            padding-top: 0px;
+            padding-bottom: 2px;
+            line-height: 0.9;
+            font-size: 13px;
         }
     </style>
     <meta charset="UTF-8">
