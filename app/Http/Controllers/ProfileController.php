@@ -207,14 +207,14 @@ class ProfileController extends Controller {
     {
         $user = Auth::user();
         if($request->get('v') === '1') {
-            return view('v1.pdf.contracts.contract-ur');
+            return view('v1.pdf.contracts.contract-fiz');
         }
 
         // instantiate and use the dompdf class
         $options = new Options();
         $options->setIsRemoteEnabled(true);
         $dompdf = new Dompdf($options);
-        $dompdf->loadHtml(view('v1.pdf.contracts.contract-ur')->render());
+        $dompdf->loadHtml(view('v1.pdf.contracts.contract-fiz')->render());
 
         // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4');

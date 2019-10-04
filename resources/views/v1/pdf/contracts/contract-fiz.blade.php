@@ -14,12 +14,12 @@
     <table style="width: 100%; margin-top: 20px;">
         <tr>
             <td style="position: relative; width: 405px; vertical-align: top;">
-                <img src="{{ asset('/images/pdf/stamp.jpeg') }}" style="position: absolute; top: 0px; left: 20px; width: 200px; height: auto;" alt="">
+                <img src="{{ asset('/images/pdf/stamp.png') }}" style="position: absolute; top: 0px; left: 20px; width: 200px; height: auto;" alt="">
                 <span>[ДолжностьРуководителя] <br> <br></span>
                 <strong>ООО «Балтийская Служба Доставки»</strong>
                 <div style="margin-top: 40px;">
                     <div style="display: inline-block; width: 190px; border-bottom: 1px solid black;">
-                        <img src="{{ asset('/images/pdf/signature.jpeg') }}" style="padding-left:50px; width: 50px; height: auto;" alt="">
+                        <img src="{{ asset('/images/pdf/signature.png') }}" style="padding-left:50px; width: 50px; height: auto;" alt="">
                     </div>
                     <div style="display: inline-block;">Бабкин А.С</div>
                 </div>

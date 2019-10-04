@@ -107,7 +107,7 @@
             <tr>
                 <td style="border: 1px white; text-align: left;">
                     <span>Экспедитор _____________</span>
-                    <img src="{{ asset('/images/pdf/signature.jpeg') }}" style="position: absolute; top: 0px; left: 80px; width: 50px; height: auto;" alt="">
+                    <img src="{{ asset('/images/pdf/signature.png') }}" style="position: absolute; top: 0px; left: 80px; width: 50px; height: auto;" alt="">
                 </td>
                 <td style="border: 1px white; text-align: right;">
                     Заказчик _____________
