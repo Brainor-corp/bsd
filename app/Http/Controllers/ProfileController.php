@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Helpers\DocumentHelper;
 use App\Http\Helpers\SMSHelper;
 use App\User;
 use Dompdf\Dompdf;
@@ -187,15 +186,38 @@ class ProfileController extends Controller {
             );
 
             if(!empty($response1c['response']) && isset($response1c['response']['УникальныйИдентификатор'])) {
-                $file = DocumentHelper::generateContractDocument(
-                    'Договор',
-                    $response1c['response']
-                );
+//                $file = DocumentHelper::generateContractDocument(
+//                    'Договор',
+//                    $response1c['response']
+//                );
+//
+//                if(isset($file['tempFile']) && isset($file['fileName'])) {
+//                    return response()->download($file['tempFile'], $file['fileName'])
+//                        ->deleteFileAfterSend(true);
+//                }
 
-                if(isset($file['tempFile']) && isset($file['fileName'])) {
-                    return response()->download($file['tempFile'], $file['fileName'])
-                        ->deleteFileAfterSend(true);
-                }
+                $data = $response1c['response'];
+
+                $view = view('v1.pdf.contracts.contract-ur')
+                    ->with(compact('data'))
+                    ->render();
+
+                // instantiate and use the dompdf class
+                $options = new Options();
+                $options->setIsRemoteEnabled(true);
+                $dompdf = new Dompdf($options);
+                $dompdf->loadHtml($view);
+
+                // (Optional) Setup the paper size and orientation
+                $dompdf->setPaper('A4');
+
+                // Render the HTML as PDF
+                $dompdf->render();
+
+                $font = $dompdf->getFontMetrics()->get_font("Times New Roman", "normal");
+                $dompdf->getCanvas()->page_text(270, 14, "стр. {PAGE_NUM} из {PAGE_COUNT}", $font, 8, [0, 0, 0]);
+
+                return $dompdf->stream("Договор.pdf", array("Attachment" => false));
             } else {
                 return redirect()->back()->withErrors(['В данный момент генерация договора недоступна.']);
             }
