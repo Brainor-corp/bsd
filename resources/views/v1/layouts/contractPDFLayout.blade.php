@@ -42,10 +42,10 @@
         }
         p {
             text-indent: 50px;
-            line-height: 0.7;
+            line-height: 7px;
         }
         .table-list.bs {
-            border-spacing: 0px 4px;
+            border-spacing: 0px 10px;
         }
         .table-list.bs-0 {
             border-spacing: 0px 0px;
@@ -57,13 +57,13 @@
             padding-top: 0px;
             padding-bottom: 0px;
         }
-        .table-list td {
-            line-height: 0.8;
+        .table-list td span {
+            line-height: 10px;
         }
         .table-list th {
             font-weight: normal;
             width: 30px;
-            line-height: 1 !important;
+            line-height: 0.9 !important;
         }
         table.req-table {
             padding-left: 35px;
