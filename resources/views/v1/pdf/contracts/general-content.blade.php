@@ -1,4 +1,6 @@
-<h1 class="text-center" style="margin-bottom: 12px;">1. ПРЕДМЕТ ДОГОВОРА</h1>
+<h1 class="text-center" style="margin-top: 25px; margin-bottom: 30px;">
+    <span style="padding-right: 20px;">1.</span> ПРЕДМЕТ ДОГОВОРА
+</h1>
 
 <div class="div-list bs">
     <div>
@@ -15,9 +17,11 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 10px;">2. ОБЯЗАТЕЛЬСТВА СТОРОН</h1>
+<h1 class="text-center" style="margin-top: 25px;">
+    <span style="padding-right: 20px;">2.</span> ОБЯЗАТЕЛЬСТВА СТОРОН
+</h1>
 
-<h1 class="text-center" style="margin-top: 16px; margin-bottom: 2px;">Экспедитора:</h1>
+<h1 class="text-center" style="margin-top: 30px; margin-bottom: 30px;">Экспедитора:</h1>
 
 <div class="div-list bs">
     <div>
@@ -74,7 +78,7 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 12px; margin-bottom: 12px;">Заказчика:</h1>
+<h1 class="text-center" style="margin-top: 25px; margin-bottom: 30px;">Заказчика:</h1>
 
 <div class="div-list bs-0">
     <div>
@@ -187,9 +191,11 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 12px;">3 ПОРЯДОК ПРИЕМА, ХРАНЕНИЯ И ВЫДАЧИ ГРУЗА</h1>
+<h1 class="text-center" style="margin-top: 25px;">
+    <span style="padding-right: 20px;">3</span> ПОРЯДОК ПРИЕМА, ХРАНЕНИЯ И ВЫДАЧИ ГРУЗА
+</h1>
 
-<h1 class="text-center" style="margin-top: 14px; margin-bottom: 8px;">Прием груза</h1>
+<h1 class="text-center" style="margin-top: 30px; margin-bottom: 30px;">Прием груза</h1>
 
 <div class="div-list bs">
     <div>
@@ -291,7 +297,9 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 14px; margin-bottom: 8px;">4. Выдача груза</h1>
+<h1 class="text-center" style="margin-top: 50px; margin-bottom: 30px;">
+    <span style="padding-right: 5px;">4.</span> Выдача груза
+</h1>
 
 <div class="div-list bs">
     <div>
@@ -353,7 +361,7 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 14px; margin-bottom: 8px;">5.Хранение груза</h1>
+<h1 class="text-center" style="margin-top: 14px; margin-bottom: 30px;">5.Хранение груза</h1>
 
 <div class="div-list bs">
     <div>
@@ -390,7 +398,9 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 14px; margin-bottom: 8px;">6. Опасные грузы</h1>
+<h1 class="text-center" style="margin-top: 30px; margin-bottom: 35px;">
+    <span style="padding-right: 25px;">6.</span> Опасные грузы
+</h1>
 
 <div class="div-list bs">
     <div>
@@ -415,7 +425,9 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 14px; margin-bottom: 14px;">7. ЦЕНА И ПОРЯДОК РАСЧЕТОВ</h1>
+<h1 class="text-center" style="margin-top: 30px; margin-bottom: 30px;">
+    <span style="padding-right: 30px;">7.</span> ЦЕНА И ПОРЯДОК РАСЧЕТОВ
+</h1>
 
 <div class="div-list bs">
     <div>
@@ -474,7 +486,9 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 12px; margin-bottom: 10px;">8. СТРАХОВАНИЕ</h1>
+<h1 class="text-center" style="margin-top: 30px; margin-bottom: 30px;">
+    <span style="padding-right: 30px;">8.</span> СТРАХОВАНИЕ
+</h1>
 
 <div class="div-list bs">
     <div>
@@ -521,7 +535,9 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 16px; margin-bottom: 10px;">9. ОТВЕТСТВЕННОСТЬ СТОРОН</h1>
+<h1 class="text-center" style="margin-top: 30px; margin-bottom: 30px;">
+    <span style="padding-right: 30px;">9.</span> ОТВЕТСТВЕННОСТЬ СТОРОН
+</h1>
 
 <div class="div-list bs">
     <div>
@@ -604,7 +620,9 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 16px; margin-bottom: 10px;">10. ФОРС-МАЖОРНЫЕ ОБСТОЯТЕЛЬСТВА</h1>
+<h1 class="text-center" style="margin-top: 50px; margin-bottom: 30px;">
+    <span style="padding-right: 20px;">10.</span> ФОРС-МАЖОРНЫЕ ОБСТОЯТЕЛЬСТВА
+</h1>
 
 <div class="div-list bs">
     <div>
@@ -626,7 +644,9 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 16px; margin-bottom: 10px;">11. ПОРЯДОКРАЗРЕШЕНИЯ СПОРОВ</h1>
+<h1 class="text-center" style="margin-top: 30px; margin-bottom: 40px;">
+    <span style="padding-right: 20px;">11.</span> ПОРЯДОКРАЗРЕШЕНИЯ СПОРОВ
+</h1>
 
 <div class="div-list bs">
     <div>
@@ -637,7 +657,9 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 16px; margin-bottom: 10px;">12. ПРОЧИЕ УСЛОВИЯ</h1>
+<h1 class="text-center" style="margin-top: 30px; margin-bottom: 30px;">
+    <span style="padding-right: 20px;">12.</span> ПРОЧИЕ УСЛОВИЯ
+</h1>
 
 <div class="div-list bs">
     <div>
@@ -692,9 +714,11 @@
     </div>
 </div>
 
-<h1 class="text-center" style="margin-top: 16px; margin-bottom: 10px;">13. СРОК ДЕЙСТВИЯ И ПОРЯДОК РАСТОРЖЕНИЯ ДОГОВОРА</h1>
+<h1 class="text-center" style="margin-top: 30px; margin-bottom: 30px;">
+    <span style="padding-right: 20px;">13.</span> СРОК ДЕЙСТВИЯ И ПОРЯДОК РАСТОРЖЕНИЯ ДОГОВОРА
+</h1>
 
-<div class="div-list bs">
+<div class="div-list bs" style="page-break-after: always">
     <div>
         <div class="d-inline text-bold">13.1</div>
         <div class="d-inline text-bold">
@@ -719,8 +743,11 @@
             <span>Расторжение Договора не влечет прекращения обязательств Сторон, по их надлежащему исполнению, в том числе оплаты пени и штрафов.</span>
         </div>
     </div>
+</div>
+
+<div class="div-list bs" style="margin-top: 50px;">
     <div>
-        <div class="d-inline text-bold" style="margin-top: 30px;">13.5</div>
+        <div class="d-inline text-bold">13.5</div>
         <div class="d-inline text-bold">
             <span>При досрочном прекращении срока действия Договора составляется Акт взаиморасчетов. Каждая из Сторон обязана в течение 3-х банковских дней возвратить согласованную сумму второй Стороне.</span>
         </div>
@@ -804,7 +831,7 @@
     </tr>
     <tr>
         <th rowspan="3">
-            Тел.(812) 644-67-77 <br>
+            Тел.(812) 644-67-77 <br> <br>
             E-mail: zakaz@tk-bsd.com
         </th>
         <td>

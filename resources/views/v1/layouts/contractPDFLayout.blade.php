@@ -40,10 +40,10 @@
         .text-center {
             text-align: center;
         }
-        p {
-            text-indent: 40px;
-            line-height: 7px;
-        }
+        /*p {*/
+            /*text-indent: 40px;*/
+            /*!*line-height: 7px;*!*/
+        /*}*/
         .div-list.bs > div {
             margin-bottom: 10px;
         }
@@ -92,7 +92,7 @@
             vertical-align: text-top;
             padding-left: 8px;
             padding-top: 0px;
-            padding-bottom: 2px;
+            padding-bottom: 15px;
             line-height: 0.9;
             font-size: 13px;
         }
@@ -116,8 +116,8 @@
         </table>
     </footer>
     <h1 class="text-center" style="line-height: 1">ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ №[Номер]</h1>
-    <h1 class="text-center" style="line-height: 1">автомобильным транспортом</h1>
-    <div style="margin-bottom: 36px">
+    <h1 class="text-center" style="line-height: 1; margin-top: 10px;">автомобильным транспортом</h1>
+    <div style="margin-top: 10px; margin-bottom: 60px;">
         <span style="font-size: 10px !important;">г. Санкт-Петербург</span>
         <span style="float: right; margin-right: -15px;"><strong>[Дата]</strong></span>
     </div>
