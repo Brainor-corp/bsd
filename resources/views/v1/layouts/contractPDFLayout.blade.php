@@ -116,11 +116,11 @@
             </tbody>
         </table>
     </footer>
-    <h1 class="text-center" style="line-height: 1">ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ №[Номер]</h1>
+    <h1 class="text-center" style="line-height: 1">ДОГОВОР ТРАНСПОРТНОЙ ЭКСПЕДИЦИИ №{{ $data['Номер'] ?? '' }}</h1>
     <h1 class="text-center" style="line-height: 1; margin-top: 10px;">автомобильным транспортом</h1>
     <div style="margin-top: 10px; margin-bottom: 60px;">
         <span style="font-size: 10px !important;">г. Санкт-Петербург</span>
-        <span style="float: right; margin-right: -15px;"><strong>[Дата]</strong></span>
+        <span style="float: right; margin-right: -15px;"><strong>{{ $data['Дата'] ?? '' }}</strong></span>
     </div>
     @yield('top')
     @include('v1.pdf.contracts.general-content')
