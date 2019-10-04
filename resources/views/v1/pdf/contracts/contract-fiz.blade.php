@@ -29,7 +29,7 @@
                 <strong>{{ $data['КонтрагентНаименованиеПолное'] ?? '' }}</strong>
                 <div style="margin-top: 40px;">
                     <div style="display: inline-block; width: 100px; border-bottom: 1px solid black;"></div>
-                    <div style="display: inline-block;">{{ $data['КонтрагентНаименование'] ?? '' }}</div>
+                    <div style="display: inline-block;">{{ $data['КонтрагентНаименованиеПолное'] ?? '' }}</div>
                 </div>
             </td>
         </tr>
