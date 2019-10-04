@@ -6,6 +6,7 @@ use App\Http\Helpers\DocumentHelper;
 use App\Http\Helpers\SMSHelper;
 use App\User;
 use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -206,12 +207,14 @@ class ProfileController extends Controller {
     {
         $user = Auth::user();
         if($request->get('v') === '1') {
-            return view('v1.pdf.contracts.contract-fiz');
+            return view('v1.pdf.contracts.contract-ur');
         }
 
         // instantiate and use the dompdf class
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('v1.pdf.contracts.contract-fiz')->render());
+        $options = new Options();
+        $options->setIsRemoteEnabled(true);
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml(view('v1.pdf.contracts.contract-ur')->render());
 
         // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4');
