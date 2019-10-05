@@ -27,6 +27,11 @@ class Api1CHelper {
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
+        $result = [
+            'status' => $status,
+            'response' => json_decode($json_response, true),
+        ];
+
         if($headersNeed) {
             $headers = [];
             $output = rtrim($json_response);
@@ -42,11 +47,6 @@ class Api1CHelper {
 
             $result['headers'] = $headers;
         }
-
-        $result = [
-            'status' => $status,
-            'response' => json_decode($json_response, true),
-        ];
 
         return $result;
     }
