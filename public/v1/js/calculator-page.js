@@ -867,20 +867,20 @@ function calcTariffPrice(city, point, inCity) {
 
                     // console.log('done');
 
+                    let hiddenPolygonInputClass = '.take-polygon-hidden-input';
+                    if(point.attr('id') === 'dest_point') {
+                        hiddenPolygonInputClass = '.bring-polygon-hidden-input';
+                    }
+                    let hiddenPolygonInput = $(hiddenPolygonInputClass);
+
                     if(isInPolygon) {
                         // console.log('Нужно поставить цену тарифа');
-
-                        let hiddenPolygonInputClass = '.take-polygon-hidden-input';
-                        if(point.attr('id') === 'dest_point') {
-                            hiddenPolygonInputClass = '.bring-polygon-hidden-input';
-                        }
-
-                        let hiddenPolygonInput = $(hiddenPolygonInputClass);
                         hiddenPolygonInput.val(polygonId);
 
                         getAllCalculatedData();
                     } else {
                         // console.log('Не нужно ставить цену тарифа');
+                        hiddenPolygonInput.val(null);
                         ymaps.route([city.point, fullName]).then(function (route) {
                             // console.log('От: ' + city.point + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
                             $(point.closest('.delivery-block')).find('.distance-hidden-input').val(Math.ceil(route.getLength() / 1000));
@@ -898,7 +898,7 @@ function calcTariffPrice(city, point, inCity) {
 }
 
 function renderCalendar(data) {
-    // console.log('render');
+    console.log(data);
     if(data.error === undefined) {
         $('#route-name').html(data.route.name);
         $('#base-price').html(data.route.price);
