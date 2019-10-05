@@ -190,18 +190,39 @@ class ProfileController extends Controller {
                 !empty($response1c['response']['УникальныйИдентификатор']) &&
                 !empty($response1c['response']['ЮридическоеФизическоеЛицо'])
             ) {
-//                $file = DocumentHelper::generateContractDocument(
-//                    'Договор',
-//                    $response1c['response']
-//                );
-//
 //                if(isset($file['tempFile']) && isset($file['fileName'])) {
 //                    return response()->download($file['tempFile'], $file['fileName'])
 //                        ->deleteFileAfterSend(true);
 //                }
 
                 $data = $response1c['response'];
-                $type = $data['ЮридическоеФизическоеЛицо'] === 'Юридическое лицо' ? 'ur' : 'fiz';
+
+                switch ($data['ЮридическоеФизическоеЛицо']) {
+                    case 'Юридическое лицо':
+                        $type = 'ur';
+                        $data['ПостфиксПолаКонтрагента'] = 'его';
+                        if(isset($data['ПолРуководителяКонтрагента']) && $data['ПолРуководителяКонтрагента'] == 'Женский') {
+                            $data['ПостфиксПолаКонтрагента'] = 'ей';
+                        }
+
+                        break;
+                    case 'Физическое лицо':
+                        $type = 'fiz';
+
+                        $data['ДокументУдостоверяющийЛичностьСерия'] = '';
+                        $data['ДокументУдостоверяющийЛичностьНомер'] = '';
+
+                        if(!empty($data['ДокументУдостоверяющийЛичность'])) {
+                            $passportParts = explode(' ', $data['ДокументУдостоверяющийЛичность']);
+
+                            $data['ДокументУдостоверяющийЛичностьСерия'] = $passportParts[0] ?? '';
+                            $data['ДокументУдостоверяющийЛичностьНомер'] = $passportParts[1] ?? '';
+                        }
+
+                        break;
+
+                    default: break;
+                }
 
                 $view = view("v1.pdf.contracts.contract-$type")
                     ->with(compact('data'))
