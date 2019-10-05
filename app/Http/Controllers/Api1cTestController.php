@@ -328,6 +328,7 @@ class Api1cTestController extends Controller
         dd($response1c);
     }
 
+    private static $host = "http://s4.tkbsd.ru/copy/hs/rest/";
     public function printForm(Request $request) {
 //        $send = [
 //            "user_id" => $request->get('user_id') ?? "14b3b98b-14a1-11e9-a98f-000d3a28f168",
