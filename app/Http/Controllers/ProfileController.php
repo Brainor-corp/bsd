@@ -185,7 +185,11 @@ class ProfileController extends Controller {
                 ]
             );
 
-            if(!empty($response1c['response']) && isset($response1c['response']['УникальныйИдентификатор'])) {
+            if(
+                !empty($response1c['response']) &&
+                !empty($response1c['response']['УникальныйИдентификатор']) &&
+                !empty($response1c['response']['ЮридическоеФизическоеЛицо'])
+            ) {
 //                $file = DocumentHelper::generateContractDocument(
 //                    'Договор',
 //                    $response1c['response']
@@ -197,8 +201,9 @@ class ProfileController extends Controller {
 //                }
 
                 $data = $response1c['response'];
+                $type = $data['ЮридическоеФизическоеЛицо'] === 'Юридическое лицо' ? 'ur' : 'fiz';
 
-                $view = view('v1.pdf.contracts.contract-ur')
+                $view = view("v1.pdf.contracts.contract-$type")
                     ->with(compact('data'))
                     ->render();
 
@@ -223,32 +228,5 @@ class ProfileController extends Controller {
             }
         }
         return redirect()->back()->withErrors(['Произошла ошибка. Обновите страницу или попробуйте позднее.']);
-    }
-
-    public function contractDownloadNew(Request $request)
-    {
-        $user = Auth::user();
-        if($request->get('v') === '1') {
-            return view('v1.pdf.contracts.contract-ur');
-        }
-
-        // instantiate and use the dompdf class
-        $options = new Options();
-        $options->setIsRemoteEnabled(true);
-        $dompdf = new Dompdf($options);
-        $dompdf->loadHtml(view('v1.pdf.contracts.contract-ur')->render());
-
-        // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4');
-
-        // Render the HTML as PDF
-        $dompdf->render();
-
-        $font = $dompdf->getFontMetrics()->get_font("Times New Roman", "normal");
-        $dompdf->getCanvas()->page_text(270, 14, "стр. {PAGE_NUM} из {PAGE_COUNT}", $font, 8, [0, 0, 0]);
-
-        $dompdf->stream("Договор.pdf", array("Attachment" => false));
-
-//        return redirect()->back()->withErrors(['Произошла ошибка. Обновите страницу или попробуйте позднее.']);
     }
 }
