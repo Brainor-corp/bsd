@@ -90,6 +90,17 @@ class Api1CHelper {
         curl_setopt($curlConnect, CURLOPT_POSTFIELDS, $content);
         $result = curl_exec($curlConnect);
 
-        return $result;
+        if (!curl_errno($curlConnect)) {
+            switch ($http_code = curl_getinfo($curlConnect, CURLINFO_HTTP_CODE)) {
+                case 200:
+                    return $result;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return false;
     }
 }
