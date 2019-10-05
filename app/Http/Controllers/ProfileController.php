@@ -245,7 +245,7 @@ class ProfileController extends Controller {
 
                 $dompdf->render();
                 $output = $dompdf->output();
-                $path = storage_path() . '/pdf/' . 'test.pdf';
+                $path = storage_path() . '/' . 'test.pdf';
                 file_put_contents($path, $output);
 
                 return response()->download($path, "Договор.pdf")
