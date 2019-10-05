@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use alhimik1986\PhpExcelTemplator\params\ExcelParam;
-use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
+use App\Http\Helpers\Api1CHelper;
 use App\Http\Helpers\DocumentHelper;
 use App\Order;
 use App\Type;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
-use Jenssegers\Date\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpWord\Exception\Exception;
@@ -111,59 +108,61 @@ class ReportsController extends Controller
         	return redirect(route('login'));
         }
 
-        $response1c = \App\Http\Helpers\Api1CHelper::post(
-            'document/id',
-            [
-                "user_id" => $user->guid,
-                "document_id" => $document_id_1c,
-                "type" => intval($document_type_id_1c),
-                "empty_fields" => true
-            ]
-        );
-
-        if($response1c['status'] !== 200) {
-            return redirect(route('report-list'));
-        }
-
-        $documentData = $response1c['response'] ?? [];
-        $file = [];
+        $send = [
+            "user_id" => $user->guid,
+            "document_id" => $document_id_1c,
+            "type" => intval($document_type_id_1c),
+            "empty_fields" => true
+        ];
 
         switch ($document_type_id_1c) {
-            case 2:
-                // Экспедиторская расписка
-                $file = DocumentHelper::generateReceiptDocument(
-                    $documentData['Представление'],
-                    $documentData
-                );
-                break;
             case 3:
                 // Заявка на экспедирование
+
+                $response1c = \App\Http\Helpers\Api1CHelper::post(
+                    'document/id',
+                    $send
+                );
+                if($response1c['status'] !== 200) {
+                    return redirect(route('report-list'));
+                }
+
+                $documentData = $response1c['response'] ?? [];
+
                 $file = DocumentHelper::generateRequestDocument(
                     $documentData,
                     $documentData['Представление'] . '.pdf');
+                if(isset($file['tempFile']) && isset($file['fileName'])) {
+                    return response()->download($file['tempFile'], $file['fileName'])
+                        ->deleteFileAfterSend(true);
+                }
+
                 break;
+
+            case 2:
             case 5:
-                // Счет на оплату
-                $file = DocumentHelper::generateInvoiceDocument(
-                    $documentData,
-                    $documentData['Представление']
-                );
-                break;
             case 6:
-                // Реализация (акт, накладная) (УПД)
-                // Счет-фактура(УПД???)
-                $file = DocumentHelper::generateTransferDocument(
-                    $documentData,
-                    $documentData['Представление']
-                );
-                break;
+                    $documentName = json_decode($request->get('document_name'));
+                    $documentName = str_replace('/', '.', $documentName);
+                    $documentName = empty($documentName) ? "doc.pdf" : "$documentName.pdf";
+
+                    $result = Api1CHelper::getPdf(
+                        'print_form',
+                        $send
+                    );
+
+                    if($result) {
+                        header('Cache-Control: public');
+                        header('Content-type: application/pdf');
+                        header("Content-Disposition: attachment; filename=\"$documentName\"");
+                        header('Content-Length: '.strlen($result));
+
+                        return $result;
+                    }
+
+                    break;
 
             default: break;
-        }
-
-        if(isset($file['tempFile']) && isset($file['fileName'])) {
-            return response()->download($file['tempFile'], $file['fileName'])
-                ->deleteFileAfterSend(true);
         }
 
         return redirect(route('report-list'));
@@ -253,184 +252,5 @@ class ReportsController extends Controller
         $writer->save($path . $name);
 
         return response()->download($path . $name, 'Отчет БСД - ' . date('d.m.Y') . '.xlsx')->deleteFileAfterSend(true);
-    }
-
-    public function actionDownloadDocumentContract(Request $request) {
-        $documentData['УникальныйИдентификатор'] = '123123';
-        $file = DocumentHelper::generateContractDocument($documentData);
-        return response()->download($file, 'test.docx')->deleteFileAfterSend(true);
-    }
-
-    public function actionDownloadDocumentInvoice(Request $request) {
-        $order = Order::where('id', $request->id)
-            ->where(function ($orderQuery) {
-                return Auth::check() ? $orderQuery
-                    ->where('user_id', Auth::user()->id)
-                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
-                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
-            })
-            ->with('status', 'ship_city', 'dest_city')->firstOrFail();
-
-        $orderDate = Date::parse($order->created_at)->format('d F Y');
-        $documentExtension = '.xlsx';
-        $templateFile = public_path('templates/InvoiceTemplate.xlsx');
-        $documentName = "Счет на оплату №$order->id от $orderDate г.";
-
-        $params = [
-            '{order_id}' => $order->id,
-            '{order_date}' => $order->created_at->format('d.m.Y h:i:s'),
-        ];
-
-        $params['[service_number]'] = new ExcelParam(CellSetterArrayValueSpecial::class, range(3, $order->order_services->count() + 2));
-        $params['[service_name]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $order->order_services->pluck('name')->toArray());
-        $params['[service_quantity]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $order->order_services->pluck('quantity')->toArray());
-        $params['[service_point]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $order->order_services->pluck('point')->toArray());
-        $params['[service_price]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $order->order_services->pluck('price')->toArray());
-        $params['[service_summary]'] = new ExcelParam(CellSetterArrayValueSpecial::class, $order->order_services->pluck('summary')->toArray());
-
-        $name = md5('docs bsd' . time()) . $documentExtension;
-        $path = storage_path('app/public/documents/');
-
-        $tempFile = $path . $name;
-        File::makeDirectory($path, $mode = 0777, true, true);
-
-        PhpExcelTemplator::saveToFile($templateFile, $tempFile, $params);
-        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
-    }
-
-    public function actionDownloadDocumentReceipt(Request $request) {
-        $order = Order::where('id', $request->id)
-            ->where(function ($orderQuery) {
-                return Auth::check() ? $orderQuery
-                    ->where('user_id', Auth::user()->id)
-                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
-                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
-            })
-            ->with('status', 'ship_city', 'dest_city')->firstOrFail();
-
-        $orderDate = Date::parse($order->created_at)->format('d F Y');
-        $documentName = "Экспедиторская расписка №$order->id от $orderDate г.";
-        $documentExtension = '.xlsx';
-
-        $templateFile = public_path('templates/ReceiptTemplate.xlsx');
-
-        $params = [
-            '{order_id}' => $order->id,
-            '{order_date}' => $order->created_at->format('d.m.Y h:i:s'),
-            '{ship_city}' => $order->ship_city_name ?? $order->ship_city->name,
-            '{dest_city}' => $order->dest_city_name ?? $order->dest_city->name,
-        ];
-
-        $params['[item_name]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_items->pluck('name')->toArray());
-        $params['[item_volume]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_items->pluck('volume')->toArray());
-        $params['[item_weight]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_items->pluck('weight')->toArray());
-        $params['[item_quantity]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_items->pluck('quantity')->toArray());
-        $params['[item_price]'] = new ExcelParam(SPECIAL_ARRAY_TYPE, $order->order_items->pluck('price')->toArray());
-
-        $name = md5('docs bsd' . time()) . $documentExtension;
-        $path = storage_path('app/public/documents/');
-
-        $tempFile = $path . $name;
-        File::makeDirectory($path, $mode = 0777, true, true);
-
-        PhpExcelTemplator::saveToFile($templateFile, $tempFile, $params);
-        return response()->download($tempFile, $documentName . $documentExtension)->deleteFileAfterSend(true);
-    }
-
-    public function actionDownloadDocumentTransfer(Request $request) {
-        $order = Order::where('id', $request->id)
-            ->where(function ($orderQuery) {
-                return Auth::check() ? $orderQuery
-                    ->where('user_id', Auth::user()->id)
-                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
-                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
-            })
-            ->with('status', 'ship_city', 'dest_city')->firstOrFail();
-
-        $orderDate = Date::parse($order->created_at)->format('d F Y');
-        $templateFile = public_path('templates/TransferTemplate.xlsx');
-
-        $documentName = "УПД (статус 1) №$order->id от $orderDate г.";
-        $documentExtension = '.xlsx';
-
-        $params = [
-            '{order_id}' => $order->id,
-            '{order_date}' => $orderDate,
-        ];
-
-        $documentTestData['Товары'] = [
-            [
-                'Содержание' => 'Name1',
-                'Количество' => '2',
-                'Цена' => '222',
-                'Сумма' => '233',
-            ],
-            [
-                'Содержание' => 'Name2',
-                'Количество' => '1',
-                'Цена' => '2',
-            ],
-        ];
-
-        $file = DocumentHelper::generateTransferDocument($documentTestData, 'test');
-
-//        $name = md5('docs bsd' . time()) . $documentExtension;
-//        $path = storage_path('app/public/documents/');
-
-//        $tempFile = $path . $name;
-//        File::makeDirectory($path, $mode = 0777, true, true);
-//
-//        PhpExcelTemplator::saveToFile($templateFile, $tempFile, $params);
-        return response()->download($file['tempFile'], $documentName . $documentExtension)->deleteFileAfterSend(true);
-    }
-
-    public function actionDownloadDocumentRequest(Request $request)
-    {
-        $order = Order::where('id', $request->id)
-            ->where(function ($orderQuery) {
-                return Auth::check() ? $orderQuery
-                    ->where('user_id', Auth::user()->id)
-                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
-                    $orderQuery->where('enter_id', $_COOKIE['enter_id']);
-            })
-            ->with('status', 'ship_city', 'dest_city')
-            ->firstOrFail();
-
-        $orderDate = Date::parse($order->created_at)->format('d F Y');
-        $documentName = "Заявка №$order->id от $orderDate г.";
-        $documentExtension = '.docx';
-
-        $templateFile = public_path('templates/RequestTemplate.docx');
-
-        $params = [
-            '{order_id}' => $order->id,
-            '{order_date}' => $order->created_at->format('d.m.Y h:i:s'),
-            '{ship_city}' => $order->ship_city_name ?? $order->ship_city->name,
-            '{dest_city}' => $order->dest_city_name ?? $order->dest_city->name,
-        ];
-
-        $blocks['blk'] = [
-            [
-                'length' => 1,
-                'width' => 22,
-                'height' => 2,
-                'volume' => 23,
-                'weight' => 2,
-                'quantity' => 4,
-            ],
-            [
-                'length' => 113121,
-                'width' => 222,
-                'height' => 2332,
-                'volume' => 223,
-                'weight' => 233,
-                'quantity' => 42232,
-            ],
-        ];
-
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->loadView('v1.pdf.document-request', $blocks);
-
-        return $pdf->download($documentName);
     }
 }

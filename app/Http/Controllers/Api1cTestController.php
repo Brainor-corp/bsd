@@ -328,6 +328,28 @@ class Api1cTestController extends Controller
         dd($response1c);
     }
 
+    private static $host = "http://s4.tkbsd.ru/copy/hs/rest/";
+    public function printForm(Request $request) {
+        $send = [
+            "user_id" => $request->get('user_id') ?? "14b3b98b-14a1-11e9-a98f-000d3a28f168",
+            "document_id" => $request->get('document_id') ?? "bb3926c6-e417-11e9-8c89-001c42a74df3",
+            "type" => 5,
+            "empty_fields" => true
+        ];
+
+        $result = Api1CHelper::getPdf(
+            'print_form',
+            $send
+        );
+
+        header('Cache-Control: public');
+        header('Content-type: application/pdf');
+        header('Content-Disposition: attachment; filename="new.pdf"');
+        header('Content-Length: '.strlen($result));
+
+        echo $result;
+    }
+
     public function documentByNumber() {
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'document/number',
