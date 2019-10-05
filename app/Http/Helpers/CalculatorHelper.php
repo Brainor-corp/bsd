@@ -431,6 +431,22 @@ class CalculatorHelper
 
         // Если в пределах города, то возвращаем тариф согласно пределам города
         if($isWithinTheCity) {
+            // Если есть полигон, то возвращаем его цену
+            if(!empty($polygonId)) {
+                $polygon = Polygon::where([
+                    ['id', $polygonId],
+                    ['city_id', $city->id]
+                ])->first();
+
+                if(isset($polygon)) {
+                    return [
+                        'price' => $x2 ? ($polygon->price * floatval($fixed_tariff)) * 2 : ($polygon->price * floatval($fixed_tariff)),
+                        'city_name' => "$cityName",
+                        'polygon_name' => $polygon->name
+                    ];
+                }
+            }
+
             return [
                 'price' => $x2 ? floatval($fixed_tariff) * 2 : floatval($fixed_tariff),
                 'city_name' => $cityName
