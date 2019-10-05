@@ -243,7 +243,12 @@ class ProfileController extends Controller {
                 $font = $dompdf->getFontMetrics()->get_font("Times New Roman", "normal");
                 $dompdf->getCanvas()->page_text(270, 14, "стр. {PAGE_NUM} из {PAGE_COUNT}", $font, 8, [0, 0, 0]);
 
-                return response()->download($dompdf->output("Договор.pdf"), "Договор.pdf")
+                $dompdf->render();
+                $output = $dompdf->output();
+                $path = storage_path() . '/pdf/' . 'test.pdf';
+                file_put_contents($path, $output);
+
+                return response()->download($path, "Договор.pdf")
                         ->deleteFileAfterSend(true);
 
 //                return $dompdf->stream("Договор.pdf", array("Attachment" => false));
