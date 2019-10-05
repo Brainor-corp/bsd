@@ -142,6 +142,10 @@ class ReportsController extends Controller
             case 2:
             case 5:
             case 6:
+                    $documentName = $request->get('document_name');
+                    $documentName = str_replace('/', '.', $documentName);
+                    $documentName = empty($documentName) ? "doc.pdf" : "$documentName.pdf";
+
                     $result = Api1CHelper::getPdf(
                         'print_form',
                         $send
@@ -149,7 +153,7 @@ class ReportsController extends Controller
 
                     header('Cache-Control: public');
                     header('Content-type: application/pdf');
-                    header('Content-Disposition: attachment; filename="new.pdf"');
+                    header("Content-Disposition: attachment; filename=\"$documentName\"");
                     header('Content-Length: '.strlen($result));
 
                     return $result;
