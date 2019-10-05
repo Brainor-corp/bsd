@@ -392,16 +392,12 @@ $(document).ready(function () {
     $(document).on('change', '#need-to-take', function () {
         if($(this).is(':checked')) {
             $('.need-to-take-input').removeAttr('disabled');
-            if($('input[name="need-to-take-type"]:checked').val() !== 'from') {
-                $('#need-to-take-type-in').prop('checked', true);
-            }
-            if($('input[name="need-to-take-type"]:checked').val() === 'from') {
-                $('.need-to-take-input-address').removeAttr('disabled');
-            }
+            $('.need-to-take-input-address').removeAttr('disabled');
+            $('.need-to-take-input-address').attr('required', 'required');
         } else {
             $('.need-to-take-input').attr('disabled', 'disabled');
             $('.need-to-take-input-address').attr('disabled', 'disabled');
-            // $('input[name="need-to-take-type"]:checked').prop('checked', false);
+            $('.need-to-take-input-address').removeAttr('required');
         }
 
         calcTariffPrice(
@@ -435,16 +431,12 @@ $(document).ready(function () {
     $(document).on('change', '#need-to-bring', function () {
         if($(this).is(':checked')) {
             $('.need-to-bring-input').removeAttr('disabled');
-            if($('input[name="need-to-bring-type"]:checked').val() !== 'from') {
-                $('#need-to-bring-type-in').prop('checked', true);
-            }
-            if($('input[name="need-to-bring-type"]:checked').val() === 'from') {
-                $('.need-to-bring-input-address').removeAttr('disabled');
-            }
+            $('.need-to-bring-input-address').removeAttr('disabled');
+            $('.need-to-bring-input-address').attr('required', 'required');
         } else {
-            // $('input[name="need-to-bring-type"]:checked').prop('checked', false);
             $('.need-to-bring-input').attr('disabled', 'disabled');
             $('.need-to-bring-input-address').attr('disabled', 'disabled');
+            $('.need-to-bring-input-address').removeAttr('required');
         }
 
         if($('#dest_city').data().selectize.getValue() !== "") {
@@ -530,8 +522,6 @@ $(document).ready(function () {
 
     // Срабатывает при изменении значения селекта выбора города
     function kladrChange(obj = null, point) {
-        // console.log(obj);
-
         if(obj !== null) {
             var locality = '';
             ymaps.geocode(obj.value, {results: 1}).then(function (res) {
@@ -547,6 +537,7 @@ $(document).ready(function () {
 
                 if(point.attr('id') === "ship_point") {
                     if($('#ship_city').data().selectize.getValue() !== "") {
+                        changeDeliveryType($('select[name="ship_city"] option:selected').val(), locality, obj.value, "need-to-take-type");
                         $('input[name="take_city_name"]').val(point.data('name'));
                         calcTariffPrice(
                             {
@@ -559,6 +550,7 @@ $(document).ready(function () {
                     }
                 } else {
                     if($('#dest_city').data().selectize.getValue() !== "") {
+                        changeDeliveryType($('select[name="dest_city"] option:selected').val(), locality, obj.value, "need-to-bring-type");
                         $('input[name="bring_city_name"]').val(point.data('name'));
                         calcTariffPrice(
                             {
@@ -575,11 +567,7 @@ $(document).ready(function () {
             // let name = obj.type === "Город" ? obj : typeof obj.parents !== "undefined" ? $.grep(obj.parents, function(v) {
             //     return v.type === "Город";
             // })[0] : undefined;
-
-
         }
-
-
     }
 
     $(document).on('change', '#ship-from-point', function () {
@@ -1010,4 +998,71 @@ function drawDiscount(discount) {
 
         $('#custom-services-total-wrapper').show();
     }
+}
+
+function changeDeliveryType(cityFrom, cityTo, address, inputName) {
+    let type = 'from';
+
+    if(cityFrom !== cityTo) {
+        $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').attr('checked', true);
+
+        return;
+    }
+
+    // Пробуем получить полигоны для выбранного города
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'post',
+        url: '/api/calculator/get-city-polygons',
+        data: {
+            city: cityFrom
+        },
+        dataType: "json",
+        cache: false,
+        success: async function(data) {
+            if(data.length) {
+                let isInPolygon;
+
+                for (const el of data) {
+                    // console.log(el);
+                    let findCoordinates = [];
+                    let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
+                    $(polygonCoordinates).each(function (pairKey, pairVal) {
+                        pairVal = pairVal.replace(' ', '');
+                        pairVal = pairVal.replace('[', '');
+                        pairVal = pairVal.replace(']', '');
+                        let parts = pairVal.split(',');
+                        findCoordinates.push([
+                            parseFloat(parts[0]),
+                            parseFloat(parts[1])
+                        ]);
+                    });
+
+                    // console.log(point.attr('id'));
+                    let polygon =  new ymaps.Polygon([findCoordinates]);
+                    isInPolygon = await checkAddressInPolygon(address, polygon);
+                    // console.log(typeof isInPolygon);
+                    if(isInPolygon) {
+                        // console.log(address + " содержится в " + el.name);
+                        type = 'in';
+                        break;
+                    }
+                }
+            } else {
+                type = 'in';
+            }
+
+            $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').attr('checked', true);
+
+            return type;
+        },
+        error: function(data){
+            console.log("error");
+            console.log(data);
+        }
+    });
 }

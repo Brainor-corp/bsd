@@ -586,14 +586,13 @@ class OrderController extends Controller
         if($request->get('need-to-take') === "on") {
             $order->take_point = $request->get('ship-from-point') === "on";
             $order->take_in_city = $request->get('need-to-take-type') === "in";
+            $order->take_address = $request->get('ship_point'); // Адрес забора
 
             // Если забор груза за пределами города
             if($request->get('need-to-take-type') === "from") {
-                $order->take_address = $request->get('ship_point'); // Адрес забора
                 $order->take_city_name = $calculatedData['delivery']['take']['city_name']; // Город забора
                 $order->take_distance = $calculatedData['delivery']['take']['distance'] ?? null; // Дистанция от города отправки до адреса забора
             } else { // Если забор в пределах города
-                $order->take_address = null;
                 $order->take_distance = null;
                 $order->take_city_name = $shipCity->name; // Город забора
             }
@@ -611,14 +610,13 @@ class OrderController extends Controller
         if($request->get('need-to-bring') === "on") {
             $order->delivery_point = $request->get('bring-to-point') === "on";
             $order->delivery_in_city = $request->get('need-to-bring-type') === "in";
+            $order->delivery_address = $request->get('dest_point'); // Адрес доставки
 
             // Если доставка за пределами города
             if($request->get('need-to-bring-type') === "from") {
-                $order->delivery_address = $request->get('dest_point'); // Адрес доставки
                 $order->delivery_city_name = $calculatedData['delivery']['bring']['city_name']; // Город доставки
                 $order->delivery_distance = $calculatedData['delivery']['bring']['distance'] ?? null; // Дистанция от города назначения до адреса доставки
             } else { // Если доставка в пределах города
-                $order->delivery_address = null;
                 $order->delivery_distance = null;
                 $order->delivery_city_name = $destCity->name; // Город забора
             }
