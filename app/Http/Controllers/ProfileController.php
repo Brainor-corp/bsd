@@ -190,11 +190,6 @@ class ProfileController extends Controller {
                 !empty($response1c['response']['УникальныйИдентификатор']) &&
                 !empty($response1c['response']['ЮридическоеФизическоеЛицо'])
             ) {
-//                if(isset($file['tempFile']) && isset($file['fileName'])) {
-//                    return response()->download($file['tempFile'], $file['fileName'])
-//                        ->deleteFileAfterSend(true);
-//                }
-
                 $data = $response1c['response'];
 
                 switch ($data['ЮридическоеФизическоеЛицо']) {
@@ -244,13 +239,12 @@ class ProfileController extends Controller {
                 $dompdf->getCanvas()->page_text(270, 14, "стр. {PAGE_NUM} из {PAGE_COUNT}", $font, 8, [0, 0, 0]);
 
                 $output = $dompdf->output();
-                $path = storage_path() . '/' . 'test.pdf';
+                $filename = "Договор";
+                $path = storage_path() . '/' . md5($filename. time());;
                 file_put_contents($path, $output);
 
-                return response()->download($path, "Договор.pdf")
+                return response()->download($path, "$filename.pdf")
                         ->deleteFileAfterSend(true);
-
-//                return $dompdf->stream("Договор.pdf", array("Attachment" => false));
             } else {
                 return redirect()->back()->withErrors(['В данный момент генерация договора недоступна.']);
             }
