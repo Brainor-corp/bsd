@@ -5,14 +5,16 @@ namespace App\Http\Helpers;
 class Api1CHelper {
     private static $host = "http://s4.tkbsd.ru/copy/hs/rest/";
 
-    public static function post($action, $params) {
+    public static function post($action, $params, $headersNeed = false) {
         $url = self::$host . $action;
         $content = json_encode($params);
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
 
-//        curl_setopt($curl, CURLOPT_HEADER, 1);
+        if($headersNeed) {
+            curl_setopt($curl, CURLOPT_HEADER, 1);
+        }
 
         curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -25,25 +27,28 @@ class Api1CHelper {
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
-//        $headers = [];
-//        $output = rtrim($json_response);
-//        $data = explode("\n",$output);
-//        $headers['status'] = $data[0];
-//        array_shift($data);
-//
-//        foreach($data as $part){
-//            $middle = explode(":",$part,2);
-//            if ( !isset($middle[1]) ) { $middle[1] = null; }
-//            $headers[trim($middle[0])] = trim($middle[1]);
-//        }
+        if($headersNeed) {
+            $headers = [];
+            $output = rtrim($json_response);
+            $data = explode("\n",$output);
+            $headers['status'] = $data[0];
+            array_shift($data);
 
-        return [
+            foreach($data as $part){
+                $middle = explode(":",$part,2);
+                if ( !isset($middle[1]) ) { $middle[1] = null; }
+                $headers[trim($middle[0])] = trim($middle[1]);
+            }
+
+            $result['headers'] = $headers;
+        }
+
+        $result = [
             'status' => $status,
             'response' => json_decode($json_response, true),
-
-//            'headers' => $headers
-
         ];
+
+        return $result;
     }
 
     public static function get($action, $params) {

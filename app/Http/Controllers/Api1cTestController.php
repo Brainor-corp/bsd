@@ -338,10 +338,9 @@ class Api1cTestController extends Controller
 
         $response1c = \App\Http\Helpers\Api1CHelper::post(
             'print_form',
-            $send
+            $send,
+            true
         );
-
-        return $response1c;
 
         dd([
             'send' => $send,
