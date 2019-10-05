@@ -243,7 +243,10 @@ class ProfileController extends Controller {
                 $font = $dompdf->getFontMetrics()->get_font("Times New Roman", "normal");
                 $dompdf->getCanvas()->page_text(270, 14, "стр. {PAGE_NUM} из {PAGE_COUNT}", $font, 8, [0, 0, 0]);
 
-                return $dompdf->stream("Договор.pdf", array("Attachment" => false));
+                return response()->download($dompdf->output("Договор.pdf"), "Договор.pdf")
+                        ->deleteFileAfterSend(true);
+
+//                return $dompdf->stream("Договор.pdf", array("Attachment" => false));
             } else {
                 return redirect()->back()->withErrors(['В данный момент генерация договора недоступна.']);
             }
