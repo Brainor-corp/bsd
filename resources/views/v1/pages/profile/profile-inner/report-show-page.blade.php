@@ -137,11 +137,11 @@
                                             <input disabled @if($order->take_need) checked @endif type="checkbox" class="custom-control-input delivery-checkbox" id="need-to-take">
                                             <label class="custom-control-label" for="need-to-take">Нужно забрать груз</label>
                                         </div>
-                                        <div class="custom-control custom-radio">
+                                        <div class="custom-control custom-radio d-none">
                                             <input type="radio" @if($order->take_need && $order->take_in_city) checked @endif class="custom-control-input need-to-take-input" id="need-to-take-type-in" disabled/>
                                             <label class="custom-control-label" for="need-to-take-type-in">в пределах города отправления</label>
                                         </div>
-                                        <div class="custom-control custom-radio">
+                                        <div class="custom-control custom-radio d-none">
                                             <input type="radio" @if($order->take_need && !$order->take_in_city) checked @endif class="custom-control-input need-to-take-input" id="need-to-take-type-from" disabled/>
                                             <label class="custom-control-label" for="need-to-take-type-from">из:</label>
                                         </div>
@@ -169,11 +169,11 @@
                                             <input disabled type="checkbox" @if($order->delivery_need) checked @endif class="custom-control-input delivery-checkbox" />
                                             <label class="custom-control-label" for="need-to-bring">Нужно доставить груз</label>
                                         </div>
-                                        <div class="custom-control custom-radio">
+                                        <div class="custom-control custom-radio d-none">
                                             <input type="radio" @if($order->delivery_need && $order->delivery_in_city) checked @endif class="custom-control-input need-to-bring-input" disabled/>
                                             <label class="custom-control-label" for="need-to-bring-type-in">в пределах города назначения</label>
                                         </div>
-                                        <div class="custom-control custom-radio">
+                                        <div class="custom-control custom-radio d-none">
                                             <input @if($order->delivery_need && !$order->delivery_in_city) checked @endif type="radio" class="custom-control-input need-to-bring-input" disabled/>
                                             <label class="custom-control-label" for="need-to-bring-type-from">в:</label>
                                         </div>
