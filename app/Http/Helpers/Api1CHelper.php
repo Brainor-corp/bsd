@@ -88,6 +88,7 @@ class Api1CHelper {
         curl_setopt($curlConnect, CURLOPT_POST,   1);
         curl_setopt($curlConnect, CURLOPT_RETURNTRANSFER, 1 );
         curl_setopt($curlConnect, CURLOPT_POSTFIELDS, $content);
+        curl_setopt($curlConnect, CURLOPT_CONNECTTIMEOUT, 10);
         $result = curl_exec($curlConnect);
 
         if (!curl_errno($curlConnect)) {
