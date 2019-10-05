@@ -51,7 +51,7 @@ class Api1CHelper {
         return $result;
     }
 
-    public static function get($action, $params) {
+    public static function getPdf($action, $params) {
         $url = self::$host . $action;
 
         $paramsQuery = '';

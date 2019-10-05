@@ -336,16 +336,12 @@ class Api1cTestController extends Controller
             "empty_fields" => true
         ];
 
-        $response1c = \App\Http\Helpers\Api1CHelper::post(
+        $response1c = Api1CHelper::getPdf(
             'print_form',
-            $send,
-            true
+            $send
         );
 
-        dd([
-            'send' => $send,
-            'response1c' => $response1c
-        ]);
+        return $response1c;
     }
 
     public function documentByNumber() {
