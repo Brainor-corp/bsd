@@ -332,7 +332,7 @@ class Api1cTestController extends Controller
         $send = [
             "user_id" => $request->get('user_id') ?? "14b3b98b-14a1-11e9-a98f-000d3a28f168",
             "document_id" => $request->get('document_id') ?? "bb3926c6-e417-11e9-8c89-001c42a74df3",
-            "type" => intval($request->get('type')) ?? 5,
+            "type" => 5,
             "empty_fields" => true
         ];
 
