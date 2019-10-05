@@ -393,10 +393,11 @@ $(document).ready(function () {
         if($(this).is(':checked')) {
             $('.need-to-take-input').removeAttr('disabled');
             $('.need-to-take-input-address').removeAttr('disabled');
+            $('.need-to-take-input-address').attr('required', 'required');
         } else {
             $('.need-to-take-input').attr('disabled', 'disabled');
             $('.need-to-take-input-address').attr('disabled', 'disabled');
-            // $('input[name="need-to-take-type"]:checked').prop('checked', false);
+            $('.need-to-take-input-address').removeAttr('required');
         }
 
         calcTariffPrice(
@@ -431,10 +432,11 @@ $(document).ready(function () {
         if($(this).is(':checked')) {
             $('.need-to-bring-input').removeAttr('disabled');
             $('.need-to-bring-input-address').removeAttr('disabled');
+            $('.need-to-bring-input-address').attr('required', 'required');
         } else {
-            // $('input[name="need-to-bring-type"]:checked').prop('checked', false);
             $('.need-to-bring-input').attr('disabled', 'disabled');
             $('.need-to-bring-input-address').attr('disabled', 'disabled');
+            $('.need-to-bring-input-address').removeAttr('required');
         }
 
         if($('#dest_city').data().selectize.getValue() !== "") {
@@ -1001,16 +1003,8 @@ function drawDiscount(discount) {
 function changeDeliveryType(cityFrom, cityTo, address, inputName) {
     let type = 'from';
 
-    console.log('==============');
-    console.log(cityFrom);
-    console.log(cityTo);
-    console.log(address);
-    console.log('==============');
-
     if(cityFrom !== cityTo) {
         $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').attr('checked', true);
-        console.log(inputName);
-        console.log(type);
 
         return;
     }
@@ -1061,9 +1055,6 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName) {
             } else {
                 type = 'in';
             }
-
-            console.log(inputName);
-            console.log(type);
 
             $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').attr('checked', true);
 
