@@ -341,6 +341,8 @@ class Api1cTestController extends Controller
             $send
         );
 
+        return $response1c;
+
         dd([
             'send' => $send,
             'response1c' => $response1c
