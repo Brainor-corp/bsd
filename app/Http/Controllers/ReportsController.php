@@ -142,7 +142,7 @@ class ReportsController extends Controller
             case 2:
             case 5:
             case 6:
-                    $documentName = $request->get('document_name');
+                    $documentName = json_decode($request->get('document_name'));
                     $documentName = str_replace('/', '.', $documentName);
                     $documentName = empty($documentName) ? "doc.pdf" : "$documentName.pdf";
 
@@ -151,12 +151,15 @@ class ReportsController extends Controller
                         $send
                     );
 
-                    header('Cache-Control: public');
-                    header('Content-type: application/pdf');
-                    header("Content-Disposition: attachment; filename=\"$documentName\"");
-                    header('Content-Length: '.strlen($result));
+                    if($result) {
+                        header('Cache-Control: public');
+                        header('Content-type: application/pdf');
+                        header("Content-Disposition: attachment; filename=\"$documentName\"");
+                        header('Content-Length: '.strlen($result));
 
-                    return $result;
+                        return $result;
+                    }
+
                     break;
 
             default: break;
