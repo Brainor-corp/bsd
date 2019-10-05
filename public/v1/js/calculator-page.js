@@ -171,13 +171,13 @@ $(document).ready(function () {
             '<label class="col-auto calc__label"><span class="content">Габариты (м)* <span class="d-md-none d-inline-block">(Д/Ш/В/Вес/Кол-во)</span></span></label>' +
             '<div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">' +
             '<div class="input-group">' +
-            '<input type="number" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
-            '<input type="number" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][width]" data-package-id="'+ nextId +'"  data-dimension-type="width" placeholder="Ширина" value="0.1">' +
-            '<input type="number" id="packages_'+ nextId +'_height" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][height]" data-package-id="'+ nextId +'"  data-dimension-type="height" placeholder="Высота" value="0.1">' +
-            '<input type="number" id="packages_'+ nextId +'_weight" class="form-control text-center package-params package-weight" name="cargo[packages]['+ nextId +'][weight]" data-package-id="'+ nextId +'"  data-dimension-type="weight" placeholder="Вес" value="1">' +
-            '<input type="number" id="packages_'+ nextId +'_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages]['+ nextId +'][quantity]" data-package-id="'+ nextId +'"  data-dimension-type="quantity" placeholder="Места" value="1">' +
+            '<input type="number" step="any" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
+            '<input type="number" step="any" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][width]" data-package-id="'+ nextId +'"  data-dimension-type="width" placeholder="Ширина" value="0.1">' +
+            '<input type="number" step="any" id="packages_'+ nextId +'_height" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][height]" data-package-id="'+ nextId +'"  data-dimension-type="height" placeholder="Высота" value="0.1">' +
+            '<input type="number" step="any" id="packages_'+ nextId +'_weight" class="form-control text-center package-params package-weight" name="cargo[packages]['+ nextId +'][weight]" data-package-id="'+ nextId +'"  data-dimension-type="weight" placeholder="Вес" value="1">' +
+            '<input type="number" step="any" id="packages_'+ nextId +'_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages]['+ nextId +'][quantity]" data-package-id="'+ nextId +'"  data-dimension-type="quantity" placeholder="Места" value="1">' +
             '</div>' +
-            '<input type="number" hidden="hidden" id="packages_'+ nextId +'_volume" class="form-control text-center package-params package-volume" name="cargo[packages]['+ nextId +'][volume]" data-package-id="'+ nextId +'"  data-dimension-type="volume"  value="0.001">' +
+            '<input type="number" step="any" hidden="hidden" id="packages_'+ nextId +'_volume" class="form-control text-center package-params package-volume" name="cargo[packages]['+ nextId +'][volume]" data-package-id="'+ nextId +'"  data-dimension-type="volume"  value="0.001">' +
             '</div>' +
             '</div>'+
             '<a href="#" id="delete-package-btn" class=" col-1 align-self-sm-auto align-self-center add_anotherplace">' +
@@ -867,20 +867,20 @@ function calcTariffPrice(city, point, inCity) {
 
                     // console.log('done');
 
+                    let hiddenPolygonInputClass = '.take-polygon-hidden-input';
+                    if(point.attr('id') === 'dest_point') {
+                        hiddenPolygonInputClass = '.bring-polygon-hidden-input';
+                    }
+                    let hiddenPolygonInput = $(hiddenPolygonInputClass);
+
                     if(isInPolygon) {
                         // console.log('Нужно поставить цену тарифа');
-
-                        let hiddenPolygonInputClass = '.take-polygon-hidden-input';
-                        if(point.attr('id') === 'dest_point') {
-                            hiddenPolygonInputClass = '.bring-polygon-hidden-input';
-                        }
-
-                        let hiddenPolygonInput = $(hiddenPolygonInputClass);
                         hiddenPolygonInput.val(polygonId);
 
                         getAllCalculatedData();
                     } else {
                         // console.log('Не нужно ставить цену тарифа');
+                        hiddenPolygonInput.val(null);
                         ymaps.route([city.point, fullName]).then(function (route) {
                             // console.log('От: ' + city.point + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
                             $(point.closest('.delivery-block')).find('.distance-hidden-input').val(Math.ceil(route.getLength() / 1000));
@@ -898,7 +898,7 @@ function calcTariffPrice(city, point, inCity) {
 }
 
 function renderCalendar(data) {
-    // console.log('render');
+    console.log(data);
     if(data.error === undefined) {
         $('#route-name').html(data.route.name);
         $('#base-price').html(data.route.price);
