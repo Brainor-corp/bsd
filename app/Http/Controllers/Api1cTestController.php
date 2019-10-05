@@ -329,20 +329,41 @@ class Api1cTestController extends Controller
     }
 
     public function printForm(Request $request) {
-        $send = [
+//        $send = [
+//            "user_id" => $request->get('user_id') ?? "14b3b98b-14a1-11e9-a98f-000d3a28f168",
+//            "document_id" => $request->get('document_id') ?? "bb3926c6-e417-11e9-8c89-001c42a74df3",
+//            "type" => 5,
+//            "empty_fields" => true
+//        ];
+//
+//        $path = Api1CHelper::getPdf(
+//            'print_form',
+//            $send
+//        );
+
+        $url = self::$host . 'print_form';
+        $content = json_encode([
             "user_id" => $request->get('user_id') ?? "14b3b98b-14a1-11e9-a98f-000d3a28f168",
             "document_id" => $request->get('document_id') ?? "bb3926c6-e417-11e9-8c89-001c42a74df3",
             "type" => 5,
             "empty_fields" => true
-        ];
+        ]);
 
-        $path = Api1CHelper::getPdf(
-            'print_form',
-            $send
-        );
+        $curlConnect = curl_init();
+        curl_setopt($curlConnect, CURLOPT_URL, $url);
+        curl_setopt($curlConnect, CURLOPT_POST,   1);
+        curl_setopt($curlConnect, CURLOPT_RETURNTRANSFER, 1 );
+        curl_setopt($curlConnect, CURLOPT_POSTFIELDS, $content);
+        $result = curl_exec($curlConnect);
 
-        return response()->download($path, "test.pdf")
-            ->deleteFileAfterSend(true);
+        header('Cache-Control: public');
+        header('Content-type: application/pdf');
+        header('Content-Disposition: attachment; filename="new.pdf"');
+        header('Content-Length: '.strlen($result));
+        echo $result;
+
+//        return response()->download($path, "test.pdf")
+//            ->deleteFileAfterSend(true);
     }
 
     public function documentByNumber() {
