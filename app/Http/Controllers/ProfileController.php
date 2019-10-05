@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Helpers\DocumentHelper;
 use App\Http\Helpers\SMSHelper;
 use App\User;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -184,16 +185,66 @@ class ProfileController extends Controller {
                 ]
             );
 
-            if(!empty($response1c['response']) && isset($response1c['response']['УникальныйИдентификатор'])) {
-                $file = DocumentHelper::generateContractDocument(
-                    'Договор',
-                    $response1c['response']
-                );
+            if(
+                !empty($response1c['response']) &&
+                !empty($response1c['response']['УникальныйИдентификатор']) &&
+                !empty($response1c['response']['ЮридическоеФизическоеЛицо'])
+            ) {
+                $data = $response1c['response'];
 
-                if(isset($file['tempFile']) && isset($file['fileName'])) {
-                    return response()->download($file['tempFile'], $file['fileName'])
-                        ->deleteFileAfterSend(true);
+                switch ($data['ЮридическоеФизическоеЛицо']) {
+                    case 'Юридическое лицо':
+                        $type = 'ur';
+                        $data['ПостфиксПолаКонтрагента'] = 'его';
+                        if(isset($data['ПолРуководителяКонтрагента']) && $data['ПолРуководителяКонтрагента'] == 'Женский') {
+                            $data['ПостфиксПолаКонтрагента'] = 'ей';
+                        }
+
+                        break;
+                    case 'Физическое лицо':
+                        $type = 'fiz';
+
+                        $data['ДокументУдостоверяющийЛичностьСерия'] = '';
+                        $data['ДокументУдостоверяющийЛичностьНомер'] = '';
+
+                        if(!empty($data['ДокументУдостоверяющийЛичность'])) {
+                            $passportParts = explode(' ', $data['ДокументУдостоверяющийЛичность']);
+
+                            $data['ДокументУдостоверяющийЛичностьСерия'] = $passportParts[0] ?? '';
+                            $data['ДокументУдостоверяющийЛичностьНомер'] = $passportParts[1] ?? '';
+                        }
+
+                        break;
+
+                    default: break;
                 }
+
+                $view = view("v1.pdf.contracts.contract-$type")
+                    ->with(compact('data'))
+                    ->render();
+
+                // instantiate and use the dompdf class
+                $options = new Options();
+                $options->setIsRemoteEnabled(true);
+                $dompdf = new Dompdf($options);
+                $dompdf->loadHtml($view);
+
+                // (Optional) Setup the paper size and orientation
+                $dompdf->setPaper('A4');
+
+                // Render the HTML as PDF
+                $dompdf->render();
+
+                $font = $dompdf->getFontMetrics()->get_font("Times New Roman", "normal");
+                $dompdf->getCanvas()->page_text(270, 14, "стр. {PAGE_NUM} из {PAGE_COUNT}", $font, 8, [0, 0, 0]);
+
+                $output = $dompdf->output();
+                $filename = "Договор";
+                $path = storage_path() . '/' . md5($filename. time());;
+                file_put_contents($path, $output);
+
+                return response()->download($path, "$filename.pdf")
+                        ->deleteFileAfterSend(true);
             } else {
                 return redirect()->back()->withErrors(['В данный момент генерация договора недоступна.']);
             }
