@@ -90,10 +90,6 @@ class Api1CHelper {
         curl_setopt($curlConnect, CURLOPT_POSTFIELDS, $content);
         $result = curl_exec($curlConnect);
 
-        $filename = "Договор";
-        $path = storage_path() . '/' . md5($filename. time());;
-        file_put_contents($path, $result);
-
-        return "$path.pdf";
+        return $result;
     }
 }
