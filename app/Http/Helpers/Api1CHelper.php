@@ -51,7 +51,7 @@ class Api1CHelper {
         return $result;
     }
 
-    public static function getPdf($action, $params) {
+    public static function get($action, $params) {
         $url = self::$host . $action;
 
         $paramsQuery = '';
@@ -77,5 +77,23 @@ class Api1CHelper {
             'status' => $status,
             'response' => json_decode($json_response, true)
         ];
+    }
+
+    public static function getPdf($action, $params) {
+        $url = self::$host . $action;
+        $content = json_encode($params);
+
+        $curlConnect = curl_init();
+        curl_setopt($curlConnect, CURLOPT_URL, $url);
+        curl_setopt($curlConnect, CURLOPT_POST,   1);
+        curl_setopt($curlConnect, CURLOPT_RETURNTRANSFER, 1 );
+        curl_setopt($curlConnect, CURLOPT_POSTFIELDS, $content);
+        $result = curl_exec($curlConnect);
+
+        $filename = "Договор";
+        $path = storage_path() . '/' . md5($filename. time());;
+        file_put_contents($path, $result);
+
+        return "$path.pdf";
     }
 }
