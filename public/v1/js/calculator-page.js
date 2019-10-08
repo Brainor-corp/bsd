@@ -252,36 +252,36 @@ $(document).ready(function () {
             dimensionMax = 0,
             volume = 1;
 
-        // dimensionMax = parameters[dimensionType];
-        // if($(this).val() >dimensionMax){
-        //     $(this).addClass('oversized');
-        //     if($(this).parent().parent().children('div.oversize-error').length === 0){
-        //         myDivs = $('<div class="oversize-error">Возможно увеличение стоимости доставки из-за негабаритности груза</div>   ')
-        //             .appendTo($(this).parent().parent())
-        //     }
-        // }else {
-        //     $(this).removeClass('oversized');
-        //     if($(this).parent().parent().children('div.oversize-error').length !== 0){
-        //         if($(this).parent().children('.oversized').length === 0) {
-        //             $(this).parent().parent().children('div.oversize-error').remove();
-        //         }
-        //     }
-        // }
-        //
-        // if(length === ''){
-        //     length = 0.1;
-        //     $('#packages_'+ id +'_length').attr('value', length).val(length);
-        // }else{length = parseFloat(length.replace(',', '.'))}
-        // if(width === ''){
-        //     width = 0.1;
-        //     $('#packages_'+ id +'_width').attr('value', width).val(width);
-        // }else{width = parseFloat(width.replace(',', '.'))}
-        // if(height === ''){
-        //     height = 0.1;
-        //     $('#packages_'+ id +'_height').attr('value', height).val(height);
-        // }else{height = parseFloat(height.replace(',', '.'))}
-        //
-        // volume = parseFloat((length * width * height).toFixed(3));
+        dimensionMax = parameters[dimensionType];
+        if($(this).val() >dimensionMax){
+            $(this).addClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length === 0){
+                myDivs = $('<div class="oversize-error">Возможно увеличение стоимости доставки из-за негабаритности груза</div>   ')
+                    .appendTo($(this).parent().parent())
+            }
+        }else {
+            $(this).removeClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length !== 0){
+                if($(this).parent().children('.oversized').length === 0) {
+                    $(this).parent().parent().children('div.oversize-error').remove();
+                }
+            }
+        }
+
+        if(length === ''){
+            length = 0.1;
+            $('#packages_'+ id +'_length').attr('value', length).val(length);
+        }else{length = parseFloat(length.replace(',', '.'))}
+        if(width === ''){
+            width = 0.1;
+            $('#packages_'+ id +'_width').attr('value', width).val(width);
+        }else{width = parseFloat(width.replace(',', '.'))}
+        if(height === ''){
+            height = 0.1;
+            $('#packages_'+ id +'_height').attr('value', height).val(height);
+        }else{height = parseFloat(height.replace(',', '.'))}
+
+        volume = parseFloat((length * width * height).toFixed(3));
 
         $('#packages_'+ id +'_volume').attr('value', volume).val(volume);
 
