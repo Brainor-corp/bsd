@@ -20,7 +20,7 @@
     </div>
     <div class="col-xl-5 col-lg-12">
         <form class="short_calculator-form" action="/calculator-show" method="get">
-            <div class="calc__block mr-auto mr-md-0 ml-auto">
+            <div class="calc__block mr-auto mr-md-0 ml-lg-auto">
                 <div class="calc__block_title">Быстрый расчет стоимости</div>
                 <div class="input-group calc__block_inpg">
                     {{--<input type="text" id="ship_city" class="form-control" placeholder="Москва">--}}

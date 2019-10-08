@@ -585,7 +585,7 @@ a.city_choice:hover,
 	padding:17px 0 0 66px;
 	margin-left:40px;
 }
-.header__top {
+.header-navbar {
 	margin-bottom:82px;
 }
 .header__myaccount_link {
@@ -628,9 +628,9 @@ a.city_choice:hover,
 	height:27px;
 }
 .nav-icons-list {
-    position: relative;
-    top: 20px;
     left: 0;
+	position: relative;
+	top: 6px;
 }
 .nav-icons-list li {
 	margin:0 10px;
@@ -640,6 +640,7 @@ a.city_choice:hover,
 }
 .nav-icons-list li svg {
 	height:30px;
+	width:30px;
 }
 .nav-icons-list li svg path {
 	fill:#9baeb9;
@@ -2263,13 +2264,13 @@ label.calc__label_max {
 	}
 	.icons_list {
 		margin-bottom:25px;
-		width:50%;
+		/*width:50%;*/
 	}
 	.icons_list li{
 		margin-bottom:30px;
 	}
 	.calc__block {
-		margin-top:-345px;
+		/*margin-top:-345px;*/
 	}
 }
 @media (min-width: 576px) and (max-width: 768px) {
@@ -2311,8 +2312,8 @@ label.calc__label_max {
 		padding-top:0;
 	}
 	.icons_list{
-		padding-left:40px;
-		padding-right:40px;
+		/*padding-left:40px;*/
+		/*padding-right:40px;*/
 	}
 	.icons_list li{
 		margin-bottom:27px;
@@ -2351,6 +2352,7 @@ label.calc__label_max {
 	}
 	.event-feed__item{
 		margin-bottom:18px;
+		padding-top: 10px;
 	}
 	.service__item{
 		margin-top: 15px;
@@ -2549,6 +2551,7 @@ label.calc__label_max {
 	}
 	.event-feed__item {
 		margin-bottom: 20px;
+		padding-top: 10px;
 	}
 	.event-feed__info span{
 		font-size:14px;
@@ -2616,8 +2619,8 @@ label.calc__label_max {
 	.dropdown-menu{
 		width:290px;
 		max-width:290px;
-		padding-left:20px;
-		padding-right:20px;
+		/*padding-left:20px;*/
+		/*padding-right:20px;*/
 		/*transform: translate3d(-35%, 22px, 0px)!important;*/
 		left: 0!important;
 		right: 0!important;
@@ -2689,6 +2692,10 @@ label.calc__label_max {
 }
 
 @media (min-width: 768px) {
+
+	.header-menu-container {
+		padding: 17px 0 0 40px;
+	}
 
 	/* show 3 items */
 	.carousel-inner .active,
