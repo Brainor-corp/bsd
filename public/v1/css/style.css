@@ -2279,7 +2279,7 @@ label.calc__label_max {
 }
 @media (min-width: 576px) and (max-width: 768px) {
 	.status-shipment__header .btn{
-		margin-top:10px;
+		/*margin-top:10px;*/
 	}
 	.price-list .ml-auto{
 		margin-top:10px;
