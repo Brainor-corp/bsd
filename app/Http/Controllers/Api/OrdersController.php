@@ -51,12 +51,15 @@ class OrdersController extends Controller
             ]
         );
 
-        $cargoStatus = Type::firstOrCreate(
-            [
-                'class' => 'cargo_status',
-                'name' => $request->get('cargo_status')
-            ]
-        );
+        $cargoStatus = null;
+        if(!empty($request->get('cargo_status'))) {
+            $cargoStatus = Type::firstOrCreate(
+                [
+                    'class' => 'cargo_status',
+                    'name' => $request->get('cargo_status')
+                ]
+            );
+        }
 
         $paymentStatus = Type::where([
             ['class', 'OrderPaymentStatus'],
@@ -69,7 +72,7 @@ class OrdersController extends Controller
         $order->actual_volume = $request->get('volume');
         $order->actual_price = $request->get('price');
         $order->cargo_number = $request->get('cargo_number');
-        $order->cargo_status_id = $cargoStatus->id;
+        $order->cargo_status_id = $cargoStatus->id ?? null;
         $order->save();
 
         return [
