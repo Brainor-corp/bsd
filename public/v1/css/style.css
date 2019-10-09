@@ -741,8 +741,8 @@ section{
 	border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 	position: relative;
-	height:44px;
-	line-height:44px;
+	/*height:44px;*/
+	/*line-height:44px;*/
 	padding:0 15px;
 }
 .sidebar__item.active,

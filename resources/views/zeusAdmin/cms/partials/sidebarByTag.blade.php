@@ -15,7 +15,7 @@
     <nav class="section">
         <ul class="sidebar__menu">
             @foreach($sidebarMenu as $element)
-            <li class="sidebar__item
+            <li class="sidebar__item py-2
                 @if('/'.Request::path() == $element->url)
                     active
                 @endif
@@ -28,6 +28,6 @@
 <section class="section">
     <div class="order__block d-flex flex-column" style="border:none;">
         <img src="images/img/delivery-img.png" alt="">
-        <div class="sidebar__item "><a href="{{ url('calculator-show') }}">Оформить заказ на доставку</a></div>
+        <div class="sidebar__item py-2"><a href="{{ url('calculator-show') }}">Оформить заказ на доставку</a></div>
     </div>
 </section>
