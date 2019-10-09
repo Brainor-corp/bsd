@@ -1,4 +1,4 @@
-<nav class="header-navbar navbar navbar-expand-lg @if($isMainPage) navbar-dark @else navbar-light justify-content-between @endif bg-transparent p-0">
+<nav class="header-navbar navbar navbar-expand-xl @if($isMainPage) navbar-dark @else navbar-light justify-content-between @endif bg-transparent p-0">
     <a href="{{ route('index') }}"><img src="{{ asset('/images/img/logo.png') }}" alt="Доставка грузов"></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -8,15 +8,15 @@
         <div class="container header-menu-container">
             <div class="row justify-content-between align-items-start">
                 <div class="col-lg-auto text-lg-left text-center py-4 py-lg-0 col-12">
-                    <div class="d-flex flex-column flex-md-row align-items-center align-items-sm-start">
-                        <div class="city-dropdown dropdown show">
+                    <div class="">
+                        <div class="city-dropdown dropdown show d-inline-block mr-lg-0 mr-3">
                             <a class="dropdown-toggle city_choice"
                                href="#"
                                role="button"
                                data-toggle="modal"
                                data-target="#selection-city">{{ $city->name }}</a>
                         </div>
-                        <div class="phones d-flex flex-column flex-md-row justify-content-center">
+                        <div class="phones d-inline-block">
                             @if(isset($closestTerminal->phone))
                                 @php
                                     $phones = preg_split("/(;|,)/", str_replace(' ', '', $closestTerminal->phone));
@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     <div>
-                        <ul class="nav navbar-nav d-flex nav_top m-0">
+                        <ul class="nav_top m-0 list-inline">
                             @php($headerMenu = \Zeus\Admin\Cms\Helpers\MenuHelper::getMenuTreeBySlug('shapka-sayta'))
                             @include('v1.partials.header.header-menu', ['nodeTree' => $headerMenu])
                         </ul>

@@ -1135,7 +1135,7 @@ section{
 	position: relative;
     top: 5px;
 }
-.nav_top > li {
+.nav_top > li:not(:last-child) {
 	margin-left:1px;
 	margin-right:29px;
 }
@@ -1164,7 +1164,7 @@ a.city_choice:hover{
 }
 .phones a {
 	border:0px;
-	margin-right:11px;
+	/*margin-right:11px;*/
 }
 .phones a:before {
 	margin-right:4px;
@@ -1172,7 +1172,7 @@ a.city_choice:hover{
 	font-family:"FontAwesome";
 }
 .dropdown-menu {
-	top: 25px!important;
+	top: 40px!important;
 	border-radius:0 5px 5px 5px;
 }
 .dropdown-toggle:after {
@@ -2034,10 +2034,14 @@ label.calc__label_max {
 	.sidebar__block{
 		width:270px;
 	}
-}
-@media (max-width: 768px) {
 	.bgvideo{
 		display:none;
+	}
+}
+@media (max-width: 768px) {
+	.nav_top > li {
+		margin-left: 0px !important;
+		margin-right: 0px !important;
 	}
 	.input-group .input-group__item .custom-select{
 		border-radius:0!important;
@@ -2691,12 +2695,19 @@ label.calc__label_max {
 	}
 }
 
-@media (min-width: 768px) {
+@media (max-width: 1200px) {
+	.header-menu-container {
+		padding: 20px 0 0 0px;
+	}
+}
 
+@media (min-width: 1200px) {
 	.header-menu-container {
 		padding: 17px 0 0 40px;
 	}
+}
 
+@media (min-width: 768px) {
 	/* show 3 items */
 	.carousel-inner .active,
 	.carousel-inner .active + .carousel-item,
