@@ -698,13 +698,15 @@ class OrderController extends Controller
     }
 
     public function searchOrders(Request $request) {
-        $orders = Order::with('status', 'ship_city', 'dest_city')
-            ->where(function ($ordersQuery) {
-                return Auth::check() ? $ordersQuery
-                    ->where('user_id', Auth::user()->id)
-                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
-                    $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
-            })
+        $orders = Order::available()
+            ->with(
+                'status',
+                'ship_city',
+                'dest_city',
+                'payment_status',
+                'payment',
+                'order_items'
+            )
             ->when($request->get('id'), function ($order) use ($request) {
                 return $order->where('id', 'LIKE', '%' . $request->get('id') . '%');
             })
@@ -716,6 +718,7 @@ class OrderController extends Controller
             ->when($request->finished == 'false' && $request->get('status'), function ($order) use ($request) {
                 return $order->where('status_id', $request->get('status'));
             })
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return View::make('v1.partials.profile.orders')->with(compact('orders'))->render();
