@@ -18,8 +18,8 @@ class OrdersController extends Controller
             "volume" => "required|numeric",
             "price" => "required|numeric",
             "payment_status" => "required|string|in:Оплачен,Не оплачен",
-            "cargo_number" => "string",
-            "cargo_status" => "string",
+            "cargo_number" => "string|nullable",
+            "cargo_status" => "string|nullable",
         ]);
 
         if ($validator->fails()) {
