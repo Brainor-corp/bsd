@@ -651,10 +651,10 @@ class OrderController extends Controller
 
         if(Auth::check()) {
             EventHelper::createEvent(
-                'Заказ успешно зарегистрирован!',
+                'Заявка успешно зарегистрирована!',
                 null,
                 1,
-                '/klientam/report/'.$order->id,
+                '/klientam/report/' . $order->id,
                 Auth::id()
             );
         }

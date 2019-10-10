@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\EventHelper;
 use App\Order;
 use App\Type;
 use Illuminate\Http\Request;
@@ -44,6 +45,8 @@ class OrdersController extends Controller
             );
         }
 
+        $oldStatusId = $order->status_id;
+
         $status = Type::firstOrCreate(
             [
                 'class' => 'order_status',
@@ -74,6 +77,18 @@ class OrdersController extends Controller
         $order->cargo_number = $request->get('cargo_number');
         $order->cargo_status_id = $cargoStatus->id ?? null;
         $order->save();
+
+        $newStatusId = $order->status_id;
+
+        if($oldStatusId !== $newStatusId && !empty($order->user_id)) {
+            EventHelper::createEvent(
+                'Изменён статус заявки!',
+                null,
+                1,
+                '/klientam/report/' . $order->id,
+                $order->user_id
+            );
+        }
 
         return [
             "status" => "success"
