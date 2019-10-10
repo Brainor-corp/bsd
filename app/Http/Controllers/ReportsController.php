@@ -32,12 +32,6 @@ class ReportsController extends Controller
                 'payment',
                 'order_items'
             )
-            ->where(function ($ordersQuery) {
-                return Auth::check() ? $ordersQuery
-                    ->where('user_id', Auth::id())
-                    ->orWhere('enter_id', $_COOKIE['enter_id']) :
-                    $ordersQuery->where('enter_id', $_COOKIE['enter_id']);
-            })
             ->orderBy('created_at', 'desc')
             ->get();
 
