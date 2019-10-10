@@ -82,7 +82,7 @@ class OrdersController extends Controller
 
         if($oldStatusId !== $newStatusId && !empty($order->user_id)) {
             EventHelper::createEvent(
-                'Изменён статус заявки!',
+                'Изменён статус заявки: ' . $order->status->name ?? '-',
                 null,
                 1,
                 '/klientam/report/' . $order->id,
