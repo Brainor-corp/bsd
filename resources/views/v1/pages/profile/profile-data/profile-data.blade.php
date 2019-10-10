@@ -30,7 +30,7 @@
                                 </div>
                             </div>
                         @endif
-                        <div class="col-md-4 col-12">
+                        <div class="col-lg-4 col-12">
 
                             <div class="row">
                                 @if (count($errors) > 0)

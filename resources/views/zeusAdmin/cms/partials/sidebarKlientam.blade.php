@@ -4,7 +4,7 @@
 <nav class="section">
     <ul class="sidebar__menu">
         @foreach($sidebarMenu as $element)
-        <li class="sidebar__item"><a href="{{ $element->url }}">{{ $element->title }}</a></li>
+        <li class="sidebar__item py-2"><a href="{{ $element->url }}">{{ $element->title }}</a></li>
         @endforeach
     </ul>
 </nav>
