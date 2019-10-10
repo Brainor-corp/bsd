@@ -43,7 +43,7 @@
                         @endif
                     </select>
                 </div>
-                <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg">
+                <div class="form-item align-items-center justify-content-between calc__block_inpg">
                     <div class="row align-items-center">
                         <div class="col-lg-5 col-12">
                             <label class="calc__label_max">Вес груза (кг)</label>
@@ -53,7 +53,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-item d-flex align-items-center justify-content-between calc__block_inpg">
+                <div class="form-item align-items-center justify-content-between calc__block_inpg">
                     <div class="row align-items-center">
                         <div class="col-lg-5 col-12">
                             <label class="calc__label_max">Объем груза (м<sup>3</sup>)</label>

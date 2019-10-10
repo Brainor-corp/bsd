@@ -123,12 +123,12 @@ a:hover {
 	margin:auto;
 }
 .map__contacts{
-	width:300px;
+	/*width:300px;*/
 	background: white;
 	border-radius:5px;
-	position: absolute;
-	top:60px;
-	left:60px;
+	/*position: absolute;*/
+	/*top:60px;*/
+	/*left:60px;*/
 	padding-bottom:20px;
 }
 .map__contacts-title{
@@ -2704,6 +2704,12 @@ label.calc__label_max {
 @media (min-width: 1200px) {
 	.header-menu-container {
 		padding: 17px 0 0 40px;
+	}
+	.map__contacts{
+		width:300px;
+		position: absolute;
+		top:60px;
+		left:60px;
 	}
 }
 
