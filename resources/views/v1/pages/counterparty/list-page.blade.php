@@ -45,7 +45,7 @@
                                                 <td class="align-middle">{{ $counterparty->company_name  ?? '-'}}</td>
                                                 <td class="align-middle">
                                                     @if(null !== $counterparty->legal_form)
-                                                        {{ $counterparty->legal_address_city  ?? ''}},
+                                                        {{ !empty($counterparty->legal_address_city)  ? $counterparty->legal_address_city . ',' : ''}}
                                                         {{ $counterparty->legal_address  ?? ''}}
                                                     @else
                                                         -

@@ -30,7 +30,7 @@ class CounterpartyController extends Controller
         ])->get();
 
         $counterparties = $counterparties->filter(function ($counterparty) use ($field, $term) {
-            return mb_strpos($counterparty->$field, $term) !== FALSE;
+            return mb_strpos(mb_strtolower($counterparty->$field), mb_strtolower($term)) !== FALSE;
         });
 
         // Расшифровываем поля
