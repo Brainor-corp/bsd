@@ -58,7 +58,7 @@ class UserOrderSyncFrom1c implements ShouldQueue
             $status = Type::firstOrCreate(
                 [
                     'class' => 'order_status',
-                    'name' => $response1c['response']['Статус'] ?? 'Не определён'
+                    'name' => !empty($response1c['response']['Статус']) ? $response1c['response']['Статус'] : 'Не определён'
                 ]
             );
 
@@ -70,6 +70,7 @@ class UserOrderSyncFrom1c implements ShouldQueue
                 ])->first()->id ?? null) : null;
             $order->total_weight = floatval($response1c['response']['Вес'] ?? 0);
             $order->status_id = $status->id;
+            $order->cargo_number = $response1c['response']['Номер'] ?? "";
             $order->ship_city_id = City::where('name', $response1c['response']['ГородОтправления'] ?? "-")->first()->id ?? null;
             $order->ship_city_name = $response1c['response']['ГородОтправления'] ?? "-";
             $order->dest_city_id = City::where('name', $response1c['response']['ГородНазначения'] ?? "-")->first()->id ?? null;
