@@ -6,7 +6,7 @@ use alhimik1986\PhpExcelTemplator\params\ExcelParam;
 use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterStringValue;
-use Elibyy\TCPDF\Facades\TCPDF;
+use Dompdf\Dompdf;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 
@@ -141,17 +141,25 @@ class DocumentHelper
     {
         $documentName = str_replace('/', '.', $documentName);
 
-        $view = View::make('v1.pdf.document-request')->with(compact('documentData'));
-        $html = $view->render();
+        $view = View::make('v1.pdf.document-request')
+            ->with(compact('documentData'))
+            ->render();
 
-        $pdf = new TCPDF();
-        $pdf::SetTitle($documentName);
-        $pdf::AddPage();
-        $pdf::writeHTML($html, true, false, true, false, '');
-        $pdf::Output(storage_path($documentName), 'F');
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($view);
+
+        // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        $output = $dompdf->output();
+        $path = storage_path() . '/' . md5($documentName. time());;
+        file_put_contents($path, $output);
 
         return [
-            'tempFile' => storage_path($documentName),
+            'tempFile' => $path,
             'fileName' => $documentName
         ];
     }
