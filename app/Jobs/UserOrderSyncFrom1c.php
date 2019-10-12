@@ -55,10 +55,15 @@ class UserOrderSyncFrom1c implements ShouldQueue
         );
 
         if($response1c['status'] == 200 && !empty($response1c['response'])) {
+            $statusName = 'Не определён';
+            if(isset($response1c['response']['Статус']) && !empty(trim($response1c['response']['Статус']))) {
+                $statusName = $response1c['response']['Статус'];
+            }
+
             $status = Type::firstOrCreate(
                 [
                     'class' => 'order_status',
-                    'name' => !empty($response1c['response']['Статус']) ? $response1c['response']['Статус'] : 'Не определён'
+                    'name' => $statusName
                 ]
             );
 
