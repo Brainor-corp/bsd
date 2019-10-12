@@ -721,6 +721,10 @@ $(document).ready(function () {
             currentBlock.find("input[name$='kpp']").val(ui.item["kpp"]);
         }
     });
+
+    $(document).on('focus', '.package-params', function () {
+        $(this).val('');
+    })
 });
 
 function getAllCalculatedData() {
