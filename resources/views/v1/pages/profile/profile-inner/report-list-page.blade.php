@@ -21,13 +21,14 @@
                                 <div class="col-12">
                                     @csrf
                                     <span class="reports__header-label">Поиск:</span>
-                                    <div id="search-wrapper" class="d-flex flex-wrap control-group">
+                                    <div id="search-wrapper" class="d-flex flex-wrap control-group mr-0">
                                         <select id="search-type-select" class="custom-select">
                                             <option disabled value="" selected>Выберите из списка</option>
                                             <option selected value="id">По номеру</option>
                                             <option value="status">По типу</option>
                                         </select>
                                         <input name="id" id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">
+                                        <a href="{{ route('calculator-show') }}" class="ml-auto pt-3">Добавить заявку</a>
                                     </div>
                                     <div id="cb-input" class="custom-control custom-checkbox">
                                         <input name="finished" value="true" type="checkbox" class="custom-control-input" id="finished-cb">
