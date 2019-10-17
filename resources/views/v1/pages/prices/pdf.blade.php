@@ -47,9 +47,11 @@
         </table>
     </header>
     <footer style="text-align: right;">
-        <span>
-            Стоимость включает НДС 20%. Исключение, стоимость экспедирования в городе Санкт-Петербург указана без НДС
-        </span>
+        @if(in_array(78, $shipCityIds) || in_array(78, $destCityIds))
+            <span>
+                Стоимость включает НДС 20%. Исключение, стоимость экспедирования в городе Санкт-Петербург указана без НДС
+            </span>
+        @endif
     </footer>
     @include('v1.pages.prices.prices-content')
 </body>

@@ -57,11 +57,14 @@
                             @include('v1.pages.prices.prices-content')
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 text-right pt-2">
-                            <p>Стоимость включает НДС 20%. Исключение, стоимость экспедирования в городе Санкт-Петербург указана без НДС</p>
+                    {{--Надпись показываем только для Санкт-Петербурга--}}
+                    @if(in_array(78, $shipCityIds) || in_array(78, $destCityIds))
+                        <div class="row">
+                            <div class="col-12 text-right pt-2">
+                                <p>Стоимость включает НДС 20%. Исключение, стоимость экспедирования в городе Санкт-Петербург указана без НДС</p>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>

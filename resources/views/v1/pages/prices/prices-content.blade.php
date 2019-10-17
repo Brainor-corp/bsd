@@ -78,8 +78,8 @@
 @endif
 
 @if(!empty($insideForwardings->groupBy('city_id')))
-    <h4 style="text-align: center;">Стоимость экспедирования в черте города</h4>
     @foreach($insideForwardings->groupBy('city_id') as $insideForwardingsCities)
+        <h4 style="text-align: center;">Стоимость экспедирования в черте города {{ $insideForwardingsCities->first()->city->name }}</h4>
         <div class="table-responsive mb-3">
             <table class="table table-bordered text-center">
                 <thead>
