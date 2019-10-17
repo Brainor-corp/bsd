@@ -71,10 +71,10 @@
                                     <input type="number" step="any" hidden="hidden" id="packages_{{ $key }}_volume" class="form-control text-center package-params package-volume" name="cargo[packages][{{ $key }}][volume]" data-package-id="{{ $key }}"  data-dimension-type="volume" value="{{ $package['volume'] }}"/>
                                 </div>
                             </div>
-                            <a href="#" id="add-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace">
+                            <a href="#" id="add-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Добавить">
                                 <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
                             </a>
-                            <a href="#" id="delete-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace">
+                            <a href="#" id="delete-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Удалить">
                                 <span class="badge calc_badge"><i class="fa fa-minus"></i></span>
                             </a>
                         </div>
@@ -100,10 +100,10 @@
                                     <input type="number" step="any" hidden="hidden" id="packages_{{ $key }}_volume" class="form-control text-center package-params package-volume" name="cargo[packages][{{ $key }}][volume]" data-package-id="{{ $key }}"  data-dimension-type="volume" value="{{ $package['volume'] }}"/>
                                 </div>
                             </div>
-                            <a href="#" id="add-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace">
+                            <a href="#" id="add-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Добавить">
                                 <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
                             </a>
-                            <a href="#" id="delete-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace">
+                            <a href="#" id="delete-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Удалить">
                                 <span class="badge calc_badge"><i class="fa fa-minus"></i></span>
                             </a>
                         </div>

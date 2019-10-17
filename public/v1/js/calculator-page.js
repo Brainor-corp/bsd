@@ -180,10 +180,10 @@ $(document).ready(function () {
             '<input type="number" step="any" hidden="hidden" id="packages_'+ nextId +'_volume" class="form-control text-center package-params package-volume" name="cargo[packages]['+ nextId +'][volume]" data-package-id="'+ nextId +'"  data-dimension-type="volume"  value="0.001">' +
             '</div>' +
             '</div>'+
-            '<a href="#" id="delete-package-btn" class=" col-1 align-self-sm-auto align-self-center add_anotherplace">' +
+            '<a href="#" id="delete-package-btn" class=" col-1 align-self-sm-auto align-self-center add_anotherplace" title="Удалить">' +
             '<span class="badge calc_badge"><i class="fa fa-minus"></i></span>' +
             '</a>'+
-            '<a href="#" id="add-package-btn" class=" col-1 align-self-sm-auto align-self-center add_anotherplace">' +
+            '<a href="#" id="add-package-btn" class=" col-1 align-self-sm-auto align-self-center add_anotherplace" title="Добавить">' +
             '<span class="badge calc_badge"><i class="fa fa-plus"></i></span>' +
             '</a>'+
             '</div>'
