@@ -786,8 +786,9 @@ function totalVolumeRecount() {
     });
 
     $("#total-volume").attr('value', totalVolume).val(totalVolume);
-    $("#total-volume-hidden").attr('data-total-volume', totalVolume).attr('value', totalVolume).val(totalVolume);
 };
+
+$(document).on('change', '#total-volume', () => getAllCalculatedData());
 
 function totalWeigthRecount() {
     let totalWeigth = 0;
@@ -800,8 +801,9 @@ function totalWeigthRecount() {
     });
 
     $("#total-weight").attr('value', totalWeigth).val(totalWeigth);
-    $("#total-weight-hidden").attr('data-total-weight', totalWeigth).attr('value', totalWeigth).val(totalWeigth);
 };
+
+$(document).on('change', '#total-weight', () => getAllCalculatedData());
 
 async function checkAddressInPolygon(address, polygon) {
     // console.log('checking contains..');

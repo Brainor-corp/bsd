@@ -115,15 +115,13 @@
                 <div class="col-6 form-item row align-items-center">
                     <label class="col-auto calc__label">Вес груза (кг)*</label>
                     <div class="col calc__inpgrp">
-                        <input type="number" step="any" id="total-weight-hidden" hidden="hidden" style="display: none" name="cargo[total_weight]" data-total-weight="1" value="1"/>
-                        <input type="number" step="any" id="total-weight" class="form-control" value="1" disabled/>
+                        <input type="number" name="cargo[total_weight]" step="any" id="total-weight" class="form-control" value="1"/>
                     </div>
                 </div>
                 <div class="col-6 form-item row align-items-center text-right">
                     <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
                     <div class="col calc__inpgrp">
-                        <input type="number" step="any" id="total-volume-hidden" hidden="hidden" name="cargo[total_volume]" data-total-volume="0.001" value="0.001" required/>
-                        <input type="number" step="any" id="total-volume" class="form-control" data-total-volume="0.001" value="0.001" disabled/>
+                        <input type="number" name="cargo[total_volume]" step="any" id="total-volume" class="form-control" data-total-volume="0.001" value="0.001"/>
                     </div>
                 </div>
             </div>
