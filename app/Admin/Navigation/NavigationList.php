@@ -73,6 +73,11 @@ class NavigationList
                         'text' => 'Группы негабаритов'
                     ],
                     [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/PerKmTariffs',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Покилометровые тарифы'
+                    ],
+                    [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Orders',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Заявки'
@@ -147,11 +152,6 @@ class NavigationList
 //                        'url' => '/' . config('zeusAdmin.admin_url') . '/OutsideForwarding',
 //                        'icon' => 'fas fa-address-book',
 //                        'text' => 'Внешние пересылки'
-//                    ],
-//                    [
-//                        'url' => '/' . config('zeusAdmin.admin_url') . '/PerKmTariffs',
-//                        'icon' => 'fas fa-address-book',
-//                        'text' => 'Покилометровые тарифы'
 //                    ],
 //                    [
 //                        'url' => '/' . config('zeusAdmin.admin_url') . '/OversizeMarkups',
