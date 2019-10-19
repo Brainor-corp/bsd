@@ -22,7 +22,7 @@ function getDiscount() {
             $('#discount').trigger('change');
         },
         error: function (data) {
-            console.log(data);
+            // console.log(data);
         }
     });
 }
@@ -176,8 +176,6 @@ $(document).ready(function () {
         e.preventDefault();
         var lastId = $( '.package-item' ).filter( ':last' ).data('packageId');
         var nextId = lastId+1;
-
-        // console.log(lastId, nextId);
 
         var html =
             '<div class="row package-wrapper" id="package-wrapper-'+ nextId +'">'+
@@ -416,9 +414,7 @@ $(document).ready(function () {
             clearDeliveryData('take');
         }
 
-        console.log('here1');
         if($('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()] !== undefined) {
-            console.log('here2');
             calcTariffPrice(
                 {
                     'value': $('#ship_city').val(),
@@ -518,7 +514,6 @@ $(document).ready(function () {
                 city = $('#dest_city').text();
                 cityKladrId = $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].kladrId;
             }
-            // console.log(cityKladrId);
             $(element).kladr({
                 // type: $.kladr.type.city, // берем город
                 oneString: true, // Если включить эту штуку, то будет возвращаться полный адрес
@@ -699,8 +694,6 @@ $(document).ready(function () {
             currentBlock.find("input[name$='phone_individual']").val(ui.item["phone"]);
             currentBlock.find("input[name$='contact_person_individual']").val(ui.item["contact_person"]);
             currentBlock.find("input[name$='addition_info_individual']").val(ui.item["addition_info"]);
-
-            // console.log(ui.item);
         }
     });
 
@@ -750,8 +743,6 @@ $(document).ready(function () {
 });
 
 function getAllCalculatedData() {
-    console.log('get all');
-    console.log($('.calculator-form').serialize());
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -767,13 +758,11 @@ function getAllCalculatedData() {
             $('#calculator-data-preloader').show()
         },
         success: function (data) {
-            // console.log(data);
             renderCalendar(data);
             $('#calculator-data-preloader').hide()
         },
         error: function(data){
             $('#calculator-data-preloader').hide()
-            // console.log(data);
         }
     });
 }
@@ -809,15 +798,12 @@ function totalWeigthRecount() {
 $(document).on('change', '#total-weight', () => getAllCalculatedData());
 
 async function checkAddressInPolygon(address, polygon) {
-    // console.log('checking contains..');
     return await ymaps.geocode(address).then(function (res) {
-        // console.log('here!');
         var newPoint = res.geoObjects.get(0);
         map.geoObjects.removeAll().add(polygon);
         map.geoObjects.add(newPoint);
 
         let result = !!polygon.geometry.contains(newPoint.geometry.getCoordinates());
-        // console.log(result ? "В функции +" : "В функции -");
 
         return result;
     });
@@ -825,23 +811,17 @@ async function checkAddressInPolygon(address, polygon) {
 
 // Базовая функция просчета цены для "Забрать из" и "Доставить"
 function calcTariffPrice(city, point, inCity) {
-    console.log('here3');
     let fullName = point.data('fullName');
-    if(inCity) { // Если работаем в пределах города
-        console.log('here4');
+    if(inCity || typeof fullName === undefined || fullName === "") { // Если работаем в пределах города
+        point.closest('.delivery-block').find('input.delivery-type').filter('[value="in"]').prop('checked', true);
         getAllCalculatedData();
     } else { // В противном случае просчитываем километраж с помощью Яндекс api
-        console.log('here5');
-        console.log(fullName);
         if (!fullName) {
             getAllCalculatedData();
             return;
         }
 
         if (city) {
-            // console.log('===========');
-            // console.log(city.value);
-
             // Пробуем получить полигоны для выбранного города
             $.ajaxSetup({
                 headers: {
@@ -857,12 +837,10 @@ function calcTariffPrice(city, point, inCity) {
                 dataType: "json",
                 cache: false,
                 success: async function(data) {
-                    console.log('here6');
                     let isInPolygon;
                     let polygonId = '';
 
                     for (const el of data) {
-                        // console.log(el);
                         let findCoordinates = [];
                         let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
                         $(polygonCoordinates).each(function (pairKey, pairVal) {
@@ -876,20 +854,15 @@ function calcTariffPrice(city, point, inCity) {
                             ]);
                         });
 
-                        // console.log(point.attr('id'));
                         let address = $("#" + point.attr('id')).val();
                         let polygon =  new ymaps.Polygon([findCoordinates]);
 
                         isInPolygon = await checkAddressInPolygon(address, polygon);
-                        // console.log(typeof isInPolygon);
                         if(isInPolygon) {
-                            // console.log(address + " содержится в " + el.name);
                             polygonId = el.id;
                             break;
                         }
                     }
-
-                    // console.log('done');
 
                     let hiddenPolygonInputClass = '.take-polygon-hidden-input';
                     if(point.attr('id') === 'dest_point') {
@@ -897,24 +870,18 @@ function calcTariffPrice(city, point, inCity) {
                     }
                     let hiddenPolygonInput = $(hiddenPolygonInputClass);
 
-                    console.log('here7');
                     if(isInPolygon) {
 
-                        // console.log('Нужно поставить цену тарифа');
                         hiddenPolygonInput.val(polygonId);
-                        console.log('here8');
 
                         getAllCalculatedData();
                     } else {
-                        console.log('here9');
-                        console.log(city.point);
                         hiddenPolygonInput.val(null);
                         if(city.point !== undefined) {
                             ymaps.route([city.point, fullName]).then(function (route) {
                                 // console.log('От: ' + city.point + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
                                 $(point.closest('.delivery-block')).find('.distance-hidden-input').val(Math.ceil(route.getLength() / 1000));
 
-                                console.log('here10');
                                 getAllCalculatedData();
                             });
                         } else {
@@ -923,7 +890,7 @@ function calcTariffPrice(city, point, inCity) {
                     }
                 },
                 error: function(data){
-                    console.log(data);
+                    // console.log(data);
                 }
             });
         }
@@ -931,8 +898,6 @@ function calcTariffPrice(city, point, inCity) {
 }
 
 function renderCalendar(data) {
-    console.log('here');
-    console.log(data);
     if(data.error === undefined) {
         $('#route-name').html(data.route.name);
         $('#base-price').html(data.route.price);
@@ -1088,7 +1053,6 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName) {
                 let isInPolygon;
 
                 for (const el of data) {
-                    // console.log(el);
                     let findCoordinates = [];
                     let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
                     $(polygonCoordinates).each(function (pairKey, pairVal) {
@@ -1102,12 +1066,9 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName) {
                         ]);
                     });
 
-                    // console.log(point.attr('id'));
                     let polygon =  new ymaps.Polygon([findCoordinates]);
                     isInPolygon = await checkAddressInPolygon(address, polygon);
-                    // console.log(typeof isInPolygon);
                     if(isInPolygon) {
-                        // console.log(address + " содержится в " + el.name);
                         type = 'in';
                         break;
                     }
@@ -1121,8 +1082,7 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName) {
             return type;
         },
         error: function(data){
-            console.log("error");
-            console.log(data);
+            // console.log(data);
         }
     });
 }
