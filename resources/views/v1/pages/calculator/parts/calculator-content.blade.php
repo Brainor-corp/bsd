@@ -187,7 +187,7 @@
                            placeholder="Название населенного пункта или адрес"
                            data-name="{{ old('take_city_name') ?? ($order->take_city_name ?? ($deliveryPoint->city->name ?? '')) }}"
                            data-full-name="{{ old('ship_point') ?? ($order->take_address ?? ($deliveryPoint->name ?? '')) }}"
-                           @if((empty(old('need-to-take')) || old('need-to-take-type') == 'in') && !isset($order) && !isset($deliveryPoint) || (isset($order) && !$order->take_need && $order->take_in_city)) disabled @endif
+                           @if(empty(old('need-to-take')) && !isset($order) && !isset($deliveryPoint) || (isset($order) && !$order->take_need)) disabled @endif
                     >
                 </div>
                 {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
@@ -250,7 +250,7 @@
                            name="dest_point"
                            value="{{ old('dest_point') ?? ($order->delivery_address ?? ($bringPoint->name ?? '')) }}"
                            placeholder="Название населенного пункта или адрес"
-                           @if((empty(old('need-to-bring')) || old('need-to-bring-type') == 'in') && !isset($order) && !isset($bringPoint) || (isset($order) && !$order->delivery_need && $order->delivery_in_city)) disabled @endif
+                           @if(empty(old('need-to-bring')) && !isset($order) && !isset($bringPoint) || (isset($order) && !$order->delivery_need)) disabled @endif
                            data-name="{{ old('bring_city_name') ?? ($order->delivery_city_name ?? ($bringPoint->city->name ?? '')) }}"
                            data-full-name="{{ old('dest_point') ?? ($order->delivery_address ?? ($bringPoint->name ?? '')) }}"
                     >

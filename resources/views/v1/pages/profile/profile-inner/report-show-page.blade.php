@@ -45,9 +45,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            @php($totalVolume = 0)
                                             @foreach($order->order_items as $key => $item)
-                                                @php($totalVolume += $item->volume * $item->quantity)
                                                 <div class="col-11 form-item row align-items-center package-item"
                                                      id="package-1" style="padding-right: 0;">
                                                     <label class="col-auto calc__label">
@@ -97,7 +95,7 @@
                                                 <label class="col-auto calc__label">Объем (заяв-й, м<sup>3</sup>)*</label>
                                                 <div class="col calc__inpgrp">
                                                     <input type="text" readonly id="total-volume" class="form-control"
-                                                           value="{{ $totalVolume }}">
+                                                           value="{{ $order->total_volume }}">
                                                 </div>
                                             </div>
                                         </div>

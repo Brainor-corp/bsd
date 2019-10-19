@@ -134,12 +134,12 @@ class OrderController extends Controller
         $packages = [];
         foreach($request->get('cargo')['packages'] as $package) {
             $packages[] = new OrderItem([
-                'length' => $package['length'],
-                'width' => $package['width'],
-                'height' => $package['height'],
-                'volume' => $package['volume'],
-                'weight' => $package['weight'],
-                'quantity' => $package['quantity'],
+                'length' => $package['length'] ?? 0,
+                'width' => $package['width'] ?? 0,
+                'height' => $package['height'] ?? 0,
+                'volume' => $package['volume'] ?? 0,
+                'weight' => $package['weight'] ?? 0,
+                'quantity' => $package['quantity'] ?? 0,
             ]);
 
 //            $totalWeight += $package['weight'] * $package['quantity'];

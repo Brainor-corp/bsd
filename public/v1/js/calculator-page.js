@@ -413,6 +413,7 @@ $(document).ready(function () {
             $('.need-to-take-input').prop('checked', false);
             $('.need-to-take-input-address').attr('disabled', 'disabled');
             $('.need-to-take-input-address').removeAttr('required');
+            clearDeliveryData('take');
         }
 
         console.log('here1');
@@ -457,6 +458,7 @@ $(document).ready(function () {
             $('.need-to-bring-input').prop('checked', false);
             $('.need-to-bring-input-address').attr('disabled', 'disabled');
             $('.need-to-bring-input-address').removeAttr('required');
+            clearDeliveryData('bring');
         }
 
         if($('#dest_city').data().selectize.getValue() !== "") {
@@ -749,6 +751,7 @@ $(document).ready(function () {
 
 function getAllCalculatedData() {
     console.log('get all');
+    console.log($('.calculator-form').serialize());
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1061,7 +1064,7 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName) {
     let type = 'from';
 
     if(cityFrom !== cityTo) {
-        $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').attr('checked', true);
+        $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
 
         return;
     }
@@ -1113,7 +1116,7 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName) {
                 type = 'in';
             }
 
-            $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').attr('checked', true);
+            $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
 
             return type;
         },
