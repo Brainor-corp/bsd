@@ -166,7 +166,7 @@ var getShortBaseTariff = function () {
 
             },
             success: function(data){
-                // console.log(data);
+                console.log(data);
                 if (weight <= 2 && volume <= 0.01) {
                     $('.short_ins_wrapper').hide();
                     totalPrice = data.total_data.total;

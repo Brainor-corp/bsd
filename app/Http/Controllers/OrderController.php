@@ -128,8 +128,8 @@ class OrderController extends Controller
             return abort(500, "Город(а) маршрута не найден(ы).");
         }
 
-        $totalWeight = 0;
-        $totalVolume = 0;
+        $totalWeight = $request->get('cargo')['total_weight'] ?? 0;
+        $totalVolume = $request->get('cargo')['total_volume'] ?? 0;
 
         $packages = [];
         foreach($request->get('cargo')['packages'] as $package) {
@@ -142,14 +142,16 @@ class OrderController extends Controller
                 'quantity' => $package['quantity'],
             ]);
 
-            $totalWeight += $package['weight'] * $package['quantity'];
-            $totalVolume += $package['volume'] * $package['quantity'];
+//            $totalWeight += $package['weight'] * $package['quantity'];
+//            $totalVolume += $package['volume'] * $package['quantity'];
         }
 
         $calculatedData = CalculatorHelper::getAllCalculatedData(
             $cities->where('name', $request->get('ship_city'))->first(),
             $cities->where('name', $request->get('dest_city'))->first(),
             $request->get('cargo')['packages'],
+            $totalWeight,
+            $totalVolume,
             $request->get('service'),
             $request->get('need-to-take') === "on" ?
                 [
@@ -291,6 +293,7 @@ class OrderController extends Controller
         $order->shipping_name = $cargoTypeName;
         $order->cargo_type = $cargoTypeId;
         $order->total_weight = $totalWeight;
+        $order->total_volume = $totalVolume;
         $order->ship_city_id = $shipCity->id;
         $order->ship_city_name = $shipCity->name;
         $order->take_polygon_id = $takePolygon->id ?? null;

@@ -14,7 +14,14 @@ use Illuminate\Support\Facades\DB;
 
 class CalculatorHelper
 {
-    public static function getRouteData($shipCity = null, $destCity = null, $packages, $route_id = null) {
+    public static function getRouteData(
+        $shipCity = null,
+        $destCity = null,
+        $packages,
+        $weight,
+        $volume,
+        $route_id = null
+    ) {
         $route = null;
 
         if(isset($route_id)) {
@@ -27,13 +34,10 @@ class CalculatorHelper
         }
 
         $route_id = $route->id;
-        $weight = 0;
-        $volume = 0;
         $oversizes = [];
         $oversize = Oversize::where('id', $route->oversizes_id)->first();
 
         foreach ($packages as $key => $package) {
-
             if (!isset($package['length'])) {
                 $package['length'] = 1;
             }
@@ -72,8 +76,8 @@ class CalculatorHelper
                 $package['quantity'] = 1;
             }
 
-            $weight += $package['weight'] * $package['quantity'];
-            $volume += $package['volume'] * $package['quantity'];
+//            $weight += $package['weight'] * $package['quantity'];
+//            $volume += $package['volume'] * $package['quantity'];
 
 
             if ($package['length'] > $oversize['length']) {
@@ -191,14 +195,20 @@ class CalculatorHelper
         ];
     }
 
-    public static function getServicesData($services, $packages, $insuranceAmount) {
-        $totalVolume = 0;
-        $totalWeight = 0;
+    public static function getServicesData(
+        $services,
+//        $packages,
+        $insuranceAmount,
+        $totalWeight,
+        $totalVolume
+    ) {
+//        $totalVolume = 0;
+//        $totalWeight = 0;
 
-        foreach($packages as $package) {
-            $totalVolume += $package['volume'] * $package['quantity'];
-            $totalWeight += $package['weight'] * $package['quantity'];
-        }
+//        foreach($packages as $package) {
+//            $totalVolume += $package['volume'] * $package['quantity'];
+//            $totalWeight += $package['weight'] * $package['quantity'];
+//        }
 
         $servicesData = Service::get();
 
@@ -602,6 +612,8 @@ class CalculatorHelper
      * @param City $shipCity
      * @param City $destCity
      * @param array $packages
+     * @param $total_weight
+     * @param $total_volume
      * @param array $services
      * @param array $takeParams
      * @param array $bringParams
@@ -613,6 +625,8 @@ class CalculatorHelper
         City $shipCity,
         City $destCity,
         $packages = [],
+        $total_weight,
+        $total_volume,
         $services = [],
         Array $takeParams = [],
         Array $bringParams = [],
@@ -622,9 +636,15 @@ class CalculatorHelper
         $totalPrice = "Договорная";
         $servicesPrice = 0;
 
-        $routeData = self::getRouteData($shipCity, $destCity, $packages);
+        $routeData = self::getRouteData($shipCity, $destCity, $packages, $total_weight, $total_volume);
 
-        $servicesData = self::getServicesData($services, $packages, $insuranceAmount);
+        $servicesData = self::getServicesData(
+            $services,
+//            $packages,
+            $insuranceAmount,
+            $total_weight,
+            $total_volume
+        );
         foreach($servicesData as $service) {
             if(is_numeric($service['total'])) {
                 $servicesPrice += floatval($service['total']);

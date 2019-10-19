@@ -49,7 +49,7 @@
                             <label class="calc__label_max">Вес груза (кг)</label>
                         </div>
                         <div class="col">
-                            <input type="number" step="any" name="cargo[packages][0][weight]" class="form-control text-center short_package-weight" placeholder="Вес в кг." value="1">
+                            <input type="number" min="0" step="any" name="cargo[total_weight]" class="form-control text-center short_package-weight" placeholder="Вес в кг." value="1">
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                             <label class="calc__label_max">Объем груза (м<sup>3</sup>)</label>
                         </div>
                         <div class="col">
-                            <input type="number" step="any" id="short_packages_0_volume" class="form-control text-center package-params short_package-volume" name="cargo[packages][0][volume]" data-package-id="0" value="0.01"/>
+                            <input type="number" min="0" step="any" id="short_packages_0_volume" class="form-control text-center package-params short_package-volume" name="cargo[total_volume]" data-package-id="0" value="0.01"/>
                         </div>
                     </div>
                 </div>

@@ -29,8 +29,8 @@ function getDiscount() {
 
 $(document).ready(function () {
     getDiscount();
-    totalWeigthRecount();
-    totalVolumeRecount();
+    // totalWeigthRecount();
+    // totalVolumeRecount();
 
     $('.cargo-type-select').selectize();
 
