@@ -68,14 +68,13 @@ class CalculatorController extends Controller
             if(isset($request->cargo['packages'])){
                 $requestPackages = $request->cargo['packages'];
                 foreach ($requestPackages as $key=>$package){
-
                     $packages[$key]=[
-                        'length' => floatval($package['length'] ?? '0.1'),
-                        'width' => floatval($package['width'] ?? '0.1'),
-                        'height' => floatval($package['height'] ?? '0.1'),
-                        'weight' => floatval($package['weight'] ?? '1'),
-                        'volume' => floatval($package['volume'] ?? '0.001'),
-                        'quantity' => floatval($package['quantity'] ?? '1')
+                        'length' => floatval($package['length'] ?? 0),
+                        'width' => floatval($package['width'] ?? 0),
+                        'height' => floatval($package['height'] ?? 0),
+                        'weight' => floatval($package['weight'] ?? 0),
+                        'volume' => floatval($package['volume'] ?? 0),
+                        'quantity' => floatval($package['quantity'] ?? 0)
                     ];
                     if($packages[$key]['length'] * $packages[$key]['width'] * $packages[$key]['height'] !== $package['volume']){
                         $packages[$key]['height'] = 2;
@@ -85,17 +84,16 @@ class CalculatorController extends Controller
                 }
             }else{
                 $packages=[
-                    1=>[
-                        'length' => '0.1',
-                        'width' => '0.1',
-                        'height' => '0.1',
-                        'weight' => '1',
-                        'volume' => '0.001',
-                        'quantity' => '1'
+                    1 => [
+                        'length' => 0,
+                        'width' => 0,
+                        'height' => 0,
+                        'weight' => 0,
+                        'volume' => 0,
+                        'quantity' => 0
                     ]
                 ];
             }
-
 
             $selectedShipCity = null;
             $selectedDestCity = null;
@@ -177,7 +175,10 @@ class CalculatorController extends Controller
             ->orderBy('name')
             ->get();
 
-        $tariff = json_decode($this->getTariff($request, $packages ?? null, $selectedShipCity,$selectedDestCity)->content());
+        $totalWeight = $order->total_weight ?? ($request->get('cargo')['total_weight'] ?? 0);
+        $totalVolume = $order->total_volume ?? ($request->get('cargo')['total_volume'] ?? 0);
+
+        $tariff = json_decode($this->getTariff($request, $totalWeight, $totalVolume, $selectedShipCity, $selectedDestCity)->content());
 
         $services = Service::get();
         $userTypes = Type::where('class', 'UserType')->get();
@@ -199,7 +200,9 @@ class CalculatorController extends Controller
                 'order',
                 'userTypes',
                 'cargoTypes',
-                'oversizeMarkups'
+                'oversizeMarkups',
+                'totalWeight',
+                'totalVolume'
             ));
 
     }
@@ -221,13 +224,13 @@ class CalculatorController extends Controller
             ];
         }
 
-        $totalWeight = 0;
-        $totalVolume = 0;
+        $totalWeight = $request->get('cargo')['total_weight'] ?? 0;
+        $totalVolume = $request->get('cargo')['total_volume'] ?? 0;
 
-        foreach($request->get('cargo')['packages'] as $package) {
-            $totalWeight += $package['weight'] * $package['quantity'];
-            $totalVolume += $package['volume'] * $package['quantity'];
-        }
+//        foreach($request->get('cargo')['packages'] as $package) {
+//            $totalWeight += $package['weight'] * $package['quantity'];
+//            $totalVolume += $package['volume'] * $package['quantity'];
+//        }
         $ship_city = $cities->where('name', $request->get('ship_city'))->first();
         $dest_city = $cities->where('name', $request->get('dest_city'))->first();
 
@@ -255,6 +258,8 @@ class CalculatorController extends Controller
             $ship_city,
             $dest_city,
             $request->get('cargo')['packages'],
+            $totalWeight,
+            $totalVolume,
             $request->get('service'),
             $request->get('need-to-take') === "on" ?
             [
@@ -367,7 +372,15 @@ class CalculatorController extends Controller
         return CalculatorHelper::oversize_ratio($package);
     }
 
-    public function getTariff(Request $request, $packages = null, $ship_city = null, $dest_city = null, $route_id = null) {
+    public function getTariff(
+        Request $request,
+        $weight = null,
+        $volume = null,
+//        $packages = null,
+        $ship_city = null,
+        $dest_city = null,
+        $route_id = null
+    ) {
         $formData = null;
         if(isset($request->formData)){
             $formData = array();
@@ -376,6 +389,14 @@ class CalculatorController extends Controller
 
         if($ship_city == null){$ship_city = $request->ship_city;}
         if($dest_city == null){$dest_city = $request->dest_city;}
+
+        if(!isset($weight)) {
+            $weight = $formData['cargo']['total_weight'] ?? 1;
+        }
+
+        if(!isset($volume)) {
+            $volume = $formData['cargo']['total_volume'] ?? 0.01;
+        }
 
         $citiesIdsToFindRoute = [];
 
@@ -447,23 +468,21 @@ class CalculatorController extends Controller
             }
         }
 
-        if($packages == null){
-            if(is_array($request->packages)){
-                $packages = $request->cargo['packages'];
-            }else{
-                $packages = array();
-                parse_str($request->formData, $packages);
-                $packages = $packages['cargo']['packages'];
-            }
-        }
 
-        $weight = $formData['cargo']['packages'][0]['weight'];
-        $volume = $formData['cargo']['packages'][0]['volume'];
+//        if($packages == null){
+//            if(is_array($request->packages)){
+//                $packages = $request->cargo['packages'];
+//            }else{
+//                $packages = array();
+//                parse_str($request->formData, $packages);
+//                $packages = $packages['cargo']['packages'];
+//            }
+//        }
 
         $services = null;
         if(isset($formData['service'])){$services = $formData['service'];}
 
-        $routeData = CalculatorHelper::getRouteData(null, null, $packages, $route_id);
+        $routeData = CalculatorHelper::getRouteData(null, null, [], $weight, $volume, $route_id);
         $deliveryData = isset($deliveryPoint) ? CalculatorHelper::getDeliveryToPointPrice($deliveryPoint, $weight, $volume) : null;
         $bringData = isset($bringPoint) ? CalculatorHelper::getDeliveryToPointPrice($bringPoint, $weight, $volume) : null;
 
@@ -480,7 +499,8 @@ class CalculatorController extends Controller
 
         $resultData = [
             'base_price' => $routeData['price'],
-            'total_volume' => $routeData['totalVolume'],
+            'total_weight' => $weight,
+            'total_volume' => $volume,
             'route' => $routeData['model'],
             'total_data' => $totalData,
             'delivery_to_point' => $deliveryData,

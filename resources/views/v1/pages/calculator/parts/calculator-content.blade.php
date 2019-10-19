@@ -115,19 +115,16 @@
                 <div class="col-6 form-item row align-items-center">
                     <label class="col-auto calc__label">Вес груза (кг)*</label>
                     <div class="col calc__inpgrp">
-                        <input type="number" step="any" id="total-weight-hidden" hidden="hidden" style="display: none" name="cargo[total_weight]" data-total-weight="1" value="1"/>
-                        <input type="number" step="any" id="total-weight" class="form-control" value="1" disabled/>
+                        <input type="number" min="0" name="cargo[total_weight]" step="any" id="total-weight" class="form-control" value="{{ old('cargo[total_weight]') ?? ($totalWeight ?? 0) }}"/>
                     </div>
                 </div>
                 <div class="col-6 form-item row align-items-center text-right">
                     <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
                     <div class="col calc__inpgrp">
-                        <input type="number" step="any" id="total-volume-hidden" hidden="hidden" name="cargo[total_volume]" data-total-volume="0.001" value="0.001" required/>
-                        <input type="number" step="any" id="total-volume" class="form-control" data-total-volume="0.001" value="0.001" disabled/>
+                        <input type="number" min="0" name="cargo[total_volume]" step="any" id="total-volume" class="form-control" data-total-volume="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}" value="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}"/>
                     </div>
                 </div>
             </div>
-
         </div>
         <div class="col-12">
             <p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>
@@ -190,7 +187,7 @@
                            placeholder="Название населенного пункта или адрес"
                            data-name="{{ old('take_city_name') ?? ($order->take_city_name ?? ($deliveryPoint->city->name ?? '')) }}"
                            data-full-name="{{ old('ship_point') ?? ($order->take_address ?? ($deliveryPoint->name ?? '')) }}"
-                           @if((empty(old('need-to-take')) || old('need-to-take-type') == 'in') && !isset($order) && !isset($deliveryPoint) || (isset($order) && !$order->take_need && $order->take_in_city)) disabled @endif
+                           @if(empty(old('need-to-take')) && !isset($order) && !isset($deliveryPoint) || (isset($order) && !$order->take_need)) disabled @endif
                     >
                 </div>
                 {{--<div class="form-group-unlink"><a href="#" class="link-with-dotted">Выбрать отделение на карте</a></div>--}}
@@ -253,7 +250,7 @@
                            name="dest_point"
                            value="{{ old('dest_point') ?? ($order->delivery_address ?? ($bringPoint->name ?? '')) }}"
                            placeholder="Название населенного пункта или адрес"
-                           @if((empty(old('need-to-bring')) || old('need-to-bring-type') == 'in') && !isset($order) && !isset($bringPoint) || (isset($order) && !$order->delivery_need && $order->delivery_in_city)) disabled @endif
+                           @if(empty(old('need-to-bring')) && !isset($order) && !isset($bringPoint) || (isset($order) && !$order->delivery_need)) disabled @endif
                            data-name="{{ old('bring_city_name') ?? ($order->delivery_city_name ?? ($bringPoint->city->name ?? '')) }}"
                            data-full-name="{{ old('dest_point') ?? ($order->delivery_address ?? ($bringPoint->name ?? '')) }}"
                     >

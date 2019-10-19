@@ -66,17 +66,12 @@ class Api1cTestController extends Controller
 
         // Преобразуем данные в нужный 1с вид
         $orders = $orders->map(function ($order) {
-            $totalVolume = 0;
-            foreach($order->order_items as $order_item) {
-                $totalVolume += $order_item->volume * $order_item->quantity;
-            }
-
             $mapOrder = [];
 
             $mapOrder['Идентификатор_на_сайте'] = intval($order->id);
             $mapOrder['Название_груза'] = $order->shipping_name ?? "";
             $mapOrder['Общий_вес'] = floatval($order->total_weight);
-            $mapOrder['Общий_объем'] = floatval($totalVolume);
+            $mapOrder['Общий_объем'] = floatval($order->total_volume);
             $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order->order_date)->format('Y-m-d\TH:i:s');
             $mapOrder['Количество_мест'] = array_sum(array_column($order->order_items->toArray(), 'quantity'));
             $mapOrder['Итоговая_цена'] = is_numeric($order->total_price) ? intval($order->total_price) : 0;

@@ -29,8 +29,8 @@ function getDiscount() {
 
 $(document).ready(function () {
     getDiscount();
-    totalWeigthRecount();
-    totalVolumeRecount();
+    // totalWeigthRecount();
+    // totalVolumeRecount();
 
     $('.cargo-type-select').selectize();
 
@@ -413,6 +413,7 @@ $(document).ready(function () {
             $('.need-to-take-input').prop('checked', false);
             $('.need-to-take-input-address').attr('disabled', 'disabled');
             $('.need-to-take-input-address').removeAttr('required');
+            clearDeliveryData('take');
         }
 
         console.log('here1');
@@ -457,6 +458,7 @@ $(document).ready(function () {
             $('.need-to-bring-input').prop('checked', false);
             $('.need-to-bring-input-address').attr('disabled', 'disabled');
             $('.need-to-bring-input-address').removeAttr('required');
+            clearDeliveryData('bring');
         }
 
         if($('#dest_city').data().selectize.getValue() !== "") {
@@ -749,6 +751,7 @@ $(document).ready(function () {
 
 function getAllCalculatedData() {
     console.log('get all');
+    console.log($('.calculator-form').serialize());
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -786,8 +789,9 @@ function totalVolumeRecount() {
     });
 
     $("#total-volume").attr('value', totalVolume).val(totalVolume);
-    $("#total-volume-hidden").attr('data-total-volume', totalVolume).attr('value', totalVolume).val(totalVolume);
 };
+
+$(document).on('change', '#total-volume', () => getAllCalculatedData());
 
 function totalWeigthRecount() {
     let totalWeigth = 0;
@@ -800,8 +804,9 @@ function totalWeigthRecount() {
     });
 
     $("#total-weight").attr('value', totalWeigth).val(totalWeigth);
-    $("#total-weight-hidden").attr('data-total-weight', totalWeigth).attr('value', totalWeigth).val(totalWeigth);
 };
+
+$(document).on('change', '#total-weight', () => getAllCalculatedData());
 
 async function checkAddressInPolygon(address, polygon) {
     // console.log('checking contains..');
@@ -1059,7 +1064,7 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName) {
     let type = 'from';
 
     if(cityFrom !== cityTo) {
-        $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').attr('checked', true);
+        $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
 
         return;
     }
@@ -1111,7 +1116,7 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName) {
                 type = 'in';
             }
 
-            $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').attr('checked', true);
+            $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
 
             return type;
         },

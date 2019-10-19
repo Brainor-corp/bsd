@@ -128,28 +128,30 @@ class OrderController extends Controller
             return abort(500, "Город(а) маршрута не найден(ы).");
         }
 
-        $totalWeight = 0;
-        $totalVolume = 0;
+        $totalWeight = $request->get('cargo')['total_weight'] ?? 0;
+        $totalVolume = $request->get('cargo')['total_volume'] ?? 0;
 
         $packages = [];
         foreach($request->get('cargo')['packages'] as $package) {
             $packages[] = new OrderItem([
-                'length' => $package['length'],
-                'width' => $package['width'],
-                'height' => $package['height'],
-                'volume' => $package['volume'],
-                'weight' => $package['weight'],
-                'quantity' => $package['quantity'],
+                'length' => $package['length'] ?? 0,
+                'width' => $package['width'] ?? 0,
+                'height' => $package['height'] ?? 0,
+                'volume' => $package['volume'] ?? 0,
+                'weight' => $package['weight'] ?? 0,
+                'quantity' => $package['quantity'] ?? 0,
             ]);
 
-            $totalWeight += $package['weight'] * $package['quantity'];
-            $totalVolume += $package['volume'] * $package['quantity'];
+//            $totalWeight += $package['weight'] * $package['quantity'];
+//            $totalVolume += $package['volume'] * $package['quantity'];
         }
 
         $calculatedData = CalculatorHelper::getAllCalculatedData(
             $cities->where('name', $request->get('ship_city'))->first(),
             $cities->where('name', $request->get('dest_city'))->first(),
             $request->get('cargo')['packages'],
+            $totalWeight,
+            $totalVolume,
             $request->get('service'),
             $request->get('need-to-take') === "on" ?
                 [
@@ -291,6 +293,7 @@ class OrderController extends Controller
         $order->shipping_name = $cargoTypeName;
         $order->cargo_type = $cargoTypeId;
         $order->total_weight = $totalWeight;
+        $order->total_volume = $totalVolume;
         $order->ship_city_id = $shipCity->id;
         $order->ship_city_name = $shipCity->name;
         $order->take_polygon_id = $takePolygon->id ?? null;
