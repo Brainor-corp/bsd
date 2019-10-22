@@ -84,7 +84,7 @@ $(document).ready(function () {
         if (select.val() === 'id') {
             $('#search-input').remove();
             $('#search-select').remove();
-            $('#search-wrapper').append('<input name="id" id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">');
+            $('#search-type-select').after('<input name="id" id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">');
         } else if (select.val() === 'status') {
             $.ajaxSetup({
                 headers: {
@@ -99,7 +99,7 @@ $(document).ready(function () {
                     $('#search-input').remove();
                     $('#search-select').remove();
 
-                    $('#search-wrapper').append(html);
+                    $('#search-type-select').after(html);
                 },
                 error: function (err) {
                     // console.log(err);
