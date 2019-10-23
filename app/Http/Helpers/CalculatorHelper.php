@@ -406,14 +406,34 @@ class CalculatorHelper
             ];
         }
 
+        $packagesCount = count($packages);
+        if($packagesCount == 1){$packagesCount = 0;}
+
         // Если город -- особый пункт
+        $point_fixed_tariff = false;
         if($city instanceof Point) {
+            $point_fixed_tariff = DB::table('outside_forwardings')
+                ->join('forward_thresholds', function($join)
+                {
+                    $join->on('outside_forwardings.forward_threshold_id', '=', 'forward_thresholds.id');
+                })
+                ->where([
+                    ['point', $city->id],
+                    ['forward_thresholds.weight', '>=', floatval($weight)],
+                    ['forward_thresholds.volume', '>=', floatval($volume)],
+                    ['forward_thresholds.units', '>=', $packagesCount],
+                ])
+                ->orderBy('forward_thresholds.weight', 'ASC')
+                ->orderBy('forward_thresholds.volume', 'ASC')
+                ->orderBy('forward_thresholds.units', 'ASC')
+                ->first();
+
+            $point_fixed_tariff = $point_fixed_tariff->tariff ?? false;
+
             $city = $city->city; // Дальше будем работать с привязанным к пункту городом
         }
 
         // Найдем тариф внутри города
-        $packagesCount = count($packages);
-        if($packagesCount == 1){$packagesCount = 0;}
         $fixed_tariff = DB::table('inside_forwarding')
             ->join('forward_thresholds', function($join)
             {
@@ -477,6 +497,14 @@ class CalculatorHelper
                     'polygon_name' => $polygon->name
                 ];
             }
+        }
+
+        if($point_fixed_tariff) {
+            return [
+                'price' => $x2 ? $point_fixed_tariff * 2 : $point_fixed_tariff,
+                'city_name' => $cityName,
+                'distance' => intval($distance),
+            ];
         }
 
         // Если за пределами города, то ищем покилометровый тариф с учетом тарифной зоны города
@@ -597,7 +625,29 @@ class CalculatorHelper
         $fixed_tariff = $fixed_tariff->tariff;
         $per_km_tariff = floatval($per_km_tariff->tariff);
 
-        $price = $fixed_tariff + intval($point->distance) * 2 * $per_km_tariff;
+        $point_fixed_tariff = DB::table('outside_forwardings')
+            ->join('forward_thresholds', function($join)
+            {
+                $join->on('outside_forwardings.forward_threshold_id', '=', 'forward_thresholds.id');
+            })
+            ->where([
+                ['point', $point->id],
+                ['forward_thresholds.weight', '>=', floatval($weight)],
+                ['forward_thresholds.volume', '>=', floatval($volume)],
+                ['forward_thresholds.units', '>=', 0],
+            ])
+            ->orderBy('forward_thresholds.weight', 'ASC')
+            ->orderBy('forward_thresholds.volume', 'ASC')
+            ->orderBy('forward_thresholds.units', 'ASC')
+            ->first();
+
+        $point_fixed_tariff = $point_fixed_tariff->tariff ?? false;
+
+        if($point_fixed_tariff) {
+            $price = $point_fixed_tariff;
+        } else {
+            $price = $fixed_tariff + intval($point->distance) * 2 * $per_km_tariff;
+        }
 
         return [
             'name' => $point->name,
