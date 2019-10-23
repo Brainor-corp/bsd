@@ -202,7 +202,9 @@ class CalculatorController extends Controller
                 'cargoTypes',
                 'oversizeMarkups',
                 'totalWeight',
-                'totalVolume'
+                'totalVolume',
+                'deliveryPoint',
+                'bringPoint'
             ));
 
     }
