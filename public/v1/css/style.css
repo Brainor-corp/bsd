@@ -1664,7 +1664,7 @@ ul.icons_list li:after {
 .calc__info {
     color: #a1afb7;
     position: relative;
-    left: -7px;
+    /*left: -7px;*/
     font-size: 12px;
     top: 13px;
 }

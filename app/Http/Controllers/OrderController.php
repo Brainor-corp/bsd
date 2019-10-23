@@ -108,7 +108,12 @@ class OrderController extends Controller
 
             "payment" => ['required', 'string'],                                                // Способ_оплаты
             "status" => ['required', 'string', 'in:chernovik,order_auth,order_guest'],          // Черновик|Заявка с авторизацей|Заявка без регистрации                                       // Статус_заказа
-            "order-creator" => ['required', 'string'],                                          // Заявку_заполнил
+            "order-creator" => ['required', 'string'],                                          // Заявку_заполнил,
+
+            "ship_date" => ['nullable', 'date'],
+            "ship_time_from" => ['nullable', 'date_format:H:i'],
+            "ship_time_to" => ['nullable', 'date_format:H:i'],
+            "cargo_comment" => ['nullable', 'string'],
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -585,6 +590,11 @@ class OrderController extends Controller
         $order->payment_status_id = $paymentStatus->id;
         $order->order_date = Carbon::now();
         $order->order_creator = $request->get('order-creator');
+
+        $order->ship_date = $request->get('ship_date');
+        $order->ship_time_from = $request->get('ship_time_from');
+        $order->ship_time_to = $request->get('ship_time_to');
+        $order->cargo_comment = $request->get('cargo_comment');
 
         if($request->get('need-to-take') === "on") {
             $order->take_point = $request->get('ship-from-point') === "on";

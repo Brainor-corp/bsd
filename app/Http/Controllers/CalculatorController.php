@@ -225,7 +225,7 @@ class CalculatorController extends Controller
 
             // направим пользователя на дооформление заказа с проставленными полями
             return redirect(route('calculator-show', [
-               'id' => $continueOrder['order_id'] ?? null
+                'id' => $continueOrder['order_id'] ?? null
             ]))->withInput($continueOrder);
         }
 
@@ -395,7 +395,9 @@ class CalculatorController extends Controller
                 'cargoTypes',
                 'oversizeMarkups',
                 'totalWeight',
-                'totalVolume'
+                'totalVolume',
+                'deliveryPoint',
+                'bringPoint'
             ));
 
     }

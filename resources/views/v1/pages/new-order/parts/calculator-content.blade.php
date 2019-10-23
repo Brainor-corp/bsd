@@ -16,11 +16,46 @@
     <div class="calc__title">Дата</div>
     <div class="form-item row align-items-center">
         <div class="col-12">
-            <label for="datepicker" class="control-label required1_label">Дата исполнения (дата подачи авто) <i class="fa fa-asterisk" style="color: #ff0000; font-size: 9px; vertical-align: top;"></i></label>
-            <input value="" type="date" name="jform[ship_date]" id="datepicker" class="form_control" data-tooltip="Введите дату, на которую планируете назначить перевозку" required="">
+            <div class="row">
+                <div class="col-12">
+                    <label for="ship_date">Дата исполнения (дата подачи авто)*</label>
+                    <input
+                            value="{{ old('ship_date') ?? (isset($order) && $order->ship_date ? $order->ship_date->format('Y-m-d') : \Carbon\Carbon::now()->addDay()->format('Y-m-d')) }}"
+                            type="date"
+                            name="ship_date"
+                            id="ship_date"
+                            class="form-control"
+                            required
+                    >
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-6">
+                    <label for="ship_date">С*</label>
+                    <input
+                            value="{{ old('ship_time_from') ?? (isset($order) && $order->ship_time_from ? $order->ship_time_from : '11:00') }}"
+                            type="time"
+                            name="ship_time_from"
+                            id="ship_time_from"
+                            class="form-control"
+                            required
+                    >
+                </div>
+                <div class="col-6">
+                    <label for="ship_date">По*</label>
+                    <input
+                            value="{{ old('ship_time_to') ?? (isset($order) && $order->ship_time_to ? $order->ship_time_to : '17:00') }}"
+                            type="time"
+                            name="ship_time_to"
+                            id="ship_time_to"
+                            class="form-control"
+                            required
+                    >
+                </div>
+            </div>
         </div>
     </div>
-    <div class="calc__title">Груз</div>
+    <div class="calc__title mt-3">Груз</div>
     <div class="form-item row align-items-center">
         <label class="col-auto calc__label">Наименование груза*</label>
         <div class="col">
@@ -137,7 +172,19 @@
             <p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>
         </div>
     </div>
-    <div class="form-item row block-for-distance">
+    <div class="row">
+        <div class="col-12">
+            <label for="cargo_comment">Примечания по грузу</label>
+            <textarea
+                    name="cargo_comment"
+                    id="cargo_comment"
+                    cols="30"
+                    rows="2"
+                    class="form-control"
+            >{{ old('cargo_comment') ?? ($order->cargo_comment ?? '') }}</textarea>
+        </div>
+    </div>
+    <div class="form-item row block-for-distance mt-3">
         <label class="col-auto calc__label big">Откуда</label>
         <div class="col-md col-12 delivery-block">
             <div class="form-item">
@@ -702,6 +749,39 @@
                    required
             />
             <label class="custom-control-label" for="order-creator-type-payer">Плательщик</label>
+        </div>
+    </div>
+    <div>
+        <h2 class="text-center">ВНИМАНИЕ!</h2>
+        <hr style="margin: 2px 0; border: solid 1px">
+        <div>
+            <p class="text-center mb-2">
+                ЗАЯВКИ  ПРИНИМАЮТСЯ с 9.00 до 16.00 за сутки до исполнения.
+            </p>
+        </div>
+        <div>
+            <p class="text-center mb-2">
+                Заявки, поступившие после 16.00 выполняются по мере возможности.
+            </p>
+        </div>
+        <div>
+            <p class="text-center">
+                ВОДИТЕЛЬ-ЭКСПЕДИТОР НЕ ЗАНИМАЕТСЯ ПОГРУЗОЧНО-РАЗГРУЗОЧНЫМИ РАБОТАМИ!!
+            </p>
+        </div>
+        <ul class="mb-3 ml-3 list-style-dist">
+            <li>доставка осуществляется только до адреса. Погрузка-выгрузка и поднятие на этаж - возможны по предварительному согласованию с менеджером направления;</li>
+            <li>исполнение заявки в течении рабочего дня (с 10.00-18.00) , указание конкретного времени подачи машины осложняет  выполнение заявки, стоимость может увеличиться до 100%;</li>
+            <li>погрузка-выгрузка а/м 30 минут, простой каждого последующего часа оплачивается по прайс-листу;</li>
+            <li>неправильно указанные координаты (адрес, телефон),  прогон а/м, отказ от заявки по факту подачи а/м  - считается выполненной заявкой и оплачивается по прайс-листу;</li>
+            <li>оплата въезда на территорию клиента – оплачивается дополнительно;</li>
+            <li>стоимость  дополнительной  упаковки  указана без стоимости поддона (200 руб.);</li>
+            <li>областная доставка расчитывается по формуле: авто доставка по СПб + пробег * руб./км в оба конца, согласно прайс-листа;</li>
+        </ul>
+        <div>
+            <p class="text-center">
+                Обращаем внимание на необходимость указания Вашего электронного адреса. На указанный Вами электронный адрес в течение часа поступит информация о принятии данной Заявки к исполнению.
+            </p>
         </div>
     </div>
     <div class="form-item d-flex flex-column flex-md-row">
