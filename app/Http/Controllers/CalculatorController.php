@@ -207,6 +207,197 @@ class CalculatorController extends Controller
 
     }
 
+    public function newOrderShow($id = null, Request $request) {
+        // Если имеем дело с незавершенным заказом
+        if($request->has('continue') && session()->has('process_order')) {
+            $continueOrder = json_decode(session()->get('process_order'));
+            $continueOrder = (array)$continueOrder;
+            $continueOrder['cargo'] = (array)$continueOrder['cargo'];
+            $continueOrder['cargo']['packages'] = (array)$continueOrder['cargo']['packages'];
+            $continueOrder['cargo']['packages'] = array_map(function ($el) {
+                return (array)$el;
+            }, $continueOrder['cargo']['packages']);
+
+            // удалим незавершенный заказ из сессии
+            session()->forget('process_order');
+
+            // направим пользователя на дооформление заказа с проставленными полями
+            return redirect(route('calculator-show', [
+               'id' => $continueOrder['order_id'] ?? null
+            ]))->withInput($continueOrder);
+        }
+
+        $shipCities = City::where('is_ship', true)->with('terminal', 'kladr')->get();
+
+        $citiesIdsToFindRoute = [];
+        $order = null;
+
+        if(isset($id)) { // Если открыли страницу черновика
+            $order = Order::available()
+                ->where('id', $id)
+                ->with([
+                    'order_items',
+                    'order_services',
+                    'ship_city',
+                    'dest_city',
+                    'order_creator_type_model',
+                ])
+                ->firstOrFail();
+
+            $packages = $order->order_items->toArray();
+            $selectedShipCity = $order->ship_city_id;
+            $selectedDestCity = $order->dest_city_id;
+
+            $citiesIdsToFindRoute['ship'] = [
+                $shipCities->where('id', $order->ship_city_id)->first()
+            ];
+
+            $citiesIdsToFindRoute['bring'] = [
+                City::where('id', $order->dest_city_id)->first()
+            ];
+        } else { // Если открыли стандартный калькулятор
+            if(isset($request->cargo['packages'])){
+                $requestPackages = $request->cargo['packages'];
+                foreach ($requestPackages as $key=>$package){
+                    $packages[$key]=[
+                        'length' => floatval($package['length'] ?? 0),
+                        'width' => floatval($package['width'] ?? 0),
+                        'height' => floatval($package['height'] ?? 0),
+                        'weight' => floatval($package['weight'] ?? 0),
+                        'volume' => floatval($package['volume'] ?? 0),
+                        'quantity' => floatval($package['quantity'] ?? 0)
+                    ];
+                    if($packages[$key]['length'] * $packages[$key]['width'] * $packages[$key]['height'] !== $package['volume']){
+                        $packages[$key]['height'] = 2;
+                        $packages[$key]['width'] = $package['volume']/2;
+                        $packages[$key]['length'] = 1;
+                    }
+                }
+            }else{
+                $packages=[
+                    1 => [
+                        'length' => 0,
+                        'width' => 0,
+                        'height' => 0,
+                        'weight' => 0,
+                        'volume' => 0,
+                        'quantity' => 0
+                    ]
+                ];
+            }
+
+            $selectedShipCity = null;
+            $selectedDestCity = null;
+
+            if(!empty(old('ship_city'))) { // Если форма не прошла проверку валидации, берём заполненные города
+                $request->merge([
+                    'ship_city' => old('ship_city')
+                ]);
+            }
+
+            if(!empty(old('dest_city'))) { // Если форма не прошла проверку валидации, берём заполненные города
+                $request->merge([
+                    'dest_city' => old('dest_city')
+                ]);
+            }
+
+            $deliveryPoint = null;
+            if(isset($request->ship_city)){ // Если город отправления выбран
+                $selectedShipCity = City::where('name', $request->ship_city)->first(); // Пробуем найти его в таблице городов по названию
+                $deliveryPoint = Point::where('name', $request->ship_city)->first(); // Пробуем найти его в таблице пунктов
+            } else { // Если город отправления не выбран
+                $selectedShipCity = City::where('id', 53)->first(); // Пробуем найти его в таблице городов по конкретному id (53 -- Москва)
+            }
+
+            $citiesIdsToFindRoute['ship'] = [
+                $selectedShipCity, $deliveryPoint
+            ];
+
+            $bringPoint = null;
+            if(isset($request->dest_city)){ // Если город отправления выбран
+                $selectedDestCity = City::where('name', $request->dest_city)->first(); // Пробуем найти его в таблице городов по названию
+                $bringPoint = Point::where('name', $request->dest_city)->first(); // Пробуем найти его в таблице пунктов
+            } else { // Если город отправления не выбран
+                $selectedDestCity = City::where('id', 78)->first(); // Пробуем найти его в таблице городов по конкретному id (78 -- Санкт-Петербург)
+            }
+
+            $citiesIdsToFindRoute['bring'] = [
+                $selectedDestCity, $bringPoint
+            ];
+        }
+
+        $route = null;
+
+        // В базе могут существовать города и пункты с одинаковым названием.
+        // Из-за этого может оказаться, что для города маршрута нет,
+        // в то время как для пункта с таким же названием он есть (Прим.: Москва -> Адлер).
+        // Поэтому для поиска маршрута проходим циклом по всем найденный городам/пунктам.
+        foreach($citiesIdsToFindRoute['ship'] as $shipModel) {
+            if(!isset($shipModel)) {
+                continue;
+            }
+
+            $selectedShipCity = $shipModel instanceof City ? $shipModel->id : $shipModel->city_id;
+
+            foreach($citiesIdsToFindRoute['bring'] as $destModel) {
+                if(!isset($destModel)) {
+                    continue;
+                }
+
+                $selectedDestCity = $destModel instanceof City ? $destModel->id : $destModel->city_id;
+
+                $route = Route::where([
+                    ['ship_city_id', $selectedShipCity],
+                    ['dest_city_id', $selectedDestCity],
+                ])->first();
+
+                if(isset($route)) {
+                    break;
+                }
+            }
+        }
+
+        if(!isset($route)) {
+            return abort(404, "Route not found");
+        }
+
+        $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity))
+            ->with('terminal')
+            ->orderBy('name')
+            ->get();
+
+        $totalWeight = $order->total_weight ?? ($request->get('cargo')['total_weight'] ?? 0);
+        $totalVolume = $order->total_volume ?? ($request->get('cargo')['total_volume'] ?? 0);
+
+        $tariff = json_decode($this->getTariff($request, $totalWeight, $totalVolume, $selectedShipCity, $selectedDestCity)->content());
+
+        $services = Service::get();
+        $userTypes = Type::where('class', 'UserType')->get();
+
+        $cargoTypes = Type::where('class', 'cargo_type')->get();
+
+        $oversizeMarkups = OversizeMarkup::get();
+
+        return view('v1.pages.new-order.calculator-show.calculator-show')
+            ->with(compact(
+                'packages',
+                'shipCities',
+                'destinationCities',
+                'route',
+                'tariff',
+                'services',
+                'selectedShipCity',
+                'selectedDestCity',
+                'order',
+                'userTypes',
+                'cargoTypes',
+                'oversizeMarkups',
+                'totalWeight',
+                'totalVolume'
+            ));
+
+    }
+
     public function getAllCalculatedData(Request $request) {
         $cities = City::whereIn('name', [
             $request->get('ship_city'),

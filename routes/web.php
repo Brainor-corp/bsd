@@ -14,7 +14,6 @@
 
 
 Route::group(['middleware' => ['geoIpCheck']], function () {
-
     Auth::routes();
     Route::post('/password-method-redirect', 'Auth\ForgotPasswordController@resetMethodRedirect')->name('password.method-redirect');
     Route::get('/restore-phone-confirm', 'Auth\ForgotPasswordController@restorePhoneConfirmShow')->name('password.restore-phone-confirm');
@@ -60,6 +59,9 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     // калькулятор подцепит по id черновик и проставит все его значения
     Route::any('/calculator-show/{id?}', 'CalculatorController@calculatorShow')->name('calculator-show');
     Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
+
+    // Функционал формирования заявки на основе калькулятора
+    Route::any('/new-order', 'CalculatorController@newOrderShow')->name('new-order-show');
 
     Route::group(['middleware' => 'sms-confirm'], function () {
         // Для сохранения заказа написан middleware 'order.save'.
