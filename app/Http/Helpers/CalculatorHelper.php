@@ -501,7 +501,7 @@ class CalculatorHelper
 
         if($point_fixed_tariff) {
             return [
-                'price' => $point_fixed_tariff,
+                'price' => $x2 ? $point_fixed_tariff * 2 : $point_fixed_tariff,
                 'city_name' => $cityName,
                 'distance' => intval($distance),
             ];
