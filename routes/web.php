@@ -129,6 +129,13 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     });
 });
 
+Route::get('/test-order-email', function () {
+    $order = \App\Order::where('id', 8)->first();
+
+    \Illuminate\Support\Facades\Mail::to('test@gmail.com')->send(new \App\Mail\OrderCreated($order));
+});
+
+
 Route::get('/1c/test/new-user', 'Api1cTestController@newUser');
 Route::get('/1c/test/create-order', 'Api1cTestController@createOrder');
 Route::get('/1c/test/document-list', 'Api1cTestController@documentList');
