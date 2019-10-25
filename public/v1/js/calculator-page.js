@@ -547,7 +547,7 @@ $(document).ready(function () {
                 //     locality = res.geoObjects.get(0).getAdministrativeAreas()[0];
                 // }
 
-                console.log(res.geoObjects.get(0));
+                // console.log(res.geoObjects.get(0));
 
                 point.data('name', locality).attr('data-name', locality); // Это имя отправляем к нам на сервер
                 point.data('fullName', obj.value).attr('data-full-name', obj.value); // Это имя отправляем яндексу для просчета дистанции
