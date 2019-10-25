@@ -40,9 +40,9 @@ class OrderCreated extends Mailable
             'Вес' => $order->total_weight,
             'Объем' => $order->total_volume,
             'КоличествоМест' => array_sum(array_column($order->order_items->toArray(), 'quantity')),
-            'МягкаяУпаковка' => 'todo',
-            'ЖесткаяУпаковка' => 'todo',
-            'Паллетирование' => 'todo',
+            'МягкаяУпаковка' => !empty($order->order_services->where('slug', 'myagkaya-upakovka')->first()) ? 'Да' : 'Нет',
+            'ЖесткаяУпаковка' => !empty($order->order_services->where('slug', 'obreshetka')->first()) ? 'Да' : 'Нет',
+            'Паллетирование' => !empty($order->order_services->where('slug', 'palletirovanie')->first()) ? 'Да' : 'Нет',
             'Сумма_страховки' => $order->insurance,
             'ГородОтправления' => $order->ship_city_name,
             'ОрганизацияОтправления' => '', // todo не запрашивается
@@ -115,6 +115,9 @@ class OrderCreated extends Mailable
                 'as' => $documentName,
                 'mime' => 'application/pdf',
             ])
-            ->with(['order' => $this->order]);
+            ->with([
+                'order' => $this->order,
+                'tempFile' => $file['tempFile']
+            ]);
     }
 }
