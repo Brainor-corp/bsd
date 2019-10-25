@@ -24,6 +24,10 @@ class Order extends Model
         'cargo_status', 'cargo_number', 'ship_date', 'ship_time_from', 'ship_time_to', 'cargo_comment'
     ];
 
+    protected $dates = [
+        'ship_date',
+    ];
+
     protected $encryptable = [
         'sender_legal_form',
         'sender_company_name',
