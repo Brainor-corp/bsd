@@ -277,7 +277,8 @@ class CalculatorController extends Controller
             $request->get('service'),
             $request->get('need-to-take') === "on" ?
             [
-                'cityName' => $takeCityName,
+                'baseCityName' => $ship_city->name, // Город отправления
+                'cityName' => $takeCityName, // Город забора
                 'weight' => $totalWeight,
                 'volume' => $totalVolume,
                 'isWithinTheCity' => $request->get('need-to-take-type') === "in",
@@ -287,7 +288,8 @@ class CalculatorController extends Controller
             ] : [],
             $request->get('need-to-bring') === "on" ?
             [
-                'cityName' => $bringCityName,
+                'baseCityName' => $dest_city->name, // Город назначения
+                'cityName' => $bringCityName, // Город доставки
                 'weight' => $totalWeight,
                 'volume' => $totalVolume,
                 'isWithinTheCity' => $request->get('need-to-bring-type') === "in",

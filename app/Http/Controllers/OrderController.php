@@ -155,6 +155,7 @@ class OrderController extends Controller
             $request->get('service'),
             $request->get('need-to-take') === "on" ?
                 [
+                    'baseCityName' => $cities->where('name', $request->get('ship_city'))->first()->name,
                     'cityName' => $request->get('need-to-take-type') === "in" ?
                         $cities->where('name', $request->get('ship_city'))->first()->name :
                         $request->get('take_city_name'),
@@ -167,6 +168,7 @@ class OrderController extends Controller
                 ] : [],
             $request->get('need-to-bring') === "on" ?
                 [
+                    'baseCityName' => $cities->where('name', $request->get('dest_city'))->first()->name,
                     'cityName' => $request->get('need-to-bring-type') === "in" ?
                         $cities->where('name', $request->get('dest_city'))->first()->name :
                         $request->get('bring_city_name'),
