@@ -386,12 +386,12 @@ class CalculatorHelper
     ) {
         $price = 0;
 
-        // Изначально пытаемся получить город
-        $city = self::getCityByName($cityName);
+        // Изначально пытаемся найти особый населённый пункт
+        $city = self::getPointByName($cityName);
 
-        // Если города нет, пытаемся найти пункт
+        // Если пункта нет, пытаемся получить город
         if(!$city) {
-            $city = self::getPointByName($cityName);
+            $city = self::getCityByName($cityName);
         }
 
         // Если ни города, ни пункта не нашли, то выводим договорную цену
