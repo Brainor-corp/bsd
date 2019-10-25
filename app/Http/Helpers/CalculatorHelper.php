@@ -375,6 +375,7 @@ class CalculatorHelper
     }
 
     public static function getTariffPrice(
+        $baseCityName,
         $cityName,
         $weight,
         $volume,
@@ -382,28 +383,48 @@ class CalculatorHelper
         $x2,
         $packages,
         $distance = null,
-        $polygonId = null
+        $polygonId = null,
+        $displayCityName = null
     ) {
         $price = 0;
+        $displayCityName = $displayCityName ?? $cityName;
+//        $distance = 45;
 
-        // Изначально пытаемся получить город
-        $city = self::getCityByName($cityName);
+        // Изначально пытаемся найти особый населённый пункт
+        $city = self::getPointByName($cityName);
 
-        // Если города нет, пытаемся найти пункт
+        // Если пункта нет, пытаемся получить город
         if(!$city) {
-            $city = self::getPointByName($cityName);
+            $city = self::getCityByName($cityName);
         }
 
-        // Если ни города, ни пункта не нашли, то выводим договорную цену
+        // Если ни города, ни пункта не нашли
         if(!$city) {
-            return $isWithinTheCity ? [
-                'price' => 'Договорная',
-                'city_name' => $cityName
-            ] : [
-                'price' => 'Договорная',
-                'city_name' => $cityName,
-                'distance' => intval($distance),
-            ];
+            // Попробуем поиск по названию города отправления/назначения.
+            // При это доставку в таком случае будем всегда считать как за пределами города.
+            if($baseCityName !== $cityName) {
+                return self::getTariffPrice(
+                    $baseCityName,
+                    $baseCityName,
+                    $weight,
+                    $volume,
+                    false,
+                    $x2,
+                    $packages,
+                    $distance,
+                    $polygonId,
+                    $displayCityName
+                );
+            } else { // Если не нашли и по названию города отправления/назначения, выводим договорную цену
+                return $isWithinTheCity ? [
+                    'price' => 'Договорная',
+                    'city_name' => $displayCityName
+                ] : [
+                    'price' => 'Договорная',
+                    'city_name' => $displayCityName,
+                    'distance' => intval($distance),
+                ];
+            }
         }
 
         $packagesCount = count($packages);
@@ -454,7 +475,7 @@ class CalculatorHelper
         if(!$fixed_tariff && $isWithinTheCity) {
             return [
                 'price' => 'Договорная',
-                'city_name' => $cityName,
+                'city_name' => $displayCityName,
                 'distance' => intval($distance),
             ];
         }
@@ -471,7 +492,7 @@ class CalculatorHelper
                 if(isset($polygon)) {
                     return [
                         'price' => $x2 ? ($polygon->price * floatval($fixed_tariff)) * 2 : ($polygon->price * floatval($fixed_tariff)),
-                        'city_name' => "$cityName",
+                        'city_name' => "$displayCityName",
                         'polygon_name' => $polygon->name
                     ];
                 }
@@ -479,7 +500,7 @@ class CalculatorHelper
 
             return [
                 'price' => $x2 ? floatval($fixed_tariff) * 2 : floatval($fixed_tariff),
-                'city_name' => $cityName
+                'city_name' => $displayCityName
             ];
         }
 
@@ -493,7 +514,7 @@ class CalculatorHelper
             if(isset($polygon)) {
                 return [
                     'price' => $x2 ? ($polygon->price * floatval($fixed_tariff)) * 2 : ($polygon->price * floatval($fixed_tariff)),
-                    'city_name' => "$cityName",
+                    'city_name' => "$displayCityName",
                     'polygon_name' => $polygon->name
                 ];
             }
@@ -502,7 +523,7 @@ class CalculatorHelper
         if($point_fixed_tariff) {
             return [
                 'price' => $x2 ? $point_fixed_tariff * 2 : $point_fixed_tariff,
-                'city_name' => $cityName,
+                'city_name' => $displayCityName,
                 'distance' => intval($distance),
             ];
         }
@@ -529,7 +550,7 @@ class CalculatorHelper
         if(!$per_km_tariff) {
             return [
                 'price' => 'Договорная',
-                'city_name' => $cityName,
+                'city_name' => $displayCityName,
                 'distance' => intval($distance),
             ];
         }
@@ -543,7 +564,7 @@ class CalculatorHelper
         }
 
         return [
-            'city_name' => $cityName,
+            'city_name' => $displayCityName,
             'distance' => intval($distance),
             'price' => floatval($price)
         ];
@@ -707,6 +728,7 @@ class CalculatorHelper
         $takeData = null;
         if(!empty($takeParams)) {
             $takeData = self::getTariffPrice(
+                $takeParams['baseCityName'],
                 $takeParams['cityName'],
                 $takeParams['weight'],
                 $takeParams['volume'],
@@ -721,6 +743,7 @@ class CalculatorHelper
         $bringData = null;
         if(!empty($bringParams)) {
             $bringData = self::getTariffPrice(
+                $bringParams['baseCityName'],
                 $bringParams['cityName'],
                 $bringParams['weight'],
                 $bringParams['volume'],

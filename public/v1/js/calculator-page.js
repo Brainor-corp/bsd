@@ -542,9 +542,20 @@ $(document).ready(function () {
         if(obj !== null) {
             var locality = '';
             ymaps.geocode(obj.value, {results: 1}).then(function (res) {
+                let forceDeliveryType = null;
                 locality = res.geoObjects.get(0).getLocalities()[0];
-                point.data('name', locality).attr('data-name', locality); // Это имя отправляем к нам на сервер
+                if(locality === undefined) {
+                    forceDeliveryType = 'from';
+                    if(point.attr('id') === "ship_point") {
+                        locality = $('select[name="ship_city"] option:selected').val();
+                    } else {
+                        locality = $('select[name="dest_city"] option:selected').val();
+                    }
+                }
 
+                // console.log(res.geoObjects.get(0));
+
+                point.data('name', locality).attr('data-name', locality); // Это имя отправляем к нам на сервер
                 point.data('fullName', obj.value).attr('data-full-name', obj.value); // Это имя отправляем яндексу для просчета дистанции
 
                 if (obj.id !== undefined)
@@ -554,7 +565,7 @@ $(document).ready(function () {
 
                 if(point.attr('id') === "ship_point") {
                     if($('#ship_city').data().selectize.getValue() !== "") {
-                        changeDeliveryType($('select[name="ship_city"] option:selected').val(), locality, obj.value, "need-to-take-type");
+                        changeDeliveryType($('select[name="ship_city"] option:selected').val(), locality, obj.value, "need-to-take-type", forceDeliveryType);
                         $('input[name="take_city_name"]').val(point.data('name'));
                         calcTariffPrice(
                             {
@@ -567,7 +578,7 @@ $(document).ready(function () {
                     }
                 } else {
                     if($('#dest_city').data().selectize.getValue() !== "") {
-                        changeDeliveryType($('select[name="dest_city"] option:selected').val(), locality, obj.value, "need-to-bring-type");
+                        changeDeliveryType($('select[name="dest_city"] option:selected').val(), locality, obj.value, "need-to-bring-type", forceDeliveryType);
                         $('input[name="bring_city_name"]').val(point.data('name'));
                         calcTariffPrice(
                             {
@@ -1025,12 +1036,16 @@ function drawDiscount(discount) {
     }
 }
 
-function changeDeliveryType(cityFrom, cityTo, address, inputName) {
+function changeDeliveryType(cityFrom, cityTo, address, inputName, forceDeliveryType = null) {
+    if(forceDeliveryType !== null) {
+        $('input:radio[name="' + inputName + '"]').filter('[value="' + forceDeliveryType + '"]').prop('checked', true);
+        return;
+    }
+
     let type = 'from';
 
     if(cityFrom !== cityTo) {
         $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
-
         return;
     }
 
