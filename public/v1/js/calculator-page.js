@@ -543,9 +543,9 @@ $(document).ready(function () {
             var locality = '';
             ymaps.geocode(obj.value, {results: 1}).then(function (res) {
                 locality = res.geoObjects.get(0).getLocalities()[0];
-                if(locality === undefined) {
-                    locality = res.geoObjects.get(0).getAdministrativeAreas()[0];
-                }
+                // if(locality === undefined) {
+                //     locality = res.geoObjects.get(0).getAdministrativeAreas()[0];
+                // }
 
                 console.log(res.geoObjects.get(0));
 

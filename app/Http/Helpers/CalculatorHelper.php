@@ -400,8 +400,8 @@ class CalculatorHelper
                 'price' => 'Договорная',
                 'city_name' => $cityName
             ] : [
-                'price' => 'Договорная1',
-                'city_name' => $cityName . 'test',
+                'price' => 'Договорная',
+                'city_name' => $cityName,
                 'distance' => intval($distance),
             ];
         }
