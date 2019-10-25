@@ -161,6 +161,18 @@ class CalculatorController extends Controller
                 ])->first();
 
                 if(isset($route)) {
+                    // Если город отправления -- город, а не особый населённый пункт
+                    // дальнейшая работа с особым населённым пунктом не требуется.
+                    if($shipModel instanceof City) {
+                        $deliveryPoint = null;
+                    }
+
+                    // Если город назначания -- город, а не особый населённый пункт
+                    // дальнейшая работа с особым населённым пунктом не требуется.
+                    if($destModel instanceof City) {
+                        $bringPoint = null;
+                    }
+
                     break;
                 }
             }
@@ -457,6 +469,19 @@ class CalculatorController extends Controller
 
                         if(isset($route)) {
                             $route_id = $route->id;
+
+                            // Если город отправления -- город, а не особый населённый пункт
+                            // дальнейшая работа с особым населённым пунктом не требуется.
+                            if($shipModel instanceof City) {
+                                $deliveryPoint = null;
+                            }
+
+                            // Если город назначания -- город, а не особый населённый пункт
+                            // дальнейшая работа с особым населённым пунктом не требуется.
+                            if($destModel instanceof City) {
+                                $bringPoint = null;
+                            }
+
                             break;
                         }
                     }
