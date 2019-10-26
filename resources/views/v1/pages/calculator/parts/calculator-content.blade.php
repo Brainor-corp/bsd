@@ -3,6 +3,7 @@
     @if(isset($order) && empty(request()->get('repeat')))
         <input type="hidden" name="order_id" value="{{ $order->id }}">
     @endif
+    <input type="hidden" name="type" value="{{ $orderType }}">
     <div id="hiddenMap" class="d-none"></div>
     @if($errors->any())
         <div class="alert alert-danger">
@@ -13,7 +14,57 @@
             </ul>
         </div>
     @endif
-    <div class="calc__title">Груз</div>
+    @if($orderType === 'order')
+        <div class="calc__title">Дата</div>
+        <div class="form-item row align-items-center">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-12">
+                        <label for="order_date">Дата исполнения (дата подачи авто)*</label>
+                        <input
+                                value="{{ old('order_date') ?? (isset($order) && $order->order_date ? $order->order_date->format('Y-m-d') : \Carbon\Carbon::now()->addDay()->format('Y-m-d')) }}"
+                                type="date"
+                                name="order_date"
+                                id="order_date"
+                                class="form-control"
+                                required
+                        >
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <label for="ship_time_from">С*</label>
+                        <input
+                                value="{{ old('ship_time_from') ?? (isset($order) && $order->ship_time_from ?
+                                        \Carbon\Carbon::createFromFormat('H:i:s', $order->ship_time_from)->format('H:i')
+                                        : '11:00')
+                                }}"
+                                type="time"
+                                name="ship_time_from"
+                                id="ship_time_from"
+                                class="form-control"
+                                required
+                        >
+                    </div>
+                    <div class="col-6">
+                        <label for="ship_time_to">По*</label>
+                        <input
+                                value="{{ old('ship_time_to') ?? (isset($order) && $order->ship_time_to ?
+                                        \Carbon\Carbon::createFromFormat('H:i:s', $order->ship_time_to)->format('H:i')
+                                        : '17:00')
+                                }}"
+                                type="time"
+                                name="ship_time_to"
+                                id="ship_time_to"
+                                class="form-control"
+                                required
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+    <div class="calc__title mt-3">Груз</div>
     <div class="form-item row align-items-center">
         <label class="col-auto calc__label">Наименование груза*</label>
         <div class="col">
@@ -130,7 +181,19 @@
             <p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>
         </div>
     </div>
-    <div class="form-item row block-for-distance">
+    <div class="row">
+        <div class="col-12">
+            <label for="cargo_comment">Примечания по грузу</label>
+            <textarea
+                    name="cargo_comment"
+                    id="cargo_comment"
+                    cols="30"
+                    rows="2"
+                    class="form-control"
+            >{{ old('cargo_comment') ?? ($order->cargo_comment ?? '') }}</textarea>
+        </div>
+    </div>
+    <div class="form-item row block-for-distance mt-3">
         <label class="col-auto calc__label big">Откуда</label>
         <div class="col-md col-12 delivery-block">
             <div class="form-item">
@@ -170,7 +233,7 @@
                 <label class="custom-control-label" for="need-to-take-type-from">из:</label>
             </div>
 
-            <input type="hidden" name="take_city_name" value="{{ old('take_city_name') ?? ($order->take_city_name ?? ($deliveryPoint->name ?? '')) }}">
+            <input type="hidden" name="take_city_name" value="{{ old('take_city_name') ?? ($order->take_city_name ?? ($deliveryPoint->city->name ?? '')) }}">
             <input type="hidden" name="take_distance" value="{{ old('take_distance') ?? ($order->take_distance ?? ($deliveryPoint->distance ?? 0)) }}" class="distance-hidden-input">
             <input type="hidden" name="take_polygon" value="{{ old('take_polygon') ?? ($order->take_polygon_id ?? '') }}" class="take-polygon-hidden-input">
             <div class="form-item ininner">
@@ -239,7 +302,7 @@
                 <label class="custom-control-label" for="need-to-bring-type-from">в:</label>
             </div>
 
-            <input type="hidden" name="bring_city_name" value="{{ old('bring_city_name') ?? ($order->delivery_city_name ?? ($bringPoint->name ?? '')) }}">
+            <input type="hidden" name="bring_city_name" value="{{ old('bring_city_name') ?? ($order->delivery_city_name ?? ($bringPoint->city->name ?? '')) }}">
             <input type="hidden" name="bring_distance" value="{{ old('bring_distance') ?? ($order->delivery_distance ?? ($bringPoint->distance ?? 0)) }}" class="distance-hidden-input">
             <input type="hidden" name="bring_polygon" value="{{ old('bring_polygon') ?? ($order->bring_polygon_id ?? 0) }}" class="bring-polygon-hidden-input">
             <div class="form-item ininner">
@@ -697,6 +760,41 @@
             <label class="custom-control-label" for="order-creator-type-payer">Плательщик</label>
         </div>
     </div>
+    @if($orderType === 'order')
+        <div>
+            <h2 class="text-center">ВНИМАНИЕ!</h2>
+            <hr style="margin: 2px 0; border: solid 1px">
+            <div>
+                <p class="text-center mb-2">
+                    ЗАЯВКИ  ПРИНИМАЮТСЯ с 9.00 до 16.00 за сутки до исполнения.
+                </p>
+            </div>
+            <div>
+                <p class="text-center mb-2">
+                    Заявки, поступившие после 16.00 выполняются по мере возможности.
+                </p>
+            </div>
+            <div>
+                <p class="text-center">
+                    ВОДИТЕЛЬ-ЭКСПЕДИТОР НЕ ЗАНИМАЕТСЯ ПОГРУЗОЧНО-РАЗГРУЗОЧНЫМИ РАБОТАМИ!!
+                </p>
+            </div>
+            <ul class="mb-3 ml-3 list-style-dist">
+                <li>доставка осуществляется только до адреса. Погрузка-выгрузка и поднятие на этаж - возможны по предварительному согласованию с менеджером направления;</li>
+                <li>исполнение заявки в течении рабочего дня (с 10.00-18.00) , указание конкретного времени подачи машины осложняет  выполнение заявки, стоимость может увеличиться до 100%;</li>
+                <li>погрузка-выгрузка а/м 30 минут, простой каждого последующего часа оплачивается по прайс-листу;</li>
+                <li>неправильно указанные координаты (адрес, телефон),  прогон а/м, отказ от заявки по факту подачи а/м  - считается выполненной заявкой и оплачивается по прайс-листу;</li>
+                <li>оплата въезда на территорию клиента – оплачивается дополнительно;</li>
+                <li>стоимость  дополнительной  упаковки  указана без стоимости поддона (200 руб.);</li>
+                <li>областная доставка расчитывается по формуле: авто доставка по СПб + пробег * руб./км в оба конца, согласно прайс-листа;</li>
+            </ul>
+            <div>
+                <p class="text-center">
+                    Обращаем внимание на необходимость указания Вашего электронного адреса. На указанный Вами электронный адрес в течение часа поступит информация о принятии данной Заявки к исполнению.
+                </p>
+            </div>
+        </div>
+    @endif
     <div class="form-item d-flex flex-column flex-md-row">
         <button type="submit" name="status" value="chernovik" class="btn margin-item btn-default my-2 my-lg-0">Сохранить черновик</button>
         <button type="submit" name="status" value="order_auth" class="btn margin-item btn-danger my-2 my-lg-0">Оформить заявку</button>

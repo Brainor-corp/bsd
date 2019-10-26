@@ -145,3 +145,7 @@ ol li {
     cursor: pointer;
     pointer-events: all;
 }
+
+.list-style-dist {
+    list-style-type: disc !important;
+}

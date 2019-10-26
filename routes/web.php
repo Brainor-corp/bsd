@@ -14,7 +14,6 @@
 
 
 Route::group(['middleware' => ['geoIpCheck']], function () {
-
     Auth::routes();
     Route::post('/password-method-redirect', 'Auth\ForgotPasswordController@resetMethodRedirect')->name('password.method-redirect');
     Route::get('/restore-phone-confirm', 'Auth\ForgotPasswordController@restorePhoneConfirmShow')->name('password.restore-phone-confirm');
@@ -126,6 +125,13 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
         });
     });
 });
+
+Route::get('/test-order-email', function () {
+    $order = \App\Order::where('id', 8)->first();
+
+    \Illuminate\Support\Facades\Mail::to('test@gmail.com')->send(new \App\Mail\OrderCreated($order));
+});
+
 
 Route::get('/1c/test/new-user', 'Api1cTestController@newUser');
 Route::get('/1c/test/create-order', 'Api1cTestController@createOrder');

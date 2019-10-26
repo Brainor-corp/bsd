@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
 use App\Http\Helpers\Api1CHelper;
 use App\Http\Helpers\DocumentHelper;
+use App\Http\Helpers\OrderHelper;
 use App\Order;
 use App\Type;
 use Illuminate\Http\Request;
@@ -42,6 +43,7 @@ class ReportsController extends Controller
         $order = Order::available()
             ->where('id', $id)
             ->with([
+                'type',
                 'status',
                 'cargo_type',
                 'order_items',
@@ -59,7 +61,9 @@ class ReportsController extends Controller
 
         $userTypes = Type::where('class', 'UserType')->get();
 
-        return View::make('v1.pages.profile.profile-inner.report-show-page')->with(compact('order', 'userTypes'))->render();
+        return View::make('v1.pages.profile.profile-inner.report-show-page')
+            ->with(compact('order', 'userTypes'))
+            ->render();
     }
 
     public function getDownloadDocumentsModal(Request $request) {
@@ -91,6 +95,14 @@ class ReportsController extends Controller
             }
         }
 
+        if(!count($documents)) {
+            array_push($documents, [
+                'id' => $order->id,
+                'type' => 'site_request',
+                'name' => "Заявка на перевозку № $order->id"
+            ]);
+        }
+
         return view('v1.partials.reports.download-documents-modal-content')
             ->with(compact('documents'));
     }
@@ -103,39 +115,70 @@ class ReportsController extends Controller
         }
 
         $send = [
-            "user_id" => $user->guid,
             "document_id" => $document_id_1c,
             "type" => intval($document_type_id_1c),
             "empty_fields" => true
         ];
+        if(!empty($user->guid)) {
+            $send = [
+                "user_id" => $user->guid,
+            ];
+        }
 
         switch ($document_type_id_1c) {
             case 3:
-                // Заявка на экспедирование
+                    // Заявка на экспедирование
+                    if(!isset($send['user_id'])) {
+                        return redirect(route('report-list'));
+                        break;
+                    }
 
-                $response1c = \App\Http\Helpers\Api1CHelper::post(
-                    'document/id',
-                    $send
-                );
-                if($response1c['status'] !== 200) {
-                    return redirect(route('report-list'));
-                }
+                    $response1c = \App\Http\Helpers\Api1CHelper::post(
+                        'document/id',
+                        $send
+                    );
+                    if($response1c['status'] !== 200) {
+                        return redirect(route('report-list'));
+                    }
 
-                $documentData = $response1c['response'] ?? [];
+                    $documentData = $response1c['response'] ?? [];
 
-                $file = DocumentHelper::generateRequestDocument(
-                    $documentData,
-                    $documentData['Представление'] . '.pdf');
-                if(isset($file['tempFile']) && isset($file['fileName'])) {
-                    return response()->download($file['tempFile'], $file['fileName'])
-                        ->deleteFileAfterSend(true);
-                }
+                    $file = DocumentHelper::generateRequestDocument(
+                        $documentData,
+                        'Заявка на перевозку № ' . $documentData['СайтИД'] . '.pdf');
+                    if(isset($file['tempFile']) && isset($file['fileName'])) {
+                        return response()->download($file['tempFile'], $file['fileName'])
+                            ->deleteFileAfterSend(true);
+                    }
 
-                break;
+                    break;
+
+            case 'site_request':
+                    $order = Order::available()
+                        ->where('id', $send['document_id'])
+                        ->firstOrFail();
+
+                    $documentData = OrderHelper::orderToPdfData($order);
+
+                    $file = DocumentHelper::generateRequestDocument(
+                        $documentData,
+                        'Заявка на перевозку № ' . $send['document_id'] . '.pdf');
+                    if(isset($file['tempFile']) && isset($file['fileName'])) {
+                        return response()->download($file['tempFile'], $file['fileName'])
+                            ->deleteFileAfterSend(true);
+                    }
+
+
+                    break;
 
             case 2:
             case 5:
             case 6:
+                    if(!isset($send['user_id'])) {
+                        return redirect(route('report-list'));
+                        break;
+                    }
+
                     $documentName = json_decode($request->get('document_name'));
                     $documentName = str_replace('/', '.', $documentName);
                     $documentName = empty($documentName) ? "doc.pdf" : "$documentName.pdf";

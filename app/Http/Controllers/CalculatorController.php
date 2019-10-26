@@ -32,7 +32,8 @@ class CalculatorController extends Controller
 
             // направим пользователя на дооформление заказа с проставленными полями
             return redirect(route('calculator-show', [
-               'id' => $continueOrder['order_id'] ?? null
+               'id' => $continueOrder['order_id'] ?? null,
+               'type' => $continueOrder['type'] ?? null,
             ]))->withInput($continueOrder);
         }
 
@@ -41,10 +42,12 @@ class CalculatorController extends Controller
         $citiesIdsToFindRoute = [];
         $order = null;
 
+        $orderType = 'calculator'; // Калькулятор|Заявка
         if(isset($id)) { // Если открыли страницу черновика
             $order = Order::available()
                 ->where('id', $id)
                 ->with([
+                    'type',
                     'order_items',
                     'order_services',
                     'ship_city',
@@ -52,6 +55,8 @@ class CalculatorController extends Controller
                     'order_creator_type_model',
                 ])
                 ->firstOrFail();
+
+            $orderType = $order->type->slug ?? $orderType;
 
             $packages = $order->order_items->toArray();
             $selectedShipCity = $order->ship_city_id;
@@ -65,6 +70,8 @@ class CalculatorController extends Controller
                 City::where('id', $order->dest_city_id)->first()
             ];
         } else { // Если открыли стандартный калькулятор
+            $orderType = $request->get('type') ?? $orderType;
+
             if(isset($request->cargo['packages'])){
                 $requestPackages = $request->cargo['packages'];
                 foreach ($requestPackages as $key=>$package){
@@ -216,7 +223,8 @@ class CalculatorController extends Controller
                 'totalWeight',
                 'totalVolume',
                 'deliveryPoint',
-                'bringPoint'
+                'bringPoint',
+                'orderType'
             ));
 
     }

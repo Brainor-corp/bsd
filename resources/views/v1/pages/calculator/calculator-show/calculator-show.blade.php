@@ -25,7 +25,7 @@
     <div class="breadcrumb__list d-flex">
         <div class="container">
             <span class="breadcrumb__item"><a href="{{ route('index') }}" class="">Главная</a></span>
-            <span class="breadcrumb__item">Калькулятор</span>
+            <span class="breadcrumb__item">{{ $orderType === 'calculator' ? 'Расчет стоимости' : 'Заявка на забор груза' }}</span>
         </div>
     </div>
     <section class="wrapper">
@@ -33,7 +33,7 @@
             <div class="row">
                 <div class="col-12">
                     <header class="wrapper__header">
-                        <h1>Расчет стоимости</h1>
+                        <h1>{{ $orderType === 'calculator' ? 'Расчет стоимости' : 'Заявка на забор груза' }}</h1>
                     </header>
                     <div class="row">
                         <div class="col-lg-6">

@@ -60,7 +60,7 @@ class Api1cTestController extends Controller
 //                'order_creator_type_model'
 //            )
 //            ->orderBy('created_at', 'desc')
-            where('id', 620)
+            where('id', 12)
             ->limit(1)
             ->get();
 
@@ -72,7 +72,16 @@ class Api1cTestController extends Controller
             $mapOrder['Название_груза'] = $order->shipping_name ?? "";
             $mapOrder['Общий_вес'] = floatval($order->total_weight);
             $mapOrder['Общий_объем'] = floatval($order->total_volume);
-            $mapOrder['Время_доставки'] = Carbon::createFromFormat('Y-m-d H:i:s', $order->order_date)->format('Y-m-d\TH:i:s');
+            $mapOrder['Примечания'] = $order->cargo_comment;
+
+            if(isset($order->order_date) && isset($order->ship_time_from) && isset($order->ship_time_to)) {
+                $mapOrder['Время_доставки'] = [
+                    'День' => Carbon::createFromFormat('Y-m-d H:i:s', $order->order_date)->format('Y-m-d'),
+                    'Время_с' => Carbon::createFromFormat('H:i:s', $order->ship_time_from)->format('H:i'),
+                    'Время_по' => Carbon::createFromFormat('H:i:s', $order->ship_time_to)->format('H:i')
+                ];
+            }
+
             $mapOrder['Количество_мест'] = array_sum(array_column($order->order_items->toArray(), 'quantity'));
             $mapOrder['Итоговая_цена'] = is_numeric($order->total_price) ? intval($order->total_price) : 0;
             $mapOrder['СтатусОплаты'] = $order->payment_status->name ?? '';
@@ -276,7 +285,8 @@ class Api1cTestController extends Controller
         })->toArray();
 
         foreach($orders as $order) {
-            dd($order);
+            return $order;
+
             $response1c = Api1CHelper::post('create_order', $order);
 
             if(
