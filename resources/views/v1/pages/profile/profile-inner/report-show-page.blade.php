@@ -19,6 +19,59 @@
                     <div class="row">
                         <div class="col-md-6">
                             <form class="calculator-form" action="/calculator-show" method="post">
+                                @if($order->type->slug === 'order')
+                                    <div class="calc__title">Дата</div>
+                                    <div class="form-item row align-items-center">
+                                        <div class="col-12">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <label for="order_date">Дата исполнения (дата подачи авто)*</label>
+                                                    <input
+                                                            value="{{ old('order_date') ?? (isset($order) && $order->order_date ? $order->order_date->format('Y-m-d') : \Carbon\Carbon::now()->addDay()->format('Y-m-d')) }}"
+                                                            type="date"
+                                                            name="order_date"
+                                                            id="order_date"
+                                                            class="form-control"
+                                                            readonly
+                                                            disabled
+                                                    >
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-6">
+                                                    <label for="ship_time_from">С*</label>
+                                                    <input
+                                                            value="{{ old('ship_time_from') ?? (isset($order) && $order->ship_time_from ?
+                                                                    \Carbon\Carbon::createFromFormat('H:i:s', $order->ship_time_from)->format('H:i')
+                                                                    : '11:00')
+                                                            }}"
+                                                            type="time"
+                                                            name="ship_time_from"
+                                                            id="ship_time_from"
+                                                            class="form-control"
+                                                            readonly
+                                                            disabled
+                                                    >
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="ship_time_to">По*</label>
+                                                    <input
+                                                            value="{{ old('ship_time_to') ?? (isset($order) && $order->ship_time_to ?
+                                                                    \Carbon\Carbon::createFromFormat('H:i:s', $order->ship_time_to)->format('H:i')
+                                                                    : '17:00')
+                                                            }}"
+                                                            type="time"
+                                                            name="ship_time_to"
+                                                            id="ship_time_to"
+                                                            class="form-control"
+                                                            readonly
+                                                            disabled
+                                                    >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                                 <div class="calc__title">Груз</div>
                                 <div class="form-item row align-items-center">
                                     <label class="col-auto calc__label">Наименование груза*</label>
@@ -123,11 +176,26 @@
                                         @endif
                                     </div>
                                 </div>
-                                <div class="form-item row block-for-distance">
+                                @if($order->type->slug === 'order')
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <label for="cargo_comment">Примечания по грузу</label>
+                                            <textarea
+                                                    name="cargo_comment"
+                                                    id="cargo_comment"
+                                                    cols="30"
+                                                    rows="2"
+                                                    class="form-control"
+                                                    readonly
+                                            >{{ old('cargo_comment') ?? ($order->cargo_comment ?? '') }}</textarea>
+                                        </div>
+                                    </div>
+                                @endif
+                                <div class="form-item row block-for-distance mt-3">
                                     <label class="col-auto calc__label big">Откуда</label>
                                     <div class="col delivery-block">
                                         <div class="form-item">
-                                            <select id="ship_city" class="form-control point-select">
+                                            <select id="ship_city" class="form-control point-select" readonly="" disabled>
                                                 <option value="">{{ $order->ship_city_name ?? ($order->ship_city->name ?? '') }}</option>
                                             </select>
                                         </div>
@@ -159,7 +227,7 @@
                                     <label class="col-auto calc__label big">Куда</label>
                                     <div class="col delivery-block">
                                         <div class="form-item">
-                                            <select id="dest_city" class="form-control point-select" name="dest_city">
+                                            <select id="dest_city" class="form-control point-select" name="dest_city" readonly="" disabled>
                                                 <option value="">{{ $order->dest_city_name ?? ($order->dest_city->name ?? '') }}</option>
                                             </select>
                                         </div>

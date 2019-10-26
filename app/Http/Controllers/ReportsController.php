@@ -43,6 +43,7 @@ class ReportsController extends Controller
         $order = Order::available()
             ->where('id', $id)
             ->with([
+                'type',
                 'status',
                 'cargo_type',
                 'order_items',
@@ -60,7 +61,9 @@ class ReportsController extends Controller
 
         $userTypes = Type::where('class', 'UserType')->get();
 
-        return View::make('v1.pages.profile.profile-inner.report-show-page')->with(compact('order', 'userTypes'))->render();
+        return View::make('v1.pages.profile.profile-inner.report-show-page')
+            ->with(compact('order', 'userTypes'))
+            ->render();
     }
 
     public function getDownloadDocumentsModal(Request $request) {
