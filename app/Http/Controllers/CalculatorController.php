@@ -33,6 +33,7 @@ class CalculatorController extends Controller
             // направим пользователя на дооформление заказа с проставленными полями
             return redirect(route('calculator-show', [
                'id' => $continueOrder['order_id'] ?? null,
+               'type' => $continueOrder['type'] ?? null,
             ]))->withInput($continueOrder);
         }
 
