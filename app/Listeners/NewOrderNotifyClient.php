@@ -27,7 +27,7 @@ class NewOrderNotifyClient
     {
         $order = $event->order;
 
-        if(isset($order->user->email)) {
+        if(isset($order->user()->first()->email)) {
             SendOrderCreatedMailToClient::dispatch($order->user->email, $order);
         }
     }
