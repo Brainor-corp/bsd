@@ -592,7 +592,7 @@ class OrderController extends Controller
         $order->payment_status_id = $paymentStatus->id;
         $order->order_creator = $request->get('order-creator');
 
-        $order->order_date = $request->get('order_date') ?? null;
+        $order->order_date = $request->get('order_date') ?? Carbon::now()->addDay();
         $order->ship_time_from = $request->get('ship_time_from');
         $order->ship_time_to = $request->get('ship_time_to');
         $order->cargo_comment = $request->get('cargo_comment');
