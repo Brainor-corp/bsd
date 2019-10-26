@@ -181,20 +181,18 @@
             <p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>
         </div>
     </div>
-    @if($orderType === 'order')
-        <div class="row">
-            <div class="col-12">
-                <label for="cargo_comment">Примечания по грузу</label>
-                <textarea
-                        name="cargo_comment"
-                        id="cargo_comment"
-                        cols="30"
-                        rows="2"
-                        class="form-control"
-                >{{ old('cargo_comment') ?? ($order->cargo_comment ?? '') }}</textarea>
-            </div>
+    <div class="row">
+        <div class="col-12">
+            <label for="cargo_comment">Примечания по грузу</label>
+            <textarea
+                    name="cargo_comment"
+                    id="cargo_comment"
+                    cols="30"
+                    rows="2"
+                    class="form-control"
+            >{{ old('cargo_comment') ?? ($order->cargo_comment ?? '') }}</textarea>
         </div>
-    @endif
+    </div>
     <div class="form-item row block-for-distance mt-3">
         <label class="col-auto calc__label big">Откуда</label>
         <div class="col-md col-12 delivery-block">
