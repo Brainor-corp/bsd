@@ -6,7 +6,7 @@ class OrderHelper {
     public static function orderToPdfData($order) {
         $documentData = [
             'Представление' => "Заявка на перевозку № $order->id",
-            'ДатаИсполнения' => $order->ship_date ? $order->ship_date->format('d.m.Y') : '',
+            'ДатаИсполнения' => $order->order_date ? $order->order_date->format('d.m.Y') : '',
             'Груз' => $order->shipping_name,
             'Вес' => $order->total_weight,
             'Объем' => $order->total_volume,
