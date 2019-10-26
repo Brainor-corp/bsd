@@ -25,7 +25,7 @@ class Order extends Model
     ];
 
     protected $dates = [
-        'ship_date',
+        'order_date',
     ];
 
     protected $encryptable = [
@@ -134,6 +134,10 @@ class Order extends Model
 
     public function bring_polygon() {
         return $this->belongsTo(Polygon::class, 'bring_polygon_id', 'id');
+    }
+
+    public function type() {
+        return $this->belongsTo(Type::class);
     }
 
     public function getRealStatusAttribute(){

@@ -60,9 +60,6 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::any('/calculator-show/{id?}', 'CalculatorController@calculatorShow')->name('calculator-show');
     Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
 
-    // Функционал формирования заявки на основе калькулятора
-    Route::any('/new-order', 'CalculatorController@newOrderShow')->name('new-order-show');
-
     Route::group(['middleware' => 'sms-confirm'], function () {
         // Для сохранения заказа написан middleware 'order.save'.
         // Он позволяет сохранять черновики без авторизации,

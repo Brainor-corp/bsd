@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\City;
-use App\ContactEmail;
 use App\Counterparty;
+use App\Events\OrderCreated;
 use App\Http\Helpers\CalculatorHelper;
 use App\Http\Helpers\EventHelper;
-use App\Jobs\SendOrderCreatedMailToAdmin;
 use App\Order;
 use App\OrderItem;
 use App\Polygon;
@@ -110,10 +109,11 @@ class OrderController extends Controller
             "status" => ['required', 'string', 'in:chernovik,order_auth,order_guest'],          // Черновик|Заявка с авторизацей|Заявка без регистрации                                       // Статус_заказа
             "order-creator" => ['required', 'string'],                                          // Заявку_заполнил,
 
-            "ship_date" => ['nullable', 'date'],
-            "ship_time_from" => ['nullable', 'date_format:H:i'],
-            "ship_time_to" => ['nullable', 'date_format:H:i'],
-            "cargo_comment" => ['nullable', 'string'],
+            "order_date" => ['nullable', 'date'],                                               // Дата исполнения
+            "ship_time_from" => ['nullable', 'date_format:H:i'],                                // Время исполнения (С)
+            "ship_time_to" => ['nullable', 'date_format:H:i'],                                  // Время исполнения (По)
+            "cargo_comment" => ['nullable', 'string'],                                          // Примечания по грузу
+            "type" => ['required', 'in:order,calculator'],                                      // Тип заявки (Заявка|Калькулятор)
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -590,10 +590,9 @@ class OrderController extends Controller
         $order->payment_type = $paymentType->id;
         $order->status_id = $orderStatus->id;
         $order->payment_status_id = $paymentStatus->id;
-        $order->order_date = Carbon::now();
         $order->order_creator = $request->get('order-creator');
 
-        $order->ship_date = $request->get('ship_date');
+        $order->order_date = $request->get('order_date') ?? null;
         $order->ship_time_from = $request->get('ship_time_from');
         $order->ship_time_to = $request->get('ship_time_to');
         $order->cargo_comment = $request->get('cargo_comment');
@@ -657,6 +656,13 @@ class OrderController extends Controller
             ];
         }
 
+        $type = Type::where([
+            ['class', 'OrderType'],
+            ['slug', $request->get('type')]
+        ])->first();
+
+        $order->type_id = $type->id;
+
         $order->save();
 
         $order->order_items()->delete();
@@ -664,23 +670,25 @@ class OrderController extends Controller
 
         $order->order_services()->sync($servicesToSync);
 
-        if(Auth::check()) {
-            EventHelper::createEvent(
-                'Заявка успешно зарегистрирована!',
-                null,
-                1,
-                '/klientam/report/' . $order->id,
-                Auth::id()
-            );
-        }
+        if($order->status->slug !== "chernovik") {
+            if(Auth::check()) {
+                EventHelper::createEvent(
+                    'Заявка успешно зарегистрирована!',
+                    null,
+                    1,
+                    '/klientam/report/' . $order->id,
+                    Auth::id()
+                );
+            }
 
-        foreach(ContactEmail::where('active', true)->get() as $email) {
-            SendOrderCreatedMailToAdmin::dispatch($email->email, $order);
+            event(new OrderCreated($order));
         }
 
         return $order->status->slug === "chernovik" ?
-            redirect(route('calculator-show', ['id' => $order->id])) :
-//            redirect(route('report-show', ['id' => $order->id]));
+            redirect(route('calculator-show', [
+                'id' => $order->id,
+                'type' => $order->type->slug
+            ])) :
             redirect(route('orders-list'));
     }
 

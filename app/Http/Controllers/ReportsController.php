@@ -125,7 +125,7 @@ class ReportsController extends Controller
 
                 $file = DocumentHelper::generateRequestDocument(
                     $documentData,
-                    $documentData['Представление'] . '.pdf');
+                    'Заявка № ' . $documentData['СайтИД'] . '.pdf');
                 if(isset($file['tempFile']) && isset($file['fileName'])) {
                     return response()->download($file['tempFile'], $file['fileName'])
                         ->deleteFileAfterSend(true);
