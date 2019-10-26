@@ -41,7 +41,9 @@ class OrderCreated extends Mailable
             $documentName
         );
 
-        return $this->view('emails.order-created')
+        return $this
+            ->subject('Новая заявка на перевозку')
+            ->view('emails.order-created')
             ->attach($file['tempFile'], [
                 'as' => $documentName,
                 'mime' => 'application/pdf',

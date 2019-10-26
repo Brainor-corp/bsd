@@ -32,7 +32,9 @@ class User1CRegister extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.1c-user-register')
+        return $this
+            ->subject('Регистрация на сайте БСД')
+            ->view('emails.1c-user-register')
             ->with([
                 'user' => $this->user,
                 'password' => $this->password

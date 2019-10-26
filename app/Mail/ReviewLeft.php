@@ -6,7 +6,6 @@ use App\Review;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ReviewLeft extends Mailable
 {
@@ -30,6 +29,9 @@ class ReviewLeft extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.review-left')->with(['review' => $this->review]);
+        return $this
+            ->subject('Новый отзыв')
+            ->view('emails.review-left')
+            ->with(['review' => $this->review]);
     }
 }
