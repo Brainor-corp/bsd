@@ -120,9 +120,7 @@ class ReportsController extends Controller
             "empty_fields" => true
         ];
         if(!empty($user->guid)) {
-            $send = [
-                "user_id" => $user->guid,
-            ];
+            $send["user_id"] = $user->guid;
         }
 
         switch ($document_type_id_1c) {
