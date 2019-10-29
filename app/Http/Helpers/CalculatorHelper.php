@@ -388,7 +388,6 @@ class CalculatorHelper
     ) {
         $price = 0;
         $displayCityName = $displayCityName ?? $cityName;
-//        $distance = 45;
 
         // Изначально пытаемся найти особый населённый пункт
         $city = self::getPointByName($cityName);
@@ -590,93 +589,6 @@ class CalculatorHelper
                 ->first() ?? false;
     }
 
-    public static function getDeliveryToPointPrice(
-        Point $point,
-        $weight,
-        $volume,
-        $x2 = false
-    ) {
-        // Найдем тариф внутри города
-        $fixed_tariff = DB::table('inside_forwarding')
-            ->join('forward_thresholds', function($join)
-            {
-                $join->on('inside_forwarding.forward_threshold_id', '=', 'forward_thresholds.id');
-            })
-            ->where([
-                ['city_id', $point->city->id],
-                ['forward_thresholds.weight', '>=', floatval($weight)],
-                ['forward_thresholds.volume', '>=', floatval($volume)],
-            ])
-            ->orderBy('forward_thresholds.weight', 'ASC')
-            ->orderBy('forward_thresholds.volume', 'ASC')
-            ->first();
-
-        if(!isset($fixed_tariff)) {
-            return [
-                'name' => $point->name,
-                'distance' => $point->distance,
-                'price' => 'Договорная'
-            ];
-        }
-
-        $per_km_tariff = DB::table('per_km_tariffs')
-            ->join('cities', 'cities.tariff_zone_id', '=', 'per_km_tariffs.tariff_zone_id')
-            ->join('forward_thresholds', function($join)
-            {
-                $join->on('forward_thresholds.id', '=', 'per_km_tariffs.forward_threshold_id');
-                $join->on('forward_thresholds.threshold_group_id', '=', 'cities.threshold_group_id');
-            })
-            ->where([
-                ['cities.id', $point->city_id],
-                ['forward_thresholds.weight', '>=', floatval($weight)],
-                ['forward_thresholds.volume', '>=', floatval($volume)],
-            ])
-            ->orderBy('forward_thresholds.weight', 'ASC')
-            ->orderBy('forward_thresholds.volume', 'ASC')
-            ->first();
-
-        if(!isset($per_km_tariff)) {
-            return [
-                'name' => $point->name,
-                'distance' => $point->distance,
-                'price' => 'Договорная',
-            ];
-        }
-
-        $fixed_tariff = $fixed_tariff->tariff;
-        $per_km_tariff = floatval($per_km_tariff->tariff);
-
-        $point_fixed_tariff = DB::table('outside_forwardings')
-            ->join('forward_thresholds', function($join)
-            {
-                $join->on('outside_forwardings.forward_threshold_id', '=', 'forward_thresholds.id');
-            })
-            ->where([
-                ['point', $point->id],
-                ['forward_thresholds.weight', '>=', floatval($weight)],
-                ['forward_thresholds.volume', '>=', floatval($volume)],
-                ['forward_thresholds.units', '>=', 0],
-            ])
-            ->orderBy('forward_thresholds.weight', 'ASC')
-            ->orderBy('forward_thresholds.volume', 'ASC')
-            ->orderBy('forward_thresholds.units', 'ASC')
-            ->first();
-
-        $point_fixed_tariff = $point_fixed_tariff->tariff ?? false;
-
-        if($point_fixed_tariff) {
-            $price = $point_fixed_tariff;
-        } else {
-            $price = $fixed_tariff + intval($point->distance) * 2 * $per_km_tariff;
-        }
-
-        return [
-            'name' => $point->name,
-            'distance' => $point->distance,
-            'price' => $x2 ? $price * 2 : $price
-        ];
-    }
-
     /**
      * Возвращает все просчитанные значения для основного калькулятора
      *
@@ -785,7 +697,7 @@ class CalculatorHelper
             ],
             'services' => $servicesData, // Список услуг
             'discount' => $discount, // Размер скидки
-            'total' => $totalPrice // Общая цена за доставку
+            'total' => $totalPrice, // Общая цена за доставку
         ];
     }
 }

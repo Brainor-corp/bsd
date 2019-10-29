@@ -249,10 +249,6 @@ class CalculatorController extends Controller
         $totalWeight = $request->get('cargo')['total_weight'] ?? 0;
         $totalVolume = $request->get('cargo')['total_volume'] ?? 0;
 
-//        foreach($request->get('cargo')['packages'] as $package) {
-//            $totalWeight += $package['weight'] * $package['quantity'];
-//            $totalVolume += $package['volume'] * $package['quantity'];
-//        }
         $ship_city = $cities->where('name', $request->get('ship_city'))->first();
         $dest_city = $cities->where('name', $request->get('dest_city'))->first();
 
@@ -400,7 +396,6 @@ class CalculatorController extends Controller
         Request $request,
         $weight = null,
         $volume = null,
-//        $packages = null,
         $ship_city = null,
         $dest_city = null,
         $route_id = null
@@ -435,7 +430,7 @@ class CalculatorController extends Controller
         }
 
         $citiesIdsToFindRoute['ship'] = [
-            $shipCity, $deliveryPoint
+            $deliveryPoint, $shipCity
         ];
 
         $destCity = null;
@@ -449,7 +444,7 @@ class CalculatorController extends Controller
         }
 
         $citiesIdsToFindRoute['bring'] = [
-            $destCity, $bringPoint
+            $bringPoint, $destCity
         ];
 
         if($route_id == null){
@@ -505,23 +500,53 @@ class CalculatorController extends Controller
             }
         }
 
-
-//        if($packages == null){
-//            if(is_array($request->packages)){
-//                $packages = $request->cargo['packages'];
-//            }else{
-//                $packages = array();
-//                parse_str($request->formData, $packages);
-//                $packages = $packages['cargo']['packages'];
-//            }
-//        }
-
         $services = null;
         if(isset($formData['service'])){$services = $formData['service'];}
 
         $routeData = CalculatorHelper::getRouteData(null, null, [], $weight, $volume, $route_id);
-        $deliveryData = isset($deliveryPoint) ? CalculatorHelper::getDeliveryToPointPrice($deliveryPoint, $weight, $volume) : null;
-        $bringData = isset($bringPoint) ? CalculatorHelper::getDeliveryToPointPrice($bringPoint, $weight, $volume) : null;
+
+        $deliveryData = isset($deliveryPoint) ? CalculatorHelper::getTariffPrice(
+            $deliveryPoint->city->name,
+            $deliveryPoint->name,
+            $weight,
+            $volume,
+            false,
+            false,
+            [
+                [
+                    'length'    => "0",
+                    'width'     => "0",
+                    'height'    => "0",
+                    'weight'    => "0",
+                    'quantity'  => "0",
+                    'volume'    => "0",
+                ]
+            ],
+            $deliveryPoint->distance,
+            null,
+            $deliveryPoint->name
+        ) : null;
+        $bringData = isset($bringPoint) ? CalculatorHelper::getTariffPrice(
+            $bringPoint->city->name,
+            $bringPoint->name,
+            $weight,
+            $volume,
+            false,
+            false,
+            [
+                [
+                    'length'    => "0",
+                    'width'     => "0",
+                    'height'    => "0",
+                    'weight'    => "0",
+                    'quantity'  => "0",
+                    'volume'    => "0",
+                ]
+            ],
+            $bringPoint->distance,
+            null,
+            $bringPoint->name
+        ) : null;
 
         $totalData = CalculatorHelper::getTotalPrice(
             $routeData['price'],
