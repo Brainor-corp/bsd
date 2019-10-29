@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Type;
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
+use App\RouteTariff;
 use File;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UploadXmlController  extends Controller
 {
@@ -355,6 +354,21 @@ class UploadXmlController  extends Controller
                         'updated_at' => $nowTimestamp,
                     ]);
                 }
+            }
+        }
+    }
+
+    // У большинства тарифных маршрутов не указана мера,
+    // зато мера указана у их Threshold'ов.
+    public function updateRouteTariffsRates() {
+        $routeTariffs = RouteTariff::with('threshold.rate')->get();
+        foreach($routeTariffs as $routeTariff) {
+            if($routeTariff->rate_id !== $routeTariff->threshold->rate->id) {
+                DB::table('route_tariffs')
+                    ->where('id', $routeTariff->id)
+                    ->update([
+                        'rate_id' => $routeTariff->threshold->rate->id
+                    ]);
             }
         }
     }
