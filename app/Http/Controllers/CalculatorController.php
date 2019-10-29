@@ -319,9 +319,9 @@ class CalculatorController extends Controller
         if(!is_numeric($ship_city)) {
             $query = $ship_city;
 
-            $ship_city = City::where('name', $query)->first();
+            $ship_city = Point::where('name', $query)->first();
             if(empty($ship_city)) {
-                $ship_city = Point::where('name', $query)->firstOrFail();
+                $ship_city = City::where('name', $query)->firstOrFail();
             }
 
             $ship_city = $ship_city instanceof City ? $ship_city->id : $ship_city->city_id;
