@@ -233,7 +233,7 @@
                 <label class="custom-control-label" for="need-to-take-type-from">из:</label>
             </div>
 
-            <input type="hidden" name="take_city_name" value="{{ old('take_city_name') ?? ($order->take_city_name ?? ($deliveryPoint->city->name ?? '')) }}">
+            <input type="hidden" name="take_city_name" value="{{ old('take_city_name') ?? ($order->take_city_name ?? ($deliveryPoint->name ?? '')) }}">
             <input type="hidden" name="take_distance" value="{{ old('take_distance') ?? ($order->take_distance ?? ($deliveryPoint->distance ?? 0)) }}" class="distance-hidden-input">
             <input type="hidden" name="take_polygon" value="{{ old('take_polygon') ?? ($order->take_polygon_id ?? '') }}" class="take-polygon-hidden-input">
             <div class="form-item ininner">
@@ -302,7 +302,7 @@
                 <label class="custom-control-label" for="need-to-bring-type-from">в:</label>
             </div>
 
-            <input type="hidden" name="bring_city_name" value="{{ old('bring_city_name') ?? ($order->delivery_city_name ?? ($bringPoint->city->name ?? '')) }}">
+            <input type="hidden" name="bring_city_name" value="{{ old('bring_city_name') ?? ($order->delivery_city_name ?? ($bringPoint->name ?? '')) }}">
             <input type="hidden" name="bring_distance" value="{{ old('bring_distance') ?? ($order->delivery_distance ?? ($bringPoint->distance ?? 0)) }}" class="distance-hidden-input">
             <input type="hidden" name="bring_polygon" value="{{ old('bring_polygon') ?? ($order->bring_polygon_id ?? 0) }}" class="bring-polygon-hidden-input">
             <div class="form-item ininner">
