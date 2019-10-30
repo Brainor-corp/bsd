@@ -21,12 +21,12 @@ class MainPageController extends Controller
 
         // Объединим города и пункты в одну коллекцию
         $shipCities = Collect($shipCities->pluck('name'))->merge($shipPoints->pluck('name'));
-        $shipCities = $shipCities->unique()->map(function ($item, $key) {
+        $shipCities = $shipCities->map(function ($item, $key) {
             $city = new \stdClass();
-            $city->name = $item;
+            $city->name = trim($item);
 
             return $city;
-        })->sortBy('name');
+        })->unique()->sortBy('name');
 
         // Города/пункты отправления/назначения по умолчанию
         $selectedShipCity = null;

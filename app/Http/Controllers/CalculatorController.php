@@ -126,7 +126,7 @@ class CalculatorController extends Controller
             }
 
             $citiesIdsToFindRoute['ship'] = [
-                $selectedShipCity, $deliveryPoint
+                $deliveryPoint, $selectedShipCity
             ];
 
             $bringPoint = null;
@@ -138,7 +138,7 @@ class CalculatorController extends Controller
             }
 
             $citiesIdsToFindRoute['bring'] = [
-                $selectedDestCity, $bringPoint
+                $bringPoint, $selectedDestCity
             ];
         }
 
@@ -149,6 +149,10 @@ class CalculatorController extends Controller
         // в то время как для пункта с таким же названием он есть (Прим.: Москва -> Адлер).
         // Поэтому для поиска маршрута проходим циклом по всем найденный городам/пунктам.
         foreach($citiesIdsToFindRoute['ship'] as $shipModel) {
+            if(isset($route)) {
+                break;
+            }
+
             if(!isset($shipModel)) {
                 continue;
             }
@@ -454,6 +458,9 @@ class CalculatorController extends Controller
                 // в то время как для пункта с таким же названием он есть (Прим.: Москва -> Адлер).
                 // Поэтому для поиска маршрута проходим циклом по всем найденный городам/пунктам.
                 foreach($citiesIdsToFindRoute['ship'] as $shipModel) {
+                    if(isset($route)) {
+                        break;
+                    }
                     if(!isset($shipModel)) {
                         continue;
                     }
