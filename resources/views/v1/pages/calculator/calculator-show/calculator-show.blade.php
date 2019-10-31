@@ -33,7 +33,7 @@
             <div class="row">
                 <div class="col-12">
                     <header class="wrapper__header">
-                        <h1>{{ $orderType === 'calculator' ? 'Расчет стоимости' : 'Заявка на забор груза' }}</h1>
+                        <h1>{{ $orderType === 'calculator' ? 'Оформление заявки и расчет стоимости' : 'Заявка на забор груза' }}</h1>
                     </header>
                     <div class="row">
                         <div class="col-lg-6">
