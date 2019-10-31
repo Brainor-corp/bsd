@@ -107,7 +107,7 @@
                 @if(!empty(old('cargo.packages')))
                     @foreach(old('cargo.packages') as $key => $package)
                         <div class="row package-wrapper" id="package-wrapper-{{ $key }}">
-                            <div class="col-11 form-item row align-items-center package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
+                            <div class="col-11 form-item row package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
                                 <label class="col-sm-auto calc__label">
                                     <span class="content">Габариты (м)*</span>
                                 </label>
@@ -133,7 +133,7 @@
                 @else
                     @foreach($packages as $key => $package)
                         <div class="row package-wrapper" id="package-wrapper-{{ $key }}">
-                            <div class="col-11 form-item row align-items-center package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
+                            <div class="col-11 form-item row package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
                                 <label class="col-sm-auto calc__label">
                                     <span class="content">Габариты (м)*</span>
                                     @if($loop->first)

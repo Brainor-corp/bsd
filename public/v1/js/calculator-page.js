@@ -268,7 +268,7 @@ $(document).ready(function () {
         if($(this).val() >dimensionMax){
             $(this).addClass('oversized');
             if($(this).parent().parent().children('div.oversize-error').length === 0){
-                myDivs = $('<div class="oversize-error">Возможно увеличение стоимости доставки из-за негабаритности груза</div>   ')
+                myDivs = $('<div class="oversize-error">Введенные Вами данные превышают параметры габаритного груза. Возможно увеличение стоимости перевозки.</div>   ')
                     .appendTo($(this).parent().parent())
             }
         }else {
@@ -316,7 +316,7 @@ $(document).ready(function () {
         if($(this).val() >dimensionMax){
             $(this).addClass('oversized');
             if($(this).parent().parent().children('div.oversize-error').length === 0){
-                myDivs = $('<div class="oversize-error">Возможно увеличение стоимости доставки из-за негабаритности груза</div>   ')
+                myDivs = $('<div class="oversize-error">Введенные Вами данные превышают параметры габаритного груза. Возможно увеличение стоимости перевозки.</div>   ')
                     .appendTo($(this).parent().parent())
             }
         }else {
@@ -347,7 +347,7 @@ $(document).ready(function () {
         if($(this).val() >dimensionMax){
             $(this).addClass('oversized');
             if($(this).parent().parent().children('div.oversize-error').length === 0){
-                myDivs = $('<div class="oversize-error">Возможно увеличение стоимости доставки из-за негабаритности груза</div>   ')
+                myDivs = $('<div class="oversize-error">Введенные Вами данные превышают параметры габаритного груза. Возможно увеличение стоимости перевозки.</div>   ')
                     .appendTo($(this).parent().parent())
             }
         }else {

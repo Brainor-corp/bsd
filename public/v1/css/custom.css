@@ -115,8 +115,14 @@
 .package-params{
     background:transparent;
 }
+
 .package-params.oversized{
-    background:rgba(255, 177, 177, 0.25);
+    background: #ef402f;
+    color: white;
+}
+
+.oversize-error {
+    color: #ef402f;
 }
 
 select.form-control:not([size]):not([multiple]) {
