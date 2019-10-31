@@ -25,7 +25,7 @@
     <div class="breadcrumb__list d-flex">
         <div class="container">
             <span class="breadcrumb__item"><a href="{{ route('index') }}" class="">Главная</a></span>
-            <span class="breadcrumb__item">{{ $orderType === 'calculator' ? 'Расчет стоимости' : 'Заявка на забор груза' }}</span>
+            <span class="breadcrumb__item">{{ $orderType === 'calculator' ? 'Оформление заявки и расчет стоимости' : 'Заявка на забор груза' }}</span>
         </div>
     </div>
     <section class="wrapper">
