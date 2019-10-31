@@ -18,7 +18,7 @@
                     <div class="row">
                         <div class="col-lg-8 col-12">
                             <span>
-                                {{ html_entity_decode(strip_tags($post->content)) }}
+                                {!! $post->content !!}
                             </span>
                         </div>
                     </div>
