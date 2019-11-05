@@ -116,14 +116,11 @@ class MainPageController extends Controller
         }
 
         //news
-        $news = CmsBoosterPost::when(
-                isset($currentCity->closest_terminal_id),
-                function ($newsQ) use ($currentCity) {
-                    return $newsQ->whereHas('terminals', function ($terminalsQ) use ($currentCity) {
-                        $terminalsQ->where('id', $currentCity->closest_terminal_id);
-                    });
-                }
-            )
+        $news = CmsBoosterPost::whereHas('terminals', function ($terminalsQ) use ($currentCity) {
+                $terminalsQ->whereHas('city', function ($cityQ) use ($currentCity) {
+                    return $cityQ->where('id', $currentCity->id);
+                });
+            })
             ->where([
                 ['type', 'news'],
                 ['status', 'published'],

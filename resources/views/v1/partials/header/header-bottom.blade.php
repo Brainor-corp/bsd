@@ -103,4 +103,6 @@
             </div>
         @endforeach
     </div>
+@else
+    <div class="mb-4"></div>
 @endif
