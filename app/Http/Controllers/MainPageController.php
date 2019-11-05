@@ -129,22 +129,6 @@ class MainPageController extends Controller
             ->limit(3)
             ->get();
 
-        // Если для текущего города новостей нет, и текущий город -- не Питер, выведем новости для Питера
-        if(!$news->count() && $currentCity->slug !== 'sankt-peterburg') {
-            $news = CmsBoosterPost::whereHas('terminals', function ($terminalsQ) use ($currentCity) {
-                    $terminalsQ->whereHas('city', function ($cityQ) {
-                        return $cityQ->where('slug', 'sankt-peterburg');
-                    });
-                })
-                ->where([
-                    ['type', 'news'],
-                    ['status', 'published'],
-                ])
-                ->orderBy('created_at', 'desc')
-                ->limit(3)
-                ->get();
-        }
-
         //services
         $args = [
             'type' => 'page',
