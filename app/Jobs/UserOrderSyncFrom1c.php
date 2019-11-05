@@ -69,7 +69,7 @@ class UserOrderSyncFrom1c implements ShouldQueue
 
             $type = Type::where([
                 ['class', 'OrderType'],
-                ['order', 'order']
+                ['slug', 'order']
             ])->first();
 
             $order = new Order();
