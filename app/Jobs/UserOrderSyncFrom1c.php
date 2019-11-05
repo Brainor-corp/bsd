@@ -80,6 +80,7 @@ class UserOrderSyncFrom1c implements ShouldQueue
                     ['name', $response1c['response']['Груз']]
                 ])->first()->id ?? null) : null;
             $order->total_weight = floatval($response1c['response']['Вес'] ?? 0);
+            $order->total_volume = floatval($response1c['response']['Объем'] ?? 0);
             $order->status_id = $status->id;
             $order->cargo_number = $response1c['response']['Номер'] ?? "";
             $order->ship_city_id = City::where('name', $response1c['response']['ГородОтправления'] ?? "-")->first()->id ?? null;
