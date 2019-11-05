@@ -67,8 +67,14 @@ class UserOrderSyncFrom1c implements ShouldQueue
                 ]
             );
 
+            $type = Type::where([
+                ['class', 'OrderType'],
+                ['order', 'order']
+            ])->first();
+
             $order = new Order();
             $order->shipping_name = $response1c['response']['Груз'] ?? "-";
+            $order->type_id = $type->id;
             $order->cargo_type = isset($response1c['response']['Груз']) ? (Type::where([
                     ['class', 'cargo_type'],
                     ['name', $response1c['response']['Груз']]
