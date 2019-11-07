@@ -66,11 +66,11 @@
                 <div class="form-inline calc__block_itog" >
                     <div class="form-item justify-content-between w-100 short_ins_wrapper">
                         Страхование
-                        <span><span id="short_ins">50</span><span class="rouble">p</span></span>
+                        <span><span id="short_ins">-</span><span class="rouble">p</span></span>
                     </div>
                     <div class="form-item justify-content-between w-100">
                         Стоимость перевозки
-                        <span><span id="short_base-price">150</span><span class="rouble">p</span></span>
+                        <span><span id="short_base-price">-</span><span class="rouble">p</span></span>
                     </div>
                     <div class="form-item justify-content-between w-100" style="display: none" id="deliveryPriceBlock">
                         Стоимость забора "от двери" (<span id="deliveryDistance"></span>)
@@ -82,7 +82,7 @@
                     </div>
                     <div class="form-item justify-content-between w-100">
                         Итог
-                        <span><span id="short_total-price">150</span><span class="rouble">p</span></span>
+                        <span><span id="short_total-price">-</span><span class="rouble">p</span></span>
                     </div>
                 </div>
                 <button class="btn btn-block btn-danger">Перейти к оформлению заказа</button>
