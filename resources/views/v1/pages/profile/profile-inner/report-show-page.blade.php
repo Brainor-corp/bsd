@@ -270,10 +270,17 @@
                                 </div>
                                 <div class="form-item form-group-additional">
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="insurance" disabled checked>
+                                        <input type="checkbox"
+                                               class="custom-control-input"
+                                               id="insurance"
+                                               disabled
+                                               {{ $order->insurace ? 'checked' : '' }}
+                                        >
                                         <label class="custom-control-label" for="insurance">Страхование</label>
                                     </div>
-                                    <div id="insurance-amount-wrapper">
+                                    <div id="insurance-amount-wrapper"
+                                         style="{{ $order->insurace ? '' : 'display: none;' }}"
+                                    >
                                         <br>
                                         <label class="" for="insurance-amount">Сумма страховки</label>
                                         <input type="text" readonly class="form-control" id="insurance-amount"
@@ -527,17 +534,19 @@
                                                         </span>
                                                     </div>
                                                 @endforeach
-                                                <div class="block__itogo_item d-flex">
-                                                    <div class="d-flex flex-wrap" id="services-total-names">
-                                                        <span class="block__itogo_value">Страхование</span>
-                                                    </div>
-                                                    <span class="block__itogo_price d-flex flex-nowrap" id="services-total-prices">
-                                                        <span class="block__itogo_amount">
-                                                            {{ $order->insurance_amount }}
+                                                @if($order->insurance)
+                                                    <div class="block__itogo_item d-flex">
+                                                        <div class="d-flex flex-wrap" id="services-total-names">
+                                                            <span class="block__itogo_value">Страхование</span>
+                                                        </div>
+                                                        <span class="block__itogo_price d-flex flex-nowrap" id="services-total-prices">
+                                                            <span class="block__itogo_amount">
+                                                                {{ $order->insurance_amount }}
+                                                            </span>
+                                                            <span class="rouble">p</span>
                                                         </span>
-                                                        <span class="rouble">p</span>
-                                                    </span>
-                                                </div>
+                                                    </div>
+                                                @endif
                                                 @if(isset($order->discount_amount))
                                                     <div class="block__itogo_item d-flex">
                                                         <div class="d-flex flex-wrap" id="services-total-names">
