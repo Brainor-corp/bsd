@@ -49,7 +49,7 @@ class OrderController extends Controller
             "dest_point" => ['nullable', 'string'],                                             // Адрес_экспедиции (доставка)
             "bring_polygon" => ['nullable'],                                                    // Полигон экспедиции (доставка)
 
-            "insurance_amount" => ['required', 'numeric', 'min:50000'],                         // Страховка (Цена_страхования)
+//            "insurance_amount" => ['required', 'numeric', 'min:50000'],                         // Страховка (Цена_страхования)
             "discount" => ['nullable', 'numeric', new Discount1c()],                            // Скидка (Процент_скидки)
 
             "sender_type_id" => ['required', 'numeric'],                                        // Отправитель (Тип_контрагента)
@@ -117,6 +117,9 @@ class OrderController extends Controller
         ];
 
         $validator = Validator::make($request->all(), $rules);
+        $validator->sometimes('insurance_amount', 'required|numeric|min:50000', function ($request) {
+            return !empty($request->get('insurance'));
+        });
         if ($validator->fails()) {
             return redirect()
                 ->back()
@@ -184,8 +187,9 @@ class OrderController extends Controller
                     'distance' => $request->get('bring_distance'),
                     'polygonId' => $request->get('bring_polygon')
                 ] : [],
-            $request->get('insurance_amount'),
-            $request->get('discount')
+            $request->get('insurance_amount') ?? 0,
+            $request->get('discount'),
+            !empty($request->get('insurance'))
         );
 
         if(!$calculatedData) {
@@ -480,6 +484,7 @@ class OrderController extends Controller
             abort(500);
         }
 
+
         // Плательщик ///////////////////////////////////////////////////////////////////////////
         $order->payer_type = $payerType->id;
         $order->payer_email = $request->get('payer-email');
@@ -583,8 +588,8 @@ class OrderController extends Controller
 
         $order->discount = $request->get('discount');
         $order->discount_amount = $calculatedData['discount'] ?? 0;
-        $order->insurance = $request->get('insurance_amount');
-        $order->insurance_amount = end($calculatedData['services'])['total'] ?? 0;
+        $order->insurance = $request->get('insurance_amount') ?? 0;
+        $order->insurance_amount = $calculatedData['services']['insurance']['total'] ?? 0;
         $order->user_id = Auth::user()->id ?? null;
         $order->enter_id = $_COOKIE['enter_id'];
         $order->payment_type = $paymentType->id;

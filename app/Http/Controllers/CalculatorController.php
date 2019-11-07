@@ -306,7 +306,8 @@ class CalculatorController extends Controller
                 'polygonId' => $request->get('bring_polygon')
             ] : [],
             $request->get('insurance_amount'),
-            $request->get('discount')
+            $request->get('discount'),
+            !empty($request->get('insurance'))
         );
     }
 
