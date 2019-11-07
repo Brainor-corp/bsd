@@ -39,7 +39,7 @@
                                             </div>
                                             <div class="row mt-3">
                                                 <div class="col-12">
-                                                    <div class="row mb-3">
+                                                    <div class="row mb-2">
                                                         <div class="col-12">
                                                             <span>Время исполнения заказа (время московское)</span>
                                                         </div>
