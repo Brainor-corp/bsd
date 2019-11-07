@@ -72,7 +72,7 @@ class Api1cTestController extends Controller
             $mapOrder['Название_груза'] = $order->shipping_name ?? "";
             $mapOrder['Общий_вес'] = floatval($order->total_weight);
             $mapOrder['Общий_объем'] = floatval($order->total_volume);
-            $mapOrder['Примечания'] = $order->cargo_comment;
+            $mapOrder['Примечания'] = $order->cargo_comment ?? '';
 
             if(isset($order->order_date) && isset($order->ship_time_from) && isset($order->ship_time_to)) {
                 $mapOrder['Время_доставки'] = [
