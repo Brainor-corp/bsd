@@ -38,35 +38,44 @@
                                                 </div>
                                             </div>
                                             <div class="row mt-3">
-                                                <div class="col-6">
-                                                    <label for="ship_time_from">С*</label>
-                                                    <input
-                                                            value="{{ old('ship_time_from') ?? (isset($order) && $order->ship_time_from ?
+                                                <div class="col-12">
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <span>Время исполнения заказа (время московское)</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <label for="ship_time_from">С*</label>
+                                                            <input
+                                                                value="{{ old('ship_time_from') ?? (isset($order) && $order->ship_time_from ?
                                                                     \Carbon\Carbon::createFromFormat('H:i:s', $order->ship_time_from)->format('H:i')
                                                                     : '11:00')
                                                             }}"
-                                                            type="time"
-                                                            name="ship_time_from"
-                                                            id="ship_time_from"
-                                                            class="form-control"
-                                                            readonly
-                                                            disabled
-                                                    >
-                                                </div>
-                                                <div class="col-6">
-                                                    <label for="ship_time_to">По*</label>
-                                                    <input
-                                                            value="{{ old('ship_time_to') ?? (isset($order) && $order->ship_time_to ?
+                                                                type="time"
+                                                                name="ship_time_from"
+                                                                id="ship_time_from"
+                                                                class="form-control"
+                                                                readonly
+                                                                disabled
+                                                            >
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <label for="ship_time_to">До*</label>
+                                                            <input
+                                                                value="{{ old('ship_time_to') ?? (isset($order) && $order->ship_time_to ?
                                                                     \Carbon\Carbon::createFromFormat('H:i:s', $order->ship_time_to)->format('H:i')
                                                                     : '17:00')
                                                             }}"
-                                                            type="time"
-                                                            name="ship_time_to"
-                                                            id="ship_time_to"
-                                                            class="form-control"
-                                                            readonly
-                                                            disabled
-                                                    >
+                                                                type="time"
+                                                                name="ship_time_to"
+                                                                id="ship_time_to"
+                                                                class="form-control"
+                                                                readonly
+                                                                disabled
+                                                            >
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
