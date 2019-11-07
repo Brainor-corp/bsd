@@ -240,13 +240,20 @@ $(document).ready(function () {
 
     $(document).on('change', '#insurance', function (e) {
         $('#insurance-amount').attr('value', '');
-        $('#insurance-amount').val('');
 
         if($(this).is(':checked')) {
+            $('#insurance-amount').val(50000);
+            $('#insurance-amount').attr('required', 'required');
+            $('#insurance-amount').attr('min', '50000');
             $('#insurance-amount-wrapper').show();
         } else {
+            $('#insurance-amount').val(0);
+            $('#insurance-amount').removeAttr('required');
+            $('#insurance-amount').removeAttr('min');
             $('#insurance-amount-wrapper').hide();
         }
+
+        getAllCalculatedData();
     });
 
     $(document).on('change', '#insurance-amount', function (e) {

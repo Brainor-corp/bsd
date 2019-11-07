@@ -306,7 +306,8 @@ class CalculatorController extends Controller
                 'polygonId' => $request->get('bring_polygon')
             ] : [],
             $request->get('insurance_amount'),
-            $request->get('discount')
+            $request->get('discount'),
+            !empty($request->get('insurance'))
         );
     }
 
@@ -507,9 +508,6 @@ class CalculatorController extends Controller
             }
         }
 
-        $services = null;
-        if(isset($formData['service'])){$services = $formData['service'];}
-
         $routeData = CalculatorHelper::getRouteData(null, null, [], $weight, $volume, $route_id);
 
         $deliveryData = isset($deliveryPoint) ? CalculatorHelper::getTariffPrice(
@@ -557,10 +555,10 @@ class CalculatorController extends Controller
 
         $totalData = CalculatorHelper::getTotalPrice(
             $routeData['price'],
-            $services,
+            null,
             $routeData['totalWeight'],
             $routeData['totalVolume'],
-            null,
+            50000,
             null,
             $deliveryData['price'] ?? null,
             $bringData['price'] ?? null

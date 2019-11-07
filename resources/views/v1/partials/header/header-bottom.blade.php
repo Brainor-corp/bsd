@@ -64,7 +64,7 @@
                     </div>
                 </div>
                 <div class="form-inline calc__block_itog" >
-                    <div class="form-item justify-content-between w-100 short_ins_wrapper" style="display: none">
+                    <div class="form-item justify-content-between w-100 short_ins_wrapper">
                         Страхование
                         <span><span id="short_ins">50</span><span class="rouble">p</span></span>
                     </div>

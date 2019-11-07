@@ -370,14 +370,38 @@
         @endforeach
     </div>
     <div class="form-item form-group-additional">
+        @php
+            $insuranceNeed = true;
+            if(empty(old())) {
+                if(isset($order) && empty($order->insurance)) {
+                    $insuranceNeed = false;
+                }
+            } else {
+                $insuranceNeed = !empty(old('insurance'));
+            }
+        @endphp
         <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="insurance">
+            <input type="checkbox"
+                   name="insurance"
+                   class="custom-control-input"
+                   id="insurance"
+                   {{ $insuranceNeed ? 'checked' : '' }}
+            >
             <label class="custom-control-label" for="insurance">Страхование</label>
         </div>
-        <div id="insurance-amount-wrapper">
+        <div id="insurance-amount-wrapper"
+             style="{{ $insuranceNeed ? '' : 'display: none;' }}"
+        >
             <br>
             <label class="" for="insurance-amount">Сумма страховки</label>
-            <input type="number" min="50000" class="form-control" id="insurance-amount" name="insurance_amount" placeholder="Введите сумму страховки" value="{{ old('insurance_amount') ?? ($order->insurance ?? '50000') }}" required>
+            <input type="number"
+                   class="form-control"
+                   id="insurance-amount"
+                   name="insurance_amount"
+                   placeholder="Введите сумму страховки"
+                   value="{{ !empty(old('insurance_amount')) ? old('insurance_amount') : ($order->insurance ?? '50000') }}"
+                   {{ $insuranceNeed ? 'min="50000" required' : '' }}
+            >
             <br>
         </div>
         <div class="relative">

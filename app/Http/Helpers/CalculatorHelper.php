@@ -197,19 +197,11 @@ class CalculatorHelper
 
     public static function getServicesData(
         $services,
-//        $packages,
         $insuranceAmount,
         $totalWeight,
-        $totalVolume
+        $totalVolume,
+        $insuranceNeed = true
     ) {
-//        $totalVolume = 0;
-//        $totalWeight = 0;
-
-//        foreach($packages as $package) {
-//            $totalVolume += $package['volume'] * $package['quantity'];
-//            $totalWeight += $package['weight'] * $package['quantity'];
-//        }
-
         $servicesData = Service::get();
 
         $usedServices = [];
@@ -229,15 +221,14 @@ class CalculatorHelper
                 ];
             }
         }
-        if ($totalWeight <= 2 && $totalVolume <= 0.01) {}
-        else{
+        if($insuranceNeed) {
             $insurancePrice = 50;
             if(isset($insuranceAmount)){
                 if(intval($insuranceAmount)>0){
                     $insurancePrice = max(($insuranceAmount * 0.1000000000000000055511151231257827021181583404541015625)/100, 50);
                 }
             }
-            $usedServices[] = [
+            $usedServices['insurance'] = [
                 'name'          => 'Страховка',
                 'slug'          => '',
                 'description'   => '',
@@ -602,6 +593,7 @@ class CalculatorHelper
      * @param array $bringParams
      * @param $insuranceAmount
      * @param $discount
+     * @param bool $insuranceNeed
      * @return array
      */
     public static function getAllCalculatedData(
@@ -614,7 +606,8 @@ class CalculatorHelper
         Array $takeParams = [],
         Array $bringParams = [],
         $insuranceAmount,
-        $discount
+        $discount,
+        $insuranceNeed = true
     ) {
         $totalPrice = "Договорная";
         $servicesPrice = 0;
@@ -623,10 +616,10 @@ class CalculatorHelper
 
         $servicesData = self::getServicesData(
             $services,
-//            $packages,
             $insuranceAmount,
             $total_weight,
-            $total_volume
+            $total_volume,
+            $insuranceNeed
         );
         foreach($servicesData as $service) {
             if(is_numeric($service['total'])) {
