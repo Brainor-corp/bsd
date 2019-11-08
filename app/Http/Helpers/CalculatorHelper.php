@@ -152,7 +152,7 @@ class CalculatorHelper
                         if(is_numeric($baseTariff['price'])) {
                             $total = max($tariff->weight, $tariff->volume, $route->min_cost) + $baseTariff['price'];
                         } else {
-                            $total = "Договорная";
+                            $total = "договорная";
                         }
                     } else {
                         if (count($oversizes) > 0) {
@@ -166,7 +166,7 @@ class CalculatorHelper
                                 foreach ($packages as $package) {
                                     $oversizeRation = self::oversize_ratio($route->oversizes_id, $package);
                                     if($oversizeRation === false) {
-                                        $total = "Договорная";
+                                        $total = "договорная";
                                         break;
                                     }
 
@@ -181,7 +181,7 @@ class CalculatorHelper
                     if(is_numeric($total)) {
                         $basePrice = ceil($total + $route->addition);
                     } else {
-                        $basePrice = "Договорная";
+                        $basePrice = "договорная";
                     }
                 }
             }
@@ -277,14 +277,14 @@ class CalculatorHelper
                 if(is_numeric($take_price)) {
                     $totalPrice += floatval($take_price);
                 } else {
-                    $totalPrice = 'Договорная';
+                    $totalPrice = 'договорная';
                 }
             }
             if(isset($bring_price)) {
                 if(is_numeric($bring_price)) {
                     $totalPrice += floatval($bring_price);
                 } else {
-                    $totalPrice = 'Договорная';
+                    $totalPrice = 'договорная';
                 }
             }
         }
@@ -348,12 +348,12 @@ class CalculatorHelper
             if(is_numeric($base_price) && is_numeric($discount)) {
                 $discountPrice = ceil(($base_price * $discount) / 100);
             } else {
-                $discountPrice = "Договорная";
+                $discountPrice = "договорная";
             }
             if(is_numeric($totalPrice) && is_numeric($discountPrice)) {
                 $totalPrice -= $discountPrice;
             } else {
-                $totalPrice = "Договорная";
+                $totalPrice = "договорная";
             }
 
             $result['discount'] = $discountPrice;
@@ -407,10 +407,10 @@ class CalculatorHelper
                 );
             } else { // Если не нашли и по названию города отправления/назначения, выводим договорную цену
                 return $isWithinTheCity ? [
-                    'price' => 'Договорная',
+                    'price' => 'договорная',
                     'city_name' => $displayCityName
                 ] : [
-                    'price' => 'Договорная',
+                    'price' => 'договорная',
                     'city_name' => $displayCityName,
                     'distance' => intval($distance),
                 ];
@@ -464,7 +464,7 @@ class CalculatorHelper
         $fixed_tariff = $fixed_tariff->tariff ?? false;
         if(!$fixed_tariff && $isWithinTheCity) {
             return [
-                'price' => 'Договорная',
+                'price' => 'договорная',
                 'city_name' => $displayCityName,
                 'distance' => intval($distance),
             ];
@@ -539,7 +539,7 @@ class CalculatorHelper
 
         if(!$per_km_tariff) {
             return [
-                'price' => 'Договорная',
+                'price' => 'договорная',
                 'city_name' => $displayCityName,
                 'distance' => intval($distance),
             ];
@@ -609,7 +609,7 @@ class CalculatorHelper
         $discount,
         $insuranceNeed = true
     ) {
-        $totalPrice = "Договорная";
+        $totalPrice = "договорная";
         $servicesPrice = 0;
 
         $routeData = self::getRouteData($shipCity, $destCity, $packages, $total_weight, $total_volume);
@@ -625,7 +625,7 @@ class CalculatorHelper
             if(is_numeric($service['total'])) {
                 $servicesPrice += floatval($service['total']);
             } else {
-                $servicesPrice = "Договорная";
+                $servicesPrice = "договорная";
                 break;
             }
         }
@@ -676,7 +676,7 @@ class CalculatorHelper
             $discount = round($totalPrice * ($discount / 100), 2);
             $totalPrice -= $discount;
         } else {
-            $discount = "Договорная";
+            $discount = "договорная";
         }
 
         return [

@@ -932,13 +932,13 @@ function renderCalendar(data) {
         let routeName = cityFrom + ' → ' + cityTo;
 
         $('#route-name').html(routeName);
-        $('#base-price').html('Договорная');
+        $('#base-price').html('договорная');
 
         drawDelivery({'take': null, 'bring': null});
         drawServices([]);
         drawDiscount(false);
 
-        $('#total-price').html('Договорная');
+        $('#total-price').html('договорная');
     }
 }
 
