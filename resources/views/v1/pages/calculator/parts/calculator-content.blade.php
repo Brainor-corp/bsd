@@ -830,7 +830,7 @@
     @endif
     <div class="form-item d-flex flex-column flex-md-row">
         <button type="submit" name="status" value="chernovik" class="btn margin-item btn-default my-2 my-lg-0">Сохранить черновик</button>
-        <button type="submit" name="status" value="order_auth" class="btn margin-item btn-danger my-2 my-lg-0">Оформить заявку</button>
+        <button type="submit" name="status" value="order_auth" class="btn margin-item btn-danger my-2 my-lg-0">Оформить заявку через личный кабинет</button>
         @if(\Illuminate\Support\Facades\Auth::guest())
             <button type="submit" name="status" value="order_guest" class="btn margin-item btn-danger my-2 my-lg-0">Оформить заявку без регистрации</button>
         @endif
