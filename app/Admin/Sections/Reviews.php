@@ -75,28 +75,33 @@ class Reviews extends Section {
     public function afterSave(Request $request, $model = null)
     {
         $uploadFile = $request->file('review-file');
-        if(!isset($uploadFile)) {
-            return;
-        }
-
         $modelFile = $model->file;
-        if(isset($modelFile) && file_exists($modelFile->path)) {
-            unlink($modelFile->path);
+
+        if(
+            empty($request->get('current-file-exists')) // Если удалили файл
+            || !empty($uploadFile) // Или загрузили новый
+        ) {
+            // Если есть что удалять -- удаляем
+            if(isset($modelFile) && file_exists($modelFile->path)) {
+                unlink($modelFile->path);
+            }
+            $model->file()->delete();
+
+            // Если есть что загружать -- загружаем
+            if(!empty($uploadFile)) {
+                $file = new ReviewFile();
+                $storagePath = Storage::disk('available_public')->put('files/review-files', $uploadFile);
+
+                $file->name = $uploadFile->getClientOriginalName();
+                $file->mime = $uploadFile->getMimeType();
+                $file->extension = $uploadFile->getClientOriginalExtension();
+                $file->url = url($storagePath);
+                $file->path = Storage::disk('available_public')->path($storagePath);
+                $file->base_url = $storagePath;
+                $file->size = $uploadFile->getSize();
+
+                $model->file()->save($file);
+            }
         }
-
-        $model->file()->delete();
-
-        $file = new ReviewFile();
-        $storagePath = Storage::disk('available_public')->put('files/review-files', $uploadFile);
-
-        $file->name = $uploadFile->getClientOriginalName();
-        $file->mime = $uploadFile->getMimeType();
-        $file->extension = $uploadFile->getClientOriginalExtension();
-        $file->url = url($storagePath);
-        $file->path = Storage::disk('available_public')->path($storagePath);
-        $file->base_url = $storagePath;
-        $file->size = $uploadFile->getSize();
-
-        $model->file()->save($file);
     }
 }
