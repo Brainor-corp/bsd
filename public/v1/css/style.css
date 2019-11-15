@@ -1519,11 +1519,11 @@ ul.icons_list li:after {
 	border-bottom: 2px dotted #5a666e;
 }
 .event-feed__item:hover .event-feed__icon {
-	background:#ef402f;	
+	background:#ef402f;
 }
 .event-feed__item:hover .event-feed__info span {
 	color:#ef402f;
-	border-bottom: 2px dotted #ef402f;	
+	border-bottom: 2px dotted #ef402f;
 }
 
 /* Service */
@@ -2211,10 +2211,10 @@ label.calc__label_max {
 	}
 	.logo-main,
 	.header__top .flex-wrap,
-	.header__fullnav{		
+	.header__fullnav{
 		padding-left:0;
 		padding-right:0;
-	}	
+	}
 	.header__fullnav{
 		margin-left:0;
 	}
@@ -2792,7 +2792,7 @@ label.calc__label_max {
 		left: -50px;
 	}
 	.carousel-control-next{
-		right: -50px;
+		right: -40px;
 	}
 
 }

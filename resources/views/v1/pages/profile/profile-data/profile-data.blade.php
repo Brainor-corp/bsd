@@ -89,7 +89,9 @@
                                         <input type="password" class="form-control form-group" name="password" placeholder="Новый пароль">
                                     </div>
                                 </div>
-                                <button class="footer-btn btn margin-item btn-danger">Сохранить изменения</button>
+                                <a href="/uploads/2019/11/14/Заявление_на_регистрацию_ЛК_(Юридической_лицо).docx">Письмо "О регистрации личного кабинета" (юридическое лицо)</a>
+                                <br>
+                                <button class="footer-btn btn margin-item btn-danger mx-0">Сохранить изменения</button>
                                 @csrf
                             </form>
                         </div>
