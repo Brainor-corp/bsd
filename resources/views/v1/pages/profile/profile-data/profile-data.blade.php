@@ -70,10 +70,6 @@
                                     <label class="col-auto profile__label">Email</label>
                                     <div class="col">
                                         <input type="text" class="form-control form-group" name="email" value="{{ auth()->user()->email ?? '' }}" placeholder="E-mail">
-
-                                        {{--TODO модалка при нажатии на карандаш--}}
-                                        {{--<span class="form-control-text margin-item">postelnyak91@mail.ru</span>--}}
-                                        {{--<i class="fa fa-pencil-square-o margin-item"></i>--}}
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -83,10 +79,14 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <label class="col-auto profile__label">Пароль</label>
-                                    <div class="col">
+                                    <label class="col-12 profile__label form-group">Изменить пароль</label>
+                                    <div class="col-12">
                                         <input type="password" class="form-control form-group" name="old_password" placeholder="Старый пароль">
-                                        <input type="password" class="form-control form-group" name="password" placeholder="Новый пароль">
+                                        <input type="password" class="form-control form-group mb-0" name="password" placeholder="Новый пароль">
+                                        <small id="passwordHelpBlock" class="form-text text-muted mb-3">
+                                            Не менее 8 символов, минимум 1 буква, минимум 1 цифра.
+                                        </small>
+                                        <input type="password" class="form-control form-group" name="password_confirmation" placeholder="Новый пароль ещё раз">
                                     </div>
                                 </div>
                                 <a href="/uploads/2019/11/14/Заявление_на_регистрацию_ЛК_(Юридической_лицо).docx">Письмо "О регистрации личного кабинета" (юридическое лицо)</a>
