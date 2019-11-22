@@ -588,6 +588,9 @@ a.city_choice:hover,
 .header-navbar {
 	margin-bottom:82px;
 }
+.header-navbar img.logo {
+    height: 82px;
+}
 .header__myaccount_link {
 	color:#fff;
 	border-bottom:2px dotted #818f98;

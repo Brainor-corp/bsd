@@ -1,5 +1,5 @@
 <nav class="header-navbar navbar navbar-expand-xl @if($isMainPage) navbar-dark @else navbar-light justify-content-between @endif bg-transparent p-0">
-    <a href="{{ route('index') }}"><img src="{{ asset('/images/img/logo.png') }}" alt="Доставка грузов"></a>
+    <a href="{{ route('index') }}"><img src="{{ asset('/images/img/logo.png') }}" class="logo" alt="Доставка грузов"></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
