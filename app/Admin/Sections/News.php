@@ -19,6 +19,10 @@ class News extends ZeusAdminPosts
     public static function onDisplay()
     {
         $display = parent::onDisplay();
+        $columns = $display->getColumns();
+        unset($columns['0.04']);
+
+        $display->setColumns($columns);
 
         $user = Auth::user();
         if($user->hasRole('regionalnyy-menedzher')) {
@@ -50,6 +54,8 @@ class News extends ZeusAdminPosts
 
         $leftColumn = $form->getColumns()[0];
         $leftColumnFields = $leftColumn->getFields();
+        unset($leftColumnFields['0.05']);
+
         $newFields = [
             FormField::bselect('terminals', 'Терминалы')
                 ->setDataAttributes([
