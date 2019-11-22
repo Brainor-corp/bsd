@@ -32,7 +32,9 @@ $(document).ready(function () {
     // totalWeigthRecount();
     // totalVolumeRecount();
 
-    $('.cargo-type-select').selectize();
+    $('.cargo-type-select').selectize({
+        maxOptions: 2000
+    });
 
     $('#ship_city').selectize({
         openOnFocus:false,

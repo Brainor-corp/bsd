@@ -80,7 +80,9 @@
             {{--<input type="text" class="form-control" placeholder="Введите наименование груза" name="cargo[name]" value="{{ $order->shipping_name ?? '' }}" required>--}}
             <select class="form-control cargo-type-select" data-live-search="true" name="cargo[name]" required>
                 <option value="" selected disabled>Выберите тип груза</option>
-                @foreach($cargoTypes as $cargoType)
+                @foreach($cargoTypes->sortBy(function ($type, $key) {
+                        return mb_strtolower($type['name']);
+                }) as $cargoType)
                     <option value="{{ $cargoType->id }}"
                     @if(!empty(old('cargo.name')))
                         @if(!empty(old('cargo.name')) && intval(old('cargo.name')) === $cargoType->id) selected @endif
