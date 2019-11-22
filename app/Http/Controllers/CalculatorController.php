@@ -208,8 +208,6 @@ class CalculatorController extends Controller
 
         $cargoTypes = Type::where('class', 'cargo_type')->get();
 
-        $oversizeMarkups = OversizeMarkup::get();
-
         return view('v1.pages.calculator.calculator-show.calculator-show')
             ->with(compact(
                 'packages',
@@ -223,7 +221,6 @@ class CalculatorController extends Controller
                 'order',
                 'userTypes',
                 'cargoTypes',
-                'oversizeMarkups',
                 'totalWeight',
                 'totalVolume',
                 'deliveryPoint',

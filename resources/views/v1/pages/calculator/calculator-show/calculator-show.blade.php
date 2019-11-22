@@ -7,11 +7,11 @@
 @section('footerScripts')
     <script>
         var parameters={
-            max_length: {{ $oversizeMarkups->where('rate_id', 28)->min('threshold') ?? 3 }},
-            max_width: {{ $oversizeMarkups->where('rate_id', 28)->min('threshold') ?? 3 }},
-            max_height: {{ $oversizeMarkups->where('rate_id', 28)->min('threshold') ?? 3 }},
-            max_weight: {{ $oversizeMarkups->where('rate_id', 26)->min('threshold') ?? 1000 }},
-            max_volume: {{ $oversizeMarkups->where('rate_id', 27)->min('threshold') ?? 999 }},
+            max_length: 3,
+            max_width: 3,
+            max_height: 1.8,
+            max_weight: 1000,
+            max_volume: 999,
         };
     </script>
     {{--<script src="{{ asset('v1/js/jquery.kladr.js') }}@include('v1.partials.versions.jsVersion')"></script>--}}

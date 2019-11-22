@@ -154,8 +154,6 @@ class MainPageController extends Controller
         $textBlock = CMSHelper::getQueryBuilder($args)
             ->first();
 
-        $oversizeMarkups = OversizeMarkup::get();
-
         return view('v1.pages.index.index')
             ->with(compact(
                 'packages',
@@ -167,8 +165,7 @@ class MainPageController extends Controller
                 'news',
                 'servicesPostsChunk',
                 'aboutPage',
-                'textBlock',
-                'oversizeMarkups'
+                'textBlock'
             ));
     }
 }
