@@ -816,6 +816,10 @@ function totalWeigthRecount() {
 $(document).on('change', '#total-weight', () => getAllCalculatedData());
 
 async function checkAddressInPolygon(address, polygon) {
+    if(!address.length) {
+        return false;
+    }
+
     return await ymaps.geocode(address).then(function (res) {
         var newPoint = res.geoObjects.get(0);
         map.geoObjects.removeAll().add(polygon);
@@ -832,7 +836,64 @@ function calcTariffPrice(city, point, inCity) {
     let fullName = point.data('fullName');
     if(inCity || typeof fullName === undefined || fullName === "") { // Если работаем в пределах города
         point.closest('.delivery-block').find('input.delivery-type').filter('[value="in"]').prop('checked', true);
-        getAllCalculatedData();
+        // Пробуем получить полигоны для выбранного города
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type: 'post',
+            url: '/api/calculator/get-city-polygons',
+            data: {
+                city: city.value
+            },
+            dataType: "json",
+            cache: false,
+            success: async function(data) {
+                let isInPolygon;
+                let polygonId = '';
+
+                for (const el of data) {
+                    let findCoordinates = [];
+                    let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
+                    $(polygonCoordinates).each(function (pairKey, pairVal) {
+                        pairVal = pairVal.replace(' ', '');
+                        pairVal = pairVal.replace('[', '');
+                        pairVal = pairVal.replace(']', '');
+                        let parts = pairVal.split(',');
+                        findCoordinates.push([
+                            parseFloat(parts[0]),
+                            parseFloat(parts[1])
+                        ]);
+                    });
+
+                    let address = $("#" + point.attr('id')).val();
+                    let polygon =  new ymaps.Polygon([findCoordinates]);
+
+                    isInPolygon = await checkAddressInPolygon(address, polygon);
+                    if(isInPolygon) {
+                        polygonId = el.id;
+                        break;
+                    }
+                }
+
+                let hiddenPolygonInputClass = '.take-polygon-hidden-input';
+                if(point.attr('id') === 'dest_point') {
+                    hiddenPolygonInputClass = '.bring-polygon-hidden-input';
+                }
+                let hiddenPolygonInput = $(hiddenPolygonInputClass);
+
+                if(isInPolygon) {
+                    hiddenPolygonInput.val(polygonId);
+                }
+
+                getAllCalculatedData();
+            },
+            error: function(data){
+                // console.log(data);
+            }
+        });
     } else { // В противном случае просчитываем километраж с помощью Яндекс api
         if (!fullName) {
             getAllCalculatedData();
