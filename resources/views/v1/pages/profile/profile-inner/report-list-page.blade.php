@@ -17,6 +17,11 @@
                     </header>
                     <div class="row">
                         <div class="col-12">
+                            @if(session()->has('message'))
+                                <div class="alert alert-success">
+                                    {{ session()->get('message') }}
+                                </div>
+                            @endif
                             <form action="{{ route('download-reports') }}" method="post" class="reports__header row align-items-center">
                                 <div class="col-12">
                                     @csrf

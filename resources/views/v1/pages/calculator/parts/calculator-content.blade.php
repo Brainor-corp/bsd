@@ -14,6 +14,11 @@
             </ul>
         </div>
     @endif
+    @if(session()->has('message'))
+        <div class="alert alert-success">
+            {{ session()->get('message') }}
+        </div>
+    @endif
     @if($orderType === 'order')
         <div class="calc__title">Дата</div>
         <div class="form-item row align-items-center">
@@ -831,7 +836,9 @@
         </div>
     @endif
     <div class="form-item d-flex flex-column flex-md-row">
-        <button type="submit" name="status" value="chernovik" class="btn margin-item btn-default my-2 my-lg-0">Сохранить черновик</button>
+        @if(\Illuminate\Support\Facades\Auth::check())
+            <button type="submit" name="status" value="chernovik" class="btn margin-item btn-default my-2 my-lg-0">Сохранить черновик</button>
+        @endif
         <button type="submit" name="status" value="order_auth" class="btn margin-item btn-danger my-2 my-lg-0">Оформить заявку через личный кабинет</button>
         @if(\Illuminate\Support\Facades\Auth::guest())
             <button type="submit" name="status" value="order_guest" class="btn margin-item btn-danger my-2 my-lg-0">Оформить заявку без регистрации</button>

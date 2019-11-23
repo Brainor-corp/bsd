@@ -68,17 +68,6 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
             ->middleware('order.save')
             ->name('order-save-action');
 
-        // Страница со списком отчётов доступна всем пользователям.
-        // Если пользователь не авторизован, то выводятся отчёты с текущим enter_id.
-        // Если пользователь авторизован, то выводятся отчёты с текущим enter_id или с текущим user_id.
-        Route::get('/klientam/report-list', 'ReportsController@showReportListPage')->name('report-list');
-        Route::get('/cabinet/orders', 'ReportsController@showReportListPage')->name('orders-list');
-        Route::get('/klientam/report/{id}', 'ReportsController@showReportPage')->name('report-show');
-        Route::post('/download-reports', 'ReportsController@actionDownloadReports')->name('download-reports');
-        Route::post('/search-orders', 'OrderController@searchOrders')->name('search-orders');
-        Route::post('/get-order-items', 'OrderController@actionGetOrderItems')->name('get-order-items');
-        Route::post('/get-order-search-input', 'OrderController@actionGetOrderSearchInput')->name('get-order-search-input');
-
         Route::get('/cabinet/counterparty-list', 'CounterpartyController@showCounterpartyListPage')->name('counterparty-list');
 
         Route::post('/get-download-documents-modal', 'ReportsController@getDownloadDocumentsModal')->name('get-download-documents-modal');
@@ -117,6 +106,15 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
 
         Route::get('/profile/contract', 'ProfileController@contractPageShow')->name('profile-contract-show');
         Route::post('/profile/contract/download', 'ProfileController@contractDownload')->name('profile-contract-download');
+
+        // Список заявок
+        Route::get('/klientam/report-list', 'ReportsController@showReportListPage')->name('report-list');
+        Route::get('/cabinet/orders', 'ReportsController@showReportListPage')->name('orders-list');
+        Route::get('/klientam/report/{id}', 'ReportsController@showReportPage')->name('report-show');
+        Route::post('/download-reports', 'ReportsController@actionDownloadReports')->name('download-reports');
+        Route::post('/search-orders', 'OrderController@searchOrders')->name('search-orders');
+        Route::post('/get-order-items', 'OrderController@actionGetOrderItems')->name('get-order-items');
+        Route::post('/get-order-search-input', 'OrderController@actionGetOrderSearchInput')->name('get-order-search-input');
 
         Route::group(['middleware' => ['sms-confirm']], function () {
             // Работа с оповещениями доступна только авторизованным пользователям.

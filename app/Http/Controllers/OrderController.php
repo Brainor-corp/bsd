@@ -693,8 +693,12 @@ class OrderController extends Controller
             redirect(route('calculator-show', [
                 'id' => $order->id,
                 'type' => $order->type->slug
-            ])) :
-            redirect(route('orders-list'));
+            ]))->with('message', "Черновик успешно сохранён.") :
+            (
+                Auth::check() ?
+                    redirect(route('orders-list'))->with('message', "Заявка №$order->id успешно сохранена.") :
+                    redirect()->back()->with('message', "Заявка №$order->id успешно сохранена.")
+            );
     }
 
     public function shipmentSearch(Request $request) {
