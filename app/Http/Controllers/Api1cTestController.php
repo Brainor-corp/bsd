@@ -24,7 +24,13 @@ class Api1cTestController extends Controller
             $send
         );
 
-        if($response1c['status'] == 200 && !empty($response1c['response']['id'] && $response1c['response']['id'] !== 'not found')) {
+        if(
+            $response1c['status'] == 200
+            && !empty($response1c['response']['id'])
+            && !empty($response1c['response']['status'])
+            && $response1c['response']['status'] === 'success'
+            && $response1c['response']['id'] !== 'not found'
+        ) {
             DB::table('users')->where('id', $user->id)->update([
                 'guid' => $response1c['response']['id'],
                 'sync_need' => false
