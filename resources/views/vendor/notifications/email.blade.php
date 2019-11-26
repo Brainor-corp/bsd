@@ -51,7 +51,7 @@
 @slot('subcopy')
 @lang(
     "Если Вы испытываете трудности с нажатием на кнопку \":actionText\", перейдите по ссылке ниже\n".
-    'into your web browser: [:actionURL](:actionURL)',
+    '[:actionURL](:actionURL)',
     [
         'actionText' => $actionText,
         'actionURL' => $actionUrl,
