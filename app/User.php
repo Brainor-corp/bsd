@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\ResetPassword as ResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -96,5 +97,11 @@ class User extends Authenticatable
         $postfix = '..';
 
         return mb_strlen($result) > $limit ? mb_substr($result, 0, $limit) . $postfix : $result;
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        // Your your own implementation.
+        $this->notify(new ResetPasswordNotification($token));
     }
 }
