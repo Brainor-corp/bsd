@@ -13,8 +13,7 @@
 
 
 
-Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
-
+Route::group(['middleware' => ['geoIpCheck']], function () {
     Auth::routes();
     Route::post('/password-method-redirect', 'Auth\ForgotPasswordController@resetMethodRedirect')->name('password.method-redirect');
     Route::get('/restore-phone-confirm', 'Auth\ForgotPasswordController@restorePhoneConfirmShow')->name('password.restore-phone-confirm');
@@ -25,14 +24,16 @@ Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
     // Платежи
-    Route::get('/test-payment', 'PaymentController@testPaymentPage')->name('test-payment');
-    Route::post('/make-payment', 'PaymentController@makePayment')->name('make-payment');
+//    Route::get('/test-payment', 'PaymentController@testPaymentPage')->name('test-payment');
+    Route::get('/make-payment/{order_id}', 'PaymentController@makePayment')->name('make-payment');
 
-    // Главная
-    Route::get('/', 'MainPageController@index')->name('index');
+    Route::group(['middleware' => ['password_reset']], function () {
+        // Главная
+        Route::get('/', 'MainPageController@index')->name('index');
+    });
 
     // Список терминалов. Терминалы выводятся согласно текущему заданном городу.
-    Route::get('/terminals-addresses', 'TerminalsController@showAddresses')->name('terminals-addresses-show');
+    Route::get('/terminals-addresses/{city?}', 'TerminalsController@showAddresses')->name('terminals-addresses-show');
 
     // Акции
     Route::get('/promotions', 'PromotionsController@showList')->name('promotion-list-show');
@@ -67,16 +68,6 @@ Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
             ->middleware('order.save')
             ->name('order-save-action');
 
-        // Страница со списком отчётов доступна всем пользователям.
-        // Если пользователь не авторизован, то выводятся отчёты с текущим enter_id.
-        // Если пользователь авторизован, то выводятся отчёты с текущим enter_id или с текущим user_id.
-        Route::get('/klientam/report-list', 'ReportsController@showReportListPage')->name('report-list');
-        Route::get('/cabinet/orders', 'ReportsController@showReportListPage')->name('orders-list');
-        Route::post('/download-reports', 'ReportsController@actionDownloadReports')->name('download-reports');
-        Route::post('/search-orders', 'OrderController@searchOrders')->name('search-orders');
-        Route::post('/get-order-items', 'OrderController@actionGetOrderItems')->name('get-order-items');
-        Route::post('/get-order-search-input', 'OrderController@actionGetOrderSearchInput')->name('get-order-search-input');
-
         Route::get('/cabinet/counterparty-list', 'CounterpartyController@showCounterpartyListPage')->name('counterparty-list');
 
         Route::post('/get-download-documents-modal', 'ReportsController@getDownloadDocumentsModal')->name('get-download-documents-modal');
@@ -110,11 +101,22 @@ Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
         Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
         Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
 
-        Route::group(['middleware' => ['sms-confirm']], function () {
-            // Оформленные заказы могут смотреть только авторизованные пользователи,
-            // т.к. оформить заказ можно только будучи авторизованным.
-            Route::get('/klientam/report/{id}', 'ReportsController@showReportPage')->name('report-show');
+        Route::get('/profile/balance', 'ProfileController@balancePageShow')->name('profile-balance-show');
+        Route::post('/profile/balance/get', 'ProfileController@balanceGet')->name('profile-balance-get');
 
+        Route::get('/profile/contract', 'ProfileController@contractPageShow')->name('profile-contract-show');
+        Route::post('/profile/contract/download', 'ProfileController@contractDownload')->name('profile-contract-download');
+
+        // Список заявок
+        Route::get('/klientam/report-list', 'ReportsController@showReportListPage')->name('report-list');
+        Route::get('/cabinet/orders', 'ReportsController@showReportListPage')->name('orders-list');
+        Route::get('/klientam/report/{id}', 'ReportsController@showReportPage')->name('report-show');
+        Route::post('/download-reports', 'ReportsController@actionDownloadReports')->name('download-reports');
+        Route::post('/search-orders', 'OrderController@searchOrders')->name('search-orders');
+        Route::post('/get-order-items', 'OrderController@actionGetOrderItems')->name('get-order-items');
+        Route::post('/get-order-search-input', 'OrderController@actionGetOrderSearchInput')->name('get-order-search-input');
+
+        Route::group(['middleware' => ['sms-confirm']], function () {
             // Работа с оповещениями доступна только авторизованным пользователям.
             Route::get('/event-list', 'EventsController@showEventListPage')->name('event-list');
             Route::post('/event-hide', 'EventsController@actionHideEvent')->name('event-hide');
@@ -122,17 +124,33 @@ Route::group(['middleware' => ['password_reset','geoIpCheck']], function () {
     });
 });
 
+Route::get('/test-order-email', function () {
+    $order = \App\Order::where('id', 8)->first();
+
+    \Illuminate\Support\Facades\Mail::to('test@gmail.com')->send(new \App\Mail\OrderCreated($order));
+});
+
+
 Route::get('/1c/test/new-user', 'Api1cTestController@newUser');
 Route::get('/1c/test/create-order', 'Api1cTestController@createOrder');
 Route::get('/1c/test/document-list', 'Api1cTestController@documentList');
 Route::get('/1c/test/document/id', 'Api1cTestController@documentById');
+Route::get('/1c/test/print_form', 'Api1cTestController@printForm');
 Route::get('/1c/test/document/number', 'Api1cTestController@documentByNumber');
 Route::get('/1c/test/orders', 'Api1cTestController@orders');
+Route::get('/1c/test/contract', 'Api1cTestController@contract');
+Route::get('/1c/test/discount', 'Api1cTestController@discount');
+Route::get('/1c/test/new-client', 'Api1cTestController@newClient');
+Route::get('/1c/test/client-by-id', 'Api1cTestController@clientById');
+Route::get('/1c/test/update-order-payment-status', 'Api1cTestController@updateOrderPaymentStatus');
 
+Route::get('/auth-user/{id}', function ($id) {
+    $user = \App\User::where('id', $id)->firstOrfail();
+    \Illuminate\Support\Facades\Auth::login($user);
 
-Route::get('/jobs/test/SendTestMail', function () {
-    dispatch(New \App\Jobs\SendTestMail());
+    return redirect('/');
 });
+
 
 //Route::group(['middleware' => ['auth']], function () {
 //    // Профиль пользователя

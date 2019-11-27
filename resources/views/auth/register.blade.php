@@ -53,7 +53,13 @@
                             <label for="phone" class="col-md-4 col-form-label text-md-right">{{ __('Телефон') }}</label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="text" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }} phone-mask" name="phone" value="{{ old('phone') }}" required autofocus>
+                                <input id="phone" type="text" placeholder="+7(XXX)XXX-XX-XX" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }} phone-mask" name="phone" value="{{ old('phone') }}" required autofocus>
+
+                                @if ($errors->has('phone'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('phone') }}</strong>
+                                    </span>
+                                @endif
                             </div>
                         </div>
 
@@ -62,6 +68,7 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
+                                <span data-toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
 
                                 @if ($errors->has('password'))
                                     <span class="invalid-feedback" role="alert">
@@ -80,6 +87,7 @@
 
                             <div class="col-md-6">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+                                <span data-toggle="#password-confirm" class="fa fa-fw fa-eye field-icon toggle-password"></span>
                             </div>
                         </div>
 
@@ -101,7 +109,7 @@
 @section('footScripts')
     <script>
         grecaptcha.ready(function() {
-            grecaptcha.execute('{{ env('GOOGLE_CAPTCHA_KEY') }}', {action: 'feedbackForm'}).then(function(token) {
+            grecaptcha.execute('{{ env('GOOGLE_CAPTCHA_KEY') }}', {action: 'registerForm'}).then(function(token) {
                 $('#registerForm').append('<input type="hidden" name="gToken" value="'+token+'">')
             });
         });

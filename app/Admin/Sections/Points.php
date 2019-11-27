@@ -19,6 +19,8 @@ class Points extends Section
 {
     protected $title = 'Особые населенные пункты';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('id', '#'),

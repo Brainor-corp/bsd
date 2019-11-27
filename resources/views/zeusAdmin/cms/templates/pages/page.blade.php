@@ -16,14 +16,7 @@
         $ancestors[] = $page;
     @endphp
 
-    <div class="breadcrumb__list d-flex">
-        <div class="container">
-            <span class="breadcrumb__item"><a href="{{ route('index') }}" class="">Главная</a></span>
-            @foreach($ancestors as $ancestor)
-                <span class="breadcrumb__item"><a href="{{ url($ancestor->url) }}" class="">{{ $ancestor->title }}</a></span>
-            @endforeach
-        </div>
-    </div>
+    @include('zeusAdmin.cms.partials.breadcrumbs', ['ancestor' => $ancestors])
     <section class="wrapper">
         <div class="container">
             <div class="row">
@@ -32,11 +25,12 @@
                         <h1>{{ $page->title }}</h1>
                     </header>
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-md-8">
                             {!! html_entity_decode($page->content) !!}
                         </div>
-                        <div class="col-3 offset-md-1">
 
+                        <div class="col-md-3 offset-md-1">
+                            @include('zeusAdmin.cms.partials.sidebarByTag')
                         </div>
                     </div>
                 </div>

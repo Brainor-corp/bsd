@@ -20,7 +20,7 @@
                         <h1>Отзывы</h1>
                     </header>
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-md-8 col-12">
                             <div class="comments">
                                 @foreach($reviews as $review)
                                 <div class="comments__item d-flex flex-nowrap flex-column flex-sm-row">
@@ -113,7 +113,6 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="col-3 offset-md-1"></div>
                     </div>
                 </div>
             </div>

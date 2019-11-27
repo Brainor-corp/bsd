@@ -17,6 +17,8 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 class Supports extends Section {
     protected $title = 'Обращения';
 
+    protected $checkAccess = true;
+
     public static function onDisplay() {
         $display = Display::table([
             Column::link('id', '#'),

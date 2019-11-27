@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Helpers\Api1CHelper;
 use App\Http\Helpers\SMSHelper;
+use App\Jobs\SendUserRegisterMail;
 use App\Rules\GoogleReCaptchaV3;
 use App\User;
 use Carbon\Carbon;
@@ -94,6 +94,7 @@ class RegisterController extends Controller
 
         $user =  User::create($toCreate);
 
+        SendUserRegisterMail::dispatch($user);
         SMSHelper::sendSms($user->phone, strval($smsCode));
 
         return $user;

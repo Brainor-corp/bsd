@@ -3,8 +3,10 @@
 namespace App\Admin\Sections;
 
 use App\City;
+use App\Requisite;
 use App\RequisitePart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Zeus\Admin\Section;
 use Zeus\Admin\SectionBuilder\Display\BaseDisplay\Display;
 use Zeus\Admin\SectionBuilder\Display\Table\Columns\BaseColumn\Column;
@@ -17,6 +19,8 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 class Requisites extends Section
 {
     protected $title = 'Реквизиты';
+
+    protected $checkAccess = true;
 
     public static function onDisplay(Request $request){
         $display = Display::table([
@@ -37,22 +41,47 @@ class Requisites extends Section
             ])
             ->setPagination(10);
 
+        $user = Auth::user();
+        if($user->hasRole('regionalnyy-menedzher')) {
+            $display->setScopes([
+                'regionalManager'
+            ]);
+        }
+
         return $display;
     }
 
     public static function onCreate()
     {
-        return self::onEdit();
+        return self::onEdit(null);
     }
 
-    public static function onEdit()
+    public static function onEdit($id)
     {
+        $user = Auth::user();
+        $userCities = $user->cities;
+
+        if(isset($id) && $user->hasRole('regionalnyy-menedzher')) {
+            if(!count($userCities) || !Requisite::where('id', $id)->whereHas('city', function ($cityQuery) use ($userCities) {
+                return $cityQuery->whereIn('id', $userCities->pluck('id'));
+            })->exists()) {
+                abort(404);
+            }
+        }
+
         $form = Form::panel([
             FormColumn::column([
                 FormField::input('name', 'Наименование')
                     ->setHelpBlock("<small class='text-muted'>Наименование. Прим.: Банковские реквизиты.</small>")
                     ->setRequired(1),
                 FormField::bselect('city_id', 'Город')
+                    ->setQueryFunctionForModel(function ($citiesQuery) use ($user, $userCities) {
+                        if($user->hasRole('regionalnyy-menedzher')) {
+                            return $citiesQuery->whereIn('id', count($userCities) ? $userCities->pluck('id') : []);
+                        }
+
+                        return $citiesQuery;
+                    })
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])

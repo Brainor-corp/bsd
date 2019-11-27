@@ -24,6 +24,8 @@ class Routes extends Section
 {
     protected $title = 'Маршруты';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('id', '#'),

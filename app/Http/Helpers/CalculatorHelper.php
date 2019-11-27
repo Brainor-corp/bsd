@@ -14,7 +14,14 @@ use Illuminate\Support\Facades\DB;
 
 class CalculatorHelper
 {
-    public static function getRouteData($shipCity = null, $destCity = null, $packages, $route_id = null) {
+    public static function getRouteData(
+        $shipCity = null,
+        $destCity = null,
+        $packages,
+        $weight,
+        $volume,
+        $route_id = null
+    ) {
         $route = null;
 
         if(isset($route_id)) {
@@ -27,13 +34,10 @@ class CalculatorHelper
         }
 
         $route_id = $route->id;
-        $weight = 0;
-        $volume = 0;
         $oversizes = [];
         $oversize = Oversize::where('id', $route->oversizes_id)->first();
 
         foreach ($packages as $key => $package) {
-
             if (!isset($package['length'])) {
                 $package['length'] = 1;
             }
@@ -72,8 +76,8 @@ class CalculatorHelper
                 $package['quantity'] = 1;
             }
 
-            $weight += $package['weight'] * $package['quantity'];
-            $volume += $package['volume'] * $package['quantity'];
+//            $weight += $package['weight'] * $package['quantity'];
+//            $volume += $package['volume'] * $package['quantity'];
 
 
             if ($package['length'] > $oversize['length']) {
@@ -94,6 +98,7 @@ class CalculatorHelper
         }
 
         $totalVolume = $volume;
+        $totalWeight = $weight;
 
         $tariff = new \stdClass();
 
@@ -101,9 +106,6 @@ class CalculatorHelper
             if ($route->wrapper_tariff > 0) {
                 $tariff->wrapper = $route->wrapper_tariff;
                 $basePrice = $tariff->wrapper;
-                if ($basePrice < $route->min_cost) {
-                    $basePrice = $route->min_cost;
-                }
             }
         }
         if (!isset($basePrice)) {
@@ -150,7 +152,7 @@ class CalculatorHelper
                         if(is_numeric($baseTariff['price'])) {
                             $total = max($tariff->weight, $tariff->volume, $route->min_cost) + $baseTariff['price'];
                         } else {
-                            $total = "Договорная";
+                            $total = "договорная";
                         }
                     } else {
                         if (count($oversizes) > 0) {
@@ -164,7 +166,7 @@ class CalculatorHelper
                                 foreach ($packages as $package) {
                                     $oversizeRation = self::oversize_ratio($route->oversizes_id, $package);
                                     if($oversizeRation === false) {
-                                        $total = "Договорная";
+                                        $total = "договорная";
                                         break;
                                     }
 
@@ -179,7 +181,7 @@ class CalculatorHelper
                     if(is_numeric($total)) {
                         $basePrice = ceil($total + $route->addition);
                     } else {
-                        $basePrice = "Договорная";
+                        $basePrice = "договорная";
                     }
                 }
             }
@@ -188,17 +190,18 @@ class CalculatorHelper
         return [
             'model' => $route,
             'totalVolume' => $totalVolume,
+            'totalWeight' => $totalWeight,
             'price' => $basePrice
         ];
     }
 
-    public static function getServicesData($services, $packages, $insuranceAmount) {
-        $totalVolume = 0;
-
-        foreach($packages as $package) {
-            $totalVolume += $package['volume']  * $package['quantity'];
-        }
-
+    public static function getServicesData(
+        $services,
+        $insuranceAmount,
+        $totalWeight,
+        $totalVolume,
+        $insuranceNeed = true
+    ) {
         $servicesData = Service::get();
 
         $usedServices = [];
@@ -218,22 +221,21 @@ class CalculatorHelper
                 ];
             }
         }
-
-        $insurancePrice = 50;
-        if(isset($insuranceAmount)){
-            if(intval($insuranceAmount)>0){
-                $insurancePrice = max(($insuranceAmount * 0.1000000000000000055511151231257827021181583404541015625)/100, 50);
+        if($insuranceNeed) {
+            $insurancePrice = 50;
+            if(isset($insuranceAmount)){
+                if(intval($insuranceAmount)>0){
+                    $insurancePrice = max(($insuranceAmount * 0.1000000000000000055511151231257827021181583404541015625)/100, 50);
+                }
             }
+            $usedServices['insurance'] = [
+                'name'          => 'Страховка',
+                'slug'          => '',
+                'description'   => '',
+                'price'         => round($insurancePrice, 2),
+                'total'         => round($insurancePrice, 2),
+            ];
         }
-
-        $usedServices[] = [
-            'name'          => 'Страховка',
-            'slug'          => '',
-            'description'   => '',
-            'price'         => round($insurancePrice, 2),
-            'total'         => round($insurancePrice, 2),
-        ];
-
         return $usedServices;
     }
 
@@ -244,9 +246,18 @@ class CalculatorHelper
         $query = $query->where(function ($q) use ($package) {
             $q->orWhere([['rate_id', 26], ['threshold', '<=', $package['weight']]]);
             $q->orWhere([['rate_id', 27], ['threshold', '<=', $package['volume']]]);
-            $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['length']]]);
-            $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['width']]]);
-            $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['height']]]);
+
+            if(isset($package['length'])) {
+                $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['length']]]);
+            }
+
+            if(isset($package['width'])) {
+                $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['width']]]);
+            }
+
+            if(isset($package['height'])) {
+                $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['height']]]);
+            }
         });
         $query = $query->orderBy('markup', 'DESC');
         $query = $query->first();
@@ -255,7 +266,7 @@ class CalculatorHelper
         return isset($query) ? $query->markup / 100 : false;
     }
 
-    public static function getTotalPrice($base_price, $services, $totalVolume, $insuranceAmount = null, $discount = null, $take_price = null, $bring_price = null) {
+    public static function getTotalPrice($base_price, $services, $totalWeight, $totalVolume, $insuranceAmount = null, $discount = null, $take_price = null, $bring_price = null) {
         $result = [];
 
         $totalPrice = $base_price;
@@ -266,14 +277,14 @@ class CalculatorHelper
                 if(is_numeric($take_price)) {
                     $totalPrice += floatval($take_price);
                 } else {
-                    $totalPrice = 'Договорная';
+                    $totalPrice = 'договорная';
                 }
             }
             if(isset($bring_price)) {
                 if(is_numeric($bring_price)) {
                     $totalPrice += floatval($bring_price);
                 } else {
-                    $totalPrice = 'Договорная';
+                    $totalPrice = 'договорная';
                 }
             }
         }
@@ -321,25 +332,28 @@ class CalculatorHelper
                 $result['insurance'] = $insurancePrice;
             }
         }else{
-            $insurancePrice = 50;
+            if ($totalWeight <= 2 && $totalVolume <= 0.01) {}
+            else {
+                $insurancePrice = 50;
 
-            if(is_numeric($totalPrice) && is_numeric($insurancePrice)) {
-                $totalPrice += $insurancePrice;
+                if (is_numeric($totalPrice) && is_numeric($insurancePrice)) {
+                    $totalPrice += $insurancePrice;
+                }
+
+                $result['insurance'] = $insurancePrice;
             }
-
-            $result['insurance'] = $insurancePrice;
         }
 
         if(isset($discount)){
             if(is_numeric($base_price) && is_numeric($discount)) {
                 $discountPrice = ceil(($base_price * $discount) / 100);
             } else {
-                $discountPrice = "Договорная";
+                $discountPrice = "договорная";
             }
             if(is_numeric($totalPrice) && is_numeric($discountPrice)) {
                 $totalPrice -= $discountPrice;
             } else {
-                $totalPrice = "Договорная";
+                $totalPrice = "договорная";
             }
 
             $result['discount'] = $discountPrice;
@@ -352,6 +366,7 @@ class CalculatorHelper
     }
 
     public static function getTariffPrice(
+        $baseCityName,
         $cityName,
         $weight,
         $volume,
@@ -359,32 +374,73 @@ class CalculatorHelper
         $x2,
         $packages,
         $distance = null,
-        $polygonId = null
+        $polygonId = null,
+        $displayCityName = null
     ) {
         $price = 0;
+        $displayCityName = $displayCityName ?? $cityName;
 
-        // Изначально пытаемся получить город
-        $city = self::getCityByName($cityName);
+        // Изначально пытаемся найти особый населённый пункт
+        $city = self::getPointByName($cityName);
 
-        // Если города нет, пытаемся найти пункт
+        // Если пункта нет, пытаемся получить город
         if(!$city) {
-            $city = self::getPointByName($cityName);
+            $city = self::getCityByName($cityName);
         }
 
-        // Если ни города, ни пункта не нашли, то выводим договорную цену
+        // Если ни города, ни пункта не нашли
         if(!$city) {
-            return $isWithinTheCity ? [
-                'price' => 'Договорная',
-                'city_name' => $cityName
-            ] : [
-                'price' => 'Договорная',
-                'city_name' => $cityName,
-                'distance' => intval($distance),
-            ];
+            // Попробуем поиск по названию города отправления/назначения.
+            // При это доставку в таком случае будем всегда считать как за пределами города.
+            if($baseCityName !== $cityName) {
+                return self::getTariffPrice(
+                    $baseCityName,
+                    $baseCityName,
+                    $weight,
+                    $volume,
+                    false,
+                    $x2,
+                    $packages,
+                    $distance,
+                    $polygonId,
+                    $displayCityName
+                );
+            } else { // Если не нашли и по названию города отправления/назначения, выводим договорную цену
+                return $isWithinTheCity ? [
+                    'price' => 'договорная',
+                    'city_name' => $displayCityName
+                ] : [
+                    'price' => 'договорная',
+                    'city_name' => $displayCityName,
+                    'distance' => intval($distance),
+                ];
+            }
         }
+
+        $packagesCount = count($packages);
+        if($packagesCount == 1){$packagesCount = 0;}
 
         // Если город -- особый пункт
+        $point_fixed_tariff = false;
         if($city instanceof Point) {
+            $point_fixed_tariff = DB::table('outside_forwardings')
+                ->join('forward_thresholds', function($join)
+                {
+                    $join->on('outside_forwardings.forward_threshold_id', '=', 'forward_thresholds.id');
+                })
+                ->where([
+                    ['point', $city->id],
+                    ['forward_thresholds.weight', '>=', floatval($weight)],
+                    ['forward_thresholds.volume', '>=', floatval($volume)],
+                    ['forward_thresholds.units', '>=', $packagesCount],
+                ])
+                ->orderBy('forward_thresholds.weight', 'ASC')
+                ->orderBy('forward_thresholds.volume', 'ASC')
+                ->orderBy('forward_thresholds.units', 'ASC')
+                ->first();
+
+            $point_fixed_tariff = $point_fixed_tariff->tariff ?? false;
+
             $city = $city->city; // Дальше будем работать с привязанным к пункту городом
         }
 
@@ -398,7 +454,7 @@ class CalculatorHelper
                 ['city_id', $city->id],
                 ['forward_thresholds.weight', '>=', floatval($weight)],
                 ['forward_thresholds.volume', '>=', floatval($volume)],
-                ['forward_thresholds.units', '>=', count($packages)],
+                ['forward_thresholds.units', '>=', $packagesCount],
             ])
             ->orderBy('forward_thresholds.weight', 'ASC')
             ->orderBy('forward_thresholds.volume', 'ASC')
@@ -408,17 +464,33 @@ class CalculatorHelper
         $fixed_tariff = $fixed_tariff->tariff ?? false;
         if(!$fixed_tariff && $isWithinTheCity) {
             return [
-                'price' => 'Договорная',
-                'city_name' => $cityName,
+                'price' => 'договорная',
+                'city_name' => $displayCityName,
                 'distance' => intval($distance),
             ];
         }
 
         // Если в пределах города, то возвращаем тариф согласно пределам города
         if($isWithinTheCity) {
+            // Если есть полигон, то возвращаем его цену
+            if(!empty($polygonId)) {
+                $polygon = Polygon::where([
+                    ['id', $polygonId],
+                    ['city_id', $city->id]
+                ])->first();
+
+                if(isset($polygon)) {
+                    return [
+                        'price' => $x2 ? ($polygon->price * floatval($fixed_tariff)) * 2 : ($polygon->price * floatval($fixed_tariff)),
+                        'city_name' => "$displayCityName",
+                        'polygon_name' => $polygon->name
+                    ];
+                }
+            }
+
             return [
                 'price' => $x2 ? floatval($fixed_tariff) * 2 : floatval($fixed_tariff),
-                'city_name' => $cityName
+                'city_name' => $displayCityName
             ];
         }
 
@@ -431,11 +503,19 @@ class CalculatorHelper
 
             if(isset($polygon)) {
                 return [
-                    'price' => $x2 ? $polygon->price * 2 : $polygon->price,
-                    'city_name' => "$cityName",
+                    'price' => $x2 ? ($polygon->price * floatval($fixed_tariff)) * 2 : ($polygon->price * floatval($fixed_tariff)),
+                    'city_name' => "$displayCityName",
                     'polygon_name' => $polygon->name
                 ];
             }
+        }
+
+        if($point_fixed_tariff) {
+            return [
+                'price' => $x2 ? $point_fixed_tariff * 2 : $point_fixed_tariff,
+                'city_name' => $displayCityName,
+                'distance' => intval($distance),
+            ];
         }
 
         // Если за пределами города, то ищем покилометровый тариф с учетом тарифной зоны города
@@ -459,8 +539,8 @@ class CalculatorHelper
 
         if(!$per_km_tariff) {
             return [
-                'price' => 'Договорная',
-                'city_name' => $cityName,
+                'price' => 'договорная',
+                'city_name' => $displayCityName,
                 'distance' => intval($distance),
             ];
         }
@@ -474,7 +554,7 @@ class CalculatorHelper
         }
 
         return [
-            'city_name' => $cityName,
+            'city_name' => $displayCityName,
             'distance' => intval($distance),
             'price' => floatval($price)
         ];
@@ -500,105 +580,52 @@ class CalculatorHelper
                 ->first() ?? false;
     }
 
-    public static function getDeliveryToPointPrice(
-        Point $point,
-        $weight,
-        $volume,
-        $x2 = false
-    ) {
-        // Найдем тариф внутри города
-        $fixed_tariff = DB::table('inside_forwarding')
-            ->join('forward_thresholds', function($join)
-            {
-                $join->on('inside_forwarding.forward_threshold_id', '=', 'forward_thresholds.id');
-            })
-            ->where([
-                ['city_id', $point->city->id],
-                ['forward_thresholds.weight', '>=', floatval($weight)],
-                ['forward_thresholds.volume', '>=', floatval($volume)],
-            ])
-            ->orderBy('forward_thresholds.weight', 'ASC')
-            ->orderBy('forward_thresholds.volume', 'ASC')
-            ->first();
-
-        if(!isset($fixed_tariff)) {
-            return [
-                'name' => $point->name,
-                'distance' => $point->distance,
-                'price' => 'Договорная'
-            ];
-        }
-
-        $per_km_tariff = DB::table('per_km_tariffs')
-            ->join('cities', 'cities.tariff_zone_id', '=', 'per_km_tariffs.tariff_zone_id')
-            ->join('forward_thresholds', function($join)
-            {
-                $join->on('forward_thresholds.id', '=', 'per_km_tariffs.forward_threshold_id');
-                $join->on('forward_thresholds.threshold_group_id', '=', 'cities.threshold_group_id');
-            })
-            ->where([
-                ['cities.id', $point->city_id],
-                ['forward_thresholds.weight', '>=', floatval($weight)],
-                ['forward_thresholds.volume', '>=', floatval($volume)],
-            ])
-            ->orderBy('forward_thresholds.weight', 'ASC')
-            ->orderBy('forward_thresholds.volume', 'ASC')
-            ->first();
-
-        if(!isset($per_km_tariff)) {
-            return [
-                'name' => $point->name,
-                'distance' => $point->distance,
-                'price' => 'Договорная',
-            ];
-        }
-
-        $fixed_tariff = $fixed_tariff->tariff;
-        $per_km_tariff = floatval($per_km_tariff->tariff);
-
-        $price = $fixed_tariff + intval($point->distance) * 2 * $per_km_tariff;
-
-        return [
-            'name' => $point->name,
-            'distance' => $point->distance,
-            'price' => $x2 ? $price * 2 : $price
-        ];
-    }
-
     /**
      * Возвращает все просчитанные значения для основного калькулятора
      *
      * @param City $shipCity
      * @param City $destCity
      * @param array $packages
+     * @param $total_weight
+     * @param $total_volume
      * @param array $services
      * @param array $takeParams
      * @param array $bringParams
      * @param $insuranceAmount
      * @param $discount
+     * @param bool $insuranceNeed
      * @return array
      */
     public static function getAllCalculatedData(
         City $shipCity,
         City $destCity,
         $packages = [],
+        $total_weight,
+        $total_volume,
         $services = [],
         Array $takeParams = [],
         Array $bringParams = [],
         $insuranceAmount,
-        $discount
+        $discount,
+        $insuranceNeed = true
     ) {
-        $totalPrice = "Договорная";
+        $totalPrice = "договорная";
         $servicesPrice = 0;
 
-        $routeData = self::getRouteData($shipCity, $destCity, $packages);
+        $routeData = self::getRouteData($shipCity, $destCity, $packages, $total_weight, $total_volume);
 
-        $servicesData = self::getServicesData($services, $packages, $insuranceAmount);
+        $servicesData = self::getServicesData(
+            $services,
+            $insuranceAmount,
+            $total_weight,
+            $total_volume,
+            $insuranceNeed
+        );
         foreach($servicesData as $service) {
             if(is_numeric($service['total'])) {
                 $servicesPrice += floatval($service['total']);
             } else {
-                $servicesPrice = "Договорная";
+                $servicesPrice = "договорная";
                 break;
             }
         }
@@ -606,6 +633,7 @@ class CalculatorHelper
         $takeData = null;
         if(!empty($takeParams)) {
             $takeData = self::getTariffPrice(
+                $takeParams['baseCityName'],
                 $takeParams['cityName'],
                 $takeParams['weight'],
                 $takeParams['volume'],
@@ -620,6 +648,7 @@ class CalculatorHelper
         $bringData = null;
         if(!empty($bringParams)) {
             $bringData = self::getTariffPrice(
+                $bringParams['baseCityName'],
                 $bringParams['cityName'],
                 $bringParams['weight'],
                 $bringParams['volume'],
@@ -647,7 +676,7 @@ class CalculatorHelper
             $discount = round($totalPrice * ($discount / 100), 2);
             $totalPrice -= $discount;
         } else {
-            $discount = "Договорная";
+            $discount = "договорная";
         }
 
         return [
@@ -661,7 +690,7 @@ class CalculatorHelper
             ],
             'services' => $servicesData, // Список услуг
             'discount' => $discount, // Размер скидки
-            'total' => $totalPrice // Общая цена за доставку
+            'total' => $totalPrice, // Общая цена за доставку
         ];
     }
 }

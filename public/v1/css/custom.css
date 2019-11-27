@@ -1,3 +1,11 @@
+.inner-page-header .dropdown-menu:before{
+    left: -1px;
+    border-color: transparent transparent transparent rgba(0,0,0,.15);
+    display: none!important;
+}
+.nav{
+    flex-wrap: nowrap;
+}
 .selectize-control .selectize-input{
     border-radius: 7px!important;
 }
@@ -29,6 +37,9 @@
 }
 
 /*Калькулятор*/
+.calc__block .calc__block_inpg .selectize-control .selectize-input {
+    font-size: 0.8rem;
+}
 .calc__inpgrp {
      max-width: 100% !important;
 }
@@ -101,6 +112,46 @@
     display: inline;
 }
 
+.package-params{
+    background:transparent;
+}
+
+.package-params.oversized{
+    background: #ef402f;
+    color: white;
+}
+
+.oversize-error {
+    color: #ef402f;
+}
+
 select.form-control:not([size]):not([multiple]) {
     color:#36393b!important;
+}
+
+ol {
+    list-style-position: inside;
+}
+
+ol li {
+    padding-left: 10px;
+}
+
+.card-body .field-icon {
+    float: right;
+    margin-top: -30px;
+    position: relative;
+    z-index: 2;
+    font-size: large;
+    padding-right: 30px;
+    color: black;
+}
+
+.card-body .field-icon:hover {
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.list-style-dist {
+    list-style-type: disc !important;
 }

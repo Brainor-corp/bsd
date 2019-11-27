@@ -26,7 +26,7 @@
                             <label for="login" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail или Телефон') }}</label>
 
                             <div class="col-md-6">
-                                <input id="login" type="text" class="form-control{{ $errors->has('email') || $errors->has('phone') ? ' is-invalid' : '' }}" name="login" value="{{ old('login') }}" required autofocus>
+                                <input id="login" type="text" placeholder="example@domain.com или +7(XXX)XXX-XX-XX" class="form-control{{ $errors->has('email') || $errors->has('phone') ? ' is-invalid' : '' }}" name="login" value="{{ old('login') }}" required autofocus>
 
                                 @if ($errors->has('email') || $errors->has('phone'))
                                     <span class="invalid-feedback" role="alert">

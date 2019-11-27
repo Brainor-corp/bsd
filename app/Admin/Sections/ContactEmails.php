@@ -16,6 +16,8 @@ class ContactEmails extends Section
     protected $title = 'Имейлы для связи';
     protected $model = '\App\ContactEmail';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::link('email', 'Email'),

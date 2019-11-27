@@ -25,4 +25,17 @@ class Region extends Model
         return $this->hasOne(Type::class, 'id','tariff_zone_id');
     }
 
+
+    public function getFixedTariffForHumanAttribute() {
+        return $this->fixed_tariff ? 'Да' : 'Нет';
+    }
+
+    public function getDistTariffForHumanAttribute() {
+        return $this->dist_tariff ? 'Да' : 'Нет';
+    }
+
+    public function getInsideTariffForHumanAttribute() {
+        return $this->inside_tariff ? 'Да' : 'Нет';
+    }
+
 }

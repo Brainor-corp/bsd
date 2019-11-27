@@ -6,17 +6,16 @@
 @section('footerScripts')
     <script>
         var parameters={
-            max_length:10,
-            max_width:10,
-            max_height:10,
-            max_weight:10,
-            max_volume:10,
+            max_length: 3,
+            max_width: 3,
+            max_height: 1.8,
+            max_weight: 1000,
+            max_volume: 999,
         };
     </script>
 
     <script src="{{ asset('v1/js/short-calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>
 @endsection
-
 @section('content')
 <section class="service">
     <div class="container">
@@ -29,12 +28,14 @@
                 <div class="row row-item justify-content-md-center">
                     @foreach($servicesPosts as $service)
                         <div class="col-sm-12 col-md-9 col-lg-6 service__item">
-                            <div class="service__block d-flex relative {{$service->slug}}">
-                                <div class="service__block_body">
-                                    <div class="service__block_title">{{$service->title}}</div>
-                                    <p class="service__block_disc">{{$service->description}}</p>
+                            <a href="{{ $service->url }}">
+                                <div class="service__block d-flex relative {{$service->slug}}">
+                                    <div class="service__block_body">
+                                        <div class="service__block_title">{{$service->title}}</div>
+                                        <p class="service__block_disc">{{$service->description}}</p>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     @endforeach
                 </div>
@@ -47,7 +48,10 @@
         @if($aboutPage)
             {!! $aboutPage->content !!}
         @endif
-        <br><br>
+    </div>
+</section>
+<section class="custom-text bg-white mb-0">
+    <div class="container">
         @if($textBlock)
             {!! $textBlock->content !!}
         @endif

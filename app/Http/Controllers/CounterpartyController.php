@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Counterparty;
 use App\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,17 +19,32 @@ class CounterpartyController extends Controller
             ['class', 'UserType']
         ])->firstOrFail();
 
+
         $term = $request->get('term');
         $field = $request->get('field');
 
-        $counterparties = Counterparty::where([
-            ['user_id', Auth::id()],
+        $user = Auth::user();
+        $counterparties = $user->counterparties()->where([
             ['type_id', $type->id],
             ['active', true],
-            [$field, 'like', "%$term%"]
         ])->get();
 
-        return $counterparties->toArray();
+        $counterparties = $counterparties->filter(function ($counterparty) use ($field, $term) {
+            return mb_strpos(mb_strtolower($counterparty->$field), mb_strtolower($term)) !== FALSE;
+        });
+
+        // Расшифровываем поля
+        $result = [];
+        foreach($counterparties as $counterparty) {
+            $decryptedCounterparty = new \stdClass();
+            foreach(array_keys($counterparty->getAttributes()) as $attribute) {
+                $decryptedCounterparty->$attribute = $counterparty->$attribute;
+            }
+
+            $result[] = $decryptedCounterparty;
+        }
+
+        return $result;
     }
 
     public function showCounterpartyListPage(Request $request) {
@@ -38,10 +52,8 @@ class CounterpartyController extends Controller
             return [];
         }
 
-        $counterparties = Counterparty::where([
-            ['user_id', Auth::id()],
-            ['active', true],
-        ])->get();
+        $user = Auth::user();
+        $counterparties = $user->counterparties()->get();
 
         return View::make('v1.pages.counterparty.list-page')->with(compact('counterparties'));
     }

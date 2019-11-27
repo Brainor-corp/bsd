@@ -22,21 +22,29 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 class Orders extends Section {
     protected $title = 'Заявки';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request) {
         $display = Display::table([
-            Column::link('id', '#')->setSortable(1),
+            Column::link('id', '№ заявки')->setSortable(1),
+            Column::text('cargo_number', '№ ЭР')->setSortable(1),
             Column::text('real_status', 'Статус'),
             Column::text('ship_city_name', 'Город отправки'),
             Column::text('dest_city_name', 'Город доставки'),
-            Column::text('total_price', 'Сумма'),
+            Column::text('total_price', 'Цена калькулятора'),
+            Column::text('actual_price', 'Фактическая цена'),
+            Column::text('payment_id', 'Идентификатор платежа'),
             Column::text('code_1c', 'Код 1с'),
-            Column::text('order_date', 'Дата заказа')->setSortable(1),
+            Column::text('order_date', 'Дата заявки')->setSortable(1),
         ])->setFilter([
             FilterType::text('id', '#'),
+            FilterType::text('cargo_number', '#'),
             null,
             null,
             null,
             null,
+            null,
+            FilterType::text('payment_id', 'Идентификатор платежа'),
             FilterType::text('code_1c', 'Код 1с'),
             null,
         ])->setPagination(10);
@@ -66,14 +74,23 @@ class Orders extends Section {
         $form = Form::panel([
             FormColumn::column([
                 FormField::custom('<h4>Основное</h4><hr>'),
+                FormField::input('cargo_number', '№ ЭР'),
                 FormField::input('shipping_name', 'Название груза')->setRequired(1),
-                FormField::datepicker('order_date', 'Дата заказа')
+                FormField::datepicker('order_date', 'Дата заявки')
                     ->setTodayBtn(true)
                     ->setFormat('yyyy-mm-dd hh:ii:ss')
                     ->setLanguage('ru')
                     ->setClearBtn(true)
                     ->setRequired(1),
-                FormField::bselect('status_id', 'Статус заказа')
+                FormField::bselect('cargo_status_id', 'Статус груза')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($query){
+                        return $query->where('class', 'cargo_status');
+                    })->setDisplay('name'),
+                FormField::bselect('status_id', 'Статус заявки')
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
@@ -82,6 +99,15 @@ class Orders extends Section {
                     ->setQueryFunctionForModel(function ($query){
                         return $query->where('class', 'order_status');
                     })->setDisplay('name'),
+                FormField::bselect('payment_status_id', 'Статус оплаты')
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($query){
+                        return $query->where('class', 'OrderPaymentStatus');
+                    })->setDisplay('name'),
+                FormField::input('payment_id', 'Идентификатор платежа')->setType('number'),
                 FormField::custom(View::make('admin.orders.order-user')->with(compact('order'))->render()),
                 FormField::bselect('ship_city_id', 'Город отправления')
                     ->setDataAttributes([
@@ -98,7 +124,8 @@ class Orders extends Section {
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
                 FormField::input('total_weight', 'Общий вес')->setType('number')->setRequired(1),
-                FormField::input('total_price', 'Итоговая цена')->setType('number')->setRequired(1),
+                FormField::input('total_price', 'Цена калькулятора')->setType('number')->setRequired(1),
+                FormField::input('actual_price', 'Фактическая цена')->setType('number'),
                 FormField::input('base_price', 'Цена маршрута')->setType('number')->setRequired(1),
                 FormField::bselect('sync_need', 'Нужна ли синхронизация с 1с')
                     ->setRequired(1)
@@ -133,6 +160,13 @@ class Orders extends Section {
                 FormField::bselect('delivery_point', 'Точный забор')
                     ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::input('delivery_price', 'Цена доставки')->setType('number'),
+                FormField::input('order_creator', 'Заявку заполнил (ФИО)'),
+                FormField::select('order_creator_type', 'Заявку заполнил (Тип)')
+                    ->setModelForOptions(Type::class)
+                    ->setQueryFunctionForModel(function ($query) {
+                        return $query->where('class', 'OrderCreatorType');
+                    })
+                    ->setDisplay('name'),
                 FormField::custom('<strong>Габариты</strong><hr>'),
                 FormField::custom(View::make('admin.orders.order-items')->with(compact('order'))->render()),
                 FormField::custom('<strong>Услуги</strong><hr>'),
@@ -179,11 +213,7 @@ class Orders extends Section {
                 FormField::input('sender_addition_info', 'Доп. информация'),
                 FormField::custom('<strong>Юридический адрес</strong><hr>'),
                 FormField::input('sender_legal_address_city', 'Город'),
-                FormField::input('sender_legal_address_street', 'Улица'),
-                FormField::input('sender_legal_address_house', 'Дом'),
-                FormField::input('sender_legal_address_block', 'Блок'),
-                FormField::input('sender_legal_address_building', 'Строение'),
-                FormField::input('sender_legal_address_apartment', 'Квартира/офис'),
+                FormField::input('sender_legal_address', 'Адрес'),
 
                 FormField::custom('<h4>Получатель</h4><hr>'),
                 FormField::bselect('recipient_type_id', 'Тип')
@@ -208,13 +238,10 @@ class Orders extends Section {
                 FormField::input('recipient_addition_info', 'Доп. информация'),
                 FormField::custom('<strong>Юридический адрес</strong><hr>'),
                 FormField::input('recipient_legal_address_city', 'Город'),
-                FormField::input('recipient_legal_address_street', 'Улица'),
-                FormField::input('recipient_legal_address_house', 'Дом'),
-                FormField::input('recipient_legal_address_block', 'Блок'),
-                FormField::input('recipient_legal_address_building', 'Строение'),
-                FormField::input('recipient_legal_address_apartment', 'Квартира/офис'),
+                FormField::input('recipient_legal_address', 'Адрес'),
 
                 FormField::custom('<h4>Плательщик</h4><hr>'),
+                FormField::input('payer_email', 'Email'),
                 FormField::bselect('payer_type', 'Лицо')
                     ->setDataAttributes([
                         'data-live-search="true"'
@@ -246,11 +273,7 @@ class Orders extends Section {
                 FormField::input('payer_addition_info', 'Доп. информация'),
                 FormField::custom('<strong>Юридический адрес</strong><hr>'),
                 FormField::input('payer_legal_address_city', 'Город'),
-                FormField::input('payer_legal_address_street', 'Улица'),
-                FormField::input('payer_legal_address_house', 'Дом'),
-                FormField::input('payer_legal_address_block', 'Блок'),
-                FormField::input('payer_legal_address_building', 'Строение'),
-                FormField::input('payer_legal_address_apartment', 'Квартира/офис'),
+                FormField::input('payer_legal_address', 'Адрес'),
             ])
         ]);
 

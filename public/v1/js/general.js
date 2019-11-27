@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    if($('#process-order').length) {
+        $('#process-order').modal('show');
+    }
+
     $('.city-search').selectize({
         create: false,
         maxItems: 1,
@@ -52,4 +56,69 @@ $(document).ready(function () {
     if(searchParams.has('cn') && $('.header__myaccount_link').hasClass('cn')) {
         $('.header__myaccount_link').dropdown('toggle')
     }
+
+    $('#workers-slider').on('slide.bs.carousel', function (e) {
+
+        var $e = $(e.relatedTarget);
+        var idx = $e.index();
+        var itemsPerSlide = 6;
+        var totalItems = $('#workers-slider .carousel-item').length;
+
+        if (idx >= totalItems-(itemsPerSlide-1)) {
+            var it = itemsPerSlide - (totalItems - idx);
+            for (var i = 0; i < it; i++) {
+                // append slides to end
+                if (e.direction=="left") {
+                    $('#workers-slider .carousel-item').eq(i).appendTo('#workers-slider .carousel-inner');
+                }
+                else {
+                    $('#workers-slider .carousel-item').eq(0).appendTo('#workers-slider .carousel-inner');
+                }
+            }
+        }
+    });
+
+    $('#certificates-slider').on('slide.bs.carousel', function (e) {
+
+        var $e = $(e.relatedTarget);
+        var idx = $e.index();
+        var itemsPerSlide = 6;
+        var totalItems = $('#certificates-slider .carousel-item').length;
+
+        if (idx >= totalItems-(itemsPerSlide-1)) {
+            var it = itemsPerSlide - (totalItems - idx);
+            for (var i = 0; i < it; i++) {
+                if (e.direction=="left") {
+                    $('#certificates-slider .carousel-item').eq(i).appendTo('#certificates-slider .carousel-inner');
+                }
+                else {
+                    $('#certificates-slider .carousel-item').eq(0).appendTo('#certificates-slider .carousel-inner');
+                }
+            }
+        }
+    });
+
+    /* show lightbox when clicking a thumbnail */
+    $('.certificate__item').click(function(event){
+        console.log('test');
+        event.preventDefault();
+        var content = $('.modal-body');
+        content.empty();
+        var title = $(this).attr("title");
+        $('.modal-title').html(title);
+        content.html($(this).html());
+        $(".modal-profile").modal({show:true});
+    });
+
+    $('.toggle-password').click(function () {
+        let btn = $(this);
+        let input = $($(this).data("toggle"));
+        if (input.attr("type") == "password") {
+            input.attr("type", "text");
+            $(btn).removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            input.attr("type", "password");
+            $(btn).addClass('fa-eye').removeClass('fa-eye-slash');
+        }
+    });
 });

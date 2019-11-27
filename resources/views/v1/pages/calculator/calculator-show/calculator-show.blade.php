@@ -7,11 +7,11 @@
 @section('footerScripts')
     <script>
         var parameters={
-            max_length:10,
-            max_width:10,
-            max_height:10,
-            max_weight:10,
-            max_volume:10,
+            max_length: 3,
+            max_width: 3,
+            max_height: 1.8,
+            max_weight: 1000,
+            max_volume: 999,
         };
     </script>
     {{--<script src="{{ asset('v1/js/jquery.kladr.js') }}@include('v1.partials.versions.jsVersion')"></script>--}}
@@ -25,8 +25,7 @@
     <div class="breadcrumb__list d-flex">
         <div class="container">
             <span class="breadcrumb__item"><a href="{{ route('index') }}" class="">Главная</a></span>
-            <span class="breadcrumb__item"><a href="##" class="">Услуги</a></span>
-            <span class="breadcrumb__item">Страхование</span>
+            <span class="breadcrumb__item">{{ $orderType === 'calculator' ? 'Оформление заявки и расчет стоимости' : 'Заявка на забор груза' }}</span>
         </div>
     </div>
     <section class="wrapper">
@@ -34,14 +33,26 @@
             <div class="row">
                 <div class="col-12">
                     <header class="wrapper__header">
-                        <h1>Расчет стоимости</h1>
+                        <h1>{{ $orderType === 'calculator' ? 'Оформление заявки и расчет стоимости' : 'Заявка на забор груза' }}</h1>
                     </header>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-lg-6">
                             @include('v1.pages.calculator.parts.calculator-content')
                         </div>
-                        <div class="col-md-4 offset-md-2">
+                        <div class="ml-lg-auto col-lg-4">
                             <section class="block__itogo">
+                                <div id="calculator-data-preloader" style="
+                                    position:absolute;
+                                    display: none;
+                                    width: 100%;
+                                    height: 100%;
+                                ">
+                                    <img src="{{ asset('/images/loading.svg') }}" style="
+                                        top:30%;
+                                        left: 42%;
+                                        position: absolute;
+                                    ">
+                                </div>
                                 <div class="block__itogo-inner">
                                     <header class="block__itogo_title">Перевозка груза включает</header>
                                     {{--<div class="block__itogo_item d-flex">--}}
@@ -160,4 +171,14 @@
             </div>
         </div>
     </section>
+@endsection
+
+@section('footScripts')
+    <script>
+        grecaptcha.ready(function() {
+            grecaptcha.execute('{{ env('GOOGLE_CAPTCHA_KEY') }}', {action: 'calculatorForm'}).then(function(token) {
+                $('.calculator-form').append('<input type="hidden" name="gToken" value="'+token+'">')
+            });
+        });
+    </script>
 @endsection

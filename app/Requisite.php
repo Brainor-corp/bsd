@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Requisite extends Model
 {
@@ -16,5 +17,12 @@ class Requisite extends Model
 
     public function requisiteParts() {
         return $this->hasMany(RequisitePart::class);
+    }
+
+    public function scopeRegionalManager($query) {
+        $user = Auth::user();
+        $userCities = $user->cities;
+
+        return $query->whereIn('city_id', count($userCities) ? $userCities->pluck('id') : []);
     }
 }

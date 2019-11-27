@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Terminal extends Model
@@ -91,5 +92,12 @@ class Terminal extends Model
 
     public function getNameWithCityAttribute() {
         return $this->name . ' (г. ' . ($this->city->name ?? '') . ')';
+    }
+
+    public function scopeRegionalManager($query) {
+        $user = Auth::user();
+        $userCities = $user->cities;
+
+        return $query->whereIn('city_id', count($userCities) ? $userCities->pluck('id') : []);
     }
 }

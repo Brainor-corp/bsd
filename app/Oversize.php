@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Oversize extends Model
 {
     protected $fillable = [
-        'name', 'length', 'width', 'height', 'volume', 'weight', 'ratio'
+        'name', 'length', 'width', 'height', 'volume', 'weight', 'ratio', 'company_id'
     ];
 
     public function route()

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\ResetPassword as ResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -56,6 +57,28 @@ class User extends Authenticatable
         return $this->hasMany(Event::class);
     }
 
+    public function counterparties() {
+        return $this->belongsToMany(Counterparty::class);
+    }
+
+    public function cities() {
+        return $this->belongsToMany(City::class);
+    }
+
+    public function hasRole($slug){
+        return $this->roles()->where('slug', $slug)->exists() ? true : false;
+    }
+
+    public function hasRoleWithPermission($slug){
+        return $this->roles()->whereHas('permissions', function ($permission) use ($slug) {
+            return $permission->whereSlug($slug);
+        })->exists() ? true : false;
+    }
+
+    public function isSuperAdmin() {
+        return $this->hasRole('super-admin');
+    }
+
     public function getFullNameAttribute(){
         return implode(' ', [
             $this->surname,
@@ -65,9 +88,20 @@ class User extends Authenticatable
     }
 
     public function getSurnameInitialsAttribute(){
-        return implode(' ', [
-            $this->surname,
-            $this->name[0] . '.' . $this->patronomic[0] . '.',
-        ]);
+        $result = "$this->surname ";
+
+        $result .= empty($this->name) ? '' : (mb_substr($this->name, 0, 1) . '.');
+        $result .= empty($this->patronomic) ? '' : (mb_substr($this->patronomic, 0, 1) . '.');
+
+        $limit = 7;
+        $postfix = '..';
+
+        return mb_strlen($result) > $limit ? mb_substr($result, 0, $limit) . $postfix : $result;
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        // Your your own implementation.
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

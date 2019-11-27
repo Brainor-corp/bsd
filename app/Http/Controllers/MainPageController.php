@@ -5,43 +5,28 @@ namespace App\Http\Controllers;
 use App\City;
 use App\CmsBoosterPost;
 use App\Http\Helpers\CalculatorHelper;
+use App\OversizeMarkup;
 use App\Point;
 use App\Route;
 use App\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use phpDocumentor\Reflection\Types\Object_;
 use Zeus\Admin\Cms\Helpers\CMSHelper;
 
 class MainPageController extends Controller
 {
     public function index(Request $request) {
-        if(isset($request->packages)){
-            $packages = $request->packages;
-        }else{
-            $packages=[
-                1=>[
-                    'length' => '0.1',
-                    'width' => '0.1',
-                    'height' => '0.1',
-                    'weight' => '1',
-                    'volume' => '0.01',
-                    'quantity' => '1'
-                ]
-            ];
-        }
-
         $shipCities = City::where('is_ship', true)->get();      // Города отправления
         $shipPoints = Point::has('city')->with('city')->get();  // Особые пункты отправления
 
         // Объединим города и пункты в одну коллекцию
         $shipCities = Collect($shipCities->pluck('name'))->merge($shipPoints->pluck('name'));
-        $shipCities = $shipCities->unique()->map(function ($item, $key) {
+        $shipCities = $shipCities->map(function ($item, $key) {
             $city = new \stdClass();
-            $city->name = $item;
+            $city->name = trim($item);
 
             return $city;
-        })->sortBy('name');
+        })->unique()->sortBy('name');
 
         // Города/пункты отправления/назначения по умолчанию
         $selectedShipCity = null;
@@ -95,7 +80,16 @@ class MainPageController extends Controller
         $shipCity = City::where('id', $selectedShipCity)->firstOrFail();
         $destCity = City::where('id', $selectedDestCity)->firstOrFail();;
 
-        $routeData = CalculatorHelper::getRouteData($shipCity, $destCity, $packages);
+        $packages = [];
+        $weight = 1;
+        $volume = 0.01;
+        $routeData = CalculatorHelper::getRouteData(
+            $shipCity,
+            $destCity,
+            $packages,
+            $weight,
+            $volume
+        );
         $tariff = [
             'base_price' => $routeData['price'],
             'total_volume' => $routeData['totalVolume'],
@@ -122,14 +116,11 @@ class MainPageController extends Controller
         }
 
         //news
-        $news = CmsBoosterPost::when(
-                isset($currentCity->closest_terminal_id),
-                function ($newsQ) use ($currentCity) {
-                    return $newsQ->whereHas('terminals', function ($terminalsQ) use ($currentCity) {
-                        $terminalsQ->where('id', $currentCity->closest_terminal_id);
-                    });
-                }
-            )
+        $news = CmsBoosterPost::whereHas('terminals', function ($terminalsQ) use ($currentCity) {
+                $terminalsQ->whereHas('city', function ($cityQ) use ($currentCity) {
+                    return $cityQ->where('id', $currentCity->id);
+                });
+            })
             ->where([
                 ['type', 'news'],
                 ['status', 'published'],
@@ -137,22 +128,6 @@ class MainPageController extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
-
-        // Если для текущего города новостей нет, и текущий город -- не Питер, выведем новости для Питера
-        if(!$news->count() && $currentCity->slug !== 'sankt-peterburg') {
-            $news = CmsBoosterPost::whereHas('terminals', function ($terminalsQ) use ($currentCity) {
-                    $terminalsQ->whereHas('city', function ($cityQ) {
-                        return $cityQ->where('slug', 'sankt-peterburg');
-                    });
-                })
-                ->where([
-                    ['type', 'news'],
-                    ['status', 'published'],
-                ])
-                ->orderBy('created_at', 'desc')
-                ->limit(3)
-                ->get();
-        }
 
         //services
         $args = [

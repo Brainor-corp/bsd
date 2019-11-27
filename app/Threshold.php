@@ -8,7 +8,7 @@ class Threshold extends Model
 {
 
     protected $fillable = [
-        'rate_id', 'value'
+        'rate_id', 'value', 'company_id'
     ];
     public function rate()
     {

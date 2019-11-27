@@ -2,9 +2,9 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\GeoIpCheck;
 use App\Http\Middleware\OrderSave;
 use App\Http\Middleware\SmsConfirm;
-use App\Http\Middleware\GeoIpCheck;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -23,11 +23,11 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
         \Illuminate\Session\Middleware\StartSession::class,
-        \App\Http\Middleware\EncryptCookies::class,
-        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
-        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \App\Http\Middleware\VerifyCsrfToken::class,
+//        \App\Http\Middleware\EncryptCookies::class,
+//        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+//        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+//        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+//        \App\Http\Middleware\VerifyCsrfToken::class,
     ];
 
     /**
@@ -73,6 +73,7 @@ class Kernel extends HttpKernel
         'order.save' => OrderSave::class,
         'sms-confirm' => SmsConfirm::class,
         'geoIpCheck' => GeoIpCheck::class,
+        'admin' => \App\Http\Middleware\Admin::class,
     ];
 
     /**

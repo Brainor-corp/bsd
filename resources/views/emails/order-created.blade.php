@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+</head>
+
 <body>
-{{ $order['name'] }}<br>
-{{ $order['id'] }}<br>
-test mail
+
+<h1>Сформирована новая заявка на перевозку</h1>
+<p>Подробности заявки доступны во вложении.</p>
+
 </body>
 </html>

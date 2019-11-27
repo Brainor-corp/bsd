@@ -17,6 +17,8 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 class Contacts extends Section {
     protected $title = 'Отзывы';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request) {
         $display = Display::table([
             Column::link('id', '#'),

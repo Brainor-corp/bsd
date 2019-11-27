@@ -22,6 +22,8 @@ class Cities extends Section
 {
     protected $title = 'Города';
 
+    protected $checkAccess = true;
+
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('id', '#'),
@@ -57,6 +59,8 @@ class Cities extends Section
             FormColumn::column([
                 FormField::input('name', 'Наименование')
                     ->setRequired(true),
+                FormField::input('slug', 'Слаг')
+                    ->setIsSystem(true),
                 FormField::bselect('is_ship', 'Отправка')
                     ->setHelpBlock("<small class='text-muted'>Это город отправления</small>")
                     ->setRequired(1)

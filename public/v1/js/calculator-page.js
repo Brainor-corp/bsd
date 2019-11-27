@@ -7,9 +7,34 @@ ymaps.ready(function () {
     });
 });
 
+function getDiscount() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'post',
+        url: '/api/calculator/get-discount',
+        cache: false,
+        success: function(data) {
+            $('#discount').val(data);
+            $('#discount').trigger('change');
+        },
+        error: function (data) {
+            // console.log(data);
+        }
+    });
+}
+
 $(document).ready(function () {
-    totalWeigthRecount();
-    totalVolumeRecount();
+    getDiscount();
+    // totalWeigthRecount();
+    // totalVolumeRecount();
+
+    $('.cargo-type-select').selectize({
+        maxOptions: 2000
+    });
 
     $('#ship_city').selectize({
         openOnFocus:false,
@@ -25,8 +50,15 @@ $(document).ready(function () {
             });
 
             this.$control.on("click", function (event) {
-                $('#ship_city').selectize()[0].selectize.clear()
-                $('#dest_city').selectize()[0].selectize.clear()
+                $('#ship_city').selectize()[0].selectize.clear();
+                $('#need-to-take').prop("checked", false);
+                clearDeliveryData('take');
+                $('#need-to-take').trigger('change');
+
+                $('#dest_city').selectize()[0].selectize.clear();
+                $('#need-to-bring').prop("checked", false);
+                clearDeliveryData('bring');
+                $('#need-to-bring').trigger('change');
             });
         },
         render: {
@@ -35,6 +67,7 @@ $(document).ready(function () {
             }
         },
         onChange: function(value) {// при изменении города отправления
+            getAllCalculatedData();
             if (!value.length) return;
             $.ajaxSetup({
                 headers: {
@@ -66,7 +99,10 @@ $(document).ready(function () {
                             });
 
                             this.$control.on("click", function (event) {
-                                $('#dest_city').selectize()[0].selectize.clear()
+                                $('#dest_city').selectize()[0].selectize.clear();
+                                $('#need-to-bring').prop("checked", false);
+                                clearDeliveryData('bring');
+                                $('#need-to-bring').trigger('change');
                             });
                         },
                         render: {
@@ -103,7 +139,10 @@ $(document).ready(function () {
             });
 
             this.$control.on("click", function (event) {
-                $('#dest_city').selectize()[0].selectize.clear()
+                $('#dest_city').selectize()[0].selectize.clear();
+                $('#need-to-bring').prop("checked", false);
+                clearDeliveryData('bring');
+                $('#need-to-bring').trigger('change');
             });
         },
         render: {
@@ -140,27 +179,25 @@ $(document).ready(function () {
         var lastId = $( '.package-item' ).filter( ':last' ).data('packageId');
         var nextId = lastId+1;
 
-        console.log(lastId, nextId);
-
         var html =
             '<div class="row package-wrapper" id="package-wrapper-'+ nextId +'">'+
             '<div class="col-11 form-item row align-items-center package-item" id="package-'+ nextId +'" data-package-id="'+ nextId +'" style="padding-right: 0;">' +
-            '<label class="col-auto calc__label"><span class="content">Габариты (м)*</span></label>' +
-            '<div class="col calc__inpgrp relative row__inf"  style="padding-right: 0;">' +
+            '<label class="col-auto calc__label"><span class="content">Габариты (м)* <span class="d-md-none d-inline-block">(Д/Ш/В/Вес/Кол-во)</span></span></label>' +
+            '<div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">' +
             '<div class="input-group">' +
-            '<input type="number" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
-            '<input type="number" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][width]" data-package-id="'+ nextId +'"  data-dimension-type="width" placeholder="Ширина" value="0.1">' +
-            '<input type="number" id="packages_'+ nextId +'_height" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][height]" data-package-id="'+ nextId +'"  data-dimension-type="height" placeholder="Высота" value="0.1">' +
-            '<input type="number" id="packages_'+ nextId +'_weight" class="form-control text-center package-params package-weight" name="cargo[packages]['+ nextId +'][weight]" data-package-id="'+ nextId +'"  data-dimension-type="weight" placeholder="Вес" value="1">' +
-            '<input type="number" id="packages_'+ nextId +'_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages]['+ nextId +'][quantity]" data-package-id="'+ nextId +'"  data-dimension-type="quantity" placeholder="Места" value="1">' +
+            '<input type="number" step="any" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
+            '<input type="number" step="any" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][width]" data-package-id="'+ nextId +'"  data-dimension-type="width" placeholder="Ширина" value="0.1">' +
+            '<input type="number" step="any" id="packages_'+ nextId +'_height" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][height]" data-package-id="'+ nextId +'"  data-dimension-type="height" placeholder="Высота" value="0.1">' +
+            '<input type="number" step="any" id="packages_'+ nextId +'_weight" class="form-control text-center package-params package-weight" name="cargo[packages]['+ nextId +'][weight]" data-package-id="'+ nextId +'"  data-dimension-type="weight" placeholder="Вес" value="1">' +
+            '<input type="number" step="any" id="packages_'+ nextId +'_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages]['+ nextId +'][quantity]" data-package-id="'+ nextId +'"  data-dimension-type="quantity" placeholder="Места" value="1">' +
             '</div>' +
-            '<input type="number" hidden="hidden" id="packages_'+ nextId +'_volume" class="form-control text-center package-params package-volume" name="cargo[packages]['+ nextId +'][volume]" data-package-id="'+ nextId +'"  data-dimension-type="volume"  value="0.001">' +
+            '<input type="number" step="any" hidden="hidden" id="packages_'+ nextId +'_volume" class="form-control text-center package-params package-volume" name="cargo[packages]['+ nextId +'][volume]" data-package-id="'+ nextId +'"  data-dimension-type="volume"  value="0.001">' +
             '</div>' +
             '</div>'+
-            '<a href="#" id="delete-package-btn" class=" col-1 add_anotherplace">' +
+            '<a href="#" id="delete-package-btn" class=" col-1 align-self-sm-auto align-self-center add_anotherplace" title="Удалить">' +
             '<span class="badge calc_badge"><i class="fa fa-minus"></i></span>' +
             '</a>'+
-            '<a href="#" id="add-package-btn" class=" col-1 add_anotherplace">' +
+            '<a href="#" id="add-package-btn" class=" col-1 align-self-sm-auto align-self-center add_anotherplace" title="Добавить">' +
             '<span class="badge calc_badge"><i class="fa fa-plus"></i></span>' +
             '</a>'+
             '</div>'
@@ -205,8 +242,20 @@ $(document).ready(function () {
 
     $(document).on('change', '#insurance', function (e) {
         $('#insurance-amount').attr('value', '');
-        $('#insurance-amount').val('');
-        $('#insurance-amount-wrapper').toggle();
+
+        if($(this).is(':checked')) {
+            $('#insurance-amount').val(50000);
+            $('#insurance-amount').attr('required', 'required');
+            $('#insurance-amount').attr('min', '50000');
+            $('#insurance-amount-wrapper').show();
+        } else {
+            $('#insurance-amount').val(0);
+            $('#insurance-amount').removeAttr('required');
+            $('#insurance-amount').removeAttr('min');
+            $('#insurance-amount-wrapper').hide();
+        }
+
+        getAllCalculatedData();
     });
 
     $(document).on('change', '#insurance-amount', function (e) {
@@ -226,13 +275,18 @@ $(document).ready(function () {
 
         dimensionMax = parameters[dimensionType];
         if($(this).val() >dimensionMax){
-            $(this).css({
-                'background': 'rgba(255, 177, 177, 0.25)',
-            });
+            $(this).addClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length === 0){
+                myDivs = $('<div class="oversize-error">Введенные Вами данные превышают параметры габаритного груза. Возможно увеличение стоимости перевозки.</div>   ')
+                    .appendTo($(this).parent().parent())
+            }
         }else {
-            $(this).css({
-                'background': 'transparent',
-            });
+            $(this).removeClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length !== 0){
+                if($(this).parent().children('.oversized').length === 0) {
+                    $(this).parent().parent().children('div.oversize-error').remove();
+                }
+            }
         }
 
         if(length === ''){
@@ -269,13 +323,18 @@ $(document).ready(function () {
 
         dimensionMax = parameters[dimensionType];
         if($(this).val() >dimensionMax){
-            $(this).css({
-                'background': 'rgba(255, 177, 177, 0.25)',
-            });
+            $(this).addClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length === 0){
+                myDivs = $('<div class="oversize-error">Введенные Вами данные превышают параметры габаритного груза. Возможно увеличение стоимости перевозки.</div>   ')
+                    .appendTo($(this).parent().parent())
+            }
         }else {
-            $(this).css({
-                'background': 'transparent',
-            });
+            $(this).removeClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length !== 0){
+                if($(this).parent().children('.oversized').length === 0) {
+                    $(this).parent().parent().children('div.oversize-error').remove();
+                }
+            }
         }
 
         totalWeigthRecount();
@@ -294,14 +353,19 @@ $(document).ready(function () {
             dimensionMax = 0;
 
         dimensionMax = parameters[dimensionType];
-        if($(this).val() > dimensionMax){
-            $(this).css({
-                'background': 'rgba(255, 177, 177, 0.25)',
-            });
+        if($(this).val() >dimensionMax){
+            $(this).addClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length === 0){
+                myDivs = $('<div class="oversize-error">Введенные Вами данные превышают параметры габаритного груза. Возможно увеличение стоимости перевозки.</div>   ')
+                    .appendTo($(this).parent().parent())
+            }
         }else {
-            $(this).css({
-                'background': 'transparent',
-            });
+            $(this).removeClass('oversized');
+            if($(this).parent().parent().children('div.oversize-error').length !== 0){
+                if($(this).parent().children('.oversized').length === 0) {
+                    $(this).parent().parent().children('div.oversize-error').remove();
+                }
+            }
         }
 
         if(volume !== ''){
@@ -349,26 +413,26 @@ $(document).ready(function () {
     $(document).on('change', '#need-to-take', function () {
         if($(this).is(':checked')) {
             $('.need-to-take-input').removeAttr('disabled');
-            if($('input[name="need-to-take-type"]:checked').val() !== 'from') {
-                $('#need-to-take-type-in').prop('checked', true);
-            }
-            if($('input[name="need-to-take-type"]:checked').val() === 'from') {
-                $('.need-to-take-input-address').removeAttr('disabled');
-            }
+            $('.need-to-take-input-address').removeAttr('disabled');
+            $('.need-to-take-input-address').attr('required', 'required');
         } else {
             $('.need-to-take-input').attr('disabled', 'disabled');
+            $('.need-to-take-input').prop('checked', false);
             $('.need-to-take-input-address').attr('disabled', 'disabled');
-            // $('input[name="need-to-take-type"]:checked').prop('checked', false);
+            $('.need-to-take-input-address').removeAttr('required');
+            clearDeliveryData('take');
         }
 
-        calcTariffPrice(
-            {
-                'value': $('#ship_city').val(),
-                'points': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
-            },
-            $('#ship_point'),
-            $('input[name="need-to-take-type"]:checked').val() == "in"
-        );
+        if($('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()] !== undefined) {
+            calcTariffPrice(
+                {
+                    'value': $('#ship_city').val(),
+                    'points': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
+                },
+                $('#ship_point'),
+                $('input[name="need-to-take-type"]:checked').val() == "in"
+            );
+        }
     });
 
     $(document).on('change', 'input[name="need-to-take-type"]', function () {
@@ -392,16 +456,14 @@ $(document).ready(function () {
     $(document).on('change', '#need-to-bring', function () {
         if($(this).is(':checked')) {
             $('.need-to-bring-input').removeAttr('disabled');
-            if($('input[name="need-to-bring-type"]:checked').val() !== 'from') {
-                $('#need-to-bring-type-in').prop('checked', true);
-            }
-            if($('input[name="need-to-bring-type"]:checked').val() === 'from') {
-                $('.need-to-bring-input-address').removeAttr('disabled');
-            }
+            $('.need-to-bring-input-address').removeAttr('disabled');
+            $('.need-to-bring-input-address').attr('required', 'required');
         } else {
-            // $('input[name="need-to-bring-type"]:checked').prop('checked', false);
             $('.need-to-bring-input').attr('disabled', 'disabled');
+            $('.need-to-bring-input').prop('checked', false);
             $('.need-to-bring-input-address').attr('disabled', 'disabled');
+            $('.need-to-bring-input-address').removeAttr('required');
+            clearDeliveryData('bring');
         }
 
         if($('#dest_city').data().selectize.getValue() !== "") {
@@ -461,17 +523,88 @@ $(document).ready(function () {
                 city = $('#dest_city').text();
                 cityKladrId = $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].kladrId;
             }
-            console.log(cityKladrId);
             $(element).kladr({
                 // type: $.kladr.type.city, // берем город
                 oneString: true, // Если включить эту штуку, то будет возвращаться полный адрес
                 parentType: $.kladr.type.city,
                 parentId: cityKladrId,
+                source: function (query, callback) {
+                        ymaps.suggest(query.name, {results: 10}).then(function (items) {
+                            callback(items);
+                        });
+                },
+                labelFormat: function (obj, query) {
+                    return obj.displayName;
+                },
+                valueFormat: function (obj, query) {
+                    return obj.value.replace('Россия, ', '');
+                },
                 select: function (obj) {
                     kladrChange(obj, point);
                 }
             });
         });
+    }
+
+    // Срабатывает при изменении значения селекта выбора города
+    function kladrChange(obj = null, point) {
+        if(obj !== null) {
+            var locality = '';
+            ymaps.geocode(obj.value, {results: 1}).then(function (res) {
+                let forceDeliveryType = null;
+                locality = res.geoObjects.get(0).getLocalities()[0];
+                if(locality === undefined) {
+                    forceDeliveryType = 'from';
+                    if(point.attr('id') === "ship_point") {
+                        locality = $('select[name="ship_city"] option:selected').val();
+                    } else {
+                        locality = $('select[name="dest_city"] option:selected').val();
+                    }
+                }
+
+                // console.log(res.geoObjects.get(0));
+
+                point.data('name', locality).attr('data-name', locality); // Это имя отправляем к нам на сервер
+                point.data('fullName', obj.value).attr('data-full-name', obj.value); // Это имя отправляем яндексу для просчета дистанции
+
+                if (obj.id !== undefined)
+                    point.data('id', obj.id);
+                else
+                    point.data('id', 0);
+
+                if(point.attr('id') === "ship_point") {
+                    if($('#ship_city').data().selectize.getValue() !== "") {
+                        changeDeliveryType($('select[name="ship_city"] option:selected').val(), locality, obj.value, "need-to-take-type", forceDeliveryType);
+                        $('input[name="take_city_name"]').val(point.data('name'));
+                        calcTariffPrice(
+                            {
+                                'value': $('#ship_city').val(),
+                                'point': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
+                            },
+                            point,
+                            $('input[name="need-to-take-type"]:checked').val() == "in"
+                        ); // вызываем просчет для "Забрать из"
+                    }
+                } else {
+                    if($('#dest_city').data().selectize.getValue() !== "") {
+                        changeDeliveryType($('select[name="dest_city"] option:selected').val(), locality, obj.value, "need-to-bring-type", forceDeliveryType);
+                        $('input[name="bring_city_name"]').val(point.data('name'));
+                        calcTariffPrice(
+                            {
+                                'value': $('#dest_city').val(),
+                                'point': $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal
+                            },
+                            point, $('input[name="need-to-bring-type"]:checked').val() == "in"
+                        ); // вызываем просчет для "Доставить"
+                    }
+                }
+            }, function (err) {
+                // Обработка ошибки.
+            });
+            // let name = obj.type === "Город" ? obj : typeof obj.parents !== "undefined" ? $.grep(obj.parents, function(v) {
+            //     return v.type === "Город";
+            // })[0] : undefined;
+        }
     }
 
     $(document).on('change', '#ship-from-point', function () {
@@ -483,8 +616,6 @@ $(document).ready(function () {
     });
 
     function updateRequiredInputs() {
-        console.log('update req..');
-
         $('.req:hidden').removeAttr('required');
         $('.req:visible').attr('required', 'required');
     }
@@ -583,8 +714,6 @@ $(document).ready(function () {
             currentBlock.find("input[name$='phone_individual']").val(ui.item["phone"]);
             currentBlock.find("input[name$='contact_person_individual']").val(ui.item["contact_person"]);
             currentBlock.find("input[name$='addition_info_individual']").val(ui.item["addition_info"]);
-
-            console.log(ui.item);
         }
     });
 
@@ -603,11 +732,7 @@ $(document).ready(function () {
                         contact_person: el['contact_person'],
                         addition_info: el['addition_info'],
                         address_city: el['legal_address_city'],
-                        address_street: el['legal_address_street'],
-                        address_house: el['legal_address_house'],
-                        address_block: el['legal_address_block'],
-                        address_building: el['legal_address_building'],
-                        address_apartment: el['legal_address_apartment'],
+                        address: el['legal_address'],
                         legal_form: el['legal_form'],
                         inn: el['inn'],
                         kpp: el['kpp'],
@@ -626,15 +751,15 @@ $(document).ready(function () {
             currentBlock.find("input[name$='addition_info_legal']").val(ui.item["addition_info"]);
             currentBlock.find("input[name$='legal_form']").val(ui.item["legal_form"]);
             currentBlock.find("input[name$='address_city']").val(ui.item["address_city"]);
-            currentBlock.find("input[name$='address_street']").val(ui.item["address_street"]);
-            currentBlock.find("input[name$='address_house']").val(ui.item["address_house"]);
-            currentBlock.find("input[name$='address_block']").val(ui.item["address_block"]);
-            currentBlock.find("input[name$='address_building']").val(ui.item["address_building"]);
-            currentBlock.find("input[name$='address_apartment']").val(ui.item["address_apartment"]);
+            currentBlock.find("input[name$='address']").val(ui.item["address"]);
             currentBlock.find("input[name$='inn']").val(ui.item["inn"]);
             currentBlock.find("input[name$='kpp']").val(ui.item["kpp"]);
         }
     });
+
+    $(document).on('focus', '.package-params', function () {
+        $(this).val('');
+    })
 });
 
 function getAllCalculatedData() {
@@ -650,13 +775,14 @@ function getAllCalculatedData() {
         dataType: "json",
         cache: false,
         beforeSend: function() {
+            $('#calculator-data-preloader').show()
         },
         success: function (data) {
-            console.log(data);
             renderCalendar(data);
+            $('#calculator-data-preloader').hide()
         },
         error: function(data){
-            console.log(data);
+            $('#calculator-data-preloader').hide()
         }
     });
 }
@@ -672,8 +798,9 @@ function totalVolumeRecount() {
     });
 
     $("#total-volume").attr('value', totalVolume).val(totalVolume);
-    $("#total-volume-hidden").attr('data-total-volume', totalVolume).attr('value', totalVolume).val(totalVolume);
 };
+
+$(document).on('change', '#total-volume', () => getAllCalculatedData());
 
 function totalWeigthRecount() {
     let totalWeigth = 0;
@@ -686,19 +813,21 @@ function totalWeigthRecount() {
     });
 
     $("#total-weight").attr('value', totalWeigth).val(totalWeigth);
-    $("#total-weight-hidden").attr('data-total-weight', totalWeigth).attr('value', totalWeigth).val(totalWeigth);
 };
 
+$(document).on('change', '#total-weight', () => getAllCalculatedData());
+
 async function checkAddressInPolygon(address, polygon) {
-    console.log('checking contains..');
+    if(!address.length) {
+        return false;
+    }
+
     return await ymaps.geocode(address).then(function (res) {
-        console.log('here!');
         var newPoint = res.geoObjects.get(0);
         map.geoObjects.removeAll().add(polygon);
         map.geoObjects.add(newPoint);
 
         let result = !!polygon.geometry.contains(newPoint.geometry.getCoordinates());
-        console.log(result ? "В функции +" : "В функции -");
 
         return result;
     });
@@ -706,17 +835,74 @@ async function checkAddressInPolygon(address, polygon) {
 
 // Базовая функция просчета цены для "Забрать из" и "Доставить"
 function calcTariffPrice(city, point, inCity) {
-    if(inCity) { // Если работаем в пределах города
-        getAllCalculatedData();
+    let fullName = point.data('fullName');
+    if(inCity || typeof fullName === undefined || fullName === "") { // Если работаем в пределах города
+        point.closest('.delivery-block').find('input.delivery-type').filter('[value="in"]').prop('checked', true);
+        // Пробуем получить полигоны для выбранного города
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type: 'post',
+            url: '/api/calculator/get-city-polygons',
+            data: {
+                city: city.value
+            },
+            dataType: "json",
+            cache: false,
+            success: async function(data) {
+                let isInPolygon;
+                let polygonId = '';
+
+                for (const el of data) {
+                    let findCoordinates = [];
+                    let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
+                    $(polygonCoordinates).each(function (pairKey, pairVal) {
+                        pairVal = pairVal.replace(' ', '');
+                        pairVal = pairVal.replace('[', '');
+                        pairVal = pairVal.replace(']', '');
+                        let parts = pairVal.split(',');
+                        findCoordinates.push([
+                            parseFloat(parts[0]),
+                            parseFloat(parts[1])
+                        ]);
+                    });
+
+                    let address = $("#" + point.attr('id')).val();
+                    let polygon =  new ymaps.Polygon([findCoordinates]);
+
+                    isInPolygon = await checkAddressInPolygon(address, polygon);
+                    if(isInPolygon) {
+                        polygonId = el.id;
+                        break;
+                    }
+                }
+
+                let hiddenPolygonInputClass = '.take-polygon-hidden-input';
+                if(point.attr('id') === 'dest_point') {
+                    hiddenPolygonInputClass = '.bring-polygon-hidden-input';
+                }
+                let hiddenPolygonInput = $(hiddenPolygonInputClass);
+
+                if(isInPolygon) {
+                    hiddenPolygonInput.val(polygonId);
+                }
+
+                getAllCalculatedData();
+            },
+            error: function(data){
+                // console.log(data);
+            }
+        });
     } else { // В противном случае просчитываем километраж с помощью Яндекс api
-        let fullName = point.data('fullName');
-        if (!fullName)
+        if (!fullName) {
+            getAllCalculatedData();
             return;
+        }
 
         if (city) {
-            console.log('===========');
-            console.log(city.value);
-
             // Пробуем получить полигоны для выбранного города
             $.ajaxSetup({
                 headers: {
@@ -732,12 +918,10 @@ function calcTariffPrice(city, point, inCity) {
                 dataType: "json",
                 cache: false,
                 success: async function(data) {
-                    console.log(data);
                     let isInPolygon;
                     let polygonId = '';
 
                     for (const el of data) {
-                        console.log(el);
                         let findCoordinates = [];
                         let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
                         $(polygonCoordinates).each(function (pairKey, pairVal) {
@@ -751,95 +935,50 @@ function calcTariffPrice(city, point, inCity) {
                             ]);
                         });
 
-                        console.log(point.attr('id'));
                         let address = $("#" + point.attr('id')).val();
                         let polygon =  new ymaps.Polygon([findCoordinates]);
 
                         isInPolygon = await checkAddressInPolygon(address, polygon);
-                        console.log(typeof isInPolygon);
                         if(isInPolygon) {
-                            console.log(address + " содержится в " + el.name);
                             polygonId = el.id;
                             break;
                         }
                     }
 
-                    console.log('done');
+                    let hiddenPolygonInputClass = '.take-polygon-hidden-input';
+                    if(point.attr('id') === 'dest_point') {
+                        hiddenPolygonInputClass = '.bring-polygon-hidden-input';
+                    }
+                    let hiddenPolygonInput = $(hiddenPolygonInputClass);
 
                     if(isInPolygon) {
-                        console.log('Нужно поставить цену тарифа');
 
-                        let hiddenPolygonInputClass = '.take-polygon-hidden-input';
-                        if(point.attr('id') === 'dest_point') {
-                            hiddenPolygonInputClass = '.bring-polygon-hidden-input';
-                        }
-
-                        let hiddenPolygonInput = $(hiddenPolygonInputClass);
                         hiddenPolygonInput.val(polygonId);
 
                         getAllCalculatedData();
                     } else {
-                        console.log('Не нужно ставить цену тарифа');
-                        ymaps.route([city.point, fullName]).then(function (route) {
-                            console.log('От: ' + city.point + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
-                            $(point.closest('.delivery-block')).find('.distance-hidden-input').val(Math.ceil(route.getLength() / 1000));
+                        hiddenPolygonInput.val(null);
+                        if(city.point !== undefined) {
+                            ymaps.route([city.point, fullName]).then(function (route) {
+                                // console.log('От: ' + city.point + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
+                                $(point.closest('.delivery-block')).find('.distance-hidden-input').val(Math.ceil(route.getLength() / 1000));
 
+                                getAllCalculatedData();
+                            });
+                        } else {
                             getAllCalculatedData();
-                        });
+                        }
                     }
                 },
                 error: function(data){
-                    console.log(data);
+                    // console.log(data);
                 }
             });
         }
     }
 }
 
-// Срабатывает при изменении значения селекта выбора города
-function kladrChange(obj = null, point) {
-    if(obj !== null) {
-        let name = obj.type === "Город" ? obj : typeof obj.parents !== "undefined" ? $.grep(obj.parents, function(v) {
-            return v.type === "Город";
-        })[0] : undefined;
-
-        point.data('name', typeof name === "undefined" ? obj.name : name.name); // Это имя отправляем к нам на сервер
-        point.data('fullName', obj.fullName); // Это имя отправляем яндексу для просчета дистанции
-
-        if (obj.id !== undefined)
-            point.data('id', obj.id);
-        else
-            point.data('id', 0);
-    }
-
-    if(point.attr('id') === "ship_point") {
-        if($('#ship_city').data().selectize.getValue() !== "") {
-            $('input[name="take_city_name"]').val(point.data('name'));
-            calcTariffPrice(
-                {
-                    'value': $('#ship_city').val(),
-                    'point': $('#ship_city').data().selectize.options[$('#ship_city').data().selectize.getValue()].terminal
-                },
-                point,
-                $('input[name="need-to-take-type"]:checked').val() == "in"
-            ); // вызываем просчет для "Забрать из"
-        }
-    } else {
-        if($('#dest_city').data().selectize.getValue() !== "") {
-            $('input[name="bring_city_name"]').val(point.data('name'));
-            calcTariffPrice(
-                {
-                    'value': $('#dest_city').val(),
-                    'point': $('#dest_city').data().selectize.options[$('#dest_city').data().selectize.getValue()].terminal
-                },
-                point, $('input[name="need-to-bring-type"]:checked').val() == "in"
-            ); // вызываем просчет для "Доставить"
-        }
-    }
-}
-
 function renderCalendar(data) {
-    console.log('render');
     if(data.error === undefined) {
         $('#route-name').html(data.route.name);
         $('#base-price').html(data.route.price);
@@ -849,6 +988,20 @@ function renderCalendar(data) {
         drawDiscount(data.discount);
 
         $('#total-price').html(data.total);
+    } else if(data.error === 'Cities not found') {
+        let cityFrom = $('#ship_city option:selected').val() ? $('#ship_city option:selected').val() : '<span title="Выберите город отправления">?</span>';
+        let cityTo = $('#dest_city option:selected').val() ? $('#dest_city option:selected').val() : '<span title="Выберите город назначения">?</span>';
+
+        let routeName = cityFrom + ' → ' + cityTo;
+
+        $('#route-name').html(routeName);
+        $('#base-price').html('договорная');
+
+        drawDelivery({'take': null, 'bring': null});
+        drawServices([]);
+        drawDiscount(false);
+
+        $('#total-price').html('договорная');
     }
 }
 
@@ -861,9 +1014,9 @@ function drawDelivery(delivery) {
             '<div class="block__itogo_item d-flex">'+
             '<div class="d-flex flex-wrap">'+
             '<span class="block__itogo_value">' +
-            'Забор груза: ' + delivery.take.city_name + (delivery.take.polygon_name === undefined ? "" : (" (" + delivery.take.polygon_name) + ")")
+            'Забор груза: ' + (delivery.take.city_name ? delivery.take.city_name : '') + (delivery.take.polygon_name === undefined ? "" : (" (" + delivery.take.polygon_name) + ")")
             +
-            (typeof delivery.take.distance !== "undefined" ? ('<small> (' + delivery.take.distance + ' км) </small>') : '')
+            (typeof delivery.take.distance !== "undefined" && delivery.take.distance !== 0 ? ('<small> (' + delivery.take.distance + ' км) </small>') : '')
             +
             '</span>'+
             '</div>'+
@@ -881,9 +1034,9 @@ function drawDelivery(delivery) {
             '<div class="block__itogo_item d-flex">'+
             '<div class="d-flex flex-wrap">'+
             '<span class="block__itogo_value">' +
-            'Доставка груза: ' + delivery.bring.city_name + (delivery.bring.polygon_name === undefined ? "" : (" (" + delivery.bring.polygon_name + ")"))
+            'Доставка груза: ' + (delivery.bring.city_name ? delivery.bring.city_name : '') + (delivery.bring.polygon_name === undefined ? "" : (" (" + delivery.bring.polygon_name + ")"))
             +
-            (typeof delivery.bring.distance !== "undefined" ? ('<small> (' + delivery.bring.distance + ' км) </small>') : '')
+            (typeof delivery.bring.distance !== "undefined" && delivery.bring.distance !== 0 ? ('<small> (' + delivery.bring.distance + ' км) </small>') : '')
             +
             '</span>'+
             '</div>'+
@@ -919,6 +1072,9 @@ function drawServices(services) {
             '</span>'+
             '</div>'+
             '</div>';
+        if(item.name == 'Страховка'){
+            $('#insurance').attr('checked', true);
+        }
     });
 
     if(servicesPoints !== ''){
@@ -948,4 +1104,81 @@ function drawDiscount(discount) {
 
         $('#custom-services-total-wrapper').show();
     }
+}
+
+function changeDeliveryType(cityFrom, cityTo, address, inputName, forceDeliveryType = null) {
+    if(forceDeliveryType !== null) {
+        $('input:radio[name="' + inputName + '"]').filter('[value="' + forceDeliveryType + '"]').prop('checked', true);
+        return;
+    }
+
+    let type = 'from';
+
+    if(cityFrom !== cityTo) {
+        $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
+        return;
+    }
+
+    // Пробуем получить полигоны для выбранного города
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'post',
+        url: '/api/calculator/get-city-polygons',
+        data: {
+            city: cityFrom
+        },
+        dataType: "json",
+        cache: false,
+        success: async function(data) {
+            if(data.length) {
+                let isInPolygon;
+
+                for (const el of data) {
+                    let findCoordinates = [];
+                    let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
+                    $(polygonCoordinates).each(function (pairKey, pairVal) {
+                        pairVal = pairVal.replace(' ', '');
+                        pairVal = pairVal.replace('[', '');
+                        pairVal = pairVal.replace(']', '');
+                        let parts = pairVal.split(',');
+                        findCoordinates.push([
+                            parseFloat(parts[0]),
+                            parseFloat(parts[1])
+                        ]);
+                    });
+
+                    let polygon =  new ymaps.Polygon([findCoordinates]);
+                    isInPolygon = await checkAddressInPolygon(address, polygon);
+                    if(isInPolygon) {
+                        type = 'in';
+                        break;
+                    }
+                }
+            } else {
+                type = 'in';
+            }
+
+            $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
+
+            return type;
+        },
+        error: function(data){
+            // console.log(data);
+        }
+    });
+}
+
+function clearDeliveryData(type) {
+    let pointType = type === 'take' ? 'ship': 'dest';
+
+    $('#' + pointType + '_point').val('');
+    $('#' + pointType + '_point').data('name', '').removeAttr('data-name');
+    $('#' + pointType + '_point').data('full-name', '').removeAttr('data-full-name');
+    $('input[name="' + type + '_city_name"]').val('');
+    $('input[name="' + type + '_distance"]').val('');
+    $('input[name="' + type + '_polygon"]').val('');
 }
