@@ -60,15 +60,27 @@
                             </div>
                         </div>
                         <div class="ml-lg-auto col-md-3 col-12 mt-3 mt-lg-0">
-                            <div class="sidebar__block">
-                                <div class="sidebar__image">
-                                    <img src="{{ asset('/images/img/news-img.png') }}" alt="С новым годом">
-                                </div>
-                                <div class="sidebar__body">
-                                    <h5>С наступающим новым годом!</h5>
-                                    <span>Дорогие друзья! Компания «БСД» поздравляет Вас с Новым годом и Рождеством! Спасибо за то, что были с нами эти 365 дней!</span>
-                                </div>
-                            </div>
+                            @php
+                                $args = [
+                                    'category'=>['sidebar-banner'],
+                                    'order_by'=>['published_at', 'desc'],
+                                    'type'=>'post',
+                                ];
+                                $banners = \Zeus\Admin\Cms\Helpers\CMSHelper::getQueryBuilder($args)->get();
+                            @endphp
+                            @foreach($banners as $banner)
+                                <a href="{{ $banner->description ?? '#' }}" style="color:#5a666e">
+                                    <div class="sidebar__block" style="margin-bottom: 15px">
+                                        <div class="sidebar__image">
+                                            <img src="{{ $banner->thumb ?? asset('/images/img/news-img.png') }}" alt="Фото баннера">
+                                        </div>
+                                        <div class="sidebar__body">
+                                            <h5>{{ $banner->title ?? '' }}</h5>
+                                            <span>{!! $banner->content ?? '' !!}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            @endforeach
                         </div>
                     </div>
                 </div>
