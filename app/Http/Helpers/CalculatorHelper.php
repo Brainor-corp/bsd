@@ -148,7 +148,7 @@ class CalculatorHelper
                     $total = 0;
                     if ($route->base_route) {
                         $route_id = $route->base_route;
-                        $baseTariff = self::getRouteData(null, null, $packages, $route_id);
+                        $baseTariff = self::getRouteData(null, null, $packages, $totalWeight, $totalVolume, $route_id);
                         if(is_numeric($baseTariff['price'])) {
                             $total = max($tariff->weight, $tariff->volume, $route->min_cost) + $baseTariff['price'];
                         } else {

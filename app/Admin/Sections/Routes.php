@@ -93,7 +93,7 @@ class Routes extends Section
                     ])
                     ->setModelForOptions(Route::class)
                     ->setDisplay('name'),
-                FormField::input('min_cost', 'Минимальная стоимость стоимость')
+                FormField::input('min_cost', 'Минимальная стоимость доставки')
                     ->setHelpBlock("<small class='text-muted'>Минимальная стоимость доставки</small>")
                     ->setType('number'),
                 FormField::input('wrapper_tariff', 'Тариф для бандероли')
