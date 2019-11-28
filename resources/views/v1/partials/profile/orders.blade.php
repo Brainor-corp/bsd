@@ -13,12 +13,12 @@
             </div>
             <div style="min-width: 100px;">
                 <span class="label">Объем:</span>
-                <span>{{ $order->order_items->sum('volume') }} м<sup>3</sup></span>
+                <span>{{ $order->actual_volume ?? $order->total_volume }} м<sup>3</sup></span>
             </div>
             @endif
             <div>
                 <span class="label">Вес:</span>
-                <span>{{ $order->total_weight }} кг</span>
+                <span>{{ $order->actual_weight ?? $order->total_weight }} кг</span>
             </div>
             {{--<div>--}}
                 {{--<a class="show-order-items" data-order-id="{{ $order->id }}"--}}
