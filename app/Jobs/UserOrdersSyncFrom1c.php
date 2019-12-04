@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\ForwardingReceipt;
 use App\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,6 +17,9 @@ class UserOrdersSyncFrom1c implements ShouldQueue
     public $tries = 1;
 
     private $user;
+
+    const TYPE_RECEIPT = 2;
+    const TYPE_REQUEST = 3;
 
     /**
      * Create a new job instance.
@@ -46,8 +50,20 @@ class UserOrdersSyncFrom1c implements ShouldQueue
 
         if($response1c['status'] == 200 && !empty($response1c['response']['documents'])) {
             foreach($response1c['response']['documents'] as $document) {
-                if(!Order::where('code_1c', $document['id'])->exists()) {
-                    dispatch(new UserOrderSyncFrom1c($user, $document));
+                switch($document['type']) {
+                    case self::TYPE_RECEIPT:
+                        if(!ForwardingReceipt::where('code_1c', $document['id'])->exists()) {
+                            dispatch(new UserForwardingReceiptSyncFrom1c($user, $document));
+                        }
+                        break;
+
+                    case self::TYPE_REQUEST:
+                        if(!Order::where('code_1c', $document['id'])->exists()) {
+                            dispatch(new UserOrderSyncFrom1c($user, $document));
+                        }
+                        break;
+
+                    default: break;
                 }
             }
         }
