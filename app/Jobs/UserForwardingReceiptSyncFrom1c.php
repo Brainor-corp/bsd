@@ -70,7 +70,7 @@ class UserForwardingReceiptSyncFrom1c implements ShouldQueue
             $forwardingReceipt->number = $response1c['response']['Номер'] ?? "";
             $forwardingReceipt->cargo_status_id = null; // todo
             $forwardingReceipt->date = isset($response1c['response']['Дата']) ?
-                Carbon::parse($response1c['response']['ДатаИсполнения'])->format("Y-m-d") :
+                Carbon::parse($response1c['response']['Дата'])->format("Y-m-d") :
                 null;
             $forwardingReceipt->packages_count = count($response1c['response']['Места'] ?? []);
             $forwardingReceipt->volume = floatval($response1c['response']['Объем'] ?? 0);
