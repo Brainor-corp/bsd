@@ -122,6 +122,7 @@ class CalculatorHelper
                             } else {
                                 $tariff = $tariff->$key;
                                 foreach ($packages as $k => $package) {
+                                    // Надбавка за негабаритность
 //                                    $oversizeRation = self::oversize_ratio($route->oversizes_id, $package);
 //                                    if(isset($oversizes[$k]) && !$oversizeRation) {
 //                                        $total = "договорная";
@@ -131,7 +132,7 @@ class CalculatorHelper
                                     $total += $package[$key]
                                         * ($package['quantity'] ?? 1)
                                         * $tariff;
-//                                        * (isset($oversizes[$k]) ? 1 + $oversizeRation : 1);
+//                                        * (isset($oversizes[$k]) ? 1 + $oversizeRation : 1); // Надбавка за негабаритность
                                 }
                             }
                         } else {
