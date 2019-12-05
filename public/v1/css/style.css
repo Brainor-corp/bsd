@@ -2624,8 +2624,8 @@ label.calc__label_max {
 		transform: translate3d(-35%, 22px, 0px)!important;
 	}
 	.dropdown-menu{
-		width:290px;
-		max-width:290px;
+		width:250px;
+		max-width:250px;
 		/*padding-left:20px;*/
 		/*padding-right:20px;*/
 		/*transform: translate3d(-35%, 22px, 0px)!important;*/
