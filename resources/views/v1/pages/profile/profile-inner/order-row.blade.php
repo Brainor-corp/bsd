@@ -1,5 +1,9 @@
 <tr>
-    <td>Заявка</td>
+    <td>
+        <span data-toggle="tooltip" title="Заявка на экспедирование">
+            Заявка
+        </span>
+    </td>
     <td>{{ $order->id }}</td>
     <td>{{ $order->cargo_number }}</td>
     <td>{{ $order->cargo_status->name ?? '' }}</td>

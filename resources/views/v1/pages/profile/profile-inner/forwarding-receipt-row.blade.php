@@ -1,5 +1,9 @@
 <tr>
-    <td>ЭР</td>
+    <td>
+        <span data-toggle="tooltip" title="Экспедиторская расписка">
+            ЭР
+        </span>
+    </td>
     <td></td>
     <td>{{ $order->number }}</td>
     <td>{{ $order->cargo_status->name ?? '' }}</td>
