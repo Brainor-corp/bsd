@@ -38,7 +38,10 @@ $(document).ready(function () {
         $.ajax({
             type: 'post',
             url: '/get-order-items',
-            data: {order_id: link.data('order-id')},
+            data: {
+                order_id: link.data('order-id'),
+                type: link.data('type')
+            },
             cache: false,
             success: function (html) {
                 $('#orderItemsModal').find('.modal-body').html(html);

@@ -116,9 +116,16 @@ class ReportsController extends Controller
     }
 
     public function getDownloadDocumentsModal(Request $request) {
-        $order = Order::available()
-            ->where('id', $request->get('order_id'))
-            ->firstOrFail();
+        if($request->get('type') === 'receipt') {
+            $order = Order::available()
+                ->where('id', $request->get('order_id'))
+                ->first();
+        } else {
+            $order = ForwardingReceipt::where([
+                ['user_id', Auth::id()],
+                ['id', $request->get('order_id')]
+            ])->first();
+        }
 
         $user_1c = $order->user->guid ?? null;
         $code1c = $order->code_1c;
@@ -144,7 +151,7 @@ class ReportsController extends Controller
             }
         }
 
-        if(!count($documents)) {
+        if(!count($documents) && $order instanceof Order) {
             array_push($documents, [
                 'id' => $order->id,
                 'type' => 'site_request',

@@ -41,7 +41,11 @@
     </td>
     <td>{{ $order->status->name }}</td>
     <td>
-        <a href="#" class="table-text-link show-order-documents" data-order-id="{{ $order->id }}">
+        <a href="#"
+           class="table-text-link show-order-documents"
+           data-order-id="{{ $order->id }}"
+           data-type="request"
+        >
             Доступные<br/>документы
         </a>
     </td>
