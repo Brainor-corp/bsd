@@ -116,7 +116,7 @@ class ReportsController extends Controller
     }
 
     public function getDownloadDocumentsModal(Request $request) {
-        if($request->get('type') === 'receipt') {
+        if($request->get('type') === 'request') {
             $order = Order::available()
                 ->where('id', $request->get('order_id'))
                 ->first();
