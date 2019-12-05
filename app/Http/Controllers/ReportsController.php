@@ -138,7 +138,8 @@ class ReportsController extends Controller
                     'document_list',
                     [
                         "user_id" => $user_1c,
-                        "order_id" => $code1c
+                        "document_id" => $code1c,
+                        "type" => $request->get('type') === 'request' ? 3 : 2
                     ]
                 );
 
