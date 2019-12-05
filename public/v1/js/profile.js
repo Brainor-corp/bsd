@@ -39,8 +39,7 @@ $(document).ready(function () {
             type: 'post',
             url: '/get-order-items',
             data: {
-                order_id: link.data('order-id'),
-                type: link.data('type')
+                order_id: link.data('order-id')
             },
             cache: false,
             success: function (html) {
@@ -68,7 +67,8 @@ $(document).ready(function () {
             type: 'post',
             url: table.data('documents-modal-url'),
             data: {
-                order_id: button.data('order-id')
+                order_id: button.data('order-id'),
+                type: button.data('type')
             },
             cache: false,
             beforeSend: function() {
