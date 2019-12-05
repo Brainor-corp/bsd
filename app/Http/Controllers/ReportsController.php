@@ -127,25 +127,27 @@ class ReportsController extends Controller
             ])->first();
         }
 
-        $user_1c = $order->user->guid ?? null;
-        $code1c = $order->code_1c;
-
         $documents = [];
 
-        if(!empty($user_1c) && !empty($code1c)) {
-            $response1c = \App\Http\Helpers\Api1CHelper::post(
-                'document_list',
-                [
-                    "user_id" => $user_1c,
-                    "order_id" => $code1c
-                ]
-            );
+        if(isset($order)) {
+            $user_1c = $order->user->guid ?? null;
+            $code1c = $order->code_1c;
 
-            if($response1c['response']['status'] == 'success') {
-                $documents = [];
-                foreach($response1c['response']['documents'] as $document) {
-                    if($document['type'] !== 1) {
-                        array_push($documents, $document);
+            if(!empty($user_1c) && !empty($code1c)) {
+                $response1c = \App\Http\Helpers\Api1CHelper::post(
+                    'document_list',
+                    [
+                        "user_id" => $user_1c,
+                        "order_id" => $code1c
+                    ]
+                );
+
+                if($response1c['response']['status'] == 'success') {
+                    $documents = [];
+                    foreach($response1c['response']['documents'] as $document) {
+                        if($document['type'] !== 1) {
+                            array_push($documents, $document);
+                        }
                     }
                 }
             }
