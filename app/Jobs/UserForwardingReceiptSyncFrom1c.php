@@ -82,16 +82,6 @@ class UserForwardingReceiptSyncFrom1c implements ShouldQueue
             $forwardingReceipt->status_id = $status->id;
             $forwardingReceipt->user_id = $user->id;
 
-            $paymentStatusName = $response1c['response']['СтатусОплаты'] ?? '';
-            if(!empty($paymentStatusName) && in_array($paymentStatusName, ['Оплачен', 'Не оплачен'])) {
-                $paymentStatus = Type::where([
-                    ['class', 'OrderPaymentStatus'],
-                    ['name', $paymentStatusName]
-                ])->firstOrFail();
-
-                $forwardingReceipt->payment_status_id = $paymentStatus->id;
-            }
-
             $forwardingReceipt->save();
         }
     }
