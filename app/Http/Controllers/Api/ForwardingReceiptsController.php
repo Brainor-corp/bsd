@@ -71,7 +71,7 @@ class ForwardingReceiptsController extends Controller
 
         $forwardingReceipt->number = $request->get('number');
         $forwardingReceipt->cargo_status_id = $cargoStatus->id ?? null;
-        $forwardingReceipt->date = $request->get('date');
+        $forwardingReceipt->order_date = $request->get('date');
         $forwardingReceipt->packages_count = $request->get('packages_count');
         $forwardingReceipt->volume = $request->get('volume');
         $forwardingReceipt->weight = $request->get('weight');

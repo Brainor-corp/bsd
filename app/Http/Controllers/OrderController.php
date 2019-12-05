@@ -729,33 +729,6 @@ class OrderController extends Controller
         return View::make('v1.pages.shipment-status.status-page')->with(compact('orders'));
     }
 
-    public function searchOrders(Request $request) {
-        $orders = Order::available()
-            ->with(
-                'status',
-                'ship_city',
-                'dest_city',
-                'payment_status',
-                'payment',
-                'order_items'
-            )
-            ->when($request->get('id'), function ($order) use ($request) {
-                return $order->where('id', 'LIKE', '%' . $request->get('id') . '%');
-            })
-            ->when($request->finished == 'true', function ($order) use ($request) {
-                return $order->whereHas('status', function ($type) {
-                    return $type->where('slug', 'dostavlen');
-                });
-            })
-            ->when($request->finished == 'false' && $request->get('status'), function ($order) use ($request) {
-                return $order->where('status_id', $request->get('status'));
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return View::make('v1.partials.profile.orders')->with(compact('orders'))->render();
-    }
-
     public function actionGetOrderItems(Request $request) {
         $order = Order::where('id', $request->order_id)
             ->where(function ($orderQuery) {

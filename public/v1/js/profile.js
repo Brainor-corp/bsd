@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+
     $('.events-feed__close').click(function () {
         let btn = $(this);
         let id = btn.data('event-id');
@@ -140,6 +142,7 @@ function orderSearch() {
         cache: false,
         success: function (html) {
             $('#orders-table-body').html(html);
+            $('[data-toggle="tooltip"]').tooltip();
         },
         error: function (err) {
             // console.log(err);

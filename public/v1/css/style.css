@@ -1752,13 +1752,13 @@ ul.icons_list li:after {
 
 /* table */
 .table thead th{
-	font-size:12px;
+	font-size:11px;
 	vertical-align:middle;
 	font-weight:900;
 	color:#353c41;
 }
 .table tbody td{
-	font-size:12px;
+	font-size:11px;
 	color:#353c41;
 }
 .table tbody td .label{
