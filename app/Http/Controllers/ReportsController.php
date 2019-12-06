@@ -64,8 +64,11 @@ class ReportsController extends Controller
                     return $type->where('name', 'Закрыта');
                 });
             })
-            ->when($request->finished == 'false' && $request->get('status'), function ($order) use ($request) {
-                return $order->where('status_id', $request->get('status'));
+            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+                return $order->where(function ($orderSubQ) use ($request) {
+                    return $orderSubQ->where('status_id', $request->get('status'))
+                        ->orWhere('cargo_status_id', $request->get('status'));
+                });
             })
             ->get();
 
@@ -77,6 +80,9 @@ class ReportsController extends Controller
                 return $forwardingReceipt->whereHas('cargo_status', function ($type) {
                     return $type->where('name', 'Груз выдан');
                 });
+            })
+            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+                return $order->where('cargo_status_id', $request->get('status'));
             })
             ->get();
 
@@ -278,8 +284,11 @@ class ReportsController extends Controller
                     return $type->where('name', 'Закрыта');
                 });
             })
-            ->when($request->finished == 'false' && $request->get('status'), function ($order) use ($request) {
-                return $order->where('status_id', $request->get('status'));
+            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+                return $order->where(function ($orderSubQ) use ($request) {
+                    return $orderSubQ->where('status_id', $request->get('status'))
+                        ->orWhere('cargo_status_id', $request->get('status'));
+                });
             })
             ->get();
 
@@ -291,6 +300,9 @@ class ReportsController extends Controller
                 return $forwardingReceipt->whereHas('cargo_status', function ($type) {
                     return $type->where('name', 'Груз выдан');
                 });
+            })
+            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+                return $order->where('cargo_status_id', $request->get('status'));
             })
             ->get();
 

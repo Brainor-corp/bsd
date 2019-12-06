@@ -742,7 +742,18 @@ class OrderController extends Controller
     }
 
     public function actionGetOrderSearchInput() {
-        $types = Type::where('class', 'order_status')->get();
+        $user = Auth::user();
+        $orders = $user->orders;
+
+        $types = $orders->pluck('status');
+        $types = $types->merge($orders->pluck('cargo_status'));
+        $types = $types->merge($user->forwarding_receipts->pluck('cargo_status'));
+
+        $types = $types->unique('id');
+        $types = $types->filter(function($value, $key) {
+            return  $value != null;
+        });
+
         return View::make('v1.partials.profile.order-search-select')->with(compact('types'))->render();
     }
 
