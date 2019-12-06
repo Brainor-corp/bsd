@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+
     $('.events-feed__close').click(function () {
         let btn = $(this);
         let id = btn.data('event-id');
@@ -36,7 +38,9 @@ $(document).ready(function () {
         $.ajax({
             type: 'post',
             url: '/get-order-items',
-            data: {order_id: link.data('order-id')},
+            data: {
+                order_id: link.data('order-id')
+            },
             cache: false,
             success: function (html) {
                 $('#orderItemsModal').find('.modal-body').html(html);
@@ -63,7 +67,8 @@ $(document).ready(function () {
             type: 'post',
             url: table.data('documents-modal-url'),
             data: {
-                order_id: button.data('order-id')
+                order_id: button.data('order-id'),
+                type: button.data('type')
             },
             cache: false,
             beforeSend: function() {
@@ -140,6 +145,7 @@ function orderSearch() {
         cache: false,
         success: function (html) {
             $('#orders-table-body').html(html);
+            $('[data-toggle="tooltip"]').tooltip();
         },
         error: function (err) {
             // console.log(err);

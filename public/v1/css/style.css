@@ -1752,13 +1752,13 @@ ul.icons_list li:after {
 
 /* table */
 .table thead th{
-	font-size:12px;
+	font-size:11px;
 	vertical-align:middle;
 	font-weight:900;
 	color:#353c41;
 }
 .table tbody td{
-	font-size:12px;
+	font-size:11px;
 	color:#353c41;
 }
 .table tbody td .label{
@@ -2624,8 +2624,8 @@ label.calc__label_max {
 		transform: translate3d(-35%, 22px, 0px)!important;
 	}
 	.dropdown-menu{
-		width:290px;
-		max-width:290px;
+		width:250px;
+		max-width:250px;
 		/*padding-left:20px;*/
 		/*padding-right:20px;*/
 		/*transform: translate3d(-35%, 22px, 0px)!important;*/
