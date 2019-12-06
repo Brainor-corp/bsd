@@ -60,7 +60,7 @@ class UserForwardingReceiptSyncFrom1c implements ShouldQueue
 
             $status = Type::firstOrCreate(
                 [
-                    'class' => 'order_status',
+                    'class' => 'cargo_status',
                     'name' => $statusName
                 ]
             );
@@ -68,7 +68,7 @@ class UserForwardingReceiptSyncFrom1c implements ShouldQueue
             $forwardingReceipt = new ForwardingReceipt();
             $forwardingReceipt->code_1c = $response1c['response']['УникальныйИдентификатор'] ?? '';
             $forwardingReceipt->number = $response1c['response']['Номер'] ?? "";
-            $forwardingReceipt->cargo_status_id = null; // todo
+            $forwardingReceipt->cargo_status_id = $status->id;
             $forwardingReceipt->date = isset($response1c['response']['Дата']) ?
                 Carbon::parse($response1c['response']['Дата'])->format("Y-m-d") :
                 null;
@@ -77,9 +77,8 @@ class UserForwardingReceiptSyncFrom1c implements ShouldQueue
             $forwardingReceipt->weight = floatval($response1c['response']['Вес'] ?? 0);
             $forwardingReceipt->ship_city = $response1c['response']['ГородОтправления'] ?? "-";
             $forwardingReceipt->dest_city = $response1c['response']['ГородНазначения'] ?? "-";
-            $forwardingReceipt->sender_name = $response1c['response']['Грузоотправитель'] ?? '-'; // todo
-            $forwardingReceipt->recipient_name = $response1c['response']['Грузополучатель'] ?? '-'; // todo
-            $forwardingReceipt->status_id = $status->id;
+            $forwardingReceipt->sender_name = $response1c['response']['Грузоотправитель'] ?? '-';
+            $forwardingReceipt->recipient_name = $response1c['response']['Грузополучатель'] ?? '-';
             $forwardingReceipt->user_id = $user->id;
 
             $forwardingReceipt->save();

@@ -27,7 +27,7 @@
     <td>{{ $order->sender_name }}</td>
     <td>{{ $order->recipient_name }}</td>
     <td></td>
-    <td>{{ $order->status->name }}</td>
+    <td></td>
     <td>
         <a href="#"
            class="table-text-link show-order-documents"

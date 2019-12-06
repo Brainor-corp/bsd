@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\ForwardingReceipt;
 use App\Http\Controllers\Controller;
-use App\Http\Helpers\EventHelper;
-use App\Order;
 use App\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -24,8 +22,7 @@ class ForwardingReceiptsController extends Controller
             "ship_city" => "required|string",
             "dest_city" => "required|string",
             "sender_name" => "required|string",
-            "recipient_name" => "required|string",
-            "status" => "required|string",
+            "recipient_name" => "required|string"
         ]);
 
         if ($validator->fails()) {
@@ -50,16 +47,7 @@ class ForwardingReceiptsController extends Controller
             );
         }
 
-        $oldStatusId = $forwardingReceipt->status_id;
-
-        $status = Type::firstOrCreate(
-            [
-                'class' => 'order_status',
-                'name' => $request->get('status')
-            ]
-        );
-
-        $cargoStatus = null;
+        $cargoStatus = "Не определен";
         if(!empty($request->get('cargo_status'))) {
             $cargoStatus = Type::firstOrCreate(
                 [
@@ -79,20 +67,7 @@ class ForwardingReceiptsController extends Controller
         $forwardingReceipt->dest_city = $request->get('dest_city');
         $forwardingReceipt->sender_name = $request->get('sender_name');
         $forwardingReceipt->recipient_name = $request->get('recipient_name');
-        $forwardingReceipt->status_id = $status->id;
         $forwardingReceipt->save();
-
-        $newStatusId = $forwardingReceipt->status_id;
-
-        if($oldStatusId !== $newStatusId && !empty($forwardingReceipt->user_id)) {
-            EventHelper::createEvent(
-                'Изменён статус экспедиторской расписки: ' . $forwardingReceipt->status->name ?? '-',
-                null,
-                1,
-                '/cabinet/orders',
-                $forwardingReceipt->user_id
-            );
-        }
 
         return [
             "status" => "success"
