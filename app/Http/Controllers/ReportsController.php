@@ -61,7 +61,7 @@ class ReportsController extends Controller
             })
             ->when($request->finished == 'true', function ($order) use ($request) {
                 return $order->whereHas('status', function ($type) {
-                    return $type->where('slug', 'dostavlen');
+                    return $type->where('name', 'Закрыта');
                 });
             })
             ->when($request->finished == 'false' && $request->get('status'), function ($order) use ($request) {
@@ -74,12 +74,9 @@ class ReportsController extends Controller
                 return $forwardingReceipt->where('number', 'LIKE', '%' . $request->get('id') . '%');
             })
             ->when($request->finished == 'true', function ($forwardingReceipt) use ($request) {
-                return $forwardingReceipt->whereHas('status', function ($type) {
-                    return $type->where('slug', 'dostavlen');
+                return $forwardingReceipt->whereHas('cargo_status', function ($type) {
+                    return $type->where('name', 'Груз выдан');
                 });
-            })
-            ->when($request->finished == 'false' && $request->get('status'), function ($forwardingReceipt) use ($request) {
-                return $forwardingReceipt->where('status_id', $request->get('status'));
             })
             ->get();
 
@@ -278,7 +275,7 @@ class ReportsController extends Controller
             })
             ->when($request->finished == 'true', function ($order) use ($request) {
                 return $order->whereHas('status', function ($type) {
-                    return $type->where('slug', 'dostavlen');
+                    return $type->where('name', 'Закрыта');
                 });
             })
             ->when($request->finished == 'false' && $request->get('status'), function ($order) use ($request) {
@@ -291,12 +288,9 @@ class ReportsController extends Controller
                 return $forwardingReceipt->where('number', 'LIKE', '%' . $request->get('id') . '%');
             })
             ->when($request->finished == 'true', function ($forwardingReceipt) use ($request) {
-                return $forwardingReceipt->whereHas('status', function ($type) {
-                    return $type->where('slug', 'dostavlen');
+                return $forwardingReceipt->whereHas('cargo_status', function ($type) {
+                    return $type->where('name', 'Груз выдан');
                 });
-            })
-            ->when($request->finished == 'false' && $request->get('status'), function ($forwardingReceipt) use ($request) {
-                return $forwardingReceipt->where('status_id', $request->get('status'));
             })
             ->get();
 
@@ -367,7 +361,7 @@ class ReportsController extends Controller
                 $sheet->setCellValue('I' . ($key + 2), $order->sender_name);
                 $sheet->setCellValue('J' . ($key + 2), $order->recipient_name);
                 $sheet->setCellValue('K' . ($key + 2), '');
-                $sheet->setCellValue('L' . ($key + 2), $order->status->name);
+                $sheet->setCellValue('L' . ($key + 2), '');
             }
         }
 

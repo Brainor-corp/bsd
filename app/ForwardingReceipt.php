@@ -10,10 +10,6 @@ class ForwardingReceipt extends Model
         'order_date'
     ];
 
-    public function status() {
-        return $this->belongsTo(Type::class, 'status_id');
-    }
-
     public function cargo_status() {
         return $this->belongsTo(Type::class, 'cargo_status_id');
     }
