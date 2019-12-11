@@ -41,8 +41,8 @@ class NewOrderSendTo1c
         if(isset($order->order_date) && isset($order->ship_time_from) && isset($order->ship_time_to)) {
             $sendOrder['Время_доставки'] = [
                 'День' => Carbon::createFromFormat('Y-m-d H:i:s', $order->order_date)->format('Y-m-d'),
-                'Время_с' => Carbon::createFromFormat('H:i:s', $order->ship_time_from)->format('H:i'),
-                'Время_по' => Carbon::createFromFormat('H:i:s', $order->ship_time_to)->format('H:i')
+                'Время_с' => Carbon::createFromFormat('H:i:s', $order->ship_time_from)->format('H:i:s'),
+                'Время_по' => Carbon::createFromFormat('H:i:s', $order->ship_time_to)->format('H:i:s')
             ];
         }
 
