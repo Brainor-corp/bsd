@@ -79,7 +79,8 @@ $(document).ready(function () {
                 $('#orderDocumentsModal .documents-container').html(html);
             },
             error: function (err) {
-                console.log(err);
+                $('#orderDocumentsModal .documents-container')
+                    .html("Произошла ошибка. Пожалуйста, обновите страницу и попробуйте снова.");
             }
         });
     });

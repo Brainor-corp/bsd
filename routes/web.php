@@ -61,28 +61,11 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
 
     Route::group(['middleware' => 'sms-confirm'], function () {
-        // Для сохранения заказа написан middleware 'order.save'.
-        // Он позволяет сохранять черновики без авторизации,
-        // но не даёт без авторизации оформить заказ.
         Route::post('/order-save', 'OrderController@orderSave')
             ->middleware('order.save')
             ->name('order-save-action');
 
         Route::get('/cabinet/counterparty-list', 'CounterpartyController@showCounterpartyListPage')->name('counterparty-list');
-
-        Route::post('/get-download-documents-modal', 'ReportsController@getDownloadDocumentsModal')->name('get-download-documents-modal');
-        Route::get('/download-document/{document_id_1c}/{document_type_id_1c}', 'ReportsController@downloadOrderDocument')->name('download-document');
-
-        // Заявка
-        Route::get('/download-document-request', 'ReportsController@actionDownloadDocumentRequest')->name('download-document-request');
-        // Счет
-        Route::get('/download-document-invoice', 'ReportsController@actionDownloadDocumentInvoice')->name('download-document-invoice');
-        // УПД
-        Route::get('/download-document-transfer', 'ReportsController@actionDownloadDocumentTransfer')->name('download-document-transfer');
-        // Договор
-            Route::get('/download-document-contract', 'ReportsController@actionDownloadDocumentContract')->name('download-document-contract');
-        // Расписка
-        Route::get('/download-document-receipt', 'ReportsController@actionDownloadDocumentReceipt')->name('download-document-receipt');
     });
 
     // Партнёры
@@ -115,6 +98,8 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
         Route::post('/search-orders', 'ReportsController@searchOrders')->name('search-orders');
         Route::post('/get-order-items', 'OrderController@actionGetOrderItems')->name('get-order-items');
         Route::post('/get-order-search-input', 'OrderController@actionGetOrderSearchInput')->name('get-order-search-input');
+        Route::post('/get-download-documents-modal', 'ReportsController@getDownloadDocumentsModal')->name('get-download-documents-modal');
+        Route::get('/download-document/{document_id_1c}/{document_type_id_1c}', 'ReportsController@downloadOrderDocument')->name('download-document');
 
         Route::group(['middleware' => ['sms-confirm']], function () {
             // Работа с оповещениями доступна только авторизованным пользователям.
