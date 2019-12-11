@@ -288,7 +288,7 @@ class OrderController extends Controller
 
         $paymentStatus = Type::where([
             ['class', 'OrderPaymentStatus'],
-            ['slug', 'ne-oplachen'],
+            ['slug', 'ne-oplachena'],
         ])->firstOrFail();
 
         $cargoType = Type::where('id', $request->get('cargo')['name'])->first();

@@ -35,7 +35,7 @@
             $order->status &&
             $order->status->slug === 'ispolnyaetsya' &&
             $order->payment_status &&
-            $order->payment_status->slug === 'ne-oplachen' &&
+            $order->payment_status->slug === 'ne-oplachena' &&
             $order->payment &&
             $order->payment->slug === 'nalichnyy-raschet'
         )

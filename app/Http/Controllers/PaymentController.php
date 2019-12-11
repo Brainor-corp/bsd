@@ -20,7 +20,7 @@ class PaymentController extends Controller
                 return $statusQ->where('slug', 'ispolnyaetsya');
             })
             ->whereHas('payment_status', function ($statusQ) {
-                return $statusQ->where('slug', 'ne-oplachen');
+                return $statusQ->where('slug', 'ne-oplachena');
             })
             ->whereHas('payment', function ($statusQ) {
                 return $statusQ->where('slug', 'nalichnyy-raschet');
@@ -67,7 +67,7 @@ class PaymentController extends Controller
 
         $status = Type::where([
             ['class', 'OrderPaymentStatus'],
-            ['slug', 'oplachen']
+            ['slug', 'oplachena']
         ])->firstOrFail();
 
         Order::where('id', $orderid)->update([
