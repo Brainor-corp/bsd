@@ -103,7 +103,7 @@ class UserOrderSyncFrom1c implements ShouldQueue
             $order->code_1c = $response1c['response']['УникальныйИдентификатор'] ?? '';
 
             $paymentStatusName = $response1c['response']['СтатусОплаты'] ?? '';
-            if(!empty($paymentStatusName) && in_array($paymentStatusName, ['Оплачен', 'Не оплачен'])) {
+            if(!empty($paymentStatusName) && in_array($paymentStatusName, ['Оплачена', 'Не оплачена'])) {
                 $paymentStatus = Type::where([
                     ['class', 'OrderPaymentStatus'],
                     ['name', $paymentStatusName]
