@@ -261,7 +261,7 @@ class Api1cTestController extends Controller
         $sendOrder['Плательщик']['Email_плательщика'] = $order->payer_email ?? '';
         $sendOrder['Плательщик']['Тип_плательщика'] = $order->payer->name ?? '';
 
-        $response1c = Api1CHelper::post('create_order', $sendOrder);
+        $response1c = Api1CHelper::post('create_order', $sendOrder, true);
 
         if(
             $response1c['status'] == 200 &&
