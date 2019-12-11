@@ -262,6 +262,7 @@ class Api1cTestController extends Controller
         $sendOrder['Плательщик']['Тип_плательщика'] = $order->payer->name ?? '';
 
         $response1c = Api1CHelper::post('create_order', $sendOrder);
+
         if(
             $response1c['status'] == 200 &&
             $response1c['response']['status'] === 'success' &&
@@ -272,8 +273,6 @@ class Api1cTestController extends Controller
                 'sync_need' => false,
                 'send_error' => false
             ]);
-        } else {
-            throw new \Exception(print_r($response1c, true));
         }
 
         dd(
