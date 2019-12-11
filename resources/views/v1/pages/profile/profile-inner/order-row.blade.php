@@ -7,7 +7,7 @@
     <td>{{ $order->id }}</td>
     <td>{{ $order->cargo_number }}</td>
     <td>{{ $order->cargo_status->name ?? '' }}</td>
-    <td>{{ isset($order->order_date) ? $order->order_date->format('d.m.Y') : $order->created_at->format('d.m.Y') }}</td>
+    <td>{{ isset($order->order_date) ? $order->order_date->format('d.m.Y') : '' }}</td>
     <td>
 
         @if($order->order_items && count($order->order_items)>0)
