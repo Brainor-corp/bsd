@@ -9,12 +9,13 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class OrderSyncTo1c implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 1;
+    public $tries = 5;
 
     private $order;
 
@@ -32,6 +33,7 @@ class OrderSyncTo1c implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     * @throws \Exception
      */
     public function handle()
     {
@@ -45,8 +47,24 @@ class OrderSyncTo1c implements ShouldQueue
         ) {
             DB::table('orders')->where('id', $order['Идентификатор_на_сайте'])->update([
                 'code_1c' => $response1c['response']['id'],
-                'sync_need' => false
+                'sync_need' => false,
+                'send_error' => false
             ]);
+        } else {
+            throw new \Exception(print_r($response1c, true));
         }
+    }
+
+    /**
+     * The job failed to process.
+     *
+     * @param  Exception  $exception
+     * @return void
+     */
+    public function failed(Exception $exception)
+    {
+        $order = $this->order;
+        $order->send_error = true;
+        $order->save();
     }
 }
