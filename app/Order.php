@@ -144,6 +144,10 @@ class Order extends Model
         return $this->status->name ?? '';
     }
 
+    public function getSendErrorHumanlyAttribute(){
+        return $this->send_error ? "Да" : "Нет";
+    }
+
     public function getComprehensibleTakeNeed(){
         return $this->take_need ? 'Да' : 'Нет';
     }
