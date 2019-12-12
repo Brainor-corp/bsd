@@ -23,6 +23,7 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\OrderCreated' => [
             'App\Listeners\NewOrderNotifyAdmin',
             'App\Listeners\NewOrderNotifyClient',
+            'App\Listeners\NewOrderSendTo1c',
         ],
     ];
 
