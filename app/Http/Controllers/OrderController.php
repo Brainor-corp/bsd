@@ -116,7 +116,11 @@ class OrderController extends Controller
             "type" => ['required', 'in:order,calculator'],                                      // Тип заявки (Заявка|Калькулятор)
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $messages = [
+            'gToken.required'  => 'Произошла ошибка. Пожалуйста, попробуйте снова.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
         $validator->sometimes('insurance_amount', 'required|numeric|min:50000', function ($request) {
             return !empty($request->get('insurance'));
         });
