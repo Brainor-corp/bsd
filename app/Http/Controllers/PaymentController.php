@@ -28,7 +28,7 @@ class PaymentController extends Controller
             })
             ->firstOrFail();
 
-        $amount = $order->actual_price ?? ($order->total_price ?? 0);
+        $amount = isset($order->actual_price) ? floatval($order->actual_price) : (isset($order->total_price) ? intval($order->total_price) : 0);
         if(!$amount) {
             return redirect()->back();
         }
