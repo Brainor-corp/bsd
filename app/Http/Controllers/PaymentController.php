@@ -28,7 +28,14 @@ class PaymentController extends Controller
             })
             ->firstOrFail();
 
-        $amount = isset($order->actual_price) ? floatval($order->actual_price) : (isset($order->total_price) ? intval($order->total_price) : 0);
+        $amount = $order->actual_price ?? ($order->total_price ?? 0);
+        $amount = preg_replace("/[^0-9]/", "", $amount);
+        if(!strlen($amount)) {
+            return redirect()->back();
+        }
+
+        $amount = intval($amount);
+
         if(!$amount) {
             return redirect()->back();
         }
