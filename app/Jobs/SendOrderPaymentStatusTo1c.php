@@ -14,7 +14,7 @@ class SendOrderPaymentStatusTo1c implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 1;
+    public $tries = 5;
 
     private $order;
 

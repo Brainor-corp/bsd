@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\PayKeeperHelper;
+use App\Jobs\SendOrderPaymentStatusTo1c;
 use App\Order;
 use App\Type;
 use Illuminate\Http\Request;
@@ -75,6 +76,8 @@ class PaymentController extends Controller
             'payment_status_id' => $status->id,
             'payment_sync_need' => true
         ]);
+
+        SendOrderPaymentStatusTo1c::dispatch(Order::where('id', $orderid)->first());
 
         echo "OK ".md5($id.$secret_seed);
     }
