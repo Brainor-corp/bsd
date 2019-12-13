@@ -30,8 +30,7 @@ class PaymentController extends Controller
 
         $amount = $order->actual_price ?? ($order->total_price ?? 0);
         $amount = htmlentities($amount, null, 'utf-8');
-        $amount = str_replace("&nbsp;", "", $amount);
-        $amount = html_entity_decode($amount);
+        $amount = preg_replace("/\s|&nbsp;/",'', $amount);
 
         if(!strlen($amount)) {
             return redirect()->back();
