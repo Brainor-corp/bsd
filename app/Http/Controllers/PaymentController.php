@@ -29,12 +29,14 @@ class PaymentController extends Controller
             ->firstOrFail();
 
         $amount = $order->actual_price ?? ($order->total_price ?? 0);
-        $amount = preg_replace("/[^0-9]/", "", $amount);
+        $amount = htmlentities($amount, null, 'utf-8');
+        $amount = preg_replace("/\s|&nbsp;/",'', $amount);
+
         if(!strlen($amount)) {
             return redirect()->back();
         }
 
-        $amount = intval($amount);
+        $amount = floatval($amount);
 
         if(!$amount) {
             return redirect()->back();
