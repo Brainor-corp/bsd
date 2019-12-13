@@ -23,7 +23,7 @@ class ForwardingReceiptsController extends Controller
             "dest_city" => "required|string",
             "sender_name" => "required|string",
             "recipient_name" => "required|string",
-            "payment_status" => "string|in:Оплачена,Не оплачена",
+            "payment_status" => "nullable|string|in:Оплачена,Не оплачена",
         ]);
 
         if ($validator->fails()) {
