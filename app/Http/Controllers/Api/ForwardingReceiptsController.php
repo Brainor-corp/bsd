@@ -22,7 +22,8 @@ class ForwardingReceiptsController extends Controller
             "ship_city" => "required|string",
             "dest_city" => "required|string",
             "sender_name" => "required|string",
-            "recipient_name" => "required|string"
+            "recipient_name" => "required|string",
+            "payment_status" => "required|string|in:Оплачена,Не оплачена",
         ]);
 
         if ($validator->fails()) {
@@ -57,6 +58,11 @@ class ForwardingReceiptsController extends Controller
             );
         }
 
+        $paymentStatus = Type::where([
+            ['class', 'OrderPaymentStatus'],
+            ['name', $request->get('payment_status')],
+        ])->firstOrFail();
+
         $forwardingReceipt->number = $request->get('number');
         $forwardingReceipt->cargo_status_id = $cargoStatus->id ?? null;
         $forwardingReceipt->order_date = $request->get('date');
@@ -67,6 +73,7 @@ class ForwardingReceiptsController extends Controller
         $forwardingReceipt->dest_city = $request->get('dest_city');
         $forwardingReceipt->sender_name = $request->get('sender_name');
         $forwardingReceipt->recipient_name = $request->get('recipient_name');
+        $forwardingReceipt->payment_status_id = $paymentStatus->id;
         $forwardingReceipt->save();
 
         return [

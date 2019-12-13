@@ -26,7 +26,9 @@
     <td>{{ $order->dest_city }}</td>
     <td>{{ $order->sender_name }}</td>
     <td>{{ $order->recipient_name }}</td>
-    <td></td>
+    <td>
+        {{ $order->payment_status->name ?? '' }}
+    </td>
     <td></td>
     <td>
         <a href="#"

@@ -14,6 +14,10 @@ class ForwardingReceipt extends Model
         return $this->belongsTo(Type::class, 'cargo_status_id');
     }
 
+    public function payment_status(){
+        return $this->belongsTo(Type::class, 'payment_status_id');
+    }
+
     public function user() {
         return $this->belongsTo(User::class);
     }
