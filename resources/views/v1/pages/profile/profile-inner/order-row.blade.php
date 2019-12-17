@@ -1,4 +1,11 @@
-<tr>
+<tr
+    @if(
+        (isset($order->status->name) && $order->status->name == 'Исполняется')
+        || (isset($order->cargo_status->name) && $order->cargo_status->name == 'Груз в пути')
+    )
+        class="bg-light-green"
+    @endif
+>
     <td>
         <span data-toggle="tooltip" title="Заявка на экспедирование">
             Заявка
@@ -6,7 +13,9 @@
     </td>
     <td>{{ $order->id }}</td>
     <td>{{ $order->cargo_number }}</td>
-    <td>{{ $order->cargo_status->name ?? '' }}</td>
+    <td>
+        {{ $order->cargo_status->name ?? '' }}
+    </td>
     <td>{{ isset($order->order_date) ? $order->order_date->format('d.m.Y') : '' }}</td>
     <td>
 
@@ -43,7 +52,9 @@
             <a href="{{ route('make-payment', ['order_id' => $order->id]) }}">Оплатить</a>
         @endif
     </td>
-    <td>{{ $order->status->name }}</td>
+    <td>
+        {{ $order->status->name ?? '' }}
+    </td>
     <td>
         <a href="#"
            class="table-text-link show-order-documents"

@@ -1,4 +1,11 @@
-<tr>
+<tr
+    @if(
+        (isset($order->status->name) && $order->status->name == 'Исполняется')
+        || (isset($order->cargo_status->name) && $order->cargo_status->name == 'Груз в пути')
+    )
+        class="bg-light-green"
+    @endif
+>
     <td>
         <span data-toggle="tooltip" title="Экспедиторская расписка">
             ЭР
@@ -6,7 +13,9 @@
     </td>
     <td></td>
     <td>{{ $order->number }}</td>
-    <td>{{ $order->cargo_status->name ?? '' }}</td>
+    <td>
+        {{ $order->cargo_status->name ?? '' }}
+    </td>
     <td>{{ $order->order_date->format('d.m.Y') }}</td>
     <td>
         <div>
