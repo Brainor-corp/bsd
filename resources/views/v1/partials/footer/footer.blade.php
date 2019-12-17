@@ -22,9 +22,9 @@
                     @endif
                 </p>
                 <div class="d-flex justify-content-lg-end">
-                    <a href="##" class="social-link margin-item d-flex justify-content-center align-items-center"><i class="fa fa-vk"></i></a>
-                    <a href="##" class="social-link margin-item d-flex justify-content-center align-items-center"><i class="fa fa-facebook"></i></a>
-                    <a href="##" class="social-link margin-item d-flex justify-content-center align-items-center"><i class="fa fa-instagram"></i></a>
+                    <a href="https://vk.com/bsdtrans" class="social-link margin-item d-flex justify-content-center align-items-center"><i class="fa fa-vk"></i></a>
+                    <a href="https://www.instagram.com/bsd134/" class="social-link margin-item d-flex justify-content-center align-items-center"><i class="fa fa-instagram"></i></a>
+                    <iframe class="margin-item" src="https://yandex.ru/sprav/widget/rating-badge/1148338667" width="150" height="50" frameborder="0"></iframe>
                 </div>
             </div>
         </div>
