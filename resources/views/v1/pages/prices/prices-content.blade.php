@@ -21,7 +21,8 @@
                     @endphp
                     <tr>
                         <td rowspan="{{ $rowSpan }}" class="align-middle">
-                            <span>Бандероль до 0,01 м3 до 2 кг</span>
+                            <span>Бандероль</span> <br>
+                            <span style="white-space: nowrap;">до 0,01 м<sup>3</sup> до 2 кг</span>
                         </td>
                         <td rowspan="{{ $rowSpan }}" class="align-middle">
                             <span>мин. стоимость руб.</span>
