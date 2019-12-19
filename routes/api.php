@@ -33,26 +33,29 @@ Route::post('/get-cities-by-term', 'CitiesController@getCitiesByTerm')->name('ge
 Route::get('/change-city/{city_id?}', 'CitiesController@changeCity')->name('change-city');
 Route::any('/prices/get-destination-cities', 'PricesController@getDestinationCities')->name('getDestinationCitiesForPrices');
 
-Route::get('/upload-xml-cities', 'UploadXmlController@uploadCities')->name('uploadXmlCities');
-Route::get('/upload-xml-thresholds', 'UploadXmlController@uploadThresholds')->name('uploadXmlThresholds');
-Route::get('/upload-xml-routes', 'UploadXmlController@uploadRoutes')->name('uploadXmlRoutes');
-Route::get('/upload-xml-route-tariff', 'UploadXmlController@uploadRouteTariffs')->name('uploadXmlRouteTariffs');
-Route::get('/update-route-tariffs-rates', 'UploadXmlController@updateRouteTariffsRates')->name('updateRouteTariffsRates');
-Route::get('/upload-xml-forward-thresholds', 'UploadXmlController@uploadForwardThresholds')->name('uploadForwardThresholds');
-Route::get('/upload-xml-per-km-tariffs', 'UploadXmlController@uploadPerKmTariffs')->name('uploadPerKmTariffs');
-Route::get('/upload-xml-inside-forwarding', 'UploadXmlController@uploadInsideForwarding')->name('uploadInsideForwarding');
-Route::get('/upload-xml-outside-forwarding', 'UploadXmlController@uploadOutsideForwarding')->name('uploadOutsideForwarding');
-Route::get('/upload-xml-regions', 'UploadXmlController@uploadRegions')->name('uploadRegions');
-Route::get('/upload-xml-points', 'UploadXmlController@uploadPoints')->name('uploadPoints');
-Route::get('/upload-xml-terminals', 'UploadXmlController@uploadTerminals')->name('uploadTerminals');
+//Route::get('/upload-xml-cities', 'UploadXmlController@uploadCities')->name('uploadXmlCities');
+//Route::get('/upload-xml-thresholds', 'UploadXmlController@uploadThresholds')->name('uploadXmlThresholds');
+//Route::get('/upload-xml-routes', 'UploadXmlController@uploadRoutes')->name('uploadXmlRoutes');
+//Route::get('/upload-xml-route-tariff', 'UploadXmlController@uploadRouteTariffs')->name('uploadXmlRouteTariffs');
+//Route::get('/update-route-tariffs-rates', 'UploadXmlController@updateRouteTariffsRates')->name('updateRouteTariffsRates');
+//Route::get('/upload-xml-forward-thresholds', 'UploadXmlController@uploadForwardThresholds')->name('uploadForwardThresholds');
+//Route::get('/upload-xml-per-km-tariffs', 'UploadXmlController@uploadPerKmTariffs')->name('uploadPerKmTariffs');
+//Route::get('/upload-xml-inside-forwarding', 'UploadXmlController@uploadInsideForwarding')->name('uploadInsideForwarding');
+//Route::get('/upload-xml-outside-forwarding', 'UploadXmlController@uploadOutsideForwarding')->name('uploadOutsideForwarding');
+//Route::get('/upload-xml-regions', 'UploadXmlController@uploadRegions')->name('uploadRegions');
+//Route::get('/upload-xml-points', 'UploadXmlController@uploadPoints')->name('uploadPoints');
+//Route::get('/upload-xml-terminals', 'UploadXmlController@uploadTerminals')->name('uploadTerminals');
+//
+//Route::get('/upload-csv-order-types', 'UploadCsvController@loadOrderTypes');
 
-Route::get('/upload-csv-order-types', 'UploadCsvController@loadOrderTypes');
 
-// 1c
-Route::post('/1c/order/update', 'Api\OrdersController@updateOrder');
-Route::post('/1c/forwarding-receipt/update', 'Api\ForwardingReceiptsController@updateForwardingReceipt');
-Route::post('/1c/user/create', 'Api\UsersController@createUser');
-Route::post('/1c/client/update', 'Api\CounterpartiesController@updateCounterparty');
+Route::group(['middleware' => ['ipcheck']], function () {
+    // 1c
+    Route::post('/1c/order/update', 'Api\OrdersController@updateOrder');
+    Route::post('/1c/forwarding-receipt/update', 'Api\ForwardingReceiptsController@updateForwardingReceipt');
+    Route::post('/1c/user/create', 'Api\UsersController@createUser');
+    Route::post('/1c/client/update', 'Api\CounterpartiesController@updateCounterparty');
+});
 
 // Эквайринг
 Route::post('/paykeeper/order/update', 'PaymentController@updateOrder')->name('update-order-payment');

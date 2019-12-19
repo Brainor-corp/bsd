@@ -24,7 +24,6 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
     // Платежи
-//    Route::get('/test-payment', 'PaymentController@testPaymentPage')->name('test-payment');
     Route::get('/make-payment/{order_id}', 'PaymentController@makePayment')->name('make-payment');
 
     Route::group(['middleware' => ['password_reset']], function () {
@@ -43,9 +42,6 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::get('/news', 'NewsController@showList')->name('news-list-show');
     Route::get('/news/{slug}', 'NewsController@showSingleNews')->name('news-single-show');
     Route::post('/news-filter', 'NewsController@filterAction')->name('news-filter');
-
-    // Документы и сертификаты
-//    Route::get('/o-kompanii/documents-and-certificates', 'DocumentsController@showDocuments')->name('documents-show');
 
     // Отзывы
     Route::get('/klientam/reviews', 'ReviewsController@showReviews')->name('reviews');

@@ -74,6 +74,7 @@ class Kernel extends HttpKernel
         'sms-confirm' => SmsConfirm::class,
         'geoIpCheck' => GeoIpCheck::class,
         'admin' => \App\Http\Middleware\Admin::class,
+        'ipcheck' => \App\Http\Middleware\IpCheck::class,
     ];
 
     /**
