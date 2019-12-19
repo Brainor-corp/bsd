@@ -53,6 +53,10 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function forwarding_receipts() {
+        return $this->hasMany(ForwardingReceipt::class);
+    }
+
     public function events() {
         return $this->hasMany(Event::class);
     }

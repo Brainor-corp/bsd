@@ -38,61 +38,20 @@ class CalculatorHelper
         $oversize = Oversize::where('id', $route->oversizes_id)->first();
 
         foreach ($packages as $key => $package) {
-            if (!isset($package['length'])) {
-                $package['length'] = 1;
-            }
-            if (!isset($package['width'])) {
-                $package['width'] = 1;
-            }
-            if (!isset($package['height'])) {
-                $package['height'] = 0.01;
-            }
-            if (!isset($package['volume'])) {
-                $package['volume'] = 0.01;
-            }
-            if (!isset($package['weight'])) {
-                $package['weight'] = 1;
-            }
-            if (!isset($package['quantity'])) {
-                $package['quantity'] = 1;
-            }
+            $package['length'] = isset($package['length']) && $package['length'] > 0 ? $package['length'] : 1;
+            $package['width'] = isset($package['width']) && $package['width'] > 0 ? $package['width'] : 1;
+            $package['height'] = isset($package['height']) && $package['height'] > 0 ? $package['height'] : 0.01;
+            $package['volume'] = isset($package['volume']) && $package['volume'] > 0 ? $package['volume'] : 0.01;
+            $package['weight'] = isset($package['weight']) && $package['weight'] > 0 ? $package['weight'] : 1;
+            $package['quantity'] = isset($package['quantity']) && $package['quantity'] > 0 ? $package['quantity'] : 1;
 
-            if (intval($package['length']) == 0) {
-                $package['length'] = 1;
-            }
-            if (intval($package['width']) == 0) {
-                $package['width'] = 1;
-            }
-            if (intval($package['height']) == 0) {
-                $package['height'] = 0.01;
-            }
-            if (intval($package['volume']) == 0) {
-                $package['volume'] = 0.01;
-            }
-            if (intval($package['weight']) == 0) {
-                $package['weight'] = 1;
-            }
-            if (intval($package['quantity']) == 0) {
-                $package['quantity'] = 1;
-            }
-
-//            $weight += $package['weight'] * $package['quantity'];
-//            $volume += $package['volume'] * $package['quantity'];
-
-
-            if ($package['length'] > $oversize['length']) {
-                $oversizes[$key] = $package;
-            }
-            if ($package['width'] > $oversize['width']) {
-                $oversizes[$key] = $package;
-            }
-            if ($package['height'] > $oversize['height']) {
-                $oversizes[$key] = $package;
-            }
-            if ($package['volume'] > $oversize['volume']) {
-                $oversizes[$key] = $package;
-            }
-            if ($package['weight'] > $oversize['weight']) {
+            if(
+                $package['length'] > $oversize['length']
+                || $package['width'] > $oversize['width']
+                || $package['height'] > $oversize['height']
+                || $package['volume'] > $oversize['volume']
+                || $package['weight'] > $oversize['weight']
+            ) {
                 $oversizes[$key] = $package;
             }
         }
@@ -114,8 +73,7 @@ class CalculatorHelper
                 $volume = 0;
             }
             if ($weight) {
-                $tariff->weight = RouteTariff::
-                where('route_id', $route_id)
+                $tariff->weight = RouteTariff::where('route_id', $route_id)
                     ->whereHas('threshold', function ($query) use ($weight) {
                         $query->where('rate_id', 26);
                         $query->where('value', '>=', $weight);
@@ -148,7 +106,7 @@ class CalculatorHelper
                     $total = 0;
                     if ($route->base_route) {
                         $route_id = $route->base_route;
-                        $baseTariff = self::getRouteData(null, null, $packages, $route_id);
+                        $baseTariff = self::getRouteData(null, null, $packages, $totalWeight, $totalVolume, $route_id);
                         if(is_numeric($baseTariff['price'])) {
                             $total = max($tariff->weight, $tariff->volume, $route->min_cost) + $baseTariff['price'];
                         } else {
@@ -163,15 +121,18 @@ class CalculatorHelper
                                 $total = $route->min_cost;
                             } else {
                                 $tariff = $tariff->$key;
-                                foreach ($packages as $package) {
-                                    $oversizeRation = self::oversize_ratio($route->oversizes_id, $package);
-                                    if($oversizeRation === false) {
-                                        $total = "договорная";
-                                        break;
-                                    }
+                                foreach ($packages as $k => $package) {
+                                    // Надбавка за негабаритность
+//                                    $oversizeRation = self::oversize_ratio($route->oversizes_id, $package);
+//                                    if(isset($oversizes[$k]) && !$oversizeRation) {
+//                                        $total = "договорная";
+//                                        break;
+//                                    }
 
-                                    $total += $package[$key] * ($packages['quantity'] ?? 1) * $tariff *
-                                        ($oversizeRation ?? 1);
+                                    $total += $package[$key]
+                                        * ($package['quantity'] ?? 1)
+                                        * $tariff;
+//                                        * (isset($oversizes[$k]) ? 1 + $oversizeRation : 1); // Надбавка за негабаритность
                                 }
                             }
                         } else {
@@ -241,29 +202,27 @@ class CalculatorHelper
 
     public static function oversize_ratio($oversizes_id, $package)
     {
-        $query = new  OversizeMarkup();
-        $query = $query->where('oversize_id', $oversizes_id);
-        $query = $query->where(function ($q) use ($package) {
-            $q->orWhere([['rate_id', 26], ['threshold', '<=', $package['weight']]]);
-            $q->orWhere([['rate_id', 27], ['threshold', '<=', $package['volume']]]);
+        $oversizeMarkup = OversizeMarkup::where('oversize_id', $oversizes_id)
+            ->where(function ($q) use ($package) {
+                $q->orWhere([['rate_id', 26], ['threshold', '<=', $package['weight']]]);
+                $q->orWhere([['rate_id', 27], ['threshold', '<=', $package['volume']]]);
 
-            if(isset($package['length'])) {
-                $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['length']]]);
-            }
+                if(isset($package['length'])) {
+                    $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['length']]]);
+                }
 
-            if(isset($package['width'])) {
-                $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['width']]]);
-            }
+                if(isset($package['width'])) {
+                    $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['width']]]);
+                }
 
-            if(isset($package['height'])) {
-                $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['height']]]);
-            }
-        });
-        $query = $query->orderBy('markup', 'DESC');
-        $query = $query->first();
+                if(isset($package['height'])) {
+                    $q->orWhere([['rate_id', 28], ['threshold', '<=', $package['height']]]);
+                }
+            })
+            ->orderBy('markup', 'DESC')
+            ->first();
 
-//        dd($query);
-        return isset($query) ? $query->markup / 100 : false;
+        return isset($oversizeMarkup) ? $oversizeMarkup->markup / 100 : false;
     }
 
     public static function getTotalPrice($base_price, $services, $totalWeight, $totalVolume, $insuranceAmount = null, $discount = null, $take_price = null, $bring_price = null) {

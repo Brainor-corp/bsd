@@ -155,3 +155,12 @@ ol li {
 .list-style-dist {
     list-style-type: disc !important;
 }
+
+.reports-table th {
+    text-align: center;
+    color: #ef402f !important;
+}
+
+.bg-light-green {
+    background-color: #d2f8d2;
+}

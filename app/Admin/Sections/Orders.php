@@ -31,20 +31,21 @@ class Orders extends Section {
             Column::text('real_status', 'Статус'),
             Column::text('ship_city_name', 'Город отправки'),
             Column::text('dest_city_name', 'Город доставки'),
-            Column::text('total_price', 'Цена калькулятора'),
-            Column::text('actual_price', 'Фактическая цена'),
             Column::text('payment_id', 'Идентификатор платежа'),
+            Column::text('send_error_humanly', 'Ошибка отправки в 1с'),
             Column::text('code_1c', 'Код 1с'),
-            Column::text('order_date', 'Дата заявки')->setSortable(1),
+            Column::text('order_date', 'Дата')->setSortable(1),
         ])->setFilter([
             FilterType::text('id', '#'),
             FilterType::text('cargo_number', '#'),
             null,
             null,
             null,
-            null,
-            null,
             FilterType::text('payment_id', 'Идентификатор платежа'),
+            FilterType::select('send_error')->setOptions([
+                0 => "Нет",
+                1 => "Да"
+            ]),
             FilterType::text('code_1c', 'Код 1с'),
             null,
         ])->setPagination(10);

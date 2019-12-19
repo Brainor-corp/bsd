@@ -18,7 +18,7 @@ class OrdersController extends Controller
             "weight" => "required|numeric",
             "volume" => "required|numeric",
             "price" => "required|numeric",
-            "payment_status" => "required|string|in:Оплачен,Не оплачен",
+            "payment_status" => "required|string|in:Оплачена,Не оплачена",
             "cargo_number" => "string|nullable",
             "cargo_status" => "string|nullable",
         ]);

@@ -21,7 +21,7 @@ class Order extends Model
         'payment_type', 'code_1c', 'manager_id', 'operator_id', 'order_date',
         'order_finish_date', 'discount', 'discount_amount', 'insurance', 'insurance_amount', 'estimated_delivery_date',
         'take_polygon_id', 'bring_polygon_id', 'payer_email', 'order_creator', 'order_creator_type',
-        'cargo_status', 'cargo_number', 'ship_date', 'ship_time_from', 'ship_time_to', 'cargo_comment'
+        'cargo_status', 'cargo_number', 'ship_date', 'ship_time_from', 'ship_time_to', 'cargo_comment', 'send_error'
     ];
 
     protected $dates = [
@@ -142,6 +142,10 @@ class Order extends Model
 
     public function getRealStatusAttribute(){
         return $this->status->name ?? '';
+    }
+
+    public function getSendErrorHumanlyAttribute(){
+        return $this->send_error ? "Да" : "Нет";
     }
 
     public function getComprehensibleTakeNeed(){

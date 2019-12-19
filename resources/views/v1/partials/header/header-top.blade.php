@@ -87,7 +87,7 @@
                                         <a href="{{ route('profile-data-show') }}" class="link-style">Кабинет</a>
                                     </div>
                                     <div class="d-flex dropdown-menu__row justify-content-center">
-                                        <a href="{{ route('orders-list') }}" class="link-style">Мои заявки</a>
+                                        <a href="{{ route('orders-list') }}" class="link-style text-center">Мои грузы</a>
                                     </div>
                                     <div class="d-flex dropdown-menu__row justify-content-center">
                                         <a href="{{ route('counterparty-list') }}" class="link-style">Мои контрагенты</a>

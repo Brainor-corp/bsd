@@ -6,6 +6,7 @@ use App\CmsBoosterPost;
 use App\Terminal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Zeus\Admin\Cms\Models\ZeusAdminTerm;
 use Zeus\Admin\Cms\Sections\ZeusAdminPosts;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 
@@ -55,6 +56,12 @@ class News extends ZeusAdminPosts
         $leftColumn = $form->getColumns()[0];
         $leftColumnFields = $leftColumn->getFields();
         unset($leftColumnFields['0.05']);
+
+        $newsRootTerm = ZeusAdminTerm::where([['type', 'category'], ['slug', 'novosti']])->first();
+
+        $leftColumnFields['0.06'] = $leftColumnFields['0.06']->setQueryFunctionForModel(function ($q) use ($newsRootTerm) {
+            return $q->whereDescendantOf($newsRootTerm);
+        });
 
         $newFields = [
             FormField::bselect('terminals', 'Терминалы')

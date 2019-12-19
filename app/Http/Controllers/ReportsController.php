@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use alhimik1986\PhpExcelTemplator\setters\CellSetterArrayValueSpecial;
+use App\ForwardingReceipt;
 use App\Http\Helpers\Api1CHelper;
 use App\Http\Helpers\DocumentHelper;
 use App\Http\Helpers\OrderHelper;
@@ -24,7 +25,7 @@ define('SPECIAL_ARRAY_TYPE', CellSetterArrayValueSpecial::class);
 class ReportsController extends Controller
 {
     public function showReportListPage() {
-        $orders = Order::available()
+        $ordersRequests = Order::available()
             ->with(
                 'status',
                 'ship_city',
@@ -33,10 +34,61 @@ class ReportsController extends Controller
                 'payment',
                 'order_items'
             )
-            ->orderBy('created_at', 'desc')
             ->get();
 
+        $forwardingReceipts = ForwardingReceipt::where('user_id', Auth::id())->get();
+
+        $orders = $ordersRequests->merge($forwardingReceipts)->sortByDesc('order_date');
+
         return View::make('v1.pages.profile.profile-inner.report-list-page')->with(compact('orders'));
+    }
+
+    public function searchOrders(Request $request) {
+        $ordersRequests = Order::available()
+            ->with(
+                'status',
+                'ship_city',
+                'dest_city',
+                'payment_status',
+                'payment',
+                'order_items'
+            )
+            ->when($request->get('id'), function ($order) use ($request) {
+                return $order->where(function ($orderSubQ) use ($request) {
+                    return $orderSubQ->where('id', 'LIKE', '%' . $request->get('id') . '%')
+                        ->orWhere('cargo_number', 'LIKE', '%' . $request->get('id') . '%');
+                });
+            })
+            ->when($request->finished == 'true', function ($order) use ($request) {
+                return $order->whereHas('status', function ($type) {
+                    return $type->where('name', 'Закрыта');
+                });
+            })
+            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+                return $order->where(function ($orderSubQ) use ($request) {
+                    return $orderSubQ->where('status_id', $request->get('status'))
+                        ->orWhere('cargo_status_id', $request->get('status'));
+                });
+            })
+            ->get();
+
+        $forwardingReceipts = ForwardingReceipt::where('user_id', Auth::id())
+            ->when($request->get('id'), function ($forwardingReceipt) use ($request) {
+                return $forwardingReceipt->where('number', 'LIKE', '%' . $request->get('id') . '%');
+            })
+            ->when($request->finished == 'true', function ($forwardingReceipt) use ($request) {
+                return $forwardingReceipt->whereHas('cargo_status', function ($type) {
+                    return $type->where('name', 'Груз выдан');
+                });
+            })
+            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+                return $order->where('cargo_status_id', $request->get('status'));
+            })
+            ->get();
+
+        $orders = $ordersRequests->merge($forwardingReceipts)->sortByDesc('order_date');
+
+        return View::make('v1.partials.profile.orders')->with(compact('orders'))->render();
     }
 
     public function showReportPage($id) {
@@ -67,35 +119,45 @@ class ReportsController extends Controller
     }
 
     public function getDownloadDocumentsModal(Request $request) {
-        $order = Order::available()
-            ->where('id', $request->get('order_id'))
-            ->firstOrFail();
-
-        $user_1c = $order->user->guid ?? null;
-        $code1c = $order->code_1c;
+        if($request->get('type') === 'request') {
+            $order = Order::available()
+                ->where('id', $request->get('order_id'))
+                ->first();
+        } else {
+            $order = ForwardingReceipt::where([
+                ['user_id', Auth::id()],
+                ['id', $request->get('order_id')]
+            ])->first();
+        }
 
         $documents = [];
 
-        if(!empty($user_1c) && !empty($code1c)) {
-            $response1c = \App\Http\Helpers\Api1CHelper::post(
-                'document_list',
-                [
-                    "user_id" => $user_1c,
-                    "order_id" => $code1c
-                ]
-            );
+        if(isset($order)) {
+            $user_1c = $order->user->guid ?? null;
+            $code1c = $order->code_1c;
 
-            if($response1c['response']['status'] == 'success') {
-                $documents = [];
-                foreach($response1c['response']['documents'] as $document) {
-                    if($document['type'] !== 1) {
-                        array_push($documents, $document);
+            if(!empty($user_1c) && !empty($code1c)) {
+                $response1c = \App\Http\Helpers\Api1CHelper::post(
+                    'document_list',
+                    [
+                        "user_id" => $user_1c,
+                        "document_id" => $code1c,
+                        "type" => $request->get('type') === 'request' ? 3 : 2
+                    ]
+                );
+
+                if($response1c['response']['status'] == 'success') {
+                    $documents = [];
+                    foreach($response1c['response']['documents'] as $document) {
+                        if($document['type'] !== 1) {
+                            array_push($documents, $document);
+                        }
                     }
                 }
             }
         }
 
-        if(!count($documents)) {
+        if(!count($documents) && $order instanceof Order) {
             array_push($documents, [
                 'id' => $order->id,
                 'type' => 'site_request',
@@ -204,20 +266,47 @@ class ReportsController extends Controller
     }
 
     public function actionDownloadReports(Request $request) {
-        $orders = Order::available()
-            ->with('status', 'ship_city', 'dest_city')
+        $ordersRequests = Order::available()
+            ->with(
+                'status',
+                'ship_city',
+                'dest_city',
+                'payment_status',
+                'payment',
+                'order_items'
+            )
             ->when($request->get('id'), function ($order) use ($request) {
-                return $order->where('id', 'LIKE', '%' . $request->get('id') . '%');
+                return $order->where('id', 'LIKE', '%' . $request->get('id') . '%')
+                    ->orWhere('cargo_number', 'LIKE', '%' . $request->get('id') . '%');
             })
-            ->when($request->get('finished') === 'true', function ($order) use ($request) {
+            ->when($request->finished == 'true', function ($order) use ($request) {
                 return $order->whereHas('status', function ($type) {
-                    return $type->where('slug', 'dostavlen');
+                    return $type->where('name', 'Закрыта');
                 });
             })
-            ->when($request->get('finished') !== 'true' && $request->get('status'), function ($order) use ($request) {
-                return $order->where('status_id', $request->get('status'));
+            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+                return $order->where(function ($orderSubQ) use ($request) {
+                    return $orderSubQ->where('status_id', $request->get('status'))
+                        ->orWhere('cargo_status_id', $request->get('status'));
+                });
             })
             ->get();
+
+        $forwardingReceipts = ForwardingReceipt::where('user_id', Auth::id())
+            ->when($request->get('id'), function ($forwardingReceipt) use ($request) {
+                return $forwardingReceipt->where('number', 'LIKE', '%' . $request->get('id') . '%');
+            })
+            ->when($request->finished == 'true', function ($forwardingReceipt) use ($request) {
+                return $forwardingReceipt->whereHas('cargo_status', function ($type) {
+                    return $type->where('name', 'Груз выдан');
+                });
+            })
+            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+                return $order->where('cargo_status_id', $request->get('status'));
+            })
+            ->get();
+
+        $orders = $ordersRequests->merge($forwardingReceipts)->sortByDesc('order_date');
 
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()
@@ -231,17 +320,18 @@ class ReportsController extends Controller
         $sheet->setTitle('Отчеты');
 
         $headers = [
-            '№ заявки',                     // A
-            '№ Экспедиторский расписки',    // B
-            'Статус груза',                 // C
-            'Дата',                         // D
-            'Параметры груза',              // E
-            'Город отправителя',            // F
-            'Город получателя',             // G
-            'Отправитель',                  // H
-            'Получатель',                   // I
-            'Оплата услуги',                // J
-            'Статус заявки',                // K
+            'Тип',                          // A
+            '№ заявки',                     // B
+            '№ Экспедиторский расписки',    // C
+            'Статус груза',                 // D
+            'Дата',                         // E
+            'Параметры груза',              // F
+            'Город отправителя',            // G
+            'Город получателя',             // H
+            'Отправитель',                  // I
+            'Получатель',                   // J
+            'Оплата услуги',                // K
+            'Статус заявки',                // L
         ];
 
         $x = range('A', 'Z');
@@ -249,23 +339,42 @@ class ReportsController extends Controller
             $sheet->setCellValue($x[$key] . 1, $header);
         }
         foreach ($orders as $key => $order) {
-            $items = "Вес: " . $order->total_weight . ".\nГабариты: ";
+            if($order instanceof Order) {
+                $items = "Вес: " . $order->total_weight . ".\nГабариты: ";
 
-            foreach ($order->order_items as $order_item) {
-                $items .= "\nДхШхВ: " . $order_item->length . "х" . $order_item->width . "х" . $order_item->height . " м";
+
+                foreach ($order->order_items as $order_item) {
+                    $items .= "\nДхШхВ: " . $order_item->length . "х" . $order_item->width . "х" . $order_item->height . " м";
+                }
+
+                $sheet->setCellValue('A' . ($key + 2), 'Заявка');
+                $sheet->setCellValue('B' . ($key + 2), $order->id);
+                $sheet->setCellValue('C' . ($key + 2), $order->cargo_number);
+                $sheet->setCellValue('D' . ($key + 2), $order->cargo_status->name ?? '');
+                $sheet->setCellValue('E' . ($key + 2), isset($order->order_date) ? $order->order_date->format('d.m.Y') : $order->created_at->format('d.m.Y'));
+                $sheet->setCellValue('F' . ($key + 2), $items);
+                $sheet->setCellValue('G' . ($key + 2), $order->ship_city_name ?? $order->ship_city->name ?? '-');
+                $sheet->setCellValue('H' . ($key + 2), $order->dest_city_name ?? $order->dest_city->name ?? '-');
+                $sheet->setCellValue('I' . ($key + 2), $order->sender_name ?? ($order->sender_company_name ?? '-'));
+                $sheet->setCellValue('J' . ($key + 2), $order->recipient_name ?? ($order->recipient_company_name ?? '-'));
+                $sheet->setCellValue('K' . ($key + 2), $order->payment_status->name ?? '');
+                $sheet->setCellValue('L' . ($key + 2), $order->status->name);
+            } else {
+                $items = "Кол-во мест: $order->packages_count\nОбъем: $order->volumen\nВес: $order->weight";
+
+                $sheet->setCellValue('A' . ($key + 2), 'Экспедиторская расписка');
+                $sheet->setCellValue('B' . ($key + 2), '');
+                $sheet->setCellValue('C' . ($key + 2), $order->number);
+                $sheet->setCellValue('D' . ($key + 2), $order->cargo_status->name ?? '');
+                $sheet->setCellValue('E' . ($key + 2), $order->order_date->format('d.m.Y'));
+                $sheet->setCellValue('F' . ($key + 2), $items);
+                $sheet->setCellValue('G' . ($key + 2), $order->ship_city);
+                $sheet->setCellValue('H' . ($key + 2), $order->dest_city);
+                $sheet->setCellValue('I' . ($key + 2), $order->sender_name);
+                $sheet->setCellValue('J' . ($key + 2), $order->recipient_name);
+                $sheet->setCellValue('K' . ($key + 2), '');
+                $sheet->setCellValue('L' . ($key + 2), '');
             }
-
-            $sheet->setCellValue('A' . ($key + 2), $order->id);
-            $sheet->setCellValue('B' . ($key + 2), $order->cargo_number);
-            $sheet->setCellValue('C' . ($key + 2), $order->cargo_status->name ?? '');
-            $sheet->setCellValue('D' . ($key + 2), $order->created_at->format('d.m.Y'));
-            $sheet->setCellValue('E' . ($key + 2), $items);
-            $sheet->setCellValue('F' . ($key + 2), $order->ship_city_name ?? $order->ship_city->name ?? '-');
-            $sheet->setCellValue('G' . ($key + 2), $order->dest_city_name ?? $order->dest_city->name ?? '-');
-            $sheet->setCellValue('H' . ($key + 2), $order->sender_name ?? ($order->sender_company_name ?? '-'));
-            $sheet->setCellValue('I' . ($key + 2), $order->recipient_name ?? ($order->recipient_company_name ?? '-'));
-            $sheet->setCellValue('J' . ($key + 2), $order->payment_status->name ?? '');
-            $sheet->setCellValue('K' . ($key + 2), $order->status->name);
         }
 
         $rowIterator = $sheet->getRowIterator()->resetStart();

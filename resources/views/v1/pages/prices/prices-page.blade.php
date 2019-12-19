@@ -8,7 +8,7 @@
     <div class="breadcrumb__list d-flex">
         <div class="container">
             <span class="breadcrumb__item"><a href="{{ route('index') }}" class="">Главная</a></span>
-            <span class="breadcrumb__item">Цены</span>
+            <span class="breadcrumb__item">Тарифы</span>
         </div>
     </div>
     <section class="wrapper prices-page-wrapper">
@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col-12">
                     <header class="wrapper__header">
-                        <h1>Цены</h1>
+                        <h1>Тарифы</h1>
                     </header>
                     <form action="{{ route('pricesPage') }}" method="get">
                         <div class="row">

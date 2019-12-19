@@ -116,7 +116,11 @@ class OrderController extends Controller
             "type" => ['required', 'in:order,calculator'],                                      // Тип заявки (Заявка|Калькулятор)
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $messages = [
+            'gToken.required'  => 'Произошла ошибка. Пожалуйста, попробуйте снова.',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
         $validator->sometimes('insurance_amount', 'required|numeric|min:50000', function ($request) {
             return !empty($request->get('insurance'));
         });
@@ -288,7 +292,7 @@ class OrderController extends Controller
 
         $paymentStatus = Type::where([
             ['class', 'OrderPaymentStatus'],
-            ['slug', 'ne-oplachen'],
+            ['slug', 'ne-oplachena'],
         ])->firstOrFail();
 
         $cargoType = Type::where('id', $request->get('cargo')['name'])->first();
@@ -597,7 +601,7 @@ class OrderController extends Controller
         $order->payment_status_id = $paymentStatus->id;
         $order->order_creator = $request->get('order-creator');
 
-        $order->order_date = $request->get('order_date');
+        $order->order_date = $request->get('order_date') ?? Carbon::now();
         $order->ship_time_from = $request->get('ship_time_from');
         $order->ship_time_to = $request->get('ship_time_to');
         $order->cargo_comment = $request->get('cargo_comment');
@@ -729,33 +733,6 @@ class OrderController extends Controller
         return View::make('v1.pages.shipment-status.status-page')->with(compact('orders'));
     }
 
-    public function searchOrders(Request $request) {
-        $orders = Order::available()
-            ->with(
-                'status',
-                'ship_city',
-                'dest_city',
-                'payment_status',
-                'payment',
-                'order_items'
-            )
-            ->when($request->get('id'), function ($order) use ($request) {
-                return $order->where('id', 'LIKE', '%' . $request->get('id') . '%');
-            })
-            ->when($request->finished == 'true', function ($order) use ($request) {
-                return $order->whereHas('status', function ($type) {
-                    return $type->where('slug', 'dostavlen');
-                });
-            })
-            ->when($request->finished == 'false' && $request->get('status'), function ($order) use ($request) {
-                return $order->where('status_id', $request->get('status'));
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return View::make('v1.partials.profile.orders')->with(compact('orders'))->render();
-    }
-
     public function actionGetOrderItems(Request $request) {
         $order = Order::where('id', $request->order_id)
             ->where(function ($orderQuery) {
@@ -769,7 +746,18 @@ class OrderController extends Controller
     }
 
     public function actionGetOrderSearchInput() {
-        $types = Type::where('class', 'order_status')->get();
+        $user = Auth::user();
+        $orders = $user->orders;
+
+        $types = $orders->pluck('status');
+        $types = $types->merge($orders->pluck('cargo_status'));
+        $types = $types->merge($user->forwarding_receipts->pluck('cargo_status'));
+
+        $types = $types->unique('id');
+        $types = $types->filter(function($value, $key) {
+            return  $value != null;
+        });
+
         return View::make('v1.partials.profile.order-search-select')->with(compact('types'))->render();
     }
 

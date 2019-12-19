@@ -14,7 +14,7 @@ class SendOrderPaymentStatusTo1c implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 1;
+    public $tries = 5;
 
     private $order;
 
@@ -32,6 +32,7 @@ class SendOrderPaymentStatusTo1c implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     * @throws \Exception
      */
     public function handle()
     {
@@ -50,6 +51,9 @@ class SendOrderPaymentStatusTo1c implements ShouldQueue
             DB::table('orders')->where('id', $order->id)->update([
                 'payment_sync_need' => false
             ]);
+        } else
+        {
+            throw new \Exception(print_r($response1c, true));
         }
     }
 }

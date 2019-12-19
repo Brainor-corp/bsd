@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\PayKeeperHelper;
+use App\Jobs\SendOrderPaymentStatusTo1c;
 use App\Order;
 use App\Type;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class PaymentController extends Controller
                 return $statusQ->where('slug', 'ispolnyaetsya');
             })
             ->whereHas('payment_status', function ($statusQ) {
-                return $statusQ->where('slug', 'ne-oplachen');
+                return $statusQ->where('slug', 'ne-oplachena');
             })
             ->whereHas('payment', function ($statusQ) {
                 return $statusQ->where('slug', 'nalichnyy-raschet');
@@ -28,6 +29,15 @@ class PaymentController extends Controller
             ->firstOrFail();
 
         $amount = $order->actual_price ?? ($order->total_price ?? 0);
+        $amount = htmlentities($amount, null, 'utf-8');
+        $amount = preg_replace("/\s|&nbsp;/",'', $amount);
+
+        if(!strlen($amount)) {
+            return redirect()->back();
+        }
+
+        $amount = floatval($amount);
+
         if(!$amount) {
             return redirect()->back();
         }
@@ -67,7 +77,7 @@ class PaymentController extends Controller
 
         $status = Type::where([
             ['class', 'OrderPaymentStatus'],
-            ['slug', 'oplachen']
+            ['slug', 'oplachena']
         ])->firstOrFail();
 
         Order::where('id', $orderid)->update([
@@ -75,6 +85,8 @@ class PaymentController extends Controller
             'payment_status_id' => $status->id,
             'payment_sync_need' => true
         ]);
+
+        SendOrderPaymentStatusTo1c::dispatch(Order::where('id', $orderid)->first());
 
         echo "OK ".md5($id.$secret_seed);
     }
