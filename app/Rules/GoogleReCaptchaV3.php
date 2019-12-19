@@ -28,8 +28,6 @@ class GoogleReCaptchaV3 implements Rule
      */
     public function passes($attribute, $value)
     {
-        return true; // todo Временно, для демонстрации
-
         try{
             $gResponse = GCaptchaRequestHelper::sendRequest($value);
         }
