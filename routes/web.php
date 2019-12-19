@@ -109,40 +109,23 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     });
 });
 
-Route::get('/test-order-email', function () {
-    $order = \App\Order::where('id', 8)->first();
 
-    \Illuminate\Support\Facades\Mail::to('test@gmail.com')->send(new \App\Mail\OrderCreated($order));
-});
-
-
-Route::get('/1c/test/new-user', 'Api1cTestController@newUser');
-Route::get('/1c/test/create-order', 'Api1cTestController@createOrder');
-Route::get('/1c/test/document-list', 'Api1cTestController@documentList');
-Route::get('/1c/test/document/id', 'Api1cTestController@documentById');
-Route::get('/1c/test/print_form', 'Api1cTestController@printForm');
-Route::get('/1c/test/document/number', 'Api1cTestController@documentByNumber');
-Route::get('/1c/test/orders', 'Api1cTestController@orders');
-Route::get('/1c/test/contract', 'Api1cTestController@contract');
-Route::get('/1c/test/discount', 'Api1cTestController@discount');
-Route::get('/1c/test/new-client', 'Api1cTestController@newClient');
-Route::get('/1c/test/client-by-id', 'Api1cTestController@clientById');
-Route::get('/1c/test/update-order-payment-status', 'Api1cTestController@updateOrderPaymentStatus');
-
-Route::get('/auth-user/{id}', function ($id) {
-    $user = \App\User::where('id', $id)->firstOrfail();
-    \Illuminate\Support\Facades\Auth::login($user);
-
-    return redirect('/');
-});
-
-
-//Route::group(['middleware' => ['auth']], function () {
-//    // Профиль пользователя
-//    Route::get('/profile', 'ProfileController@profileData')->name('profile-data-show');
-//    Route::post('/edit-profile-data', 'ProfileController@edit')->name('edit-profile-data');
+//Route::get('/1c/test/new-user', 'Api1cTestController@newUser');
+//Route::get('/1c/test/create-order', 'Api1cTestController@createOrder');
+//Route::get('/1c/test/document-list', 'Api1cTestController@documentList');
+//Route::get('/1c/test/document/id', 'Api1cTestController@documentById');
+//Route::get('/1c/test/print_form', 'Api1cTestController@printForm');
+//Route::get('/1c/test/document/number', 'Api1cTestController@documentByNumber');
+//Route::get('/1c/test/orders', 'Api1cTestController@orders');
+//Route::get('/1c/test/contract', 'Api1cTestController@contract');
+//Route::get('/1c/test/discount', 'Api1cTestController@discount');
+//Route::get('/1c/test/new-client', 'Api1cTestController@newClient');
+//Route::get('/1c/test/client-by-id', 'Api1cTestController@clientById');
+//Route::get('/1c/test/update-order-payment-status', 'Api1cTestController@updateOrderPaymentStatus');
 //
+//Route::get('/auth-user/{id}', function ($id) {
+//    $user = \App\User::where('id', $id)->firstOrfail();
+//    \Illuminate\Support\Facades\Auth::login($user);
 //
-//    //Tests
-//    Route::get('/test-1', 'TestController@test1')->name('test1');
+//    return redirect('/');
 //});
