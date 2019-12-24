@@ -52,11 +52,11 @@ class NavigationList
                         'icon' => 'fas fa-address-book',
                         'text' => 'Особые нас. пункты'
                     ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/Polygons',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Полигоны'
-                    ],
+//                    [
+//                        'url' => '/' . config('zeusAdmin.admin_url') . '/Polygons',
+//                        'icon' => 'fas fa-address-book',
+//                        'text' => 'Полигоны'
+//                    ],
                     [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Routes',
                         'icon' => 'fas fa-address-book',
@@ -84,19 +84,19 @@ class NavigationList
                     ],
                 ]
             ],
-            [
-                'url' => '/'.config('zeusAdmin.admin_url').'/settings',
-                'icon' => 'fas fa-cogs',
-                'text' => 'Настройки',
-                'noDirect' => true,
-                'nodes' => [
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/CitiesClosestTerminalUpdater',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Ближайшие терминалы'
-                    ],
-                ]
-            ],
+//            [
+//                'url' => '/'.config('zeusAdmin.admin_url').'/settings',
+//                'icon' => 'fas fa-cogs',
+//                'text' => 'Настройки',
+//                'noDirect' => true,
+//                'nodes' => [
+//                    [
+//                        'url' => '/' . config('zeusAdmin.admin_url') . '/CitiesClosestTerminalUpdater',
+//                        'icon' => 'fas fa-address-book',
+//                        'text' => 'Ближайшие терминалы'
+//                    ],
+//                ]
+//            ],
             [
                 'url' => '/'.config('zeusAdmin.admin_url').'/db',
                 'icon' => 'fas fa-users',
@@ -123,11 +123,11 @@ class NavigationList
                         'icon' => 'fas fa-address-book',
                         'text' => 'Реквизиты'
                     ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/Types',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Типы'
-                    ],
+//                    [
+//                        'url' => '/' . config('zeusAdmin.admin_url') . '/Types',
+//                        'icon' => 'fas fa-address-book',
+//                        'text' => 'Типы'
+//                    ],
 //                    [
 //                        'url' => '/' . config('zeusAdmin.admin_url') . '/RouteTariffs',
 //                        'icon' => 'fas fa-address-book',
@@ -163,11 +163,11 @@ class NavigationList
                         'icon' => 'fas fa-address-book',
                         'text' => 'Отзывы'
                     ],
-                    [
-                        'url' => '/' . config('zeusAdmin.admin_url') . '/Supports',
-                        'icon' => 'fas fa-address-book',
-                        'text' => 'Обращения'
-                    ],
+//                    [
+//                        'url' => '/' . config('zeusAdmin.admin_url') . '/Supports',
+//                        'icon' => 'fas fa-address-book',
+//                        'text' => 'Обращения'
+//                    ],
                     [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/ContactEmails',
                         'icon' => 'fas fa-address-book',
