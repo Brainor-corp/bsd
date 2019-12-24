@@ -55,6 +55,9 @@
                                         <a href="tel:{{ $terminal->phone }}">{{ $terminal->phone }}</a>
                                     </span>
                                 @endif
+                                @if(isset($terminal->file))
+                                    <a target="_blank" href="{{ $terminal->file }}">Схема проезда</a>
+                                @endif
                             </div>
                             @if(!$loop->last)
                                 <div class="separator-hr"></div>
@@ -89,5 +92,12 @@
                 </div>
             </div>
         @endforeach
+        @if(isset($currentCity->file))
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <a href="{{ url($currentCity->file) }}">Схема проезда</a>
+                    </div>
+                </div>
+        @endif
     </div>
 @endsection
