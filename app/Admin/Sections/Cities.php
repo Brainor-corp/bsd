@@ -118,6 +118,8 @@ class Cities extends Section
                     ->setHelpBlock("<small class='text-muted'>Указывает, обновлять ли ближайший терминал для текущего города в автоматическом режиме</small>")
                     ->setRequired(1)
                     ->setOptions([0=>'Нет', 1=>'Да']),
+                FormField::input('file', "Ссылка на схему проезда")
+                    ->setHelpBlock("<small class='text-muted'>Ссылка на файл схему проезда</small>"),
                 FormField::related('insideForwarding', 'Тарифы', \App\InsideForwarding::class, [
                     FormField::bselect('forward_threshold_id', 'Предел')
                         ->setDataAttributes([
