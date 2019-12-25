@@ -55,24 +55,11 @@
                                         <a href="tel:{{ $terminal->phone }}">{{ $terminal->phone }}</a>
                                     </span>
                                 @endif
-                                @if(isset($terminal->file))
-                                    <a target="_blank" href="{{ $terminal->file }}">Схема проезда</a>
-                                @endif
                             </div>
                             @if(!$loop->last)
                                 <div class="separator-hr"></div>
                             @endif
                         @endforeach
-                        {{--<div class="map__contacts-title">Терминал в г. Санкт-Петербург ООО «БСД» - «СЕВЕР»</div>--}}
-                        {{--<div class="map__contacts-list d-flex flex-column">--}}
-                            {{--<span class="map__contacts-item d-flex">--}}
-                                {{--<i class="fa fa-map-marker"></i>--}}
-                                {{--<span>198095, г. Санкт-Петербург, <br />ул. Верхняя, <br />д. 12</span>--}}
-                            {{--</span>--}}
-                            {{--<span>--}}
-                                {{--<a class="link-with-dotted more-link" href="##">Подробнее</a>--}}
-                            {{--</span>--}}
-                        {{--</div>--}}
                     </div>
                 </div>
             </div>
@@ -95,7 +82,7 @@
         @if(isset($currentCity->file))
                 <div class="row mb-4">
                     <div class="col-12">
-                        <a href="{{ url($currentCity->file) }}">Схема проезда</a>
+                        <a target="_blank" class="font-weight-bold" href="{{ url($currentCity->file) }}">Скачать схему проезда</a>
                     </div>
                 </div>
         @endif
