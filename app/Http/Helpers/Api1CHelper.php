@@ -3,7 +3,7 @@
 namespace App\Http\Helpers;
 
 class Api1CHelper {
-    private static $host = "http://s4.tkbsd.ru/copy/hs/rest/";
+    private static $host = "http://s4.tkbsd.ru/1c/hs/rest/";
 
     public static function post($action, $params, $headersNeed = false) {
         $url = self::$host . $action;
