@@ -2,7 +2,7 @@
     <label for="">Пользователь</label>
     <br>
     @if(isset($order->user))
-        <a href="{{ route('zeusAdmin.section.edit.form', ['section' => 'users', 'id' => $order->user->id]) }}">
+        <a href="{{ route('zeusAdmin.section.edit.form', ['section' => 'Users', 'id' => $order->user->id]) }}">
             {{ $order->user->full_name }}
         </a>
     @else

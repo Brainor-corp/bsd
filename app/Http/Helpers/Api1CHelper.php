@@ -11,6 +11,7 @@ class Api1CHelper {
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_USERPWD, env("1C_BASIC_USER") . ":" . env("1C_BASIC_PASSWORD"));
 
         if($headersNeed) {
             curl_setopt($curl, CURLOPT_HEADER, 1);
