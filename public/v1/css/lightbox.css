@@ -186,7 +186,7 @@ body.lb-disable-scrolling {
   float: right;
   width: 27px;
   height: 26px;
-  background: url(/images/img/close.png) no-repeat;
+  /*background: url(/images/img/close.png) no-repeat;*/
   text-align: right;
   outline: none;
 }
