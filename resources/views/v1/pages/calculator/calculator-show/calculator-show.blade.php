@@ -174,11 +174,5 @@
 @endsection
 
 @section('footScripts')
-    <script>
-        grecaptcha.ready(function() {
-            grecaptcha.execute('{{ env('GOOGLE_CAPTCHA_KEY') }}', {action: 'calculatorForm'}).then(function(token) {
-                $('.calculator-form').append('<input type="hidden" name="gToken" value="'+token+'">')
-            });
-        });
-    </script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endsection

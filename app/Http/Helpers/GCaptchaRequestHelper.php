@@ -11,7 +11,7 @@ namespace App\Http\Helpers;
 class GCaptchaRequestHelper
 {
     public static function sendRequest($userToken) {
-        $secret = env('GOOGLE_CAPTCHA_SECRET');
+        $secret = env('V2_GOOGLE_CAPTCHA_SECRET');
 
         $curl = curl_init();
 
