@@ -36,7 +36,12 @@
                     @include('v1.partials.google-recaptcha.terms')
                 </small>
             </div>
-            <div class="col-12 col-xl footer-item"><a class="ftr_link" href="{{ url('/politika-konfidencialnosti') }}">Политика конфиденциальности</a></div>
+            <div class="col-12 col-xl footer-item">
+                <a class="ftr_link" href="{{ url('/politika-konfidencialnosti') }}">Политика конфиденциальности</a> <br>
+                <span>ОГРН: 1089847071181</span> <br>
+                <span>ИНН: 7816435129</span> <br>
+                <span>КПП: 781601001</span>
+            </div>
             <div class="col-12 col-xl footer-item d-flex justify-content-xl-end">
                 <span class="">Сайт разработала студия</span>
                 <div class="newclients"></div>
