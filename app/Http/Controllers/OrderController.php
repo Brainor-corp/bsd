@@ -12,6 +12,7 @@ use App\OrderItem;
 use App\Polygon;
 use App\Route;
 use App\Rules\Discount1c;
+use App\Rules\GoogleReCaptchaV2;
 use App\Rules\GoogleReCaptchaV3;
 use App\Rules\INN;
 use App\Type;
@@ -36,7 +37,7 @@ class OrderController extends Controller
         ]);
 
         $rules = [
-            "gToken" => ['required', new GoogleReCaptchaV3()],
+            'g-recaptcha-response' => ['required', new GoogleReCaptchaV2()],
             "ship_city" => ['required', 'string', 'max:255'],                                   // Город_отправления (название)
             "take_city_name" => ['nullable', 'string', 'max:255'],                              // Название_города_экспедиции (забор)
             "take_distance" => ['nullable', 'numeric'],                                         // Дистанция_экспедиции (забор)
@@ -117,7 +118,7 @@ class OrderController extends Controller
         ];
 
         $messages = [
-            'gToken.required'  => 'Произошла ошибка. Пожалуйста, попробуйте снова.',
+            'g-recaptcha-response.required'  => 'Подтвердите, что Вы не робот.',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);

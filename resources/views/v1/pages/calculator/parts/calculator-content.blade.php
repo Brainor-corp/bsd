@@ -800,6 +800,16 @@
             <label class="custom-control-label" for="order-creator-type-payer">Плательщик</label>
         </div>
     </div>
+    <div class="form-item my-5">
+        <div class="g-recaptcha" data-sitekey="{{ env('V2_GOOGLE_CAPTCHA_KEY') }}"></div>
+        @if ($errors->has('g-recaptcha-response'))
+            <div>
+                <span class="invalid-feedback" role="alert" style="display: block">
+                    <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
+                </span>
+            </div>
+        @endif
+    </div>
     @if($orderType === 'order')
         <div>
             <h2 class="text-center">ВНИМАНИЕ!</h2>
