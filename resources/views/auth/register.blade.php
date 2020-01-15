@@ -11,11 +11,11 @@
                     <form method="POST" action="{{ route('register') }}" id="registerForm">
                         @csrf
 
-                        @if($errors->has('gToken'))
+                        @if($errors->has('g-recaptcha-response'))
                             <div class="row">
                                 <div class="col-12">
                                     <div class="alert alert-danger">
-                                        {{ $errors->first('gToken') }}
+                                        Подтвердите, что Вы не робот.
                                     </div>
                                 </div>
                             </div>
@@ -91,6 +91,12 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <div class="col-md-6 offset-md-4">
+                                <div class="g-recaptcha" data-sitekey="{{ env('V2_GOOGLE_CAPTCHA_KEY') }}"></div>
+                            </div>
+                        </div>
+
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
@@ -107,11 +113,5 @@
 @endsection
 
 @section('footScripts')
-    <script>
-        grecaptcha.ready(function() {
-            grecaptcha.execute('{{ env('GOOGLE_CAPTCHA_KEY') }}', {action: 'registerForm'}).then(function(token) {
-                $('#registerForm').append('<input type="hidden" name="gToken" value="'+token+'">')
-            });
-        });
-    </script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endsection

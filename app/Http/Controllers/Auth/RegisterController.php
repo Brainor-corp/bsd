@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\SMSHelper;
 use App\Jobs\SendUserRegisterMail;
-use App\Rules\GoogleReCaptchaV3;
+use App\Rules\GoogleReCaptchaV2;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -55,7 +55,7 @@ class RegisterController extends Controller
         $data['phone'] = str_replace(array('+', ' ', '(' , ')', '-'), '', $data['phone']);
 
         return Validator::make($data, [
-            'gToken' => ['required', new GoogleReCaptchaV3()],
+            'g-recaptcha-response' => ['required', new GoogleReCaptchaV2()],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => [

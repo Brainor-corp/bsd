@@ -2799,3 +2799,10 @@ label.calc__label_max {
 	}
 
 }
+
+@media (max-width: 500px) {
+    .g-recaptcha {
+        transform: scale(0.8);
+        transform-origin: 0 0;
+    }
+}
