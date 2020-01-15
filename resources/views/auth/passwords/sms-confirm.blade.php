@@ -28,11 +28,11 @@
                             </div>
                         @endif
 
-                        @if($errors->has('gToken'))
+                        @if($errors->has('g-recaptcha-response'))
                             <div class="row">
                                 <div class="col-12">
                                     <div class="alert alert-danger">
-                                        {{ $errors->first('gToken') }}
+                                        Подтвердите, что Вы не робот.
                                     </div>
                                 </div>
                             </div>
@@ -52,11 +52,16 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="code" class="col-md-4 col-form-label text-md-right">{{ __('Код подтверждения') }}</label>
+                            <label for="code" class="col-md-4 py-0 col-form-label text-md-right">
+                                {{ __('Код подтверждения') }}
+                                <br>
+                                <a href="{{ route('password.resend-sms-code', ['q' => $encryptedPhone]) }}" class="mt-2">
+                                    {{ __('Получить код повторно') }}
+                                </a>
+                            </label>
 
                             <div class="col-md-6">
                                 <input id="code" type="text" class="form-control{{ $errors->has('code') ? ' is-invalid' : '' }}" name="code" value="{{ old('code') }}" required>
-
                                 @if ($errors->has('code'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('code') }}</strong>
@@ -65,14 +70,17 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <div class="col-md-6 offset-md-4">
+                                <div class="g-recaptcha" data-sitekey="{{ env('V2_GOOGLE_CAPTCHA_KEY') }}"></div>
+                            </div>
+                        </div>
+
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Подтвердить') }}
                                 </button>
-                                <a href="{{ route('password.resend-sms-code', ['q' => $encryptedPhone]) }}" class="btn btn-secondary ml-md-2 mt-md-0 mt-2">
-                                    {{ __('Получить код повторно') }}
-                                </a>
                             </div>
                         </div>
                     </form>
@@ -84,11 +92,5 @@
 @endsection
 
 @section('footScripts')
-    <script>
-        grecaptcha.ready(function() {
-            grecaptcha.execute('{{ env('GOOGLE_CAPTCHA_KEY') }}', {action: 'feedbackForm'}).then(function(token) {
-                $('#confirmCodeForm').append('<input type="hidden" name="gToken" value="'+token+'">')
-            });
-        });
-    </script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endsection

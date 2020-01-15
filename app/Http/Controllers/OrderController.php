@@ -13,7 +13,6 @@ use App\Polygon;
 use App\Route;
 use App\Rules\Discount1c;
 use App\Rules\GoogleReCaptchaV2;
-use App\Rules\GoogleReCaptchaV3;
 use App\Rules\INN;
 use App\Type;
 use Carbon\Carbon;
