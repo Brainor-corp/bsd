@@ -7,6 +7,7 @@
 <script src="{{ asset('v1/js/general.js') }}@include('v1.partials.versions.jsVersion')"></script>
 <script src="{{ asset('v1/js/tooltip.js') }}@include('v1.partials.versions.jsVersion')"></script>
 <script src="{{ asset('v1/js/lightbox.js') }}@include('v1.partials.versions.jsVersion')"></script>
+<script src="//cdn.callibri.ru/callibri.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://www.google.com/recaptcha/api.js?render={{ env('GOOGLE_CAPTCHA_KEY') }}"></script>
 
 @yield('footerScripts')
