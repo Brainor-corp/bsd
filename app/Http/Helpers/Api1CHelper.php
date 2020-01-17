@@ -90,6 +90,7 @@ class Api1CHelper {
         curl_setopt($curlConnect, CURLOPT_RETURNTRANSFER, 1 );
         curl_setopt($curlConnect, CURLOPT_POSTFIELDS, $content);
         curl_setopt($curlConnect, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($curlConnect, CURLOPT_USERPWD, env("1C_BASIC_USER") . ":" . env("1C_BASIC_PASSWORD"));
         $result = curl_exec($curlConnect);
 
         if (!curl_errno($curlConnect)) {
