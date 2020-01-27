@@ -227,8 +227,8 @@ class OrderSyncTo1c implements ShouldQueue
                 break;
 
             default:
-                $sendOrder['Плательщик']['Тип_контрагента'] = $order->payer_form_type->name;
                 $sendOrder['Плательщик'] = [
+                    'Тип_контрагента' => $order->payer_form_type->name ?? '',
                     'Правовая_форма' => $order->payer_legal_form ?? "",
                     'Наименование' => "---",
                     'Адрес' => [
