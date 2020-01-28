@@ -59,6 +59,16 @@ class CalculatorController extends Controller
             $orderType = $order->type->slug ?? $orderType;
 
             $packages = $order->order_items->toArray();
+            $packages = isset($packages) && !empty($packages) ? $packages : [
+                [
+                    'length' => 0,
+                    'width' => 0,
+                    'height' => 0,
+                    'weight' => 0,
+                    'volume' => 0,
+                    'quantity' => 0
+                ]
+            ];
             $selectedShipCity = $order->ship_city_id;
             $selectedDestCity = $order->dest_city_id;
 
@@ -274,7 +284,7 @@ class CalculatorController extends Controller
         return CalculatorHelper::getAllCalculatedData(
             $ship_city,
             $dest_city,
-            $request->get('cargo')['packages'],
+            $request->get('cargo')['packages'] ?? null,
             $totalWeight,
             $totalVolume,
             $request->get('service'),
