@@ -528,10 +528,39 @@ $(document).ready(function () {
                 oneString: true, // Если включить эту штуку, то будет возвращаться полный адрес
                 parentType: $.kladr.type.city,
                 parentId: cityKladrId,
-                source: function (query, callback) {
-                        ymaps.suggest(query.name, {results: 10}).then(function (items) {
-                            callback(items);
-                        });
+                source: async function (query, callback) {
+                    let points = [];
+                    let yandexSuggests = [];
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+
+                    await $.ajax({
+                        type: 'get',
+                        url: '/api/points-by-term',
+                        data: {
+                            'term': query.name,
+                            'city_name': point.attr('id') === "ship_point" ?
+                                $('#ship_city').data().selectize.getValue() :
+                                $('#dest_city').data().selectize.getValue()
+                        },
+                        dataType: "json",
+                        cache: false,
+                        success: function (response) {
+                            points = response.data;
+                        }
+                    });
+
+                    await ymaps.suggest(query.name, {results: 10}).then(function (items) {
+                        yandexSuggests = items;
+                    });
+
+                    let result = [...points, ...yandexSuggests];
+
+                    callback(result);
                 },
                 labelFormat: function (obj, query) {
                     return obj.displayName;
@@ -552,17 +581,20 @@ $(document).ready(function () {
             var locality = '';
             ymaps.geocode(obj.value, {results: 1}).then(function (res) {
                 let forceDeliveryType = null;
-                locality = res.geoObjects.get(0).getLocalities()[0];
-                if(locality === undefined) {
-                    forceDeliveryType = 'from';
-                    if(point.attr('id') === "ship_point") {
-                        locality = $('select[name="ship_city"] option:selected').val();
-                    } else {
-                        locality = $('select[name="dest_city"] option:selected').val();
+
+                if(obj.isPoint) {
+                    locality = obj.value;
+                } else {
+                    locality = res.geoObjects.get(0).getLocalities()[0];
+                    if(locality === undefined) {
+                        forceDeliveryType = 'from';
+                        if(point.attr('id') === "ship_point") {
+                            locality = $('select[name="ship_city"] option:selected').val();
+                        } else {
+                            locality = $('select[name="dest_city"] option:selected').val();
+                        }
                     }
                 }
-
-                // console.log(res.geoObjects.get(0));
 
                 point.data('name', locality).attr('data-name', locality); // Это имя отправляем к нам на сервер
                 point.data('fullName', obj.value).attr('data-full-name', obj.value); // Это имя отправляем яндексу для просчета дистанции

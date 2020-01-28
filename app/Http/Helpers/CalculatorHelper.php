@@ -382,6 +382,8 @@ class CalculatorHelper
         // Если город -- особый пункт
         $point_fixed_tariff = false;
         if($city instanceof Point) {
+            $distance = $city->distance;
+
             $point_fixed_tariff = DB::table('outside_forwardings')
                 ->join('forward_thresholds', function($join)
                 {

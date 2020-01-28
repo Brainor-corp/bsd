@@ -259,9 +259,8 @@ class CalculatorController extends Controller
             $cities->where('name', $request->get('ship_city'))->first()->name :
             $request->get('take_city_name');
         $takePoint = Point::where('name', $takeCityName)
-            ->where('city_id',$ship_city->id)
+            ->where('city_id', $ship_city->id)
             ->first();
-        if($takePoint){$take_distance = $takePoint->distance;}
 
         $bring_distance = $request->get('bring_distance');
         $bringCityName = $request->get('need-to-bring-type') === "in" ?
@@ -270,7 +269,6 @@ class CalculatorController extends Controller
         $bringPoint = Point::where('name', $bringCityName)
             ->where('city_id',$dest_city->id)
             ->first();
-        if($bringPoint){$bring_distance = $bringPoint->distance;}
         //Конец -- Определяем дистанцию доставки в случае если пункт есть в Points
 
         return CalculatorHelper::getAllCalculatedData(
