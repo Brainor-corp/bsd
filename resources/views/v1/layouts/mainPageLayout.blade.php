@@ -12,7 +12,7 @@
 </head>
 
     <body>
-
+        @include('v1.partials.old-browsers.alert')
         @include('v1.partials.header.mainPageHeader')
 
         @yield('content')

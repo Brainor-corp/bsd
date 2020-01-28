@@ -13,7 +13,7 @@
 </head>
 
     <body>
-
+        @include('v1.partials.old-browsers.alert')
         @include('v1.partials.header.innerPageHeader')
 
         @yield('content')
