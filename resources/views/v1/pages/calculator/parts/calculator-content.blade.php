@@ -182,13 +182,13 @@
                 <div class="col-6 form-item row align-items-center">
                     <label class="col-auto calc__label">Вес груза (кг)*</label>
                     <div class="col calc__inpgrp">
-                        <input type="number" min="0.01" name="cargo[total_weight]" step="any" id="total-weight" class="form-control" value="{{ old('cargo[total_weight]') ?? ($totalWeight ?? 0) }}"/>
+                        <input type="number" min="0.01" name="cargo[total_weight]" step="any" id="total-weight" class="form-control" required value="{{ old('cargo[total_weight]') ?? ($totalWeight ?? 0) }}"/>
                     </div>
                 </div>
                 <div class="col-6 form-item row align-items-center text-right">
                     <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
                     <div class="col calc__inpgrp">
-                        <input type="number" min="0.01" name="cargo[total_volume]" step="any" id="total-volume" class="form-control" data-total-volume="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}" value="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}"/>
+                        <input type="number" min="0.01" name="cargo[total_volume]" step="any" id="total-volume" class="form-control" required data-total-volume="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}" value="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}"/>
                     </div>
                 </div>
             </div>
