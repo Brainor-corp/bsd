@@ -32,6 +32,7 @@ Route::any('/get-cargo-numbers', 'OrderController@getCargoNumbers')->name('get-c
 Route::post('/get-cities-by-term', 'CitiesController@getCitiesByTerm')->name('get-cities-by-name');
 Route::get('/change-city/{city_id?}', 'CitiesController@changeCity')->name('change-city');
 Route::any('/prices/get-destination-cities', 'PricesController@getDestinationCities')->name('getDestinationCitiesForPrices');
+Route::get('/points-by-term', 'PointsController@getPointsByTerm')->name('getPointsByTerm');
 
 //Route::get('/upload-xml-cities', 'UploadXmlController@uploadCities')->name('uploadXmlCities');
 //Route::get('/upload-xml-thresholds', 'UploadXmlController@uploadThresholds')->name('uploadXmlThresholds');

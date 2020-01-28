@@ -87,9 +87,17 @@ class UserOrderSyncFrom1c implements ShouldQueue
             $order->ship_city_name = $response1c['response']['ГородОтправления'] ?? "-";
             $order->dest_city_id = City::where('name', $response1c['response']['ГородНазначения'] ?? "-")->first()->id ?? null;
             $order->dest_city_name = $response1c['response']['ГородНазначения'] ?? "-";
+
             $order->take_address = $response1c['response']['АдресЗабора'] ?? "";
-            $order->take_address = $response1c['response']['АдресЗабора'] ?? "";
+            if(isset($response1c['response']['АдресЗабора']) && !empty($response1c['response']['АдресЗабора'])) {
+                $order->take_need = true;
+            }
+
             $order->delivery_address = $response1c['response']['АдресДоставки'] ?? "";
+            if(isset($response1c['response']['АдресДоставки']) && !empty($response1c['response']['АдресДоставки'])) {
+                $order->delivery_need = true;
+            }
+
             $order->order_date = isset($response1c['response']['ДатаИсполнения']) ?
                 Carbon::parse($response1c['response']['ДатаИсполнения'])->format("Y-m-d H:i:s") :
                 Carbon::now();

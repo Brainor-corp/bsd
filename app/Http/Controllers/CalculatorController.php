@@ -59,6 +59,16 @@ class CalculatorController extends Controller
             $orderType = $order->type->slug ?? $orderType;
 
             $packages = $order->order_items->toArray();
+            $packages = isset($packages) && !empty($packages) ? $packages : [
+                [
+                    'length' => 0,
+                    'width' => 0,
+                    'height' => 0,
+                    'weight' => 0,
+                    'volume' => 0,
+                    'quantity' => 0
+                ]
+            ];
             $selectedShipCity = $order->ship_city_id;
             $selectedDestCity = $order->dest_city_id;
 
@@ -259,9 +269,8 @@ class CalculatorController extends Controller
             $cities->where('name', $request->get('ship_city'))->first()->name :
             $request->get('take_city_name');
         $takePoint = Point::where('name', $takeCityName)
-            ->where('city_id',$ship_city->id)
+            ->where('city_id', $ship_city->id)
             ->first();
-        if($takePoint){$take_distance = $takePoint->distance;}
 
         $bring_distance = $request->get('bring_distance');
         $bringCityName = $request->get('need-to-bring-type') === "in" ?
@@ -270,13 +279,12 @@ class CalculatorController extends Controller
         $bringPoint = Point::where('name', $bringCityName)
             ->where('city_id',$dest_city->id)
             ->first();
-        if($bringPoint){$bring_distance = $bringPoint->distance;}
         //Конец -- Определяем дистанцию доставки в случае если пункт есть в Points
 
         return CalculatorHelper::getAllCalculatedData(
             $ship_city,
             $dest_city,
-            $request->get('cargo')['packages'],
+            $request->get('cargo')['packages'] ?? null,
             $totalWeight,
             $totalVolume,
             $request->get('service'),
