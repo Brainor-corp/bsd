@@ -1,3 +1,10 @@
+var ua = window.navigator.userAgent;
+var isIE = /MSIE|Trident/.test(ua);
+
+if(isIE) {
+    document.getElementById('ie-alert').style.display = "block";
+}
+
 $(document).ready(function () {
     if($('#process-order').length) {
         $('#process-order').modal('show');

@@ -42,7 +42,7 @@ class OrderCreated extends Mailable
         );
 
         return $this
-            ->subject('Новая заявка на перевозку')
+            ->subject("Заявка №$order->id от $order->created_at")
             ->view('emails.order-created')
             ->attach($file['tempFile'], [
                 'as' => $documentName,

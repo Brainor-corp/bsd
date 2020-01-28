@@ -757,7 +757,7 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('focus', '.package-params', function () {
+    $(document).on('focus', '.package-params, #total-weight, #total-volume', function () {
         $(this).val('');
     })
 });
