@@ -51,7 +51,9 @@ class UserOrderSyncFrom1c implements ShouldQueue
                 "document_id" => $document['id'],
                 "type" => 3,
                 "empty_fields" => true
-            ]
+            ],
+            false,
+            5
         );
 
         if($response1c['status'] == 200 && !empty($response1c['response'])) {
