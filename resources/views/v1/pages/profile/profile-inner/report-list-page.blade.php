@@ -33,7 +33,7 @@
                                             <option value="status">По статусу</option>
                                         </select>
                                         <input name="id" id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">
-                                        <a href="{{ route('calculator-show') }}" class="ml-auto pt-3">Добавить заявку</a>
+                                        <a href="{{ route('calculator-show', ['id' => null, 'type' => 'order']) }}" class="ml-auto pt-3">Добавить заявку</a>
                                     </div>
                                     <div id="cb-input" class="custom-control custom-checkbox">
                                         <input name="finished" value="true" type="checkbox" class="custom-control-input" id="finished-cb">
