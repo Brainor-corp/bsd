@@ -46,6 +46,9 @@
            data-type="receipt"
         >
             Доступные<br/>документы
+            @if(isset($order->payment_status) && $order->payment_status->name === 'Не оплачена')
+                <span class="text-danger">Оплатить онлайн</span>
+            @endif
         </a>
     </td>
     <td></td>

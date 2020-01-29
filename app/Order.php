@@ -166,6 +166,11 @@ class Order extends Model
         });
     }
 
+    public function getModelTypeAttribute()
+    {
+        return 'order';
+    }
+
     protected static function boot()
     {
         parent::boot();

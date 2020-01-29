@@ -155,18 +155,18 @@ class ReportsController extends Controller
                     }
                 }
             }
-        }
 
-        if(!count($documents) && $order instanceof Order) {
-            array_push($documents, [
-                'id' => $order->id,
-                'type' => 'site_request',
-                'name' => "Заявка на перевозку № $order->id"
-            ]);
+            if(!count($documents) && $order instanceof Order) {
+                array_push($documents, [
+                    'id' => $order->id,
+                    'type' => 'site_request',
+                    'name' => "Заявка на перевозку № $order->id"
+                ]);
+            }
         }
 
         return view('v1.partials.reports.download-documents-modal-content')
-            ->with(compact('documents'));
+            ->with(compact('documents', 'order'));
     }
 
     public function downloadOrderDocument(Request $request, $document_id_1c, $document_type_id_1c) {

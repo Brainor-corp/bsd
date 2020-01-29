@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\ForwardingReceipt;
 use App\Http\Helpers\PayKeeperHelper;
 use App\Jobs\SendOrderPaymentStatusTo1c;
 use App\Order;
 use App\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
@@ -14,43 +16,57 @@ class PaymentController extends Controller
         return view('v1.pages.test.payment-test');
     }
 
-    public function makePayment($order_id) {
-        $order = Order::available()
-            ->where('id', $order_id)
-            ->whereHas('status', function ($statusQ) {
-                return $statusQ->where('slug', 'ispolnyaetsya');
-            })
-            ->whereHas('payment_status', function ($statusQ) {
-                return $statusQ->where('slug', 'ne-oplachena');
-            })
-            ->whereHas('payment', function ($statusQ) {
-                return $statusQ->where('slug', 'nalichnyy-raschet');
-            })
-            ->firstOrFail();
+    public function makePayment($document_id) {
+//        $response1c = \App\Http\Helpers\Api1CHelper::post(
+//            'invoice',
+//            [
+//                'user_id' => $order->user->guid ?? '',
+//                'document_id' => $document_id ?? ''
+//            ]
+//        );
+//
+//        if(
+//            $response1c['status'] == 200
+//            && !empty($response1c['response']['status'])
+//            && $response1c['response']['status'] === 'success'
+//            && !empty($response1c['response']['data'])
+//        ) {
+//            $data = $response1c['response']['data'];
+//        }
 
-        $amount = $order->actual_price ?? ($order->total_price ?? 0);
-        $amount = htmlentities($amount, null, 'utf-8');
-        $amount = preg_replace("/\s|&nbsp;/",'', $amount);
+        $data = [
+            [
+                "name" => 'Позиция 1',
+                "price" => 1.01,
+                "quantity" => 3,
+                "sum" => 3.03,
+                "tax" => 'vat10',
+                "tax_sum" => 0.28,
+                "item_type" => "service"
+            ],
+            [
+                "name" => 'Позиция 2',
+                "price" => 1.01,
+                "quantity" => 3,
+                "sum" => 3.03,
+                "tax" => 'vat10',
+                "tax_sum" => 0.28,
+                "item_type" => "work"
+            ]
+        ];
 
-        if(!strlen($amount)) {
-            return redirect()->back();
-        }
-
-        $amount = floatval($amount);
-
-        if(!$amount) {
-            return redirect()->back();
-        }
+        $amount = array_sum(array_column($data, 'sum'));
+        $user = Auth::user();
 
         # Параметры платежа, сумма - обязательный параметр
         # Остальные параметры можно не задавать
         $payment_data = array (
             "pay_amount" => $amount,
-            "clientid" => $order->payer->guid ?? '',
-            "orderid" => "$order->id",
-            "client_email" => $order->payer->email ?? '',
-            "service_name" => "Услуга",
-            "client_phone" => $order->payer->phone ?? ''
+            "clientid" => $user->guid ?? '',
+            "orderid" => $document_id,
+            "client_email" => $user->email ?? '',
+            "client_phone" => $user->phone ?? '',
+            "service_name" => ";PKC|".json_encode($data)."|", # передача корзины товаров для формирования чека по 54-ФЗ
         );
 
         if($url = PayKeeperHelper::getPaymentUrl($payment_data)) {

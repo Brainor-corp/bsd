@@ -21,4 +21,9 @@ class ForwardingReceipt extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    public function getModelTypeAttribute()
+    {
+        return 'forwarding_receipt';
+    }
 }

@@ -23,8 +23,6 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::get('/resend-sms-code', 'Auth\ForgotPasswordController@resendSmsCode')->name('password.resend-sms-code');
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
-    // Платежи
-    Route::get('/make-payment/{order_id}', 'PaymentController@makePayment')->name('make-payment');
 
     Route::group(['middleware' => ['password_reset']], function () {
         // Главная
@@ -97,6 +95,10 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
         Route::post('/get-download-documents-modal', 'ReportsController@getDownloadDocumentsModal')->name('get-download-documents-modal');
         Route::get('/download-document/{document_id_1c}/{document_type_id_1c}', 'ReportsController@downloadOrderDocument')->name('download-document');
 
+        // Оплата
+        Route::get('/payment/make-payment/{document_id}', 'PaymentController@makePayment')
+            ->name('make-payment');
+
         Route::group(['middleware' => ['sms-confirm']], function () {
             // Работа с оповещениями доступна только авторизованным пользователям.
             Route::get('/event-list', 'EventsController@showEventListPage')->name('event-list');
@@ -107,7 +109,7 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
 
 
 //Route::get('/1c/test/new-user', 'Api1cTestController@newUser');
-Route::get('/1c/test/create-order', 'Api1cTestController@createOrder');
+//Route::get('/1c/test/create-order', 'Api1cTestController@createOrder');
 //Route::get('/1c/test/document-list', 'Api1cTestController@documentList');
 //Route::get('/1c/test/document/id', 'Api1cTestController@documentById');
 //Route::get('/1c/test/print_form', 'Api1cTestController@printForm');

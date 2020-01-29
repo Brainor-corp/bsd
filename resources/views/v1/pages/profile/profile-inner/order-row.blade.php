@@ -51,6 +51,9 @@
            data-type="request"
         >
             Доступные<br/>документы
+            @if(isset($order->payment_status) && $order->payment_status->name === 'Не оплачена')
+                <span class="text-danger">Онлайн оплата</span>
+            @endif
         </a>
     </td>
     <td>
