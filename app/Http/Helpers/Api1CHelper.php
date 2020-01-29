@@ -12,8 +12,6 @@ class Api1CHelper {
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl, CURLOPT_USERPWD, env("1C_BASIC_USER") . ":" . env("1C_BASIC_PASSWORD"));
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $timeout);
-        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout + 5);
 
         if($headersNeed) {
             curl_setopt($curl, CURLOPT_HEADER, 1);
@@ -25,6 +23,8 @@ class Api1CHelper {
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($content))
         );
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout + 5);
 
         $json_response = curl_exec($curl);
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
