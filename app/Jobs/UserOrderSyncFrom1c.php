@@ -18,6 +18,7 @@ class UserOrderSyncFrom1c implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 1;
+    public $timeout = 10;
 
     private $user, $document;
 
