@@ -255,7 +255,7 @@ class OrderSyncTo1c implements ShouldQueue
         $sendOrder['Плательщик']['Email_плательщика'] = $order->payer_email ?? '';
         $sendOrder['Плательщик']['Тип_плательщика'] = $order->payer->name ?? '';
 
-        $response1c = Api1CHelper::post('create_order', $sendOrder);
+        $response1c = Api1CHelper::post('create_order', $sendOrder, false, 5);
         if(
             $response1c['status'] == 200 &&
             $response1c['response']['status'] === 'success' &&
