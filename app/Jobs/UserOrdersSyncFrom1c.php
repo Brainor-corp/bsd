@@ -45,7 +45,9 @@ class UserOrdersSyncFrom1c implements ShouldQueue
             'orders',
             [
                 'user_id' => $user->guid,
-            ]
+            ],
+            false,
+            5
         );
 
         if($response1c['status'] == 200 && !empty($response1c['response']['documents'])) {

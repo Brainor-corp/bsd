@@ -5,13 +5,14 @@ namespace App\Http\Helpers;
 class Api1CHelper {
     private static $host = "http://s4.tkbsd.ru/1c/hs/rest/";
 
-    public static function post($action, $params, $headersNeed = false) {
+    public static function post($action, $params, $headersNeed = false, $timeout = 0) {
         $url = self::$host . $action;
         $content = json_encode($params);
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl, CURLOPT_USERPWD, env("1C_BASIC_USER") . ":" . env("1C_BASIC_PASSWORD"));
+        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
 
         if($headersNeed) {
             curl_setopt($curl, CURLOPT_HEADER, 1);

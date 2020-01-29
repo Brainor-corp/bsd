@@ -43,7 +43,9 @@ class UserSyncTo1c implements ShouldQueue
             [
                 'email' => $notSynchronizedUser->email,
                 'tel' => intval($notSynchronizedUser->phone) // Для Api важно, чтобы номер был цифрой
-            ]
+            ],
+            false,
+            5
         );
 
         if(
