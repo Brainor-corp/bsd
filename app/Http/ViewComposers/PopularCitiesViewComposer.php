@@ -14,9 +14,20 @@ use Illuminate\Contracts\View\View;
 class PopularCitiesViewComposer
 {
     public function compose(View $view) {
-        $popularCities = City::where('is_popular', true)
-            ->select('name', 'id')
-            ->get();
+        $slugs = [
+            'sankt-peterburg',
+            'moskva',
+            'rostov-na-donu',
+            'krasnodar',
+            'vladivostok',
+            'khabarovsk',
+            'chita',
+        ];
+
+        $popularCities = City::whereIn('slug', $slugs)->select('name', 'slug', 'id')->get();
+        $popularCities = $popularCities->sortBy(function ($city) use ($slugs) {
+            return array_search($city->slug, $slugs);
+        });
 
         $view->with(compact('popularCities'));
     }

@@ -102,10 +102,10 @@ class Cities extends Section
                         return $query->where('class', 'threshold_groups');
                     })
                     ->setDisplay('name'),
-                FormField::bselect('is_popular', 'Показывать в популярных городах')
-                    ->setHelpBlock("<small class='text-muted'>Популярные города выводятся в окне выбора города в шапке сайта</small>")
-                    ->setRequired(1)
-                    ->setOptions([0=>'Нет', 1=>'Да']),
+//                FormField::bselect('is_popular', 'Показывать в популярных городах')
+//                    ->setHelpBlock("<small class='text-muted'>Популярные города выводятся в окне выбора города в шапке сайта</small>")
+//                    ->setRequired(1)
+//                    ->setOptions([0=>'Нет', 1=>'Да']),
                 FormField::bselect('closest_terminal_id', 'Ближайший терминал')
                     ->setDataAttributes([
                         'data-live-search="true"'
