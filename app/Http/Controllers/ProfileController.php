@@ -11,23 +11,33 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Zeus\Admin\Cms\Models\ZeusAdminFile;
 
 class ProfileController extends Controller {
 
-    private $smsTimeLimit = 3; // минимальный период до повторной отправки сми (в минутах)
+    private $smsTimeLimit = 3; // минимальный период до повторной отправки смс (в минутах)
     protected $sendTimeLimitText = "Отправка повторного СМС на указанный номер будет доступна через: ";
 
     public function profileData() {
 	    $user = User::whereId(Auth::user()->id)->firstOrFail();
         $showPassResetMsg = null;
 
-    	if(isset($user) && $user->need_password_reset){
+        $urFile = ZeusAdminFile::whereHas('tags', function ($termsQ) {
+            return $termsQ->where('slug', 'registraciya-yur-lic');
+        })->first();
+
+        $fizFile = ZeusAdminFile::whereHas('tags', function ($termsQ) {
+            return $termsQ->where('slug', 'registraciya-fiz-lic');
+        })->first();
+
+    	if(isset($user) && $user->need_password_reset) {
     		$user->need_password_reset = false;
     		$user->update();
 		    $showPassResetMsg = true;
 	    }
 
-	    return view('v1.pages.profile.profile-data.profile-data')->with(compact('showPassResetMsg'));
+	    return view('v1.pages.profile.profile-data.profile-data')
+            ->with(compact('showPassResetMsg', 'urFile', 'fizFile'));
     }
 
     public function edit(Request $request) {

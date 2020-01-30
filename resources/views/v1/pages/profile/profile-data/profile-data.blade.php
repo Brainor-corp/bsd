@@ -89,11 +89,15 @@
                                         <input type="password" class="form-control form-group" name="password_confirmation" placeholder="Новый пароль ещё раз">
                                     </div>
                                 </div>
-                                <a href="/uploads/2020/1/28/Заявление_на_регистрацию_ЛК_(Юридической_лицо)_2020.docx">Письмо "О регистрации личного кабинета" (юридическое лицо)</a>
-                                <br>
-                                <br>
-                                <a href="/uploads/2019/11/21/Заявление_на_предоставление_услуги_Личный_кабинет_(физическое_лицо).docx">Письмо "О регистрации личного кабинета" (физическое лицо)</a>
-                                <br>
+                                @if($urFile)
+                                    <a href="{{ url($urFile->url) }}">Письмо "О регистрации личного кабинета" (юридическое лицо)</a>
+                                    <br>
+                                @endif
+                                @if($fizFile)
+                                    <br>
+                                    <a href="{{ url($fizFile->url) }}">Письмо "О регистрации личного кабинета" (физическое лицо)</a>
+                                    <br>
+                                @endif
                                 <button class="footer-btn btn margin-item btn-danger mx-0">Сохранить изменения</button>
                                 @csrf
                             </form>
