@@ -22,6 +22,8 @@ class PopularCitiesViewComposer
             'vladivostok',
             'khabarovsk',
             'chita',
+            'nizhniy-novgorod',
+            'kazan',
         ];
 
         $popularCities = City::whereIn('slug', $slugs)->select('name', 'slug', 'id')->get();
