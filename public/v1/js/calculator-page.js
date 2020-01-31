@@ -861,10 +861,81 @@ async function checkAddressInPolygon(address, polygon) {
         map.geoObjects.removeAll().add(polygon);
         map.geoObjects.add(newPoint);
 
-        let result = !!polygon.geometry.contains(newPoint.geometry.getCoordinates());
-
-        return result;
+        return !!polygon.geometry.contains(newPoint.geometry.getCoordinates());
     });
+}
+
+function createPolygon(coordinates) {
+    let findCoordinates = [];
+    let polygonCoordinates = coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
+    $(polygonCoordinates).each(function (pairKey, pairVal) {
+        pairVal = pairVal.replace(' ', '');
+        pairVal = pairVal.replace('[', '');
+        pairVal = pairVal.replace(']', '');
+        let parts = pairVal.split(',');
+        findCoordinates.push([
+            parseFloat(parts[0]),
+            parseFloat(parts[1])
+        ]);
+    });
+
+    return new ymaps.Polygon([findCoordinates]);
+}
+
+async function getDistanceOutsidePolygon(pointStart, address, polygon) {
+    ymaps.route([pointStart, address], {mapStateAutoApply: true})
+        .then(function (route) {
+            // Объединим в выборку все сегменты маршрута.
+            let pathsObjects = ymaps.geoQuery(route.getPaths()),
+                edges = [];
+
+            // Переберем все сегменты и разобьем их на отрезки.
+            pathsObjects.each(function (path) {
+                let coordinates = path.geometry.getCoordinates();
+                for (let i = 1, l = coordinates.length; i < l; i++) {
+                    edges.push({
+                        type: 'LineString',
+                        coordinates: [coordinates[i], coordinates[i - 1]]
+                    });
+                }
+            });
+
+
+            // Создадим новую выборку, содержащую:
+            // - отрезки, описываюшие маршрут;
+            // - начальную и конечную точки;
+            // - промежуточные точки.
+            let routeObjects = ymaps.geoQuery(edges)
+            //.add(route.getWayPoints())
+            //.add(route.getViaPoints())
+                .setOptions('strokeWidth', 3)
+                .addToMap(map);
+
+            // Найдем все объекты, попадающие внутрь полигона.
+            map.geoObjects.add(polygon);
+            let objectsInside = routeObjects.searchInside(polygon);
+
+            // Найдем объекты, пересекающие полигон.
+            let boundaryObjects = routeObjects.searchIntersect(polygon);
+            console.log(boundaryObjects);
+
+            objectsInside.setOptions({
+                strokeColor: '#06ff00',
+                //strokeColor: '#ff0005',
+                prouteet: 'twirl#greenIcon'
+            });
+
+            let distance = 0;
+            routeObjects.remove(objectsInside).setOptions({
+                strokeColor: '#0010ff',
+                prouteet: 'twirl#blueIcon'
+            }).each(function (item) {
+                distance += item.geometry.getDistance();
+            });
+
+            return Math.ceil(distance / 1000);
+        }
+    );
 }
 
 // Базовая функция просчета цены для "Забрать из" и "Доставить"
@@ -891,21 +962,8 @@ function calcTariffPrice(city, point, inCity) {
                 let polygonId = '';
 
                 for (const el of data) {
-                    let findCoordinates = [];
-                    let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
-                    $(polygonCoordinates).each(function (pairKey, pairVal) {
-                        pairVal = pairVal.replace(' ', '');
-                        pairVal = pairVal.replace('[', '');
-                        pairVal = pairVal.replace(']', '');
-                        let parts = pairVal.split(',');
-                        findCoordinates.push([
-                            parseFloat(parts[0]),
-                            parseFloat(parts[1])
-                        ]);
-                    });
-
                     let address = $("#" + point.attr('id')).val();
-                    let polygon =  new ymaps.Polygon([findCoordinates]);
+                    let polygon =  createPolygon(el.coordinates);
 
                     isInPolygon = await checkAddressInPolygon(address, polygon);
                     if(isInPolygon) {
@@ -930,7 +988,7 @@ function calcTariffPrice(city, point, inCity) {
                 // console.log(data);
             }
         });
-    } else { // В противном случае просчитываем километраж с помощью Яндекс api
+    } else { // Если работаем за пределами города
         if (!fullName) {
             getAllCalculatedData();
             return;
@@ -956,21 +1014,8 @@ function calcTariffPrice(city, point, inCity) {
                     let polygonId = '';
 
                     for (const el of data) {
-                        let findCoordinates = [];
-                        let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
-                        $(polygonCoordinates).each(function (pairKey, pairVal) {
-                            pairVal = pairVal.replace(' ', '');
-                            pairVal = pairVal.replace('[', '');
-                            pairVal = pairVal.replace(']', '');
-                            let parts = pairVal.split(',');
-                            findCoordinates.push([
-                                parseFloat(parts[0]),
-                                parseFloat(parts[1])
-                            ]);
-                        });
-
                         let address = $("#" + point.attr('id')).val();
-                        let polygon =  new ymaps.Polygon([findCoordinates]);
+                        let polygon =  createPolygon(el.coordinates);
 
                         isInPolygon = await checkAddressInPolygon(address, polygon);
                         if(isInPolygon) {
@@ -986,10 +1031,21 @@ function calcTariffPrice(city, point, inCity) {
                     let hiddenPolygonInput = $(hiddenPolygonInputClass);
 
                     if(isInPolygon) {
-
                         hiddenPolygonInput.val(polygonId);
-
                         getAllCalculatedData();
+                    } else if(data.length && !isInPolygon) {
+                        if(city.point !== undefined) {
+                            let el = data.pop();
+                            let polygon = createPolygon(el.coordinates);
+
+                            let distance = await getDistanceOutsidePolygon(city.point, fullName, polygon);
+                            console.log(distance);
+                            $(point.closest('.delivery-block')).find('.distance-hidden-input').val(distance);
+
+                            getAllCalculatedData();
+                        } else {
+                            getAllCalculatedData();
+                        }
                     } else {
                         hiddenPolygonInput.val(null);
                         if(city.point !== undefined) {
