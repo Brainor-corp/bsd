@@ -8,6 +8,7 @@ use App\CustomTag;
 use App\Jobs\SendReviewLeftMailToAdmin;
 use App\Review;
 use App\ReviewFile;
+use App\Rules\GoogleReCaptchaV2;
 use Bradmin\Cms\Models\BRTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -24,6 +25,7 @@ class ReviewsController extends Controller {
 
     public function saveReview(Request $request) {
         $validator = Validator::make($request->all(), [
+            'g-recaptcha-response' => ['required', new GoogleReCaptchaV2()],
             'author' => 'nullable|string|max:255',
             'phone' => 'required|string|max:20',
             'city' => 'required|exists:cities,id',
