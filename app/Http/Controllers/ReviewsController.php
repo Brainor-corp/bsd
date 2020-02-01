@@ -50,18 +50,20 @@ class ReviewsController extends Controller {
 
         $uploadFile = $request->file('review-file');
 
-        $file = new ReviewFile();
-        $storagePath = Storage::disk('available_public')->put('files/review-files', $uploadFile);
+        if(isset($uploadFile)) {
+            $file = new ReviewFile();
+            $storagePath = Storage::disk('available_public')->put('files/review-files', $uploadFile);
 
-        $file->name = $uploadFile->getClientOriginalName();
-        $file->mime = $uploadFile->getMimeType();
-        $file->extension = $uploadFile->getClientOriginalExtension();
-        $file->url = url($storagePath);
-        $file->path = Storage::disk('available_public')->path($storagePath);
-        $file->base_url = $storagePath;
-        $file->size = $uploadFile->getSize();
+            $file->name = $uploadFile->getClientOriginalName();
+            $file->mime = $uploadFile->getMimeType();
+            $file->extension = $uploadFile->getClientOriginalExtension();
+            $file->url = url($storagePath);
+            $file->path = Storage::disk('available_public')->path($storagePath);
+            $file->base_url = $storagePath;
+            $file->size = $uploadFile->getSize();
 
-        $review->file()->save($file);
+            $review->file()->save($file);
+        }
 
         foreach(ContactEmail::where('active', true)->get() as $email) {
             SendReviewLeftMailToAdmin::dispatch($email->email, $review);
