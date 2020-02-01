@@ -101,4 +101,15 @@ class OrderHelper {
 
         return $documentData;
     }
+
+    public static function getCounterpartyForms()
+    {
+        return [
+            'ООО',
+            'ПАО',
+            'ЗАО',
+            'АО',
+            'ИП',
+        ];
+    }
 }

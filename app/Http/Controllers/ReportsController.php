@@ -112,9 +112,10 @@ class ReportsController extends Controller
             ->firstOrFail();
 
         $userTypes = Type::where('class', 'UserType')->get();
+        $counterpartyForms = OrderHelper::getCounterpartyForms();
 
         return View::make('v1.pages.profile.profile-inner.report-show-page')
-            ->with(compact('order', 'userTypes'))
+            ->with(compact('order', 'userTypes', 'counterpartyForms'))
             ->render();
     }
 

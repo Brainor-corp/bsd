@@ -650,6 +650,27 @@ $(document).ready(function () {
     function updateRequiredInputs() {
         $('.req:hidden').removeAttr('required');
         $('.req:visible').attr('required', 'required');
+
+        if($('#sender_legal_form').val() === 'ИП') {
+            $('#sender_kpp').removeAttr('required');
+            $('label[for="sender_kpp"]').text('КПП');
+        } else {
+            $('label[for="sender_kpp"]').text('КПП*');
+        }
+
+        if($('#recipient_legal_form').val() === 'ИП') {
+            $('#recipient_kpp').removeAttr('required');
+            $('label[for="recipient_kpp"]').text('КПП');
+        } else {
+            $('label[for="recipient_kpp"]').text('КПП*');
+        }
+
+        if($('#payer_legal_form').val() === 'ИП') {
+            $('#payer_kpp').removeAttr('required');
+            $('label[for="payer_kpp"]').text('КПП');
+        } else {
+            $('label[for="payer_kpp"]').text('КПП*');
+        }
     }
 
     updateRequiredInputs();
@@ -712,6 +733,36 @@ $(document).ready(function () {
             $('.payer-forms .individual').slideUp('slow', function () {
                 updateRequiredInputs();
             });
+        }
+    });
+
+    $(document).on('change', '#sender_legal_form', function () {
+        if($('#sender_legal_form').val() === 'ИП') {
+            $('#sender_kpp').removeAttr('required');
+            $('label[for="sender_kpp"]').text('КПП');
+        } else {
+            $('#sender_kpp').attr('required', 'required');
+            $('label[for="sender_kpp"]').text('КПП*');
+        }
+    });
+
+    $(document).on('change', '#recipient_legal_form', function () {
+        if($('#recipient_legal_form').val() === 'ИП') {
+            $('#recipient_kpp').removeAttr('required');
+            $('label[for="recipient_kpp"]').text('КПП');
+        } else {
+            $('#recipient_kpp').attr('required', 'required');
+            $('label[for="recipient_kpp"]').text('КПП*');
+        }
+    });
+
+    $(document).on('change', '#payer_legal_form', function () {
+        if($('#payer_legal_form').val() === 'ИП') {
+            $('#payer_kpp').removeAttr('required');
+            $('label[for="payer_kpp"]').text('КПП');
+        } else {
+            $('#payer_kpp').attr('required', 'required');
+            $('label[for="payer_kpp"]').text('КПП*');
         }
     });
 
