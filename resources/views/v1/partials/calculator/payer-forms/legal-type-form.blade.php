@@ -1,7 +1,20 @@
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="payer_legal_form">Правовая форма*</label>
     <div class="col calc__inpgrp">
-        <input type="text" id="payer_legal_form" value="{{ old('payer_legal_form') ?? ($order->payer_legal_form ?? '') }}" name="payer_legal_form" class="form-control req" placeholder="ИП, ООО, АО" {{ isset($disabled) ? 'disabled' : 'required' }} />
+        <select name="payer_legal_form" id="payer_legal_form" class="form-control req" {{ isset($disabled) ? 'disabled' : 'required' }}>
+            @foreach($counterpartyForms as $counterpartyForm)
+                <option value="{{ $counterpartyForm }}"
+                        @if(!empty(old('payer_legal_form')))
+                            {{ old('payer_legal_form') == $counterpartyForm ? 'selected' : '' }}
+                        @elseif(!empty($order->payer_legal_form))
+                            {{ $order->payer_legal_form == $counterpartyForm ? 'selected' : '' }}
+                        @endif
+                >
+                    {{ $counterpartyForm }}
+                </option>
+            @endforeach
+        </select>
+{{--        <input type="text" id="payer_legal_form" value="{{ old('payer_legal_form') ?? ($order->payer_legal_form ?? '') }}" name="payer_legal_form" class="form-control req" placeholder="ИП, ООО, АО" {{ isset($disabled) ? 'disabled' : 'required' }} />--}}
     </div>
 </div>
 <div class="form-item row align-items-center">
