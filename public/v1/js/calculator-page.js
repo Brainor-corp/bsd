@@ -934,7 +934,9 @@ function createPolygon(coordinates) {
 }
 
 async function getDistanceOutsidePolygon(pointStart, address, polygon) {
-    ymaps.route([pointStart, address], {mapStateAutoApply: true})
+    let distance = 0;
+
+    await ymaps.route([pointStart, address], {mapStateAutoApply: true})
         .then(function (route) {
             // Объединим в выборку все сегменты маршрута.
             let pathsObjects = ymaps.geoQuery(route.getPaths()),
@@ -966,9 +968,8 @@ async function getDistanceOutsidePolygon(pointStart, address, polygon) {
             map.geoObjects.add(polygon);
             let objectsInside = routeObjects.searchInside(polygon);
 
-            // Найдем объекты, пересекающие полигон.
-            let boundaryObjects = routeObjects.searchIntersect(polygon);
-            console.log(boundaryObjects);
+            // // Найдем объекты, пересекающие полигон.
+            // let boundaryObjects = routeObjects.searchIntersect(polygon);
 
             objectsInside.setOptions({
                 strokeColor: '#06ff00',
@@ -976,17 +977,16 @@ async function getDistanceOutsidePolygon(pointStart, address, polygon) {
                 prouteet: 'twirl#greenIcon'
             });
 
-            let distance = 0;
             routeObjects.remove(objectsInside).setOptions({
                 strokeColor: '#0010ff',
                 prouteet: 'twirl#blueIcon'
             }).each(function (item) {
                 distance += item.geometry.getDistance();
             });
-
-            return Math.ceil(distance / 1000);
         }
     );
+
+    return Math.ceil(distance / 1000);
 }
 
 // Базовая функция просчета цены для "Забрать из" и "Доставить"
@@ -1028,9 +1028,22 @@ function calcTariffPrice(city, point, inCity) {
                     hiddenPolygonInputClass = '.bring-polygon-hidden-input';
                 }
                 let hiddenPolygonInput = $(hiddenPolygonInputClass);
+                hiddenPolygonInput.val(null);
 
                 if(isInPolygon) {
                     hiddenPolygonInput.val(polygonId);
+                } else if(data.length && !isInPolygon && fullName.length) {
+                    if(city.point !== undefined) {
+                        let el = data.pop();
+                        let polygon = createPolygon(el.coordinates);
+
+                        let distance = await getDistanceOutsidePolygon(city.point, fullName, polygon);
+                        $(point.closest('.delivery-block')).find('.distance-hidden-input').val(distance);
+
+                        getAllCalculatedData();
+                    } else {
+                        getAllCalculatedData();
+                    }
                 }
 
                 getAllCalculatedData();
@@ -1080,6 +1093,7 @@ function calcTariffPrice(city, point, inCity) {
                         hiddenPolygonInputClass = '.bring-polygon-hidden-input';
                     }
                     let hiddenPolygonInput = $(hiddenPolygonInputClass);
+                    hiddenPolygonInput.val(null);
 
                     if(isInPolygon) {
                         hiddenPolygonInput.val(polygonId);
@@ -1090,7 +1104,6 @@ function calcTariffPrice(city, point, inCity) {
                             let polygon = createPolygon(el.coordinates);
 
                             let distance = await getDistanceOutsidePolygon(city.point, fullName, polygon);
-                            console.log(distance);
                             $(point.closest('.delivery-block')).find('.distance-hidden-input').val(distance);
 
                             getAllCalculatedData();
@@ -1098,7 +1111,6 @@ function calcTariffPrice(city, point, inCity) {
                             getAllCalculatedData();
                         }
                     } else {
-                        hiddenPolygonInput.val(null);
                         if(city.point !== undefined) {
                             ymaps.route([city.point, fullName]).then(function (route) {
                                 // console.log('От: ' + city.point + ' До: ' + fullName + ' Дистанция: ' + Math.ceil(route.getLength() / 1000));
