@@ -72,6 +72,11 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::any('/shipment-search', 'OrderController@shipmentSearch')->name('shipment-search');
 
     Route::group(['middleware' => ['auth']], function () {
+        Route::group(['middleware' => ['admin']], function () {
+            Route::post('/admin/orders/resend/admin-email', 'Admin\OrdersController@resendAdminEmail')->name('admin-resend-admin-email');
+            Route::post('/admin/orders/resend/order-to-1c', 'Admin\OrdersController@resendTo1c')->name('admin-resend-order-to-1c');
+        });
+
         // Подтверждение регистрации по СМС
         Route::post('/phone-confirmation', 'ProfileController@phoneConfirm')->name('phone-confirmation');
         Route::any('/resend-phone-confirm-code', 'ProfileController@resendPhoneConfirmCode')->name('resend-phone-confirm-code');
@@ -107,7 +112,7 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
 
 
 //Route::get('/1c/test/new-user', 'Api1cTestController@newUser');
-Route::get('/1c/test/create-order', 'Api1cTestController@createOrder');
+//Route::get('/1c/test/create-order', 'Api1cTestController@createOrder');
 //Route::get('/1c/test/document-list', 'Api1cTestController@documentList');
 //Route::get('/1c/test/document/id', 'Api1cTestController@documentById');
 //Route::get('/1c/test/print_form', 'Api1cTestController@printForm');
