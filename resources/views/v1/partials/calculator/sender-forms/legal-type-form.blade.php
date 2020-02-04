@@ -1,14 +1,27 @@
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="sender_legal_form">Правовая форма*</label>
     <div class="col calc__inpgrp">
-        <input type="text"
-               id="sender_legal_form"
-               value="{{ old('sender_legal_form') ?? ($order->sender_legal_form ?? '') }}"
-               name="sender_legal_form"
-               class="form-control req"
-               placeholder="ИП, ООО, АО"
-               {{ isset($disabled) ? 'disabled' : 'required' }}
-        />
+{{--        <input type="text"--}}
+{{--               id="sender_legal_form"--}}
+{{--               value="{{ old('sender_legal_form') ?? ($order->sender_legal_form ?? '') }}"--}}
+{{--               name="sender_legal_form"--}}
+{{--               class="form-control req"--}}
+{{--               placeholder="ИП, ООО, АО"--}}
+{{--               {{ isset($disabled) ? 'disabled' : 'required' }}--}}
+{{--        />--}}
+        <select name="sender_legal_form" id="sender_legal_form" class="form-control req" {{ isset($disabled) ? 'disabled' : 'required' }}>
+            @foreach($counterpartyForms as $counterpartyForm)
+                <option value="{{ $counterpartyForm }}"
+                @if(!empty(old('sender_legal_form')))
+                    {{ old('sender_legal_form') == $counterpartyForm ? 'selected' : '' }}
+                    @elseif(!empty($order->sender_legal_form))
+                    {{ $order->sender_legal_form == $counterpartyForm ? 'selected' : '' }}
+                    @endif
+                >
+                    {{ $counterpartyForm }}
+                </option>
+            @endforeach
+        </select>
     </div>
 </div>
 <div class="form-item row align-items-center">

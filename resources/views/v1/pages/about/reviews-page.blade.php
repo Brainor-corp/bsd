@@ -19,6 +19,15 @@
                     <header class="wrapper__header">
                         <h1>Отзывы</h1>
                     </header>
+                    @if($errors->has('g-recaptcha-response'))
+                        <div class="row">
+                            <div class="col-md-8 col-12">
+                                <div class="alert alert-danger">
+                                    Подтвердите, что Вы не робот.
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     <div class="row">
                         <div class="col-md-8 col-12">
                             <div class="comments">
@@ -108,6 +117,11 @@
                                     <input id="review-files" type="file" hidden name="review-file">
                                     <div id="file-name-wrapper" class="text-danger"></div>
                                 </div>
+                                <div class="form-item row">
+                                    <div class="col-md-6">
+                                        <div class="g-recaptcha" data-sitekey="{{ env('V2_GOOGLE_CAPTCHA_KEY') }}"></div>
+                                    </div>
+                                </div>
                                 <div class="form-item d-flex">
                                     <button type="submit" class="btn btn-danger">Отправить отзыв</button>
                                 </div>
@@ -122,4 +136,5 @@
 
 @section('footScripts')
     <script src="{{ asset('v1/js/inner.js') }}"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endsection

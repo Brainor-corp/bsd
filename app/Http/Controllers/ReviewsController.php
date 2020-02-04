@@ -8,6 +8,7 @@ use App\CustomTag;
 use App\Jobs\SendReviewLeftMailToAdmin;
 use App\Review;
 use App\ReviewFile;
+use App\Rules\GoogleReCaptchaV2;
 use Bradmin\Cms\Models\BRTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -24,6 +25,7 @@ class ReviewsController extends Controller {
 
     public function saveReview(Request $request) {
         $validator = Validator::make($request->all(), [
+            'g-recaptcha-response' => ['required', new GoogleReCaptchaV2()],
             'author' => 'nullable|string|max:255',
             'phone' => 'required|string|max:20',
             'city' => 'required|exists:cities,id',
@@ -48,18 +50,20 @@ class ReviewsController extends Controller {
 
         $uploadFile = $request->file('review-file');
 
-        $file = new ReviewFile();
-        $storagePath = Storage::disk('available_public')->put('files/review-files', $uploadFile);
+        if(isset($uploadFile)) {
+            $file = new ReviewFile();
+            $storagePath = Storage::disk('available_public')->put('files/review-files', $uploadFile);
 
-        $file->name = $uploadFile->getClientOriginalName();
-        $file->mime = $uploadFile->getMimeType();
-        $file->extension = $uploadFile->getClientOriginalExtension();
-        $file->url = url($storagePath);
-        $file->path = Storage::disk('available_public')->path($storagePath);
-        $file->base_url = $storagePath;
-        $file->size = $uploadFile->getSize();
+            $file->name = $uploadFile->getClientOriginalName();
+            $file->mime = $uploadFile->getMimeType();
+            $file->extension = $uploadFile->getClientOriginalExtension();
+            $file->url = url($storagePath);
+            $file->path = Storage::disk('available_public')->path($storagePath);
+            $file->base_url = $storagePath;
+            $file->size = $uploadFile->getSize();
 
-        $review->file()->save($file);
+            $review->file()->save($file);
+        }
 
         foreach(ContactEmail::where('active', true)->get() as $email) {
             SendReviewLeftMailToAdmin::dispatch($email->email, $review);

@@ -267,7 +267,7 @@ class OrderSyncTo1c implements ShouldQueue
                 'send_error' => false
             ]);
         } else {
-            throw new \Exception(print_r($response1c, true));
+            $this->failed(new Exception());
         }
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\City;
 use App\Http\Helpers\CalculatorHelper;
+use App\Http\Helpers\OrderHelper;
 use App\Order;
 use App\Oversize;
 use App\OversizeMarkup;
@@ -218,6 +219,8 @@ class CalculatorController extends Controller
 
         $cargoTypes = Type::where('class', 'cargo_type')->get();
 
+        $counterpartyForms = OrderHelper::getCounterpartyForms();
+
         return view('v1.pages.calculator.calculator-show.calculator-show')
             ->with(compact(
                 'packages',
@@ -235,6 +238,7 @@ class CalculatorController extends Controller
                 'totalVolume',
                 'deliveryPoint',
                 'bringPoint',
+                'counterpartyForms',
                 'orderType'
             ));
 
