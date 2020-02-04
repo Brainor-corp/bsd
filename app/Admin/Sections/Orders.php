@@ -15,6 +15,7 @@ use Zeus\Admin\SectionBuilder\Filter\Types\BaseType\FilterType;
 use Zeus\Admin\SectionBuilder\Form\BaseForm\Form;
 use Zeus\Admin\SectionBuilder\Form\Panel\Columns\BaseColumn\FormColumn;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
+use Zeus\Admin\SectionBuilder\Meta\Meta;
 
 //use Illuminate\Support\Facades\Request;
 
@@ -65,14 +66,18 @@ class Orders extends Section {
             }
         ])->first() : null;
 
-//        $meta = new Meta;
-//        $meta->setScripts([
-//            'body' => [
-//                asset('v1/js/admin/orders.js')
-//            ]
-//        ]);
+        $meta = new Meta();
+        $meta->setScripts([
+            'body' => [
+                asset('v1/js/admin/orders.js')
+            ]
+        ]);
 
         $form = Form::panel([
+            FormColumn::column(
+                [FormField::custom(View::make('admin.orders.resend-buttons')->with(compact('order'))->render())],
+                'col-12'
+            ),
             FormColumn::column([
                 FormField::custom('<h4>Основное</h4><hr>'),
                 FormField::input('cargo_number', '№ ЭР'),
@@ -276,7 +281,7 @@ class Orders extends Section {
                 FormField::input('payer_legal_address_city', 'Город'),
                 FormField::input('payer_legal_address', 'Адрес'),
             ])
-        ]);
+        ])->setMeta($meta);
 
         return $form;
     }
