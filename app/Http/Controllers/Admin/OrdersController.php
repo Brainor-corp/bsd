@@ -32,7 +32,7 @@ class OrdersController extends Controller
 
     public function resendTo1c(Request $request)
     {
-        $order = Order::find($request->get('order_id'))->first();
+        $order = Order::find($request->get('order_id'));
 
         try {
             $sendOrder = OrderHelper::orderTo1cFormat($order);
