@@ -32,8 +32,6 @@ class Kernel extends ConsoleKernel
 
         $schedule->job(new UsersSyncTo1c())->everyMinute();
         $schedule->job(new UsersOrdersSyncFrom1c())->everyMinute();
-//        $schedule->job(new OrdersSyncTo1c())->everyMinute();
-//        $schedule->job(new SendOrdersPaymentStatusTo1c())->everyMinute();
     }
 
     /**

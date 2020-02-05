@@ -306,6 +306,7 @@ a:hover {
 	line-height:0;
 	width:22px;
 	height:30px;
+    z-index: 999;
 }
 .events-feed__item:hover{
 	background:#fcdfdc;
