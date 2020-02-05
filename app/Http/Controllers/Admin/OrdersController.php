@@ -21,7 +21,7 @@ class OrdersController extends Controller
 
         try {
             foreach($emails as $email) {
-                Mail::to($email->email)->send(new OrderCreated($order));
+                Mail::to($email->email)->send(new OrderCreated($order, $email->email));
             }
 
             return response('E-Mail успешно отправлен.', 200);
@@ -63,7 +63,7 @@ class OrdersController extends Controller
         $order = Order::find($request->get('order_id'));
 
         try {
-            Mail::to($request->get('email'))->send(new OrderCreated($order));
+            Mail::to($request->get('email'))->send(new OrderCreated($order, $request->get('email')));
 
             return response('E-Mail успешно отправлен.', 200);
         } catch (\Exception $e) {

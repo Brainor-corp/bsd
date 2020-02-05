@@ -38,7 +38,6 @@ class SendOrderCreatedMailToAdmin implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->recipient)->send(new OrderCreated($this->order));
-
+        Mail::to($this->recipient)->send(new OrderCreated($this->order, $this->recipient));
     }
 }

@@ -12,16 +12,18 @@ class OrderCreated extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private $order;
+    private $order, $recipient;
 
     /**
      * Create a new message instance.
      *
      * @param $order
+     * @param $recipient
      */
-    public function __construct($order)
+    public function __construct($order, $recipient)
     {
         $this->order = $order;
+        $this->recipient = $recipient;
     }
 
     /**
@@ -38,7 +40,8 @@ class OrderCreated extends Mailable
 
         $file = DocumentHelper::generateRequestDocument(
             $documentData,
-            $documentName
+            $documentName,
+            $this->recipient
         );
 
         return $this
