@@ -31,7 +31,7 @@
                             <td colspan="{{ $route->route_tariffs->where('rate.slug', 'ves')->count() }}">стоимость за 1кг руб.</td>
                         @endif
                         @if($route->route_tariffs->where('rate.slug', 'obem')->count() > 0)
-                            <td colspan="{{ $route->route_tariffs->where('rate.slug', 'obem')->count() }}">стоимость за 1м3 руб.</td>
+                            <td colspan="{{ $route->route_tariffs->where('rate.slug', 'obem')->count() }}">стоимость за 1м <sup>3</sup> руб.</td>
                         @endif
                         <td rowspan="{{ $rowSpan }}" class="align-middle">
                             <span>мин. срок доставки</span>
@@ -89,7 +89,7 @@
             <table class="table table-bordered text-center">
                 <thead>
                 <tr>
-                    <td class="align-middle">Город</td>
+                    <th class="align-middle">Габариты</th>
                     @foreach($insideForwardingsCities
                         ->sortBy('forwardThreshold.weight')
                         ->sortBy('forwardThreshold.volume') as $insideForwarding
@@ -102,7 +102,7 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <th class="align-middle">{{ $insideForwardingsCities->first()->city->name }}</th>
+                    <th class="align-middle">Стоимость (рубль)</th>
                     @foreach($insideForwardingsCities
                         ->sortBy('forwardThreshold.weight')
                         ->sortBy('forwardThreshold.volume') as $insideForwarding
@@ -112,6 +112,45 @@
                         </th>
                     @endforeach
                 </tr>
+                @if($insideForwardingsCities->sum('per_km_ag') !== 0)
+                    <tr>
+                        <th>Руб. 1км от АГ*</th>
+                        @foreach($insideForwardingsCities
+                            ->sortBy('forwardThreshold.weight')
+                            ->sortBy('forwardThreshold.volume') as $insideForwarding
+                        )
+                            <th class="align-middle">
+                                {{ $insideForwarding->per_km_ag ?? '-' }}
+                            </th>
+                        @endforeach
+                    </tr>
+                @endif
+                @if($insideForwardingsCities->sum('loading_unloading_minutes') !== 0)
+                    <tr>
+                        <th>Норматив времени погрузки/выгрузки (минуты)</th>
+                        @foreach($insideForwardingsCities
+                            ->sortBy('forwardThreshold.weight')
+                            ->sortBy('forwardThreshold.volume') as $insideForwarding
+                        )
+                            <th class="align-middle">
+                                {{ $insideForwarding->loading_unloading_minutes ?? '-' }}
+                            </th>
+                        @endforeach
+                    </tr>
+                @endif
+                @if($insideForwardingsCities->sum('car_overtime') !== 0)
+                    <tr>
+                        <th>Простой автомобиля свернормативного времени (руб/час)</th>
+                        @foreach($insideForwardingsCities
+                            ->sortBy('forwardThreshold.weight')
+                            ->sortBy('forwardThreshold.volume') as $insideForwarding
+                        )
+                            <th class="align-middle">
+                                {{ $insideForwarding->car_overtime ?? '-' }}
+                            </th>
+                        @endforeach
+                    </tr>
+                @endif
                 </tbody>
             </table>
         </div>
@@ -123,6 +162,10 @@
 <br>
 
 <div style="page-break-before: auto; page-break-inside: avoid;">
+    <p>
+        Примечания: <br>
+        *АГ - административная граница города.
+    </p>
     <h4 style="text-align: center;">
         Дополнительные услуги:
     </h4>
