@@ -16,7 +16,7 @@ class OrdersController extends Controller
 {
     public function resendAdminEmail(Request $request)
     {
-        $order = Order::find($request->get('order_id'))->first();
+        $order = Order::find($request->get('order_id'));
         $emails = ContactEmail::where('active', true)->get();
 
         try {
@@ -53,6 +53,19 @@ class OrdersController extends Controller
             } else {
                 return response('При отправке заявки в 1с возникла ошибка.', 500);
             }
+        } catch (\Exception $e) {
+            return response($e->getMessage(), 500);
+        }
+    }
+
+    public function resendToEmail(Request $request)
+    {
+        $order = Order::find($request->get('order_id'));
+
+        try {
+            Mail::to($request->get('email'))->send(new OrderCreated($order));
+
+            return response('E-Mail успешно отправлен.', 200);
         } catch (\Exception $e) {
             return response($e->getMessage(), 500);
         }

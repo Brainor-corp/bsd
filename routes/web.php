@@ -75,6 +75,7 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
         Route::group(['middleware' => ['admin']], function () {
             Route::post('/admin/orders/resend/admin-email', 'Admin\OrdersController@resendAdminEmail')->name('admin-resend-admin-email');
             Route::post('/admin/orders/resend/order-to-1c', 'Admin\OrdersController@resendTo1c')->name('admin-resend-order-to-1c');
+            Route::post('/admin/orders/resend/order-to-email', 'Admin\OrdersController@resendToEmail')->name('admin-resend-order-to-email');
         });
 
         // Подтверждение регистрации по СМС
