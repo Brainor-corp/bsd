@@ -137,7 +137,7 @@ class DocumentHelper
         ];
     }
 
-    public static function generateRequestDocument($documentData, $documentName)
+    public static function generateRequestDocument($documentData, $documentName, $recipient = '')
     {
         $documentName = str_replace('/', '.', $documentName);
 
@@ -155,7 +155,7 @@ class DocumentHelper
         $dompdf->render();
 
         $output = $dompdf->output();
-        $path = storage_path() . '/' . md5($documentName. time());;
+        $path = storage_path() . '/' . md5($documentName . $recipient . time());
         file_put_contents($path, $output);
 
         return [
