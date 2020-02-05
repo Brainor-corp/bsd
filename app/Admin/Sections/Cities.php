@@ -135,6 +135,24 @@ class Cities extends Section
                         ])
                         ->setType('number')
                         ->setRequired(true),
+                    FormField::input('per_km_ag', 'Руб. 1км от АГ')
+                        ->setType('number')
+                        ->setDataAttributes([
+                            'step=any',
+                            'min=0'
+                        ]),
+                    FormField::input('loading_unloading_minutes', 'Норматив времени погрузки/выгрузки (минуты)')
+                        ->setType('number')
+                        ->setDataAttributes([
+                            'step=any',
+                            'min=0'
+                        ]),
+                    FormField::input('car_overtime', 'Простой автомобиля свернормативного времени (руб/час)')
+                        ->setType('number')
+                        ->setDataAttributes([
+                            'step=any',
+                            'min=0'
+                        ]),
                 ]),
                 FormField::related('terminals', 'Терминалы', Terminal::class, [
                     FormField::input('name', 'Наименование')->setRequired(true),
