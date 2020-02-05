@@ -4,7 +4,7 @@
         <input type="hidden" name="order_id" value="{{ $order->id }}">
     @endif
     <input type="hidden" name="type" value="{{ $orderType }}">
-    <div id="hiddenMap" class="" style="height: 400px;"></div>
+    <div id="hiddenMap" class="d-none"></div>
     @if($errors->any())
         <div class="alert alert-danger">
             <ul>

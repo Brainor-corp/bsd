@@ -968,8 +968,8 @@ async function getDistanceOutsidePolygon(pointStart, address, polygon) {
             map.geoObjects.add(polygon);
             let objectsInside = routeObjects.searchInside(polygon);
 
-            // // Найдем объекты, пересекающие полигон.
-            // let boundaryObjects = routeObjects.searchIntersect(polygon);
+            // Найдем объекты, пересекающие полигон.
+            let boundaryObjects = routeObjects.searchIntersect(polygon);
 
             objectsInside.setOptions({
                 strokeColor: '#06ff00',
@@ -1037,7 +1037,8 @@ function calcTariffPrice(city, point, inCity) {
                         let el = data.pop();
                         let polygon = createPolygon(el.coordinates);
 
-                        let distance = await getDistanceOutsidePolygon(city.point, fullName, polygon);
+                        console.log(city);
+                        let distance = await getDistanceOutsidePolygon(city.value, fullName, polygon);
                         $(point.closest('.delivery-block')).find('.distance-hidden-input').val(distance);
 
                         getAllCalculatedData();
@@ -1103,7 +1104,8 @@ function calcTariffPrice(city, point, inCity) {
                             let el = data.pop();
                             let polygon = createPolygon(el.coordinates);
 
-                            let distance = await getDistanceOutsidePolygon(city.point, fullName, polygon);
+                            console.log(city);
+                            let distance = await getDistanceOutsidePolygon(city.value, fullName, polygon);
                             $(point.closest('.delivery-block')).find('.distance-hidden-input').val(distance);
 
                             getAllCalculatedData();
