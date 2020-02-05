@@ -938,11 +938,9 @@ async function getDistanceOutsidePolygon(pointStart, address, polygon) {
 
     await ymaps.route([pointStart, address], {mapStateAutoApply: true})
         .then(function (route) {
-            // Объединим в выборку все сегменты маршрута.
             let pathsObjects = ymaps.geoQuery(route.getPaths()),
                 edges = [];
 
-            // Переберем все сегменты и разобьем их на отрезки.
             pathsObjects.each(function (path) {
                 let coordinates = path.geometry.getCoordinates();
                 for (let i = 1, l = coordinates.length; i < l; i++) {
@@ -954,21 +952,13 @@ async function getDistanceOutsidePolygon(pointStart, address, polygon) {
             });
 
 
-            // Создадим новую выборку, содержащую:
-            // - отрезки, описываюшие маршрут;
-            // - начальную и конечную точки;
-            // - промежуточные точки.
             let routeObjects = ymaps.geoQuery(edges)
-            //.add(route.getWayPoints())
-            //.add(route.getViaPoints())
                 .setOptions('strokeWidth', 3)
                 .addToMap(map);
 
-            // Найдем все объекты, попадающие внутрь полигона.
             map.geoObjects.add(polygon);
             let objectsInside = routeObjects.searchInside(polygon);
 
-            // Найдем объекты, пересекающие полигон.
             let boundaryObjects = routeObjects.searchIntersect(polygon);
 
             objectsInside.setOptions({
