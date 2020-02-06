@@ -46,6 +46,10 @@ class UserOrderSyncFrom1c implements ShouldQueue
         $user = $this->user;
         $document = $this->document;
 
+        if(!Order::where('code_1c', $document['id'])->exists()) {
+            return;
+        }
+
         try {
             $response1c = \App\Http\Helpers\Api1CHelper::post(
                 'document/id',

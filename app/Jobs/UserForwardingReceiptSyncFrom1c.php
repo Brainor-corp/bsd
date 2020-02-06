@@ -42,6 +42,10 @@ class UserForwardingReceiptSyncFrom1c implements ShouldQueue
         $user = $this->user;
         $document = $this->document;
 
+        if(!ForwardingReceipt::where('code_1c', $document['id'])->exists()) {
+            return;
+        }
+
         $response1c = Api1CHelper::post(
             'document/id',
             [
