@@ -76,6 +76,17 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
             Route::post('/admin/orders/resend/admin-email', 'Admin\OrdersController@resendAdminEmail')->name('admin-resend-admin-email');
             Route::post('/admin/orders/resend/order-to-1c', 'Admin\OrdersController@resendTo1c')->name('admin-resend-order-to-1c');
             Route::post('/admin/orders/resend/order-to-email', 'Admin\OrdersController@resendToEmail')->name('admin-resend-order-to-email');
+
+            Route::get('/find-doubles', function () {
+                $forwardingReceipts = \App\Order::all()->pluck('code_1c')->toArray();
+
+                $result = [];
+                foreach($forwardingReceipts as $forwardingReceipt) {
+                    $result[$forwardingReceipt] = \App\Order::where('code_1c', $forwardingReceipt)->count();
+                }
+
+                dd($result);
+            });
         });
 
         // Подтверждение регистрации по СМС
