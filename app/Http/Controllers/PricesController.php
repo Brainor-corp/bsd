@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\City;
 use App\InsideForwarding;
+use App\PerKmTariff;
 use App\Route;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
@@ -36,6 +37,9 @@ class PricesController extends Controller {
             ->whereIn('city_id', array_merge($shipCityIds, $destCityIds))
             ->get();
 
+        $perKmTariffs = PerKmTariff::whereIn('tariff_zone_id', $insideForwardings->pluck('city.tariff_zone_id')->unique()->toArray())
+            ->get();
+
         $action = $request->get('action') ?? 'show';
 
         if($action == 'show') {
@@ -43,13 +47,22 @@ class PricesController extends Controller {
             $destCities = City::whereIn('id', Route::select(['dest_city_id'])->whereIn('ship_city_id', $shipCityIds))->get();
 
             return view('v1.pages.prices.prices-page')
-                ->with(compact('routes','insideForwardings', 'shipCities', 'destCities', 'shipCityIds', 'destCityIds'));
+                ->with(compact(
+                    'routes',
+                    'insideForwardings',
+                    'shipCities',
+                    'destCities',
+                    'shipCityIds',
+                    'destCityIds',
+                    'perKmTariffs'
+                ));
         } else {
             $pdf = PDF::loadView('v1.pages.prices.pdf', [
                 'routes' => $routes,
                 'insideForwardings' => $insideForwardings,
                 'shipCityIds' => $shipCityIds,
-                'destCityIds' => $destCityIds
+                'destCityIds' => $destCityIds,
+                'perKmTariffs' => $perKmTariffs
             ]);
             $pdf->setPaper('A4', 'landscape');
 
