@@ -14,7 +14,6 @@ class AddColumnsToInsideForwardingTable extends Migration
     public function up()
     {
         Schema::table('inside_forwarding', function (Blueprint $table) {
-            $table->string('per_km_ag')->nullable();
             $table->string('loading_unloading_minutes')->nullable();
             $table->string('car_overtime')->nullable();
         });
@@ -28,7 +27,6 @@ class AddColumnsToInsideForwardingTable extends Migration
     public function down()
     {
         Schema::table('inside_forwarding', function (Blueprint $table) {
-            $table->dropColumn('per_km_ag');
             $table->dropColumn('loading_unloading_minutes');
             $table->dropColumn('car_overtime');
         });

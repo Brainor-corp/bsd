@@ -135,12 +135,6 @@ class Cities extends Section
                         ])
                         ->setType('number')
                         ->setRequired(true),
-                    FormField::input('per_km_ag', 'Руб. 1км от АГ')
-                        ->setType('number')
-                        ->setDataAttributes([
-                            'step=any',
-                            'min=0'
-                        ]),
                     FormField::input('loading_unloading_minutes', 'Норматив времени погрузки/выгрузки (минуты)')
                         ->setType('number')
                         ->setDataAttributes([
