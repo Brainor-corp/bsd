@@ -47,10 +47,6 @@ class UserOrderSyncFrom1c implements ShouldQueue
         $document = $this->document;
 
         if(!Order::where('code_1c', $document['id'])->exists()) {
-            return;
-        }
-
-        try {
             $response1c = \App\Http\Helpers\Api1CHelper::post(
                 'document/id',
                 [
@@ -159,6 +155,6 @@ class UserOrderSyncFrom1c implements ShouldQueue
 
                 $order->order_items()->saveMany($packages);
             }
-        } catch (MaxAttemptsExceededException $e) {}
+        }
     }
 }
