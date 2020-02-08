@@ -17,6 +17,7 @@ class UserForwardingReceiptSyncFrom1c implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 1;
+    public $timeout = 10;
 
     private $user, $document;
 
@@ -53,7 +54,9 @@ class UserForwardingReceiptSyncFrom1c implements ShouldQueue
                 "document_id" => $document['id'],
                 "type" => 2,
                 "empty_fields" => true
-            ]
+            ],
+            false,
+            5
         );
 
         if($response1c['status'] == 200 && !empty($response1c['response'])) {
