@@ -38,7 +38,7 @@ return [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
-            'retry_after' => 86400, // Провалившаяся задача повторится через сутки
+            'retry_after' => 90,
         ],
 
         'beanstalkd' => [
