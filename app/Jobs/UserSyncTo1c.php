@@ -40,29 +40,27 @@ class UserSyncTo1c implements ShouldQueue
     {
         $notSynchronizedUser = $this->user;
 
-        try {
-            $response1c = Api1CHelper::post(
-                'new_user',
-                [
-                    'email' => $notSynchronizedUser->email,
-                    'tel' => intval($notSynchronizedUser->phone) // Для Api важно, чтобы номер был цифрой
-                ],
-                false,
-                5
-            );
+        $response1c = Api1CHelper::post(
+            'new_user',
+            [
+                'email' => $notSynchronizedUser->email,
+                'tel' => intval($notSynchronizedUser->phone) // Для Api важно, чтобы номер был цифрой
+            ],
+            false,
+            5
+        );
 
-            if(
-                $response1c['status'] == 200
-                && !empty($response1c['response']['id'])
-                && !empty($response1c['response']['status'])
-                && $response1c['response']['status'] === 'success'
-                && $response1c['response']['id'] !== 'not found'
-            ) {
-                DB::table('users')->where('id', $notSynchronizedUser->id)->update([
-                    'guid' => $response1c['response']['id'],
-                    'sync_need' => false
-                ]);
-            }
-        } catch (MaxAttemptsExceededException $e) {}
+        if(
+            $response1c['status'] == 200
+            && !empty($response1c['response']['id'])
+            && !empty($response1c['response']['status'])
+            && $response1c['response']['status'] === 'success'
+            && $response1c['response']['id'] !== 'not found'
+        ) {
+            DB::table('users')->where('id', $notSynchronizedUser->id)->update([
+                'guid' => $response1c['response']['id'],
+                'sync_need' => false
+            ]);
+        }
     }
 }
