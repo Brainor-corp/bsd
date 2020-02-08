@@ -8,7 +8,7 @@ class ForwardThreshold extends Model
 {
     protected $table = 'forward_thresholds';
     protected $fillable = [
-        'name', 'weight', 'volume', 'units', 'real_threshold',
+        'name', 'weight', 'volume', 'units', 'real_threshold', 'length', 'width', 'height'
     ];
 
     public function thresholdGroup()

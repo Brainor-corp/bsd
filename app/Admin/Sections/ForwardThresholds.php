@@ -16,7 +16,7 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 
 
 class ForwardThresholds extends Section {
-    protected $title = 'Предельные пороги';
+    protected $title = 'Пределы габаритов';
     protected $model = '\App\ForwardThreshold';
 
     protected $checkAccess = true;
@@ -29,6 +29,9 @@ class ForwardThresholds extends Section {
             Column::text('weight', 'Вес'),
             Column::text('volume', 'Обьем'),
             Column::text('units', 'Единиц'),
+            Column::text('length', 'Длина'),
+            Column::text('width', 'Ширина'),
+            Column::text('height', 'Высота'),
         ])
             ->setFilter([
                 null,
@@ -40,6 +43,9 @@ class ForwardThresholds extends Section {
                         $q->where('class', 'threshold_groups');
                     }),
                 FilterType::text('name', 'Название'),
+                null,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -57,11 +63,19 @@ class ForwardThresholds extends Section {
 
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('name', 'Название')->setRequired(true),
+                FormField::hidden('name')->setValue('-'),
+                FormField::input('name_params', 'Заголовок (объём/вес/кол-во)')
+                    ->setHelpBlock('<small class="text-muted">Отображается на странице прайс-листа в строке "габариты"</small>')
+                    ->setRequired(true),
+                FormField::input('name_dimensions', 'Заголовок (длина/ширина/высота)')
+                    ->setHelpBlock('<small class="text-muted">Отображается на странице прайс-листа в строке "максимальные габариты 1 места"</small>'),
                 FormField::input('weight', 'Вес')->setType('number')->setRequired(true),
                 FormField::input('volume', 'Обьем')->setType('number')->setRequired(true),
-                FormField::input('units', 'Едениц')->setType('number')->setRequired(true),
-                FormField::bselect('threshold_group_id', 'Группа отправных пунктов')
+                FormField::input('units', 'Единиц')->setType('number')->setRequired(true),
+                FormField::input('length', 'Длина')->setType('number'),
+                FormField::input('width', 'Ширина')->setType('number'),
+                FormField::input('height', 'Высота')->setType('number'),
+                FormField::bselect('threshold_group_id', 'Группа пределов')
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
@@ -75,5 +89,11 @@ class ForwardThresholds extends Section {
         ]);
 
         return $form;
+    }
+
+    public function afterSave(Request $request, $model = null)
+    {
+        $model->name = "$model->name_params, $model->name_dimensions";
+        $model->save();
     }
 }

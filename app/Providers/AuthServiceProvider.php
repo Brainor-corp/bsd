@@ -86,7 +86,6 @@ class AuthServiceProvider extends ServiceProvider
         Thresholds::class => DefaultSectionPolicy::class,
         Types::class => DefaultSectionPolicy::class,
         Users::class => DefaultSectionPolicy::class,
-        MaxPackageDimensions::class => DefaultSectionPolicy::class,
 
         // CMS
         ZeusAdminComments::class =>DefaultSectionPolicy::class,

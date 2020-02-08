@@ -95,12 +95,25 @@
                         ->sortBy('forwardThreshold.volume') as $insideForwarding
                     )
                         <td class="align-middle">
-                            {{ $loop->first ? $insideForwarding->forwardThreshold->name : str_replace('1-', 'До ', $insideForwarding->forwardThreshold->name) }}
+                            {{ $loop->first ? $insideForwarding->forwardThreshold->name_params : str_replace('1-', 'До ', $insideForwarding->forwardThreshold->name_params) }}
                         </td>
                     @endforeach
                 </tr>
                 </thead>
                 <tbody>
+                @if($insideForwardingsCities->where('forwardThreshold.name_dimensions')->count() > 0)
+                    <tr>
+                        <th class="align-middle">Максимальные габариты 1 места <br> длина, высота, в метрах</th>
+                        @foreach($insideForwardingsCities
+                            ->sortBy('forwardThreshold.weight')
+                            ->sortBy('forwardThreshold.volume') as $insideForwarding
+                        )
+                            <th class="align-middle">
+                                {{ $insideForwarding->forwardThreshold->name_dimensions ?? '-' }}
+                            </th>
+                        @endforeach
+                    </tr>
+                @endif
                 <tr>
                     <th class="align-middle">Стоимость (рубль)</th>
                     @foreach($insideForwardingsCities

@@ -87,6 +87,15 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
 
                 dd($result);
             });
+
+            Route::get('/rename-forward-thresholds', function () {
+                $forwardThresholds = \App\ForwardThreshold::get();
+
+                foreach($forwardThresholds as $forwardThreshold) {
+                    $forwardThreshold->name_params = $forwardThreshold->name;
+                    $forwardThreshold->save();
+                }
+            });
         });
 
         // Подтверждение регистрации по СМС

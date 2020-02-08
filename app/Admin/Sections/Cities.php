@@ -129,13 +129,6 @@ class Cities extends Section
                         ->setRequired(true)
                         ->setModelForOptions(ForwardThreshold::class)
                         ->setDisplay('name'),
-                    FormField::bselect('max_dimension_id', 'Макс. габариты места')
-                        ->setDataAttributes([
-                            'data-live-search="true"'
-                        ])
-                        ->setRequired(true)
-                        ->setModelForOptions(MaxPackageDimension::class)
-                        ->setDisplay('name'),
                     FormField::input('tariff', 'Тариф')
                         ->setDataAttributes([
                             'step=any',
