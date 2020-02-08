@@ -11,6 +11,7 @@ use App\Admin\Sections\Contacts;
 use App\Admin\Sections\Counterparties;
 use App\Admin\Sections\ForwardThresholds;
 use App\Admin\Sections\InsideForwarding;
+use App\Admin\Sections\MaxPackageDimensions;
 use App\Admin\Sections\News;
 use App\Admin\Sections\Notes;
 use App\Admin\Sections\Orders;
@@ -85,6 +86,7 @@ class AuthServiceProvider extends ServiceProvider
         Thresholds::class => DefaultSectionPolicy::class,
         Types::class => DefaultSectionPolicy::class,
         Users::class => DefaultSectionPolicy::class,
+        MaxPackageDimensions::class => DefaultSectionPolicy::class,
 
         // CMS
         ZeusAdminComments::class =>DefaultSectionPolicy::class,

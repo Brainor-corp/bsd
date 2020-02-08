@@ -8,7 +8,7 @@ class InsideForwarding extends Model
 {
     protected $table = 'inside_forwarding';
     protected $fillable = [
-        'city_id', 'forward_threshold_id', 'tariff'
+        'city_id', 'forward_threshold_id', 'tariff', 'max_dimension_id'
     ];
 
     public function city() {

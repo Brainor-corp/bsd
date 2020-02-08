@@ -68,6 +68,11 @@ class NavigationList
                         'text' => 'Маршрутные пределы'
                     ],
                     [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/MaxPackageDimensions',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Габариты места'
+                    ],
+                    [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Oversizes',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Группы негабаритов'

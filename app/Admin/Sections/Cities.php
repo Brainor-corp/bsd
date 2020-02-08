@@ -3,6 +3,7 @@
 namespace App\Admin\Sections;
 
 use App\ForwardThreshold;
+use App\MaxPackageDimension;
 use App\Region;
 use App\Terminal;
 use App\Type;
@@ -127,6 +128,13 @@ class Cities extends Section
                         ])
                         ->setRequired(true)
                         ->setModelForOptions(ForwardThreshold::class)
+                        ->setDisplay('name'),
+                    FormField::bselect('max_dimension_id', 'Макс. габариты места')
+                        ->setDataAttributes([
+                            'data-live-search="true"'
+                        ])
+                        ->setRequired(true)
+                        ->setModelForOptions(MaxPackageDimension::class)
                         ->setDisplay('name'),
                     FormField::input('tariff', 'Тариф')
                         ->setDataAttributes([

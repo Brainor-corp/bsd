@@ -8,7 +8,7 @@ class OutsideForwarding extends Model
 {
     protected $table = 'outside_forwardings';
     protected $fillable = [
-        'point', 'forward_threshold_id', 'tariff'
+        'point', 'forward_threshold_id', 'tariff', 'max_dimension_id'
     ];
 
 //    public function point()

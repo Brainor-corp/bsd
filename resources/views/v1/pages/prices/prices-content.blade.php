@@ -112,18 +112,8 @@
                         </th>
                     @endforeach
                 </tr>
-{{--                @if($insideForwardingsCities->sum('per_km_ag') !== 0)--}}
                     <tr>
                         <th>Руб. 1км от АГ*</th>
-{{--                        @foreach($insideForwardingsCities--}}
-{{--                            ->sortBy('forwardThreshold.weight')--}}
-{{--                            ->sortBy('forwardThreshold.volume') as $insideForwarding--}}
-{{--                        )--}}
-{{--                            <th class="align-middle">--}}
-{{--                                {{ $insideForwarding->per_km_ag ?? '-' }}--}}
-{{--                            </th>--}}
-{{--                        @endforeach--}}
-
                         @foreach($insideForwardingsCities
                             ->sortBy('forwardThreshold.weight')
                             ->sortBy('forwardThreshold.volume') as $insideForwarding
@@ -138,7 +128,6 @@
                             </th>
                         @endforeach
                     </tr>
-{{--                @endif--}}
                 @if($insideForwardingsCities->sum('loading_unloading_minutes') !== 0)
                     <tr>
                         <th>Норматив времени погрузки/выгрузки (минуты)</th>
