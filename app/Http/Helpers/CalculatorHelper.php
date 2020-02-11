@@ -324,6 +324,31 @@ class CalculatorHelper
         return $result;
     }
 
+    // Общий скоуп выборки тарифа по длине/ширине/высоте
+    private static function sizesTariffScope($q, $maxSizesPackage)
+    {
+        return $q
+            ->whereNotNull('forward_thresholds.height')
+            ->whereNotNull('forward_thresholds.length')
+            ->whereNotNull('forward_thresholds.width')
+            // Высота всегда известна
+            ->where('forward_thresholds.height', '>=', $maxSizesPackage['height'])
+            // но длина и ширина для клиента могут означать разные величины,
+            // поэтому пробуем найти по обоим
+            ->where(function ($subQ) use ($maxSizesPackage) {
+                return $subQ->where([
+                    ['forward_thresholds.length', '>=', $maxSizesPackage['length']],
+                    ['forward_thresholds.width', '>=', $maxSizesPackage['width']],
+                ])->orWhere([
+                    ['forward_thresholds.length', '>=', $maxSizesPackage['width']],
+                    ['forward_thresholds.width', '>=', $maxSizesPackage['length']],
+                ]);
+            })
+            ->orderBy('forward_thresholds.length', 'ASC')
+            ->orderBy('forward_thresholds.width', 'ASC')
+            ->orderBy('forward_thresholds.height', 'ASC');
+    }
+
     public static function getTariffPrice(
         $baseCityName,
         $cityName,
@@ -379,6 +404,8 @@ class CalculatorHelper
         $packagesCount = count($packages);
         if($packagesCount == 1){$packagesCount = 0;}
 
+        $maxSizesPackage = self::getMaxSizesPackage($packages);
+
         // Если город -- особый пункт
         $point_fixed_tariff = false;
         if($city instanceof Point) {
@@ -389,16 +416,41 @@ class CalculatorHelper
                 {
                     $join->on('outside_forwardings.forward_threshold_id', '=', 'forward_thresholds.id');
                 })
+                // По объёму/весу/кол-ву ищем в любом случае
                 ->where([
                     ['point', $city->id],
                     ['forward_thresholds.weight', '>=', floatval($weight)],
                     ['forward_thresholds.volume', '>=', floatval($volume)],
-                    ['forward_thresholds.units', '>=', $packagesCount],
+                    ['forward_thresholds.units', '>=', $packagesCount]
                 ])
                 ->orderBy('forward_thresholds.weight', 'ASC')
                 ->orderBy('forward_thresholds.volume', 'ASC')
                 ->orderBy('forward_thresholds.units', 'ASC')
+                // Если длина/ширина/высота известны, то пробуем найти с ними
+                ->when($maxSizesPackage, function ($q) use ($maxSizesPackage) {
+                    return self::sizesTariffScope($q, $maxSizesPackage);
+                })
                 ->first();
+
+            // Если не нашли тариф, пробуем найти его без учёта длины/высоты/ширины
+            if(!isset($point_fixed_tariff)) {
+                $point_fixed_tariff = DB::table('outside_forwardings')
+                    ->join('forward_thresholds', function($join)
+                    {
+                        $join->on('outside_forwardings.forward_threshold_id', '=', 'forward_thresholds.id');
+                    })
+                    // По объёму/весу/кол-ву ищем в любом случае
+                    ->where([
+                        ['point', $city->id],
+                        ['forward_thresholds.weight', '>=', floatval($weight)],
+                        ['forward_thresholds.volume', '>=', floatval($volume)],
+                        ['forward_thresholds.units', '>=', $packagesCount]
+                    ])
+                    ->orderBy('forward_thresholds.weight', 'ASC')
+                    ->orderBy('forward_thresholds.volume', 'ASC')
+                    ->orderBy('forward_thresholds.units', 'ASC')
+                    ->first();
+            }
 
             $point_fixed_tariff = $point_fixed_tariff->tariff ?? false;
 
@@ -411,6 +463,7 @@ class CalculatorHelper
             {
                 $join->on('inside_forwarding.forward_threshold_id', '=', 'forward_thresholds.id');
             })
+            // По объёму/весу/кол-ву ищем в любом случае
             ->where([
                 ['city_id', $city->id],
                 ['forward_thresholds.weight', '>=', floatval($weight)],
@@ -420,7 +473,30 @@ class CalculatorHelper
             ->orderBy('forward_thresholds.weight', 'ASC')
             ->orderBy('forward_thresholds.volume', 'ASC')
             ->orderBy('forward_thresholds.units', 'ASC')
+            // Если длина/ширина/высота известны, то пробуем найти с ними
+            ->when($maxSizesPackage, function ($q) use ($maxSizesPackage) {
+                return self::sizesTariffScope($q, $maxSizesPackage);
+            })
             ->first();
+
+        // Если не нашли тариф, пробуем найти его без учёта длины/высоты/ширины
+        if(!isset($fixed_tariff)) {
+            $fixed_tariff = DB::table('inside_forwarding')
+                ->join('forward_thresholds', function($join)
+                {
+                    $join->on('inside_forwarding.forward_threshold_id', '=', 'forward_thresholds.id');
+                })
+                ->where([
+                    ['city_id', $city->id],
+                    ['forward_thresholds.weight', '>=', floatval($weight)],
+                    ['forward_thresholds.volume', '>=', floatval($volume)],
+                    ['forward_thresholds.units', '>=', $packagesCount],
+                ])
+                ->orderBy('forward_thresholds.weight', 'ASC')
+                ->orderBy('forward_thresholds.volume', 'ASC')
+                ->orderBy('forward_thresholds.units', 'ASC')
+                ->first();
+        }
 
         $fixed_tariff = $fixed_tariff->tariff ?? false;
         if(!$fixed_tariff && $isWithinTheCity) {
@@ -496,7 +572,32 @@ class CalculatorHelper
             ->orderBy('forward_thresholds.weight', 'ASC')
             ->orderBy('forward_thresholds.volume', 'ASC')
             ->orderBy('forward_thresholds.units', 'ASC')
+            // Если длина/ширина/высота известны, то пробуем найти с ними
+            ->when($maxSizesPackage, function ($q) use ($maxSizesPackage) {
+                return self::sizesTariffScope($q, $maxSizesPackage);
+            })
             ->first();
+
+        // Если не нашли тариф, пробуем найти его без учёта длины/высоты/ширины
+        if(!isset($per_km_tariff)) {
+            $per_km_tariff = DB::table('per_km_tariffs')
+                ->join('cities', 'cities.tariff_zone_id', '=', 'per_km_tariffs.tariff_zone_id')
+                ->join('forward_thresholds', function($join)
+                {
+                    $join->on('forward_thresholds.id', '=', 'per_km_tariffs.forward_threshold_id');
+                    $join->on('forward_thresholds.threshold_group_id', '=', 'cities.threshold_group_id');
+                })
+                ->where([
+                    ['cities.id', $city->id],
+                    ['forward_thresholds.weight', '>=', floatval($weight)],
+                    ['forward_thresholds.volume', '>=', floatval($volume)],
+                    ['forward_thresholds.units', '>=', count($packages)],
+                ])
+                ->orderBy('forward_thresholds.weight', 'ASC')
+                ->orderBy('forward_thresholds.volume', 'ASC')
+                ->orderBy('forward_thresholds.units', 'ASC')
+                ->first();
+        }
 
         if(!$per_km_tariff) {
             return [
@@ -519,6 +620,31 @@ class CalculatorHelper
             'distance' => intval($distance),
             'price' => floatval($price)
         ];
+    }
+
+    /**
+     * Из массива пакетов возвращает составной пакет из максимальных размеров (длины/ширины/высоты)
+     *
+     * @param $packages
+     * @return array|bool
+     */
+    public static function getMaxSizesPackage($packages)
+    {
+        if(!isset($packages) || !is_array($packages) || count($packages) == 0) {
+            return false;
+        }
+
+        $result = [
+            'length' => max(array_column($packages, 'length')),
+            'width' => max(array_column($packages, 'width')),
+            'height' => max(array_column($packages, 'height'))
+        ];
+
+        if(!($result['length'] + $result['width'] + $result['height'])) {
+            return false;
+        }
+
+        return $result;
     }
 
     /**
