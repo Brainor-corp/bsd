@@ -446,6 +446,9 @@ class CalculatorHelper
                         ['forward_thresholds.volume', '>=', floatval($volume)],
                         ['forward_thresholds.units', '>=', $packagesCount]
                     ])
+                    ->whereNull('forward_thresholds.height')
+                    ->whereNull('forward_thresholds.length')
+                    ->whereNull('forward_thresholds.width')
                     ->orderBy('forward_thresholds.weight', 'ASC')
                     ->orderBy('forward_thresholds.volume', 'ASC')
                     ->orderBy('forward_thresholds.units', 'ASC')
@@ -492,6 +495,9 @@ class CalculatorHelper
                     ['forward_thresholds.volume', '>=', floatval($volume)],
                     ['forward_thresholds.units', '>=', $packagesCount],
                 ])
+                ->whereNull('forward_thresholds.height')
+                ->whereNull('forward_thresholds.length')
+                ->whereNull('forward_thresholds.width')
                 ->orderBy('forward_thresholds.weight', 'ASC')
                 ->orderBy('forward_thresholds.volume', 'ASC')
                 ->orderBy('forward_thresholds.units', 'ASC')
@@ -555,6 +561,13 @@ class CalculatorHelper
             ];
         }
 
+        $cityForwardThresholds = [];
+        foreach($city instanceOf City ? $city->insideForwarding : $city->outsideForwarding as $forwardingItem) {
+            $cityForwardThresholds[] = $forwardingItem->forwardThreshold->id;
+        }
+
+        $cityForwardThresholds = array_unique($cityForwardThresholds);
+
         // Если за пределами города, то ищем покилометровый тариф с учетом тарифной зоны города
         $per_km_tariff = DB::table('per_km_tariffs')
             ->join('cities', 'cities.tariff_zone_id', '=', 'per_km_tariffs.tariff_zone_id')
@@ -567,8 +580,9 @@ class CalculatorHelper
                 ['cities.id', $city->id],
                 ['forward_thresholds.weight', '>=', floatval($weight)],
                 ['forward_thresholds.volume', '>=', floatval($volume)],
-                ['forward_thresholds.units', '>=', count($packages)],
+                ['forward_thresholds.units', '>=', $packagesCount],
             ])
+            ->whereIn('forward_thresholds.id', $cityForwardThresholds)
             ->orderBy('forward_thresholds.weight', 'ASC')
             ->orderBy('forward_thresholds.volume', 'ASC')
             ->orderBy('forward_thresholds.units', 'ASC')
@@ -587,12 +601,16 @@ class CalculatorHelper
                     $join->on('forward_thresholds.id', '=', 'per_km_tariffs.forward_threshold_id');
                     $join->on('forward_thresholds.threshold_group_id', '=', 'cities.threshold_group_id');
                 })
+                ->whereNull('forward_thresholds.height')
+                ->whereNull('forward_thresholds.length')
+                ->whereNull('forward_thresholds.width')
                 ->where([
                     ['cities.id', $city->id],
                     ['forward_thresholds.weight', '>=', floatval($weight)],
                     ['forward_thresholds.volume', '>=', floatval($volume)],
-                    ['forward_thresholds.units', '>=', count($packages)],
+                    ['forward_thresholds.units', '>=', $packagesCount],
                 ])
+                ->whereIn('forward_thresholds.id', $cityForwardThresholds)
                 ->orderBy('forward_thresholds.weight', 'ASC')
                 ->orderBy('forward_thresholds.volume', 'ASC')
                 ->orderBy('forward_thresholds.units', 'ASC')

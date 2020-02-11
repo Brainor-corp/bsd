@@ -1027,7 +1027,7 @@ function calcTariffPrice(city, point, inCity) {
                         let el = data.pop();
                         let polygon = createPolygon(el.coordinates);
 
-                        console.log(city);
+                        // console.log(city);
                         let distance = await getDistanceOutsidePolygon(city.value, fullName, polygon);
                         $(point.closest('.delivery-block')).find('.distance-hidden-input').val(distance);
 
@@ -1094,7 +1094,7 @@ function calcTariffPrice(city, point, inCity) {
                             let el = data.pop();
                             let polygon = createPolygon(el.coordinates);
 
-                            console.log(city);
+                            // console.log(city);
                             let distance = await getDistanceOutsidePolygon(city.value, fullName, polygon);
                             $(point.closest('.delivery-block')).find('.distance-hidden-input').val(distance);
 

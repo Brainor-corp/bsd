@@ -69,12 +69,36 @@ class ForwardThresholds extends Section {
                     ->setRequired(true),
                 FormField::input('name_dimensions', 'Заголовок (длина/ширина/высота)')
                     ->setHelpBlock('<small class="text-muted">Отображается на странице прайс-листа в строке "максимальные габариты 1 места"</small>'),
-                FormField::input('weight', 'Вес')->setType('number')->setRequired(true),
-                FormField::input('volume', 'Обьем')->setType('number')->setRequired(true),
-                FormField::input('units', 'Единиц')->setType('number')->setRequired(true),
-                FormField::input('length', 'Длина')->setType('number'),
-                FormField::input('width', 'Ширина')->setType('number'),
-                FormField::input('height', 'Высота')->setType('number'),
+                FormField::input('weight', 'Вес')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])->setRequired(true),
+                FormField::input('volume', 'Обьем')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])->setRequired(true),
+                FormField::input('units', 'Единиц')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])->setRequired(true),
+                FormField::input('length', 'Длина')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ]),
+                FormField::input('width', 'Ширина')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ]),
+                FormField::input('height', 'Высота')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ]),
                 FormField::bselect('threshold_group_id', 'Группа пределов')
                     ->setDataAttributes([
                         'data-live-search="true"'
