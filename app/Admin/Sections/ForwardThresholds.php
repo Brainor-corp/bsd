@@ -64,11 +64,8 @@ class ForwardThresholds extends Section {
         $form = Form::panel([
             FormColumn::column([
                 FormField::hidden('name')->setValue('-'),
-                FormField::input('name_params', 'Заголовок (объём/вес/кол-во)')
-                    ->setHelpBlock('<small class="text-muted">Отображается на странице прайс-листа в строке "габариты"</small>')
-                    ->setRequired(true),
-                FormField::input('name_dimensions', 'Заголовок (длина/ширина/высота)')
-                    ->setHelpBlock('<small class="text-muted">Отображается на странице прайс-листа в строке "максимальные габариты 1 места"</small>'),
+                FormField::hidden('name_params')->setValue('-'),
+                FormField::hidden('name_dimensions')->setValue('-'),
                 FormField::input('weight', 'Вес')->setType('number')
                     ->setDataAttributes([
                         'step=any',
@@ -117,6 +114,8 @@ class ForwardThresholds extends Section {
 
     public function afterSave(Request $request, $model = null)
     {
+        $model->name_params = "До $model->weight кг, до $model->volume м3, до $model->units шт.";
+        $model->name_dimensions = "$model->length дл., $model->width шир., $model->height выс.";
         $model->name = "$model->name_params, $model->name_dimensions";
         $model->save();
     }
