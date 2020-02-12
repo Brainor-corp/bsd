@@ -3,10 +3,10 @@
 namespace App\Http\Helpers;
 
 class Api1CHelper {
-    private static $host = "http://s4.tkbsd.ru/1c/hs/rest/";
-
     public static function post($action, $params, $headersNeed = false, $timeout = 0) {
-        $url = self::$host . $action;
+        $host = env('1C_HOST');
+
+        $url = $host . $action;
         $content = json_encode($params);
 
         $curl = curl_init($url);
@@ -55,7 +55,9 @@ class Api1CHelper {
     }
 
     public static function get($action, $params) {
-        $url = self::$host . $action;
+        $host = env('1C_HOST');
+
+        $url = $host . $action;
 
         $paramsQuery = '';
         foreach($params as $key => $value) {
@@ -83,7 +85,9 @@ class Api1CHelper {
     }
 
     public static function getPdf($action, $params) {
-        $url = self::$host . $action;
+        $host = env('1C_HOST');
+
+        $url = $host . $action;
         $content = json_encode($params);
 
         $curlConnect = curl_init();
