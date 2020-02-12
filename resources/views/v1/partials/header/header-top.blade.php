@@ -29,7 +29,9 @@
                     </div>
                     <div>
                         <ul class="nav_top m-0 list-inline">
-                            @php($headerMenu = \Zeus\Admin\Cms\Helpers\MenuHelper::getMenuTreeBySlug('shapka-sayta'))
+                            @php
+                                $headerMenu = \Zeus\Admin\Cms\Helpers\MenuHelper::getMenuTreeBySlug('shapka-sayta');
+                            @endphp
                             @include('v1.partials.header.header-menu', ['nodeTree' => $headerMenu])
                         </ul>
                     </div>
@@ -155,3 +157,13 @@
         </div>
     </div>
 </nav>
+<div class="phones d-lg-none d-block">
+    @if(isset($closestTerminal->phone))
+        @php
+            $phones = preg_split("/(;|,)/", str_replace(' ', '', $closestTerminal->phone));
+        @endphp
+        @if(!empty($phones[0]))
+            <a href="tel:{{ $phones[0] }}">{{ $phones[0] }}</a>
+        @endif
+    @endif
+</div>

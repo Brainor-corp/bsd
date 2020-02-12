@@ -2248,7 +2248,7 @@ label.calc__label_max {
 		display:none;
 	}
 	.header__main_left{
-		margin-top:-50px
+		/*margin-top:-50px*/
 	}
 	.service .row-item,
 	.stock_list .row-item{
