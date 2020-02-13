@@ -1470,6 +1470,9 @@ ul.icons_list li:after {
 	.header__top_lk {
 		left:0;
 	}
+    .header-navbar {
+        margin-bottom: 40px;
+    }
 }
 /* /Header */
 
@@ -2248,7 +2251,7 @@ label.calc__label_max {
 		display:none;
 	}
 	.header__main_left{
-		margin-top:-50px
+		/*margin-top:-50px*/
 	}
 	.service .row-item,
 	.stock_list .row-item{
@@ -2526,7 +2529,8 @@ label.calc__label_max {
 		top:0;
 	}
 	.header__main_left h1,
-	.header__main_left p{
+	.header__main_left p,
+    .m-phone {
 		margin-left: 30px;
     	margin-right: 30px;
 	}
