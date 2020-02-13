@@ -157,13 +157,13 @@
         </div>
     </div>
 </nav>
-<div class="phones d-lg-none d-block">
+<h4 class="whiteTxtColor d-lg-none d-block mb-10"><i class="fa fa-phone"></i>
     @if(isset($closestTerminal->phone))
         @php
             $phones = preg_split("/(;|,)/", str_replace(' ', '', $closestTerminal->phone));
         @endphp
         @if(!empty($phones[0]))
-            <a href="tel:{{ $phones[0] }}">{{ $phones[0] }}</a>
+            <a href="tel:{{ $phones[0] }}" class="text-white">{{ $phones[0] }}</a>
         @endif
     @endif
-</div>
+</h4>

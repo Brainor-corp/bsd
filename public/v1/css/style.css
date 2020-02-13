@@ -1470,6 +1470,9 @@ ul.icons_list li:after {
 	.header__top_lk {
 		left:0;
 	}
+    .header-navbar {
+        margin-bottom: 40px;
+    }
 }
 /* /Header */
 
