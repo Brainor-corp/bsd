@@ -26,4 +26,23 @@ class ForwardThreshold extends Model
         return $this->hasOne(Type::class, 'id','threshold_group_id');
     }
 
+    public function getVolumeAttribute($value)
+    {
+        return $value + 0; // + 0 убирает лишние нули после запятой
+    }
+
+    public function getLengthAttribute($value)
+    {
+        return $value + 0; // + 0 убирает лишние нули после запятой
+    }
+
+    public function getWidthAttribute($value)
+    {
+        return $value + 0; // + 0 убирает лишние нули после запятой
+    }
+
+    public function getHeightAttribute($value)
+    {
+        return $value + 0; // + 0 убирает лишние нули после запятой
+    }
 }
