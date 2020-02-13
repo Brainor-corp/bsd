@@ -58,34 +58,42 @@ class OrderHelper {
             }
         }
 
-        switch($order->payer->name) {
-            case "Отправитель":
-                $documentData['Плательщик'] = $documentData['Грузоотправитель'] ?? '';
-                $documentData['ПлательщикИНН'] = $documentData['ГрузоотправительИНН'] ?? '';
-                $documentData['ПлательщикКПП'] = $documentData['ГрузоотправительКПП'] ?? '';
-                $documentData['ПлательщикТелефон'] = $documentData['ГрузоотправительТелефон'] ?? '';
-                $documentData['КонтактноеЛицоПлательщика'] = $documentData['КонтактноеЛицоГрузоотправителя'] ?? '';
-                break;
+        if(isset($order->payer)) {
+            switch($order->payer->name) {
+                case "Отправитель":
+                    $documentData['Плательщик'] = $documentData['Грузоотправитель'] ?? '';
+                    $documentData['ПлательщикИНН'] = $documentData['ГрузоотправительИНН'] ?? '';
+                    $documentData['ПлательщикКПП'] = $documentData['ГрузоотправительКПП'] ?? '';
+                    $documentData['ПлательщикТелефон'] = $documentData['ГрузоотправительТелефон'] ?? '';
+                    $documentData['КонтактноеЛицоПлательщика'] = $documentData['КонтактноеЛицоГрузоотправителя'] ?? '';
+                    break;
 
-            case "Получатель":
-                $documentData['Плательщик'] = $documentData['Грузополучатель'] ?? '';
-                $documentData['ПлательщикИНН'] = $documentData['ГрузополучательИНН'] ?? '';
-                $documentData['ПлательщикКПП'] = $documentData['ГрузополучательКПП'] ?? '';
-                $documentData['ПлательщикТелефон'] = $documentData['ГрузополучательТелефон'] ?? '';
-                $documentData['КонтактноеЛицоПлательщика'] = $documentData['КонтактноеЛицоГрузополучателя'] ?? '';
-                break;
+                case "Получатель":
+                    $documentData['Плательщик'] = $documentData['Грузополучатель'] ?? '';
+                    $documentData['ПлательщикИНН'] = $documentData['ГрузополучательИНН'] ?? '';
+                    $documentData['ПлательщикКПП'] = $documentData['ГрузополучательКПП'] ?? '';
+                    $documentData['ПлательщикТелефон'] = $documentData['ГрузополучательТелефон'] ?? '';
+                    $documentData['КонтактноеЛицоПлательщика'] = $documentData['КонтактноеЛицоГрузополучателя'] ?? '';
+                    break;
 
-            default:
-                if($order->payer_form_type->slug === 'fizicheskoe-lico') {
-                    $documentData['Плательщик'] = $order->payer_name ?? "";
-                } else {
-                    $documentData['Плательщик'] = "$order->payer_legal_form \"$order->payer_company_name\"";
-                    $documentData['ПлательщикИНН'] = $order->payer_inn;
-                    $documentData['ПлательщикКПП'] = $order->payer_kpp;
-                }
-                $documentData['ПлательщикТелефон'] = $order->payer_phone;
-                $documentData['КонтактноеЛицоПлательщика'] = $order->payer_contact_person;
-                break;
+                default:
+                    if($order->payer_form_type->slug === 'fizicheskoe-lico') {
+                        $documentData['Плательщик'] = $order->payer_name ?? "";
+                    } else {
+                        $documentData['Плательщик'] = "$order->payer_legal_form \"$order->payer_company_name\"";
+                        $documentData['ПлательщикИНН'] = $order->payer_inn;
+                        $documentData['ПлательщикКПП'] = $order->payer_kpp;
+                    }
+                    $documentData['ПлательщикТелефон'] = $order->payer_phone;
+                    $documentData['КонтактноеЛицоПлательщика'] = $order->payer_contact_person;
+                    break;
+            }
+        } else {
+            $documentData['Плательщик'] = '';
+            $documentData['ПлательщикИНН'] = '';
+            $documentData['ПлательщикКПП'] = '';
+            $documentData['ПлательщикТелефон'] = '';
+            $documentData['КонтактноеЛицоПлательщика'] = '';
         }
 
         foreach($order->order_items as $package) {
@@ -257,63 +265,65 @@ class OrderHelper {
             }
         }
 
-        switch($order->payer->name) {
-            case "Отправитель":
-                $sendOrder['Плательщик'] = [
-                    'Тип_контрагента' => $sendOrder['Отправитель']['Тип_контрагента'] ?? '',
-                    'Правовая_форма' => $sendOrder['Отправитель']['Правовая_форма'] ?? '',
-                    'Наименование' => $sendOrder['Отправитель']['Наименование'] ?? '',
-                    'Адрес' => $sendOrder['Отправитель']['Адрес'] ?? '',
-                    'ИНН' => $sendOrder['Отправитель']['ИНН'] ?? '',
-                    'КПП' => $sendOrder['Отправитель']['КПП'] ?? '',
-                    'Контактное_лицо' => $sendOrder['Отправитель']['Контактное_лицо'] ?? '',
-                    'Телефон' => $sendOrder['Отправитель']['Телефон'] ?? '',
-                    'Дополнительная_информация' => $sendOrder['Отправитель']['Дополнительная_информация'] ?? '',
-                    'Серия_паспорта' => $sendOrder['Отправитель']['Серия_паспорта'] ?? '',
-                    'Номер_паспорта' => $sendOrder['Отправитель']['Номер_паспорта'] ?? '',
-                ];
-                break;
+        if(isset($order->payer)) {
+            switch($order->payer->name) {
+                case "Отправитель":
+                    $sendOrder['Плательщик'] = [
+                        'Тип_контрагента' => $sendOrder['Отправитель']['Тип_контрагента'] ?? '',
+                        'Правовая_форма' => $sendOrder['Отправитель']['Правовая_форма'] ?? '',
+                        'Наименование' => $sendOrder['Отправитель']['Наименование'] ?? '',
+                        'Адрес' => $sendOrder['Отправитель']['Адрес'] ?? '',
+                        'ИНН' => $sendOrder['Отправитель']['ИНН'] ?? '',
+                        'КПП' => $sendOrder['Отправитель']['КПП'] ?? '',
+                        'Контактное_лицо' => $sendOrder['Отправитель']['Контактное_лицо'] ?? '',
+                        'Телефон' => $sendOrder['Отправитель']['Телефон'] ?? '',
+                        'Дополнительная_информация' => $sendOrder['Отправитель']['Дополнительная_информация'] ?? '',
+                        'Серия_паспорта' => $sendOrder['Отправитель']['Серия_паспорта'] ?? '',
+                        'Номер_паспорта' => $sendOrder['Отправитель']['Номер_паспорта'] ?? '',
+                    ];
+                    break;
 
-            case "Получатель":
-                $sendOrder['Плательщик'] = [
-                    'Тип_контрагента' => $sendOrder['Получатель']['Тип_контрагента'] ?? '',
-                    'Правовая_форма' => $sendOrder['Получатель']['Правовая_форма'] ?? '',
-                    'Наименование' => $sendOrder['Получатель']['Наименование'] ?? '',
-                    'Адрес' => $sendOrder['Получатель']['Адрес'] ?? '',
-                    'ИНН' => $sendOrder['Получатель']['ИНН'] ?? '',
-                    'КПП' => $sendOrder['Получатель']['КПП'] ?? '',
-                    'Контактное_лицо' => $sendOrder['Получатель']['Контактное_лицо'] ?? '',
-                    'Телефон' => $sendOrder['Получатель']['Телефон'] ?? '',
-                    'Дополнительная_информация' => $sendOrder['Получатель']['Дополнительная_информация'] ?? '',
-                    'Серия_паспорта' => $sendOrder['Получатель']['Серия_паспорта'] ?? '',
-                    'Номер_паспорта' => $sendOrder['Получатель']['Номер_паспорта'] ?? '',
-                ];
-                break;
+                case "Получатель":
+                    $sendOrder['Плательщик'] = [
+                        'Тип_контрагента' => $sendOrder['Получатель']['Тип_контрагента'] ?? '',
+                        'Правовая_форма' => $sendOrder['Получатель']['Правовая_форма'] ?? '',
+                        'Наименование' => $sendOrder['Получатель']['Наименование'] ?? '',
+                        'Адрес' => $sendOrder['Получатель']['Адрес'] ?? '',
+                        'ИНН' => $sendOrder['Получатель']['ИНН'] ?? '',
+                        'КПП' => $sendOrder['Получатель']['КПП'] ?? '',
+                        'Контактное_лицо' => $sendOrder['Получатель']['Контактное_лицо'] ?? '',
+                        'Телефон' => $sendOrder['Получатель']['Телефон'] ?? '',
+                        'Дополнительная_информация' => $sendOrder['Получатель']['Дополнительная_информация'] ?? '',
+                        'Серия_паспорта' => $sendOrder['Получатель']['Серия_паспорта'] ?? '',
+                        'Номер_паспорта' => $sendOrder['Получатель']['Номер_паспорта'] ?? '',
+                    ];
+                    break;
 
-            default:
-                $sendOrder['Плательщик'] = [
-                    'Тип_контрагента' => $order->payer_form_type->name ?? '',
-                    'Правовая_форма' => $order->payer_legal_form ?? "",
-                    'Наименование' => "---",
-                    'Адрес' => [
-                        'Город' => $order->payer_legal_address_city ?? "",
-                        'Адрес' => $order->payer_legal_address ?? ""
-                    ],
-                    'ИНН' => strlen($order->payer_inn) >= 0 && strlen($order->payer_inn) <= 12 ? strval($order->payer_inn) : "",
-                    'КПП' => strlen($order->payer_kpp) >= 0 && strlen($order->payer_kpp) <= 9 ? strval($order->payer_kpp) : "",
-                    'Контактное_лицо' => $order->payer_contact_person ?? "",
-                    'Телефон' => strlen($order->payer_phone) >= 0 && strlen($order->payer_phone) <= 11 ? strval($order->payer_phone) : "",
-                    'Дополнительная_информация' => $order->payer_addition_info ?? "",
-                    'Серия_паспорта' => strlen($order->payer_passport_series) >= 0 && strlen($order->payer_passport_series) <= 4 ? strval($order->payer_passport_series) : "",
-                    'Номер_паспорта' => strlen($order->payer_passport_number) >= 0 && strlen($order->payer_passport_number) <= 6 ? strval($order->payer_passport_number) : "",
-                ];
+                default:
+                    $sendOrder['Плательщик'] = [
+                        'Тип_контрагента' => $order->payer_form_type->name ?? '',
+                        'Правовая_форма' => $order->payer_legal_form ?? "",
+                        'Наименование' => "---",
+                        'Адрес' => [
+                            'Город' => $order->payer_legal_address_city ?? "",
+                            'Адрес' => $order->payer_legal_address ?? ""
+                        ],
+                        'ИНН' => strlen($order->payer_inn) >= 0 && strlen($order->payer_inn) <= 12 ? strval($order->payer_inn) : "",
+                        'КПП' => strlen($order->payer_kpp) >= 0 && strlen($order->payer_kpp) <= 9 ? strval($order->payer_kpp) : "",
+                        'Контактное_лицо' => $order->payer_contact_person ?? "",
+                        'Телефон' => strlen($order->payer_phone) >= 0 && strlen($order->payer_phone) <= 11 ? strval($order->payer_phone) : "",
+                        'Дополнительная_информация' => $order->payer_addition_info ?? "",
+                        'Серия_паспорта' => strlen($order->payer_passport_series) >= 0 && strlen($order->payer_passport_series) <= 4 ? strval($order->payer_passport_series) : "",
+                        'Номер_паспорта' => strlen($order->payer_passport_number) >= 0 && strlen($order->payer_passport_number) <= 6 ? strval($order->payer_passport_number) : "",
+                    ];
 
-                if($order->payer_form_type->slug === 'fizicheskoe-lico') {
-                    $sendOrder['Плательщик']['Наименование'] = $order->payer_name ?? "";
-                } else {
-                    $sendOrder['Плательщик']['Наименование'] = strlen($order->payer_company_name) >= 3 ? $order->payer_company_name : "---";
-                }
-                break;
+                    if($order->payer_form_type->slug === 'fizicheskoe-lico') {
+                        $sendOrder['Плательщик']['Наименование'] = $order->payer_name ?? "";
+                    } else {
+                        $sendOrder['Плательщик']['Наименование'] = strlen($order->payer_company_name) >= 3 ? $order->payer_company_name : "---";
+                    }
+                    break;
+            }
         }
 
         $sendOrder['Плательщик']['Email_плательщика'] = $order->payer_email ?? '';

@@ -402,10 +402,9 @@ class CalculatorHelper
         }
 
         $packagesCount = 0;
-        foreach($packages as $package) {
-            $packagesCount += $package['quantity'];
+        if(is_array($packages)) {
+            $packagesCount = array_sum(array_column($packages, 'quantity'));
         }
-//        if($packagesCount == 1){$packagesCount = 0;}
 
         $maxSizesPackage = self::getMaxSizesPackage($packages);
 
