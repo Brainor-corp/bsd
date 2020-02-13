@@ -376,8 +376,10 @@ class CalculatorHelper
             }
         }
 
-        $packagesCount = count($packages);
-        if($packagesCount == 1){$packagesCount = 0;}
+        $packagesCount = 0;
+        if(is_array($packages)) {
+            $packagesCount = array_sum(array_column($packages, 'quantity'));
+        }
 
         // Если город -- особый пункт
         $point_fixed_tariff = false;
@@ -491,7 +493,7 @@ class CalculatorHelper
                 ['cities.id', $city->id],
                 ['forward_thresholds.weight', '>=', floatval($weight)],
                 ['forward_thresholds.volume', '>=', floatval($volume)],
-                ['forward_thresholds.units', '>=', count($packages)],
+                ['forward_thresholds.units', '>=', $packagesCount],
             ])
             ->orderBy('forward_thresholds.weight', 'ASC')
             ->orderBy('forward_thresholds.volume', 'ASC')
