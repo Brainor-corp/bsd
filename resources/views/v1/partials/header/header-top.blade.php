@@ -157,9 +157,9 @@
         </div>
     </div>
 </nav>
-<div class="row mb-4">
+<div class="row">
     <div class="col-12 header__main_left">
-        <h4 class="whiteTxtColor d-lg-none d-block mb-10 m-phone">
+        <h4 class="whiteTxtColor d-lg-none d-block mb-4 m-phone">
             <i class="fa fa-phone"></i>
             @if(isset($closestTerminal->phone))
                 @php
