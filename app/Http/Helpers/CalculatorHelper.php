@@ -239,6 +239,9 @@ class CalculatorHelper
                     $totalPrice = 'договорная';
                 }
             }
+        }
+
+        if(is_numeric($totalPrice)) {
             if(isset($bring_price)) {
                 if(is_numeric($bring_price)) {
                     $totalPrice += floatval($bring_price);
