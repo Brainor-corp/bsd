@@ -11,6 +11,7 @@ use App\Admin\Sections\Contacts;
 use App\Admin\Sections\Counterparties;
 use App\Admin\Sections\ForwardThresholds;
 use App\Admin\Sections\InsideForwarding;
+use App\Admin\Sections\MaxPackageDimensions;
 use App\Admin\Sections\News;
 use App\Admin\Sections\Notes;
 use App\Admin\Sections\Orders;

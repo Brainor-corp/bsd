@@ -3,6 +3,7 @@
 namespace App\Admin\Sections;
 
 use App\ForwardThreshold;
+use App\MaxPackageDimension;
 use App\Region;
 use App\Terminal;
 use App\Type;

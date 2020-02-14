@@ -68,6 +68,11 @@ class NavigationList
                         'text' => 'Маршрутные пределы'
                     ],
                     [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/ForwardThresholds',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Пределы габаритов'
+                    ],
+                    [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Oversizes',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Группы негабаритов'
@@ -138,11 +143,6 @@ class NavigationList
                         'icon' => 'fas fa-address-book',
                         'text' => 'Терминалы'
                     ],
-//                    [
-//                        'url' => '/' . config('zeusAdmin.admin_url') . '/ForwardThresholds',
-//                        'icon' => 'fas fa-address-book',
-//                        'text' => 'Предельные пороги'
-//                    ],
 //                    [
 //                        'url' => '/' . config('zeusAdmin.admin_url') . '/InsideForwarding',
 //                        'icon' => 'fas fa-address-book',

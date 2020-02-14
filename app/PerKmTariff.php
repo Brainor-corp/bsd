@@ -8,7 +8,7 @@ class PerKmTariff extends Model
 {
     protected $table = 'per_km_tariffs';
     protected $fillable = [
-        'tariff', 'forward_threshold_id', 'tariff_zone_id'
+        'tariff', 'forward_threshold_id', 'tariff_zone_id', 'max_dimension_id'
     ];
 
     public function forwardThreshold()
