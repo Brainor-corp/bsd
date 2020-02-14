@@ -406,7 +406,7 @@ $(document).ready(function () {
         totalWeigthRecount();
         totalVolumeRecount();
 
-        getAllCalculatedData();
+        // getAllCalculatedData();
     });
 
     // Включение и отключение инпутов для забора и доставки груза //////////
@@ -845,13 +845,19 @@ $(document).ready(function () {
     })
 });
 
+let getAllCalculatedDataAjax = false;
+
 function getAllCalculatedData() {
+    if(getAllCalculatedDataAjax) {
+        getAllCalculatedDataAjax.abort();
+    }
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    $.ajax({
+    getAllCalculatedDataAjax = $.ajax({
         type: 'post',
         url: '/api/calculator/get-all-calculated',
         data: $('.calculator-form').serialize(),
@@ -874,7 +880,7 @@ function totalVolumeRecount() {
     let totalVolume = 0;
     $.each($(".package-volume"), function(index, item) {
         var curAmount = parseFloat($(item).prev('.input-group').find( ".package-quantity" ).val());
-        if(isNaN(curAmount)){curAmount = 1;}
+        if(isNaN(curAmount)){curAmount = 0;}
 
         var curVolume = parseFloat($(item).val().replace(',', '.').toString()) * curAmount;
         totalVolume += curVolume;
@@ -1027,7 +1033,7 @@ function calcTariffPrice(city, point, inCity) {
                         let el = data.pop();
                         let polygon = createPolygon(el.coordinates);
 
-                        console.log(city);
+                        // console.log(city);
                         let distance = await getDistanceOutsidePolygon(city.value, fullName, polygon);
                         $(point.closest('.delivery-block')).find('.distance-hidden-input').val(distance);
 
@@ -1094,7 +1100,7 @@ function calcTariffPrice(city, point, inCity) {
                             let el = data.pop();
                             let polygon = createPolygon(el.coordinates);
 
-                            console.log(city);
+                            // console.log(city);
                             let distance = await getDistanceOutsidePolygon(city.value, fullName, polygon);
                             $(point.closest('.delivery-block')).find('.distance-hidden-input').val(distance);
 

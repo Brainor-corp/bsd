@@ -87,20 +87,53 @@
         <h4 style="text-align: center;">Стоимость экспедирования в черте города {{ $insideForwardingsCities->first()->city->name }}</h4>
         <div class="table-responsive mb-3">
             <table class="table table-bordered text-center">
-                <thead>
-                <tr>
-                    <th class="align-middle">Габариты</th>
+                <tbody>
+                <tr class="bg-light">
+                    <th>Вес (кг)</th>
                     @foreach($insideForwardingsCities
-                        ->sortBy('forwardThreshold.weight')
-                        ->sortBy('forwardThreshold.volume') as $insideForwarding
-                    )
-                        <td class="align-middle">
-                            {{ $loop->first ? $insideForwarding->forwardThreshold->name : str_replace('1-', 'До ', $insideForwarding->forwardThreshold->name) }}
-                        </td>
+                            ->sortBy('forwardThreshold.weight')
+                            ->sortBy('forwardThreshold.volume') as $insideForwarding
+                        )
+                        <th class="align-middle">
+                            <span>&lt;</span>{{ $insideForwarding->forwardThreshold->weight ?? '-' }}
+                        </th>
                     @endforeach
                 </tr>
-                </thead>
-                <tbody>
+                <tr class="bg-light">
+                    <th>Объём (м<sup>3</sup>)</th>
+                    @foreach($insideForwardingsCities
+                            ->sortBy('forwardThreshold.weight')
+                            ->sortBy('forwardThreshold.volume') as $insideForwarding
+                        )
+                        <th class="align-middle">
+                            <span>&lt;</span>{{ $insideForwarding->forwardThreshold->volume ?? '-' }}
+                        </th>
+                    @endforeach
+                </tr>
+                <tr class="bg-light">
+                    <th>Кол-во паллет/мест</th>
+                    @foreach($insideForwardingsCities
+                            ->sortBy('forwardThreshold.weight')
+                            ->sortBy('forwardThreshold.volume') as $insideForwarding
+                        )
+                        <th class="align-middle">
+                            <span>&lt;</span>{{ $insideForwarding->forwardThreshold->units ?? '-' }}
+                        </th>
+                    @endforeach
+                </tr>
+                @if($insideForwardingsCities->where('forwardThreshold.name_dimensions')->count() > 0)
+                    <tr>
+                        <th class="align-middle">Максимальные габариты 1 места <br> длина, высота, в метрах</th>
+                        @foreach($insideForwardingsCities
+                            ->sortBy('forwardThreshold.weight')
+                            ->sortBy('forwardThreshold.volume') as $insideForwarding
+                        )
+                            <th class="align-middle">
+                                {{ $insideForwarding->forwardThreshold->name_dimensions ?? '-' }}
+                            </th>
+                        @endforeach
+                    </tr>
+                @endif
                 <tr>
                     <th class="align-middle">Стоимость (рубль)</th>
                     @foreach($insideForwardingsCities
@@ -112,18 +145,8 @@
                         </th>
                     @endforeach
                 </tr>
-{{--                @if($insideForwardingsCities->sum('per_km_ag') !== 0)--}}
                     <tr>
                         <th>Руб. 1км от АГ*</th>
-{{--                        @foreach($insideForwardingsCities--}}
-{{--                            ->sortBy('forwardThreshold.weight')--}}
-{{--                            ->sortBy('forwardThreshold.volume') as $insideForwarding--}}
-{{--                        )--}}
-{{--                            <th class="align-middle">--}}
-{{--                                {{ $insideForwarding->per_km_ag ?? '-' }}--}}
-{{--                            </th>--}}
-{{--                        @endforeach--}}
-
                         @foreach($insideForwardingsCities
                             ->sortBy('forwardThreshold.weight')
                             ->sortBy('forwardThreshold.volume') as $insideForwarding
@@ -138,7 +161,6 @@
                             </th>
                         @endforeach
                     </tr>
-{{--                @endif--}}
                 @if($insideForwardingsCities->sum('loading_unloading_minutes') !== 0)
                     <tr>
                         <th>Норматив времени погрузки/выгрузки (минуты)</th>

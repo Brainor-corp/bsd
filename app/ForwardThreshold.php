@@ -8,7 +8,17 @@ class ForwardThreshold extends Model
 {
     protected $table = 'forward_thresholds';
     protected $fillable = [
-        'name', 'weight', 'volume', 'units', 'real_threshold',
+        'name',
+        'name_params',
+        'name_dimensions',
+        'weight',
+        'volume',
+        'units',
+        'real_threshold',
+        'length',
+        'width',
+        'height',
+        'threshold_group_id'
     ];
 
     public function thresholdGroup()
@@ -16,4 +26,23 @@ class ForwardThreshold extends Model
         return $this->hasOne(Type::class, 'id','threshold_group_id');
     }
 
+    public function getVolumeAttribute($value)
+    {
+        return isset($value) ? $value + 0 : null; // + 0 убирает лишние нули после запятой
+    }
+
+    public function getLengthAttribute($value)
+    {
+        return isset($value) ? $value + 0 : null; // + 0 убирает лишние нули после запятой
+    }
+
+    public function getWidthAttribute($value)
+    {
+        return isset($value) ? $value + 0 : null; // + 0 убирает лишние нули после запятой
+    }
+
+    public function getHeightAttribute($value)
+    {
+        return isset($value) ? $value + 0 : null; // + 0 убирает лишние нули после запятой
+    }
 }

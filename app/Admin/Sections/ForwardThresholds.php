@@ -16,7 +16,7 @@ use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
 
 
 class ForwardThresholds extends Section {
-    protected $title = 'Предельные пороги';
+    protected $title = 'Пределы габаритов';
     protected $model = '\App\ForwardThreshold';
 
     protected $checkAccess = true;
@@ -29,6 +29,9 @@ class ForwardThresholds extends Section {
             Column::text('weight', 'Вес'),
             Column::text('volume', 'Обьем'),
             Column::text('units', 'Единиц'),
+            Column::text('length', 'Длина'),
+            Column::text('width', 'Ширина'),
+            Column::text('height', 'Высота'),
         ])
             ->setFilter([
                 null,
@@ -40,6 +43,9 @@ class ForwardThresholds extends Section {
                         $q->where('class', 'threshold_groups');
                     }),
                 FilterType::text('name', 'Название'),
+                null,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -57,11 +63,40 @@ class ForwardThresholds extends Section {
 
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('name', 'Название')->setRequired(true),
-                FormField::input('weight', 'Вес')->setType('number')->setRequired(true),
-                FormField::input('volume', 'Обьем')->setType('number')->setRequired(true),
-                FormField::input('units', 'Едениц')->setType('number')->setRequired(true),
-                FormField::bselect('threshold_group_id', 'Группа отправных пунктов')
+                FormField::hidden('name')->setValue('-'),
+                FormField::hidden('name_params')->setValue('-'),
+                FormField::hidden('name_dimensions')->setValue('-'),
+                FormField::input('weight', 'Вес')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])->setRequired(true),
+                FormField::input('volume', 'Обьем')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])->setRequired(true),
+                FormField::input('units', 'Единиц')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ])->setRequired(true),
+                FormField::input('length', 'Длина')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ]),
+                FormField::input('width', 'Ширина')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ]),
+                FormField::input('height', 'Высота')->setType('number')
+                    ->setDataAttributes([
+                        'step=any',
+                        'min=0'
+                    ]),
+                FormField::bselect('threshold_group_id', 'Группа пределов')
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
@@ -75,5 +110,13 @@ class ForwardThresholds extends Section {
         ]);
 
         return $form;
+    }
+
+    public function afterSave(Request $request, $model = null)
+    {
+        $model->name_params = "До $model->weight кг, до $model->volume м3, до $model->units шт.";
+        $model->name_dimensions = "$model->length дл., $model->width шир., $model->height выс.";
+        $model->name = "$model->name_params, $model->name_dimensions";
+        $model->save();
     }
 }
