@@ -208,6 +208,8 @@ $(document).ready(function () {
 
         totalVolumeRecount();
         totalWeigthRecount();
+        totalQuantityRecount();
+
         getAllCalculatedData();
     });
 
@@ -405,6 +407,7 @@ $(document).ready(function () {
         e.preventDefault();
         totalWeigthRecount();
         totalVolumeRecount();
+        totalQuantityRecount();
 
         // getAllCalculatedData();
     });
@@ -840,7 +843,7 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('focus', '.package-params, #total-weight, #total-volume', function () {
+    $(document).on('focus', '.package-params, #total-weight, #total-volume, #total-quantity', function () {
         $(this).val('');
     })
 });
@@ -890,7 +893,22 @@ function totalVolumeRecount() {
     $("#total-volume").trigger('change');
 };
 
+function totalQuantityRecount() {
+    let totalQuantity = 0;
+    $.each($(".package-quantity"), function(index, item) {
+        var curAmount = parseFloat($(item).val());
+        if(isNaN(curAmount)){curAmount = 0;}
+
+        totalQuantity += curAmount;
+    });
+
+    $("#total-quantity").attr('value', totalQuantity).val(totalQuantity);
+    $("#total-quantity").trigger('change');
+}
+
 $(document).on('change', '#total-volume', () => getAllCalculatedData());
+
+$(document).on('change', '#total-quantity', () => getAllCalculatedData());
 
 function totalWeigthRecount() {
     let totalWeigth = 0;

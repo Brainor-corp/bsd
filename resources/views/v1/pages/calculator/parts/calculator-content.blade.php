@@ -197,7 +197,7 @@
                     <label>Если Ваш груз расположен на паллетах - введите количество:</label>
                 </div>
                 <div class="col-md-3 col-12">
-                    <input type="number" min="0.01" name="cargo[total_volume]" step="any" id="total-volume" class="form-control" required data-total-volume="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}" value="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}"/>
+                    <input type="number" min="0" name="cargo[total_quantity]" step="1" id="total-quantity" class="form-control" required data-total-quantity="{{ old('cargo[total_quantity]') ?? ($totalQuantity ?? 0) }}" value="{{ old('cargo[total_quantity]') ?? ($totalQuantity ?? 0) }}"/>
                 </div>
             </div>
         </div>
