@@ -192,6 +192,14 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-5 col-12">
+                    <label>Если Ваш груз расположен на паллетах - введите количество:</label>
+                </div>
+                <div class="col-md-3 col-12">
+                    <input type="number" min="0.01" name="cargo[total_volume]" step="any" id="total-volume" class="form-control" required data-total-volume="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}" value="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}"/>
+                </div>
+            </div>
         </div>
         <div class="col-12">
             <p class="calc__info">Габариты груза влияют на расчет стоимости, без их указания стоимость может быть неточной</p>
