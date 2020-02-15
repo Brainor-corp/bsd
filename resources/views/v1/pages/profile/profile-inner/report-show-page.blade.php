@@ -183,6 +183,18 @@
                                                 @endif
                                             </div>
                                         @endif
+                                        <div class="row">
+                                            <div class="col-md-6 col-12">
+                                                <div class="row">
+                                                    <div class="col-auto calc__label">
+                                                        <label>Количество мест:</label>
+                                                    </div>
+                                                    <div class="col-md col-12">
+                                                        <input type="text" class="form-control" readonly value="{{ $order->total_quantity ?? 0 }}"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">

@@ -14,7 +14,7 @@ class OrderHelper {
             'Груз' => $order->shipping_name,
             'Вес' => $order->total_weight ?? $order->total_weight,
             'Объем' => $order->actual_volume ?? $order->total_volume,
-            'КоличествоМест' => array_sum(array_column($order->order_items->toArray(), 'quantity')),
+            'КоличествоМест' => $order->total_quantity ?? array_sum(array_column($order->order_items->toArray(), 'quantity')),
             'МягкаяУпаковка' => !empty($order->order_services->where('slug', 'myagkaya-upakovka')->first()) ? 'Да' : 'Нет',
             'ЖесткаяУпаковка' => !empty($order->order_services->where('slug', 'obreshetka')->first()) ? 'Да' : 'Нет',
             'Паллетирование' => !empty($order->order_services->where('slug', 'palletirovanie')->first()) ? 'Да' : 'Нет',
@@ -128,7 +128,7 @@ class OrderHelper {
             ];
         }
 
-        $sendOrder['Количество_мест'] = array_sum(array_column($order->order_items->toArray(), 'quantity'));
+        $sendOrder['Количество_мест'] = $order->total_quantity ?? array_sum(array_column($order->order_items->toArray(), 'quantity'));
         $sendOrder['Итоговая_цена'] = is_numeric($order->total_price) ? intval($order->total_price) : 0;
         $sendOrder['СтатусОплаты'] = $order->payment_status->name ?? '';
         $sendOrder['Базовая_цена_маршрута'] = is_numeric($order->base_price) ? intval($order->base_price) : 0;

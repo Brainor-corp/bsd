@@ -110,11 +110,16 @@
                     <label class="col-auto calc__label"></label>
                     <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                         <div class="input-group">
-                            <span class="form-control dimensions-label text-center">Д</span>
-                            <span class="form-control dimensions-label text-center">Ш</span>
-                            <span class="form-control dimensions-label text-center">В</span>
+                            <span class="form-control dimensions-label text-center">Д <br><small class="text-muted">Макс.: 12</small></span>
+                            <span class="form-control dimensions-label text-center">Ш <br><small class="text-muted">Макс.: 2,5</small></span>
+                            <span class="form-control dimensions-label text-center">В <br><small class="text-muted">Макс.: 2,5</small></span>
                             <span class="form-control dimensions-label text-center">Вес</span>
-                            <span class="form-control dimensions-label text-center">Кол-во</span>
+                            <span class="form-control dimensions-label text-center">Кол-во мест</span>
+                        </div>
+                        <div class="d-sm-none d-block">
+                            <small class="text-muted">Длина макс.: 12.</small>
+                            <small class="text-muted">Ширина макс.: 2,5.</small>
+                            <small class="text-muted">Высота макс.: 2,5.</small>
                         </div>
                     </div>
                 </div>
@@ -129,9 +134,9 @@
                                 </label>
                                 <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                                     <div class="input-group">
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
+                                        <input type="number" min="0" step="any" max="12" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
+                                        <input type="number" min="0" step="any" max="2.5" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
+                                        <input type="number" min="0" step="any" max="2.5" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_weight" class="form-control text-center package-params package-weight" name="cargo[packages][{{ $key }}][weight]" data-package-id="{{ $key }}"  data-dimension-type="weight" placeholder="Вес" value="{{ $package['weight'] }}"/>
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages][{{ $key }}][quantity]" data-package-id="{{ $key }}"  data-dimension-type="quantity" placeholder="Места" value="{{ $package['quantity'] }}"/>
                                     </div>
@@ -154,13 +159,18 @@
                                     <span class="content">Габариты (м)*</span>
                                     @if($loop->first)
                                         <span class="d-md-none d-inline-block">(Д/Ш/В/Вес/Кол-во)</span>
+                                        <div class="d-sm-none d-block">
+                                            <small class="text-muted">Длина макс.: 12.</small>
+                                            <small class="text-muted">Ширина макс.: 2,5.</small>
+                                            <small class="text-muted">Высота макс.: 2,5.</small>
+                                        </div>
                                     @endif
                                 </label>
                                 <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                                     <div class="input-group">
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
+                                        <input type="number" min="0" step="any" max="12" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
+                                        <input type="number" min="0" step="any" max="2.5" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
+                                        <input type="number" min="0" step="any" max="2.5" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_weight" class="form-control text-center package-params package-weight" name="cargo[packages][{{ $key }}][weight]" data-package-id="{{ $key }}"  data-dimension-type="weight" placeholder="Вес" value="{{ $package['weight'] }}"/>
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages][{{ $key }}][quantity]" data-package-id="{{ $key }}"  data-dimension-type="quantity" placeholder="Места" value="{{ $package['quantity'] }}"/>
                                     </div>

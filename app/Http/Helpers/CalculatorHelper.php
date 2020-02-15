@@ -20,6 +20,7 @@ class CalculatorHelper
         $packages,
         $weight,
         $volume,
+        $total_quantity,
         $route_id = null
     ) {
         $route = null;
@@ -357,6 +358,7 @@ class CalculatorHelper
         $isWithinTheCity,
         $x2,
         $packages,
+        $total_quantity,
         $distance = null,
         $polygonId = null,
         $displayCityName = null
@@ -385,6 +387,7 @@ class CalculatorHelper
                     false,
                     $x2,
                     $packages,
+                    $total_quantity,
                     $distance,
                     $polygonId,
                     $displayCityName
@@ -401,10 +404,7 @@ class CalculatorHelper
             }
         }
 
-        $packagesCount = 0;
-        if(is_array($packages)) {
-            $packagesCount = array_sum(array_column($packages, 'quantity'));
-        }
+        $packagesCount = $total_quantity ?? 0;
 
         $maxSizesPackage = self::getMaxSizesPackage($packages);
 
@@ -709,6 +709,7 @@ class CalculatorHelper
         $packages = [],
         $total_weight,
         $total_volume,
+        $total_quantity,
         $services = [],
         Array $takeParams = [],
         Array $bringParams = [],
@@ -719,7 +720,7 @@ class CalculatorHelper
         $totalPrice = "договорная";
         $servicesPrice = 0;
 
-        $routeData = self::getRouteData($shipCity, $destCity, $packages, $total_weight, $total_volume);
+        $routeData = self::getRouteData($shipCity, $destCity, $packages, $total_weight, $total_volume, $total_quantity);
 
         $servicesData = self::getServicesData(
             $services,
@@ -747,6 +748,7 @@ class CalculatorHelper
                 $takeParams['isWithinTheCity'],
                 $takeParams['x2'],
                 $packages,
+                $total_quantity,
                 $takeParams['distance'],
                 $takeParams['polygonId']
             );
@@ -762,6 +764,7 @@ class CalculatorHelper
                 $bringParams['isWithinTheCity'],
                 $bringParams['x2'],
                 $packages,
+                $total_quantity,
                 $bringParams['distance'],
                 $bringParams['polygonId']
             );
