@@ -83,12 +83,15 @@ class MainPageController extends Controller
         $packages = [];
         $weight = 1;
         $volume = 0.01;
+        $quantity = 0;
+
         $routeData = CalculatorHelper::getRouteData(
             $shipCity,
             $destCity,
             $packages,
             $weight,
-            $volume
+            $volume,
+            $quantity
         );
         $tariff = [
             'base_price' => $routeData['price'],

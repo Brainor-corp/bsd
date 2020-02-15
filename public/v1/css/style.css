@@ -2067,7 +2067,9 @@ label.calc__label_max {
 	.notice__image{
 		display:none;
 	}
-
+    .calc__label {
+        max-width: unset;
+    }
 	.calc__block_inpg{
 		display: unset!important;
 	}

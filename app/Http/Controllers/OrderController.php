@@ -43,6 +43,15 @@ class OrderController extends Controller
             "ship_point" => ['nullable', 'string'],                                             // Адрес_экспедиции (забор)
             "take_polygon" => ['nullable'],                                                     // Полигон экспедиции (забор)
 
+            "cargo.total_weight" => ['numeric', 'required', 'min:0'],                           // Общий вес
+            "cargo.total_volume" => ['numeric', 'required', 'min:0'],                           // Общий объём
+            "cargo.total_quantity" => ['integer', 'required'],                                  // Общее кол-во
+            "cargo.packages.*.length" => ['nullable', 'numeric', 'min:0', 'max:12'],                        // Длина пакета
+            "cargo.packages.*.width" => ['nullable', 'numeric', 'min:0', 'max:2.5'],                        // Ширина пакета
+            "cargo.packages.*.height" => ['nullable', 'numeric', 'min:0', 'max:2.5'],                       // Высота пакета
+            "cargo.packages.*.weight" => ['nullable', 'numeric', 'min:0'],                                  // Вес пакета
+            "cargo.packages.*.quantity" => ['nullable', 'integer', 'min:0'],                                // Кол-во пакета
+
             "dest_city" => ['required', 'string', 'max:255'],                                   // Город_назначения (название)
             "bring_city_name" => ['nullable', 'string', 'max:255'],                             // Название_города_экспедиции (доставка)
             "bring_distance" => ['nullable', 'numeric'],                                        // Дистанция_экспедиции (доставка)
@@ -142,6 +151,7 @@ class OrderController extends Controller
 
         $totalWeight = $request->get('cargo')['total_weight'] ?? 0;
         $totalVolume = $request->get('cargo')['total_volume'] ?? 0;
+        $totalQuantity = $order->total_quantity ?? ($request->get('cargo')['total_quantity'] ?? 0);
 
         $packages = [];
         foreach($request->get('cargo')['packages'] as $package) {
@@ -164,6 +174,7 @@ class OrderController extends Controller
             $request->get('cargo')['packages'],
             $totalWeight,
             $totalVolume,
+            $totalQuantity,
             $request->get('service'),
             $request->get('need-to-take') === "on" ?
                 [
@@ -309,6 +320,7 @@ class OrderController extends Controller
         $order->cargo_type = $cargoTypeId;
         $order->total_weight = $totalWeight;
         $order->total_volume = $totalVolume;
+        $order->total_quantity = $totalQuantity;
         $order->ship_city_id = $shipCity->id;
         $order->ship_city_name = $shipCity->name;
         $order->take_polygon_id = $takePolygon->id ?? null;
