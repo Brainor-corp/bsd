@@ -81,6 +81,22 @@
                                         </div>
                                     </div>
                                 @endif
+                                <div class="form-item row align-items-center">
+                                    <div class="col">
+                                        <label for="warehouse_schedule">Режим работы склада*</label>
+                                        <input
+                                            value="{{ old('warehouse_schedule') ?? ($order->warehouse_schedule ?? '')}}"
+                                            type="text"
+                                            name="warehouse_schedule"
+                                            id="warehouse_schedule"
+                                            class="form-control"
+                                            placeholder="с 00 до 24"
+                                            maxlength="255"
+                                            readonly
+                                            disabled
+                                        >
+                                    </div>
+                                </div>
                                 <div class="calc__title">Груз</div>
                                 <div class="form-item row align-items-center">
                                     <label class="col-auto calc__label">Наименование груза*</label>

@@ -23,7 +23,7 @@ class OrderHelper {
             'ОрганизацияОтправления' => '', // todo не запрашивается
             'ГрузоотправительТелефон' => $order->sender_phone,
             'АдресЗабора' => $order->take_address ?? "",
-            'РежимРаботыСклада' => 'с 9:00 до 18:00',
+            'РежимРаботыСклада' => $order->warehouse_schedule ?? 'с 9:00 до 18:00',
             'ГородНазначения' => $order->dest_city_name,
             'ГрузополучательТелефон' => $order->recipient_phone,
             'АдресДоставки' => $order->delivery_address ?? "",
@@ -158,6 +158,8 @@ class OrderHelper {
         if(isset($order->order_finish_date)) {
             $sendOrder['Дата_и_время_завершения_заказа'] = Carbon::createFromFormat('Y-m-d H:i:s', $order->order_finish_date)->format('Y-m-d\TH:i:s');
         }
+
+        $sendOrder['РежимРаботыСклада'] = $order->warehouse_schedule ?? 'с 9:00 до 18:00';
 
         if(isset($order->order_services)) {
             $sendOrder['Услуги'] = $order->order_services->map(function ($order_service) {

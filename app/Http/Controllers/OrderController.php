@@ -115,12 +115,13 @@ class OrderController extends Controller
             "payer_addition_info_individual" => ['nullable', 'string'],                         // Плательщик (Дополнительная_информация) -- Для физ.лиц
 
             "payment" => ['required', 'string'],                                                // Способ_оплаты
-            "status" => ['required', 'string', 'in:chernovik,order_auth,order_guest'],          // Черновик|Заявка с авторизацей|Заявка без регистрации                                       // Статус_заказа
+            "status" => ['required', 'string', 'in:chernovik,order_auth,order_guest'],          // Черновик|Заявка с авторизацей|Заявка без регистрации
             "order-creator" => ['required', 'string'],                                          // Заявку_заполнил,
 
             "order_date" => ['nullable', 'date'],                                               // Дата исполнения
             "ship_time_from" => ['nullable', 'date_format:H:i'],                                // Время исполнения (С)
             "ship_time_to" => ['nullable', 'date_format:H:i'],                                  // Время исполнения (По)
+            "warehouse_schedule" => ['required', 'string', 'max:255'],                          // Режим работы склада
             "cargo_comment" => ['nullable', 'string'],                                          // Примечания по грузу
             "type" => ['required', 'in:order,calculator'],                                      // Тип заявки (Заявка|Калькулятор)
         ];
@@ -616,6 +617,7 @@ class OrderController extends Controller
         $order->order_date = $request->get('order_date') ?? Carbon::now();
         $order->ship_time_from = $request->get('ship_time_from');
         $order->ship_time_to = $request->get('ship_time_to');
+        $order->warehouse_schedule = $request->get('warehouse_schedule');
         $order->cargo_comment = $request->get('cargo_comment');
 
         if($request->get('need-to-take') === "on") {
