@@ -46,6 +46,8 @@ class OrderHelper {
                 $documentData['ГрузоотправительИНН'] = $order->sender_inn;
                 $documentData['ГрузоотправительКПП'] = $order->sender_kpp;
             }
+
+            $documentData['ГрузоотправительДопИнформация'] = $order->sender_addition_info;
         }
 
         if(isset($order->recipient_type->name)) {
@@ -56,6 +58,8 @@ class OrderHelper {
                 $documentData['ГрузополучательИНН'] = $order->recipient_inn;
                 $documentData['ГрузополучательКПП'] = $order->recipient_kpp;
             }
+
+            $documentData['ГрузополучательДопИнформация'] = $order->recipient_addition_info;
         }
 
         if(isset($order->payer)) {
@@ -65,6 +69,7 @@ class OrderHelper {
                     $documentData['ПлательщикИНН'] = $documentData['ГрузоотправительИНН'] ?? '';
                     $documentData['ПлательщикКПП'] = $documentData['ГрузоотправительКПП'] ?? '';
                     $documentData['ПлательщикТелефон'] = $documentData['ГрузоотправительТелефон'] ?? '';
+                    $documentData['ПлательщикДопИнформация'] = $documentData['ГрузоотправительДопИнформация'] ?? '';
                     $documentData['КонтактноеЛицоПлательщика'] = $documentData['КонтактноеЛицоГрузоотправителя'] ?? '';
                     break;
 
@@ -73,6 +78,7 @@ class OrderHelper {
                     $documentData['ПлательщикИНН'] = $documentData['ГрузополучательИНН'] ?? '';
                     $documentData['ПлательщикКПП'] = $documentData['ГрузополучательКПП'] ?? '';
                     $documentData['ПлательщикТелефон'] = $documentData['ГрузополучательТелефон'] ?? '';
+                    $documentData['ПлательщикДопИнформация'] = $documentData['ГрузополучательДопИнформация'] ?? '';
                     $documentData['КонтактноеЛицоПлательщика'] = $documentData['КонтактноеЛицоГрузополучателя'] ?? '';
                     break;
 
@@ -85,6 +91,7 @@ class OrderHelper {
                         $documentData['ПлательщикКПП'] = $order->payer_kpp;
                     }
                     $documentData['ПлательщикТелефон'] = $order->payer_phone;
+                    $documentData['ПлательщикДопИнформация'] = $order->payer_addition_info;
                     $documentData['КонтактноеЛицоПлательщика'] = $order->payer_contact_person;
                     break;
             }
@@ -93,6 +100,7 @@ class OrderHelper {
             $documentData['ПлательщикИНН'] = '';
             $documentData['ПлательщикКПП'] = '';
             $documentData['ПлательщикТелефон'] = '';
+            $documentData['ПлательщикДопИнформация'] = '';
             $documentData['КонтактноеЛицоПлательщика'] = '';
         }
 
