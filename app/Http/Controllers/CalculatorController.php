@@ -426,8 +426,16 @@ class CalculatorController extends Controller
             $weight = $formData['cargo']['total_weight'] ?? 1;
         }
 
+        if(!is_numeric($weight)) {
+            $weight = 0;
+        }
+
         if(!isset($volume)) {
             $volume = $formData['cargo']['total_volume'] ?? 0.01;
+        }
+
+        if(!is_numeric($volume)) {
+            $volume = 0;
         }
 
         $citiesIdsToFindRoute = [];
