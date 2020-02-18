@@ -182,7 +182,9 @@ $(document).ready(function () {
         var html =
             '<div class="row package-wrapper" id="package-wrapper-'+ nextId +'">'+
             '<div class="col-11 form-item row align-items-center package-item" id="package-'+ nextId +'" data-package-id="'+ nextId +'" style="padding-right: 0;">' +
-            '<label class="col-auto calc__label"><span class="content">Габариты (м)* <span class="d-md-none d-inline-block">(Д/Ш/В/Вес/Кол-во)</span></span></label>' +
+            '<label class="col-auto calc__label"><span class="content">Габариты каждого места (м)* ' +
+            '   <span class="d-md-none d-inline-block">(Д/Ш/В/Вес/Кол-во)</span></span>' +
+            '</label>' +
             '<div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">' +
             '<div class="input-group">' +
             '<input type="number" step="any" min="0" max="12" id="packages__length"'+ nextId +' class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
@@ -198,7 +200,7 @@ $(document).ready(function () {
             '<span class="badge calc_badge"><i class="fa fa-minus"></i></span>' +
             '</a>'+
             '<a href="#" id="add-package-btn" class=" col-1 align-self-sm-auto align-self-center add_anotherplace" title="Добавить">' +
-            '<span class="badge calc_badge"><i class="fa fa-plus"></i></span>' +
+            '<span class="badge calc_badge"><i class="fa fa-plus"></i> место</span>' +
             '</a>'+
             '</div>'
         ;

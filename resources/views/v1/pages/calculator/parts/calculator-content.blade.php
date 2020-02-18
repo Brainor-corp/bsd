@@ -145,7 +145,7 @@
                         <div class="row package-wrapper" id="package-wrapper-{{ $key }}">
                             <div class="col-11 form-item row package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
                                 <label class="col-sm-auto calc__label">
-                                    <span class="content">Габариты (м)*</span>
+                                    <span class="content">Габариты каждого места (м)*</span>
                                 </label>
                                 <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                                     <div class="input-group">
@@ -159,7 +159,7 @@
                                 </div>
                             </div>
                             <a href="#" id="add-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Добавить">
-                                <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
+                                <span class="badge calc_badge"><i class="fa fa-plus"></i> место</span>
                             </a>
                             <a href="#" id="delete-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Удалить">
                                 <span class="badge calc_badge"><i class="fa fa-minus"></i></span>
@@ -171,7 +171,7 @@
                         <div class="row package-wrapper" id="package-wrapper-{{ $key }}">
                             <div class="col-11 form-item row package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
                                 <label class="col-sm-auto calc__label">
-                                    <span class="content">Габариты (м)*</span>
+                                    <span class="content">Габариты каждого места (м)*</span>
                                     @if($loop->first)
                                         <span class="d-md-none d-inline-block">(Д/Ш/В/Вес/Кол-во)</span>
                                         <div class="d-sm-none d-block">
@@ -193,7 +193,7 @@
                                 </div>
                             </div>
                             <a href="#" id="add-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Добавить">
-                                <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
+                                <span class="badge calc_badge"><i class="fa fa-plus"></i> место</span>
                             </a>
                             <a href="#" id="delete-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Удалить">
                                 <span class="badge calc_badge"><i class="fa fa-minus"></i></span>
@@ -205,13 +205,13 @@
 
             <div class="row">
                 <div class="col-6 form-item row align-items-center">
-                    <label class="col-auto calc__label">Вес груза (кг)*</label>
+                    <label class="col-auto calc__label">Вес груза (общий, кг)*</label>
                     <div class="col calc__inpgrp">
                         <input type="number" min="0.01" name="cargo[total_weight]" step="any" id="total-weight" class="form-control" required value="{{ old('cargo[total_weight]') ?? ($totalWeight ?? 0) }}"/>
                     </div>
                 </div>
                 <div class="col-6 form-item row align-items-center text-right">
-                    <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
+                    <label class="col-auto calc__label">Объем (общий, м<sup>3</sup>)*</label>
                     <div class="col calc__inpgrp">
                         <input type="number" min="0.01" name="cargo[total_volume]" step="any" id="total-volume" class="form-control" required data-total-volume="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}" value="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}"/>
                     </div>
