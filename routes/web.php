@@ -23,6 +23,8 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::get('/resend-sms-code', 'Auth\ForgotPasswordController@resendSmsCode')->name('password.resend-sms-code');
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
 
+    Route::get('/turbo/rss', 'TurboController@rss')->name('turbo-rss');
+
     // Платежи
     Route::get('/make-payment/{order_id}', 'PaymentController@makePayment')->name('make-payment');
 
