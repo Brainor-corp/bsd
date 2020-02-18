@@ -7,7 +7,7 @@ class Api1CHelper {
         $host = env('1C_HOST');
 
         $url = $host . $action;
-        $content = json_encode($params);
+        $content = json_encode($params, JSON_UNESCAPED_UNICODE);
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
@@ -20,7 +20,7 @@ class Api1CHelper {
         curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
+                'Content-Type: application/json; charset=UTF-8',
                 'Content-Length: ' . strlen($content))
         );
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, $timeout);
@@ -88,7 +88,7 @@ class Api1CHelper {
         $host = env('1C_HOST');
 
         $url = $host . $action;
-        $content = json_encode($params);
+        $content = json_encode($params, JSON_UNESCAPED_UNICODE);
 
         $curlConnect = curl_init();
         curl_setopt($curlConnect, CURLOPT_URL, $url);
