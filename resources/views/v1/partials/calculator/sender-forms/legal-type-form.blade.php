@@ -33,6 +33,7 @@
                autocomplete="off"
                data-field="company_name"
                minlength="3"
+               maxlength="50"
                data-source="{{ route('getCounterparties', ['type_id' => isset($userTypes) ? $userTypes->where('slug', 'yuridicheskoe-lico')->first()->id : '']) }}"
                value="{{ old('sender_company_name') ?? ($order->sender_company_name ?? '') }}"
                class="form-control req autocomplete"
@@ -43,8 +44,8 @@
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label">Юридический адрес*</label>
     <div class="col">
-        <input type="text" name="sender_legal_address_city" value="{{ old('sender_legal_address_city') ?? ($order->sender_legal_address_city ?? '') }}" class="form-control form-item req"  placeholder="Город" {{ isset($disabled) ? 'disabled' : 'required' }}/>
-        <input type="text" name="sender_legal_address" value="{{ old('sender_legal_address') ?? ($order->sender_legal_address ?? '') }}" class="form-control form-item req"  placeholder="Адрес" {{ isset($disabled) ? 'disabled' : 'required' }}/>
+        <input type="text" name="sender_legal_address_city" maxlength="70" value="{{ old('sender_legal_address_city') ?? ($order->sender_legal_address_city ?? '') }}" class="form-control form-item req"  placeholder="Город" {{ isset($disabled) ? 'disabled' : 'required' }}/>
+        <input type="text" name="sender_legal_address" maxlength="190" value="{{ old('sender_legal_address') ?? ($order->sender_legal_address ?? '') }}" class="form-control form-item req"  placeholder="Адрес" {{ isset($disabled) ? 'disabled' : 'required' }}/>
     </div>
 </div>
 <div class="form-item row align-items-center">
@@ -65,5 +66,5 @@
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="sender_addition_info_legal">Дополнительная информация</label>
-    <div class="col"><input type="text" id="sender_addition_info_legal" name="sender_addition_info_legal" value="{{ old('sender_addition_info_legal') ?? ($order->sender_addition_info ?? '') }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
+    <div class="col"><input type="text" maxlength="500" id="sender_addition_info_legal" name="sender_addition_info_legal" value="{{ old('sender_addition_info_legal') ?? ($order->sender_addition_info ?? '') }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
 </div>

@@ -238,6 +238,7 @@
                     id="cargo_comment"
                     cols="30"
                     rows="2"
+                    maxlength="500"
                     class="form-control"
             >{{ old('cargo_comment') ?? ($order->cargo_comment ?? '') }}</textarea>
         </div>
@@ -290,7 +291,7 @@
                     <i class="dropdown-toggle fa-icon"></i>
                     <input class="form-control suggest_address need-to-take-input-address"
                            id="ship_point"
-                           maxlength="256"
+                           maxlength="150"
                            name="ship_point"
                            size="63"
                            type="text"
@@ -360,6 +361,7 @@
                     <input class="form-control suggest_address need-to-bring-input-address"
                            id="dest_point"
                            name="dest_point"
+                           maxlength="150"
                            value="{{ old('dest_point') ?? ($order->delivery_address ?? ($bringPoint->name ?? '')) }}"
                            placeholder="Название населенного пункта или адрес"
                            @if(empty(old('need-to-bring')) && !isset($order) && !isset($bringPoint) || (isset($order) && !$order->delivery_need)) disabled @endif

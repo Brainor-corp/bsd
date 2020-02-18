@@ -6,6 +6,8 @@
                name="recipient_name_individual"
                autocomplete="off"
                data-field="name"
+               minlength="3"
+               maxlength="50"
                data-source="{{ route('getCounterparties', ['type_id' => isset($userTypes) ? $userTypes->where('slug', 'fizicheskoe-lico')->first->id : '']) }}"
                value="{{ old('recipient_name_individual') ?? ($order->recipient_name ?? '') }}"
                {{ isset($disabled) ? 'disabled' : 'required' }}
@@ -31,5 +33,5 @@
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="recipient_addition_info_individual">Дополнительная информация</label>
-    <div class="col"><input type="text" id="recipient_addition_info_individual" name="recipient_addition_info_individual" value="{{ old('recipient_addition_info_individual') ?? ($order->recipient_addition_info ?? '') }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
+    <div class="col"><input type="text" maxlength="500" id="recipient_addition_info_individual" name="recipient_addition_info_individual" value="{{ old('recipient_addition_info_individual') ?? ($order->recipient_addition_info ?? '') }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
 </div>
