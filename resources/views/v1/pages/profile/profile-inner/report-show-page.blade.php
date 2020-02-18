@@ -81,6 +81,22 @@
                                         </div>
                                     </div>
                                 @endif
+                                <div class="form-item row align-items-center">
+                                    <div class="col">
+                                        <label for="warehouse_schedule">Режим работы склада*</label>
+                                        <input
+                                            value="{{ old('warehouse_schedule') ?? ($order->warehouse_schedule ?? '')}}"
+                                            type="text"
+                                            name="warehouse_schedule"
+                                            id="warehouse_schedule"
+                                            class="form-control"
+                                            placeholder="с 00 до 24"
+                                            maxlength="255"
+                                            readonly
+                                            disabled
+                                        >
+                                    </div>
+                                </div>
                                 <div class="calc__title">Груз</div>
                                 <div class="form-item row align-items-center">
                                     <label class="col-auto calc__label">Наименование груза*</label>
@@ -183,6 +199,18 @@
                                                 @endif
                                             </div>
                                         @endif
+                                        <div class="row">
+                                            <div class="col-md-6 col-12">
+                                                <div class="row">
+                                                    <div class="col-auto calc__label">
+                                                        <label>Количество мест:</label>
+                                                    </div>
+                                                    <div class="col-md col-12">
+                                                        <input type="text" class="form-control" readonly value="{{ $order->total_quantity ?? 0 }}"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">

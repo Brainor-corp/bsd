@@ -14,7 +14,7 @@ class OrderHelper {
             'Груз' => $order->shipping_name,
             'Вес' => $order->total_weight ?? $order->total_weight,
             'Объем' => $order->actual_volume ?? $order->total_volume,
-            'КоличествоМест' => array_sum(array_column($order->order_items->toArray(), 'quantity')),
+            'КоличествоМест' => $order->total_quantity ?? array_sum(array_column($order->order_items->toArray(), 'quantity')),
             'МягкаяУпаковка' => !empty($order->order_services->where('slug', 'myagkaya-upakovka')->first()) ? 'Да' : 'Нет',
             'ЖесткаяУпаковка' => !empty($order->order_services->where('slug', 'obreshetka')->first()) ? 'Да' : 'Нет',
             'Паллетирование' => !empty($order->order_services->where('slug', 'palletirovanie')->first()) ? 'Да' : 'Нет',
@@ -23,7 +23,7 @@ class OrderHelper {
             'ОрганизацияОтправления' => '', // todo не запрашивается
             'ГрузоотправительТелефон' => $order->sender_phone,
             'АдресЗабора' => $order->take_address ?? "",
-            'РежимРаботыСклада' => 'с 9:00 до 18:00',
+            'РежимРаботыСклада' => $order->warehouse_schedule ?? 'с 9:00 до 18:00',
             'ГородНазначения' => $order->dest_city_name,
             'ГрузополучательТелефон' => $order->recipient_phone,
             'АдресДоставки' => $order->delivery_address ?? "",
@@ -46,6 +46,8 @@ class OrderHelper {
                 $documentData['ГрузоотправительИНН'] = $order->sender_inn;
                 $documentData['ГрузоотправительКПП'] = $order->sender_kpp;
             }
+
+            $documentData['ГрузоотправительДопИнформация'] = $order->sender_addition_info;
         }
 
         if(isset($order->recipient_type->name)) {
@@ -56,6 +58,8 @@ class OrderHelper {
                 $documentData['ГрузополучательИНН'] = $order->recipient_inn;
                 $documentData['ГрузополучательКПП'] = $order->recipient_kpp;
             }
+
+            $documentData['ГрузополучательДопИнформация'] = $order->recipient_addition_info;
         }
 
         if(isset($order->payer)) {
@@ -65,6 +69,7 @@ class OrderHelper {
                     $documentData['ПлательщикИНН'] = $documentData['ГрузоотправительИНН'] ?? '';
                     $documentData['ПлательщикКПП'] = $documentData['ГрузоотправительКПП'] ?? '';
                     $documentData['ПлательщикТелефон'] = $documentData['ГрузоотправительТелефон'] ?? '';
+                    $documentData['ПлательщикДопИнформация'] = $documentData['ГрузоотправительДопИнформация'] ?? '';
                     $documentData['КонтактноеЛицоПлательщика'] = $documentData['КонтактноеЛицоГрузоотправителя'] ?? '';
                     break;
 
@@ -73,6 +78,7 @@ class OrderHelper {
                     $documentData['ПлательщикИНН'] = $documentData['ГрузополучательИНН'] ?? '';
                     $documentData['ПлательщикКПП'] = $documentData['ГрузополучательКПП'] ?? '';
                     $documentData['ПлательщикТелефон'] = $documentData['ГрузополучательТелефон'] ?? '';
+                    $documentData['ПлательщикДопИнформация'] = $documentData['ГрузополучательДопИнформация'] ?? '';
                     $documentData['КонтактноеЛицоПлательщика'] = $documentData['КонтактноеЛицоГрузополучателя'] ?? '';
                     break;
 
@@ -85,6 +91,7 @@ class OrderHelper {
                         $documentData['ПлательщикКПП'] = $order->payer_kpp;
                     }
                     $documentData['ПлательщикТелефон'] = $order->payer_phone;
+                    $documentData['ПлательщикДопИнформация'] = $order->payer_addition_info;
                     $documentData['КонтактноеЛицоПлательщика'] = $order->payer_contact_person;
                     break;
             }
@@ -93,6 +100,7 @@ class OrderHelper {
             $documentData['ПлательщикИНН'] = '';
             $documentData['ПлательщикКПП'] = '';
             $documentData['ПлательщикТелефон'] = '';
+            $documentData['ПлательщикДопИнформация'] = '';
             $documentData['КонтактноеЛицоПлательщика'] = '';
         }
 
@@ -128,7 +136,7 @@ class OrderHelper {
             ];
         }
 
-        $sendOrder['Количество_мест'] = array_sum(array_column($order->order_items->toArray(), 'quantity'));
+        $sendOrder['Количество_мест'] = $order->total_quantity ?? array_sum(array_column($order->order_items->toArray(), 'quantity'));
         $sendOrder['Итоговая_цена'] = is_numeric($order->total_price) ? intval($order->total_price) : 0;
         $sendOrder['СтатусОплаты'] = $order->payment_status->name ?? '';
         $sendOrder['Базовая_цена_маршрута'] = is_numeric($order->base_price) ? intval($order->base_price) : 0;
@@ -158,6 +166,8 @@ class OrderHelper {
         if(isset($order->order_finish_date)) {
             $sendOrder['Дата_и_время_завершения_заказа'] = Carbon::createFromFormat('Y-m-d H:i:s', $order->order_finish_date)->format('Y-m-d\TH:i:s');
         }
+
+        $sendOrder['РежимРаботыСклада'] = $order->warehouse_schedule ?? 'с 9:00 до 18:00';
 
         if(isset($order->order_services)) {
             $sendOrder['Услуги'] = $order->order_services->map(function ($order_service) {

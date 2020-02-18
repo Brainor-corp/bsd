@@ -211,8 +211,9 @@ class CalculatorController extends Controller
 
         $totalWeight = $order->total_weight ?? ($request->get('cargo')['total_weight'] ?? 0);
         $totalVolume = $order->total_volume ?? ($request->get('cargo')['total_volume'] ?? 0);
+        $totalQuantity = $order->total_quantity ?? ($request->get('cargo')['total_quantity'] ?? 0);
 
-        $tariff = json_decode($this->getTariff($request, $totalWeight, $totalVolume, $selectedShipCity, $selectedDestCity)->content());
+        $tariff = json_decode($this->getTariff($request, $totalWeight, $totalVolume, $totalQuantity, $selectedShipCity, $selectedDestCity)->content());
 
         $services = Service::get();
         $userTypes = Type::where('class', 'UserType')->get();
@@ -236,6 +237,7 @@ class CalculatorController extends Controller
                 'cargoTypes',
                 'totalWeight',
                 'totalVolume',
+                'totalQuantity',
                 'deliveryPoint',
                 'bringPoint',
                 'counterpartyForms',
@@ -263,6 +265,7 @@ class CalculatorController extends Controller
 
         $totalWeight = $request->get('cargo')['total_weight'] ?? 0;
         $totalVolume = $request->get('cargo')['total_volume'] ?? 0;
+        $totalQuantity = $order->total_quantity ?? ($request->get('cargo')['total_quantity'] ?? 0);
 
         $ship_city = $cities->where('name', $request->get('ship_city'))->first();
         $dest_city = $cities->where('name', $request->get('dest_city'))->first();
@@ -272,17 +275,11 @@ class CalculatorController extends Controller
         $takeCityName = $request->get('need-to-take-type') === "in" ?
             $cities->where('name', $request->get('ship_city'))->first()->name :
             $request->get('take_city_name');
-        $takePoint = Point::where('name', $takeCityName)
-            ->where('city_id', $ship_city->id)
-            ->first();
 
         $bring_distance = $request->get('bring_distance');
         $bringCityName = $request->get('need-to-bring-type') === "in" ?
             $cities->where('name', $request->get('dest_city'))->first()->name :
             $request->get('bring_city_name');
-        $bringPoint = Point::where('name', $bringCityName)
-            ->where('city_id',$dest_city->id)
-            ->first();
         //Конец -- Определяем дистанцию доставки в случае если пункт есть в Points
 
         return CalculatorHelper::getAllCalculatedData(
@@ -291,6 +288,7 @@ class CalculatorController extends Controller
             $request->get('cargo')['packages'] ?? null,
             $totalWeight,
             $totalVolume,
+            $totalQuantity,
             $request->get('service'),
             $request->get('need-to-take') === "on" ?
             [
@@ -410,6 +408,7 @@ class CalculatorController extends Controller
         Request $request,
         $weight = null,
         $volume = null,
+        $total_quantity = null,
         $ship_city = null,
         $dest_city = null,
         $route_id = null
@@ -427,8 +426,16 @@ class CalculatorController extends Controller
             $weight = $formData['cargo']['total_weight'] ?? 1;
         }
 
+        if(!is_numeric($weight)) {
+            $weight = 0;
+        }
+
         if(!isset($volume)) {
             $volume = $formData['cargo']['total_volume'] ?? 0.01;
+        }
+
+        if(!is_numeric($volume)) {
+            $volume = 0;
         }
 
         $citiesIdsToFindRoute = [];
@@ -517,7 +524,7 @@ class CalculatorController extends Controller
             }
         }
 
-        $routeData = CalculatorHelper::getRouteData(null, null, [], $weight, $volume, $route_id);
+        $routeData = CalculatorHelper::getRouteData(null, null, [], $weight, $volume, $total_quantity, $route_id);
 
         $deliveryData = isset($deliveryPoint) ? CalculatorHelper::getTariffPrice(
             $deliveryPoint->city->name,
@@ -536,6 +543,7 @@ class CalculatorController extends Controller
                     'volume'    => "0",
                 ]
             ],
+            0,
             $deliveryPoint->distance,
             null,
             $deliveryPoint->name
@@ -557,6 +565,7 @@ class CalculatorController extends Controller
                     'volume'    => "0",
                 ]
             ],
+            0,
             $bringPoint->distance,
             null,
             $bringPoint->name

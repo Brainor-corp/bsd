@@ -182,12 +182,14 @@ $(document).ready(function () {
         var html =
             '<div class="row package-wrapper" id="package-wrapper-'+ nextId +'">'+
             '<div class="col-11 form-item row align-items-center package-item" id="package-'+ nextId +'" data-package-id="'+ nextId +'" style="padding-right: 0;">' +
-            '<label class="col-auto calc__label"><span class="content">Габариты (м)* <span class="d-md-none d-inline-block">(Д/Ш/В/Вес/Кол-во)</span></span></label>' +
+            '<label class="col-auto calc__label"><span class="content">Габариты каждого места (м)* ' +
+            '   <span class="d-md-none d-inline-block">(Д/Ш/В/Вес/Кол-во)</span></span>' +
+            '</label>' +
             '<div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">' +
             '<div class="input-group">' +
-            '<input type="number" step="any" min="0" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
-            '<input type="number" step="any" min="0" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][width]" data-package-id="'+ nextId +'"  data-dimension-type="width" placeholder="Ширина" value="0.1">' +
-            '<input type="number" step="any" min="0" id="packages_'+ nextId +'_height" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][height]" data-package-id="'+ nextId +'"  data-dimension-type="height" placeholder="Высота" value="0.1">' +
+            '<input type="number" step="any" min="0" max="12" id="packages__length"'+ nextId +' class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
+            '<input type="number" step="any" min="0" max="2.5" id="packages__width"'+ nextId +' class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][width]" data-package-id="'+ nextId +'"  data-dimension-type="width" placeholder="Ширина" value="0.1">' +
+            '<input type="number" step="any" min="0" max="2.5" id="packages__height"'+ nextId +' class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][height]" data-package-id="'+ nextId +'"  data-dimension-type="height" placeholder="Высота" value="0.1">' +
             '<input type="number" step="any" min="0" id="packages_'+ nextId +'_weight" class="form-control text-center package-params package-weight" name="cargo[packages]['+ nextId +'][weight]" data-package-id="'+ nextId +'"  data-dimension-type="weight" placeholder="Вес" value="1">' +
             '<input type="number" step="any" min="0" id="packages_'+ nextId +'_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages]['+ nextId +'][quantity]" data-package-id="'+ nextId +'"  data-dimension-type="quantity" placeholder="Места" value="1">' +
             '</div>' +
@@ -198,7 +200,7 @@ $(document).ready(function () {
             '<span class="badge calc_badge"><i class="fa fa-minus"></i></span>' +
             '</a>'+
             '<a href="#" id="add-package-btn" class=" col-1 align-self-sm-auto align-self-center add_anotherplace" title="Добавить">' +
-            '<span class="badge calc_badge"><i class="fa fa-plus"></i></span>' +
+            '<span class="badge calc_badge"><i class="fa fa-plus"></i> место</span>' +
             '</a>'+
             '</div>'
         ;
@@ -208,6 +210,8 @@ $(document).ready(function () {
 
         totalVolumeRecount();
         totalWeigthRecount();
+        totalQuantityRecount();
+
         getAllCalculatedData();
     });
 
@@ -405,6 +409,7 @@ $(document).ready(function () {
         e.preventDefault();
         totalWeigthRecount();
         totalVolumeRecount();
+        totalQuantityRecount();
 
         // getAllCalculatedData();
     });
@@ -840,7 +845,7 @@ $(document).ready(function () {
         }
     });
 
-    $(document).on('focus', '.package-params, #total-weight, #total-volume', function () {
+    $(document).on('focusin', '.package-params, #total-weight, #total-volume, #total-quantity', function (event) {
         $(this).val('');
     })
 });
@@ -890,7 +895,22 @@ function totalVolumeRecount() {
     $("#total-volume").trigger('change');
 };
 
+function totalQuantityRecount() {
+    let totalQuantity = 0;
+    $.each($(".package-quantity"), function(index, item) {
+        var curAmount = parseFloat($(item).val());
+        if(isNaN(curAmount)){curAmount = 0;}
+
+        totalQuantity += curAmount;
+    });
+
+    $("#total-quantity").attr('value', totalQuantity).val(totalQuantity);
+    $("#total-quantity").trigger('change');
+}
+
 $(document).on('change', '#total-volume', () => getAllCalculatedData());
+
+$(document).on('change', '#total-quantity', () => getAllCalculatedData());
 
 function totalWeigthRecount() {
     let totalWeigth = 0;

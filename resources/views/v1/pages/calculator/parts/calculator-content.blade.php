@@ -78,6 +78,21 @@
             </div>
         </div>
     @endif
+    <div class="form-item row align-items-center">
+        <div class="col">
+            <label for="warehouse_schedule">Режим работы склада*</label>
+            <input
+                value="{{ old('warehouse_schedule') ?? ($order->warehouse_schedule ?? '')}}"
+                type="text"
+                name="warehouse_schedule"
+                id="warehouse_schedule"
+                class="form-control"
+                placeholder="с 00 до 24"
+                maxlength="255"
+                required
+            >
+        </div>
+    </div>
     <div class="calc__title mt-3">Груз</div>
     <div class="form-item row align-items-center">
         <label class="col-auto calc__label">Наименование груза*</label>
@@ -110,11 +125,16 @@
                     <label class="col-auto calc__label"></label>
                     <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                         <div class="input-group">
-                            <span class="form-control dimensions-label text-center">Д</span>
-                            <span class="form-control dimensions-label text-center">Ш</span>
-                            <span class="form-control dimensions-label text-center">В</span>
+                            <span class="form-control dimensions-label text-center">Д <br><small class="text-muted">Макс.: 12</small></span>
+                            <span class="form-control dimensions-label text-center">Ш <br><small class="text-muted">Макс.: 2,5</small></span>
+                            <span class="form-control dimensions-label text-center">В <br><small class="text-muted">Макс.: 2,5</small></span>
                             <span class="form-control dimensions-label text-center">Вес</span>
-                            <span class="form-control dimensions-label text-center">Кол-во</span>
+                            <span class="form-control dimensions-label text-center">Кол-во мест</span>
+                        </div>
+                        <div class="d-sm-none d-block">
+                            <small class="text-muted">Длина макс.: 12.</small>
+                            <small class="text-muted">Ширина макс.: 2,5.</small>
+                            <small class="text-muted">Высота макс.: 2,5.</small>
                         </div>
                     </div>
                 </div>
@@ -125,13 +145,13 @@
                         <div class="row package-wrapper" id="package-wrapper-{{ $key }}">
                             <div class="col-11 form-item row package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
                                 <label class="col-sm-auto calc__label">
-                                    <span class="content">Габариты (м)*</span>
+                                    <span class="content">Габариты каждого места (м)*</span>
                                 </label>
                                 <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                                     <div class="input-group">
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
+                                        <input type="number" min="0" step="any" max="12" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
+                                        <input type="number" min="0" step="any" max="2.5" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
+                                        <input type="number" min="0" step="any" max="2.5" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_weight" class="form-control text-center package-params package-weight" name="cargo[packages][{{ $key }}][weight]" data-package-id="{{ $key }}"  data-dimension-type="weight" placeholder="Вес" value="{{ $package['weight'] }}"/>
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages][{{ $key }}][quantity]" data-package-id="{{ $key }}"  data-dimension-type="quantity" placeholder="Места" value="{{ $package['quantity'] }}"/>
                                     </div>
@@ -139,7 +159,7 @@
                                 </div>
                             </div>
                             <a href="#" id="add-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Добавить">
-                                <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
+                                <span class="badge calc_badge"><i class="fa fa-plus"></i> место</span>
                             </a>
                             <a href="#" id="delete-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Удалить">
                                 <span class="badge calc_badge"><i class="fa fa-minus"></i></span>
@@ -151,16 +171,21 @@
                         <div class="row package-wrapper" id="package-wrapper-{{ $key }}">
                             <div class="col-11 form-item row package-item" id="package-{{ $key }}" data-package-id="{{ $key }}" style="padding-right: 0;">
                                 <label class="col-sm-auto calc__label">
-                                    <span class="content">Габариты (м)*</span>
+                                    <span class="content">Габариты каждого места (м)*</span>
                                     @if($loop->first)
                                         <span class="d-md-none d-inline-block">(Д/Ш/В/Вес/Кол-во)</span>
+                                        <div class="d-sm-none d-block">
+                                            <small class="text-muted">Длина макс.: 12.</small>
+                                            <small class="text-muted">Ширина макс.: 2,5.</small>
+                                            <small class="text-muted">Высота макс.: 2,5.</small>
+                                        </div>
                                     @endif
                                 </label>
                                 <div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">
                                     <div class="input-group">
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
-                                        <input type="number" min="0" step="any" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
+                                        <input type="number" min="0" step="any" max="12" id="packages_{{ $key }}_length" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][length]" data-package-id="{{ $key }}" data-dimension-type="length" placeholder="Длина" value="{{ $package['length'] }}"/>
+                                        <input type="number" min="0" step="any" max="2.5" id="packages_{{ $key }}_width" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][width]" data-package-id="{{ $key }}"  data-dimension-type="width" placeholder="Ширина" value="{{ $package['width'] }}"/>
+                                        <input type="number" min="0" step="any" max="2.5" id="packages_{{ $key }}_height" class="form-control text-center package-params package-dimensions" name="cargo[packages][{{ $key }}][height]" data-package-id="{{ $key }}"  data-dimension-type="height" placeholder="Высота" value="{{ $package['height'] }}"/>
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_weight" class="form-control text-center package-params package-weight" name="cargo[packages][{{ $key }}][weight]" data-package-id="{{ $key }}"  data-dimension-type="weight" placeholder="Вес" value="{{ $package['weight'] }}"/>
                                         <input type="number" min="0" step="any" id="packages_{{ $key }}_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages][{{ $key }}][quantity]" data-package-id="{{ $key }}"  data-dimension-type="quantity" placeholder="Места" value="{{ $package['quantity'] }}"/>
                                     </div>
@@ -168,7 +193,7 @@
                                 </div>
                             </div>
                             <a href="#" id="add-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Добавить">
-                                <span class="badge calc_badge"><i class="fa fa-plus"></i></span>
+                                <span class="badge calc_badge"><i class="fa fa-plus"></i> место</span>
                             </a>
                             <a href="#" id="delete-package-btn" class="col-1 align-self-sm-auto align-self-center add_anotherplace" title="Удалить">
                                 <span class="badge calc_badge"><i class="fa fa-minus"></i></span>
@@ -180,16 +205,24 @@
 
             <div class="row">
                 <div class="col-6 form-item row align-items-center">
-                    <label class="col-auto calc__label">Вес груза (кг)*</label>
+                    <label class="col-auto calc__label">Вес груза (общий, кг)*</label>
                     <div class="col calc__inpgrp">
                         <input type="number" min="0.01" name="cargo[total_weight]" step="any" id="total-weight" class="form-control" required value="{{ old('cargo[total_weight]') ?? ($totalWeight ?? 0) }}"/>
                     </div>
                 </div>
                 <div class="col-6 form-item row align-items-center text-right">
-                    <label class="col-auto calc__label">Объем (м<sup>3</sup>)*</label>
+                    <label class="col-auto calc__label">Объем (общий, м<sup>3</sup>)*</label>
                     <div class="col calc__inpgrp">
                         <input type="number" min="0.01" name="cargo[total_volume]" step="any" id="total-volume" class="form-control" required data-total-volume="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}" value="{{ old('cargo[total_volume]') ?? ($totalVolume ?? 0) }}"/>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 col-12">
+                    <label>Если Ваш груз расположен на паллетах - введите количество:</label>
+                </div>
+                <div class="col-md-3 col-12">
+                    <input type="number" min="0" name="cargo[total_quantity]" step="1" id="total-quantity" class="form-control" required data-total-quantity="{{ old('cargo[total_quantity]') ?? ($totalQuantity ?? 0) }}" value="{{ old('cargo[total_quantity]') ?? ($totalQuantity ?? 0) }}"/>
                 </div>
             </div>
         </div>
@@ -205,6 +238,7 @@
                     id="cargo_comment"
                     cols="30"
                     rows="2"
+                    maxlength="500"
                     class="form-control"
             >{{ old('cargo_comment') ?? ($order->cargo_comment ?? '') }}</textarea>
         </div>
@@ -257,7 +291,7 @@
                     <i class="dropdown-toggle fa-icon"></i>
                     <input class="form-control suggest_address need-to-take-input-address"
                            id="ship_point"
-                           maxlength="256"
+                           maxlength="150"
                            name="ship_point"
                            size="63"
                            type="text"
@@ -327,6 +361,7 @@
                     <input class="form-control suggest_address need-to-bring-input-address"
                            id="dest_point"
                            name="dest_point"
+                           maxlength="150"
                            value="{{ old('dest_point') ?? ($order->delivery_address ?? ($bringPoint->name ?? '')) }}"
                            placeholder="Название населенного пункта или адрес"
                            @if(empty(old('need-to-bring')) && !isset($order) && !isset($bringPoint) || (isset($order) && !$order->delivery_need)) disabled @endif
