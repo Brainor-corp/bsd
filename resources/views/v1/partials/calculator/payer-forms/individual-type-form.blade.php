@@ -7,6 +7,8 @@
                data-field="name"
                data-source="{{ route('getCounterparties', ['type_id' => isset($userTypes) ? $userTypes->where('slug', 'fizicheskoe-lico')->first->id : '']) }}"
                name="payer_name_individual"
+               minlength="3"
+               maxlength="50"
                value="{{ old('payer_name_individual') ?? ($order->payer_name ?? '') }}" {{ isset($disabled) ? 'disabled' : 'required' }}
         />
     </div>
@@ -30,5 +32,5 @@
 </div>
 <div class="form-item row align-items-center">
     <label class="col-auto calc__label" for="payer_addition_info_individual">Дополнительная информация</label>
-    <div class="col"><input type="text" id="payer_addition_info_individual" name="payer_addition_info_individual" value="{{ old('payer_addition_info_individual') ?? ($order->payer_addition_info ?? '') }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
+    <div class="col"><input type="text" maxlength="500" id="payer_addition_info_individual" name="payer_addition_info_individual" value="{{ old('payer_addition_info_individual') ?? ($order->payer_addition_info ?? '') }}" class="form-control" {{ isset($disabled) ? 'disabled' : '' }}/></div>
 </div>
