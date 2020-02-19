@@ -33,14 +33,19 @@ class TurboController extends Controller
 //        $yandexCounter->appendTo($channel);
 
         $cmsPages = CMSHelper::getQueryBuilder(['type' => 'page'])->whereNotNull('content')->get();
-        foreach($cmsPages as $cmsPage) {
+        $news = CMSHelper::getQueryBuilder(['type' => 'news'])->whereNotNull('content')->get();
+
+        $items = $cmsPages->merge($news);
+        $items = $items->sortByDesc('published_at')->take(1000);
+
+        foreach($items as $item) {
             // creates first page of feed with link and enabled turbo, description and other content, and appends this page to channel
-            $item = new Item();
-            $item
-                ->title($cmsPage->title)
-                ->link(url($cmsPage->url))
-                ->turboContent($cmsPage->content)
-                ->pubDate(strtotime($cmsPage->published_at))
+            $itemModel = new Item();
+            $itemModel
+                ->title($item->title)
+                ->link(url($item->url))
+                ->turboContent($item->content)
+                ->pubDate(strtotime($item->published_at))
                 ->appendTo($channel);
         }
 
