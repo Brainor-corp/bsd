@@ -32,14 +32,14 @@ class TurboController extends Controller
 //        $yandexCounter = new Counter(Counter::TYPE_YANDEX, 12345678);
 //        $yandexCounter->appendTo($channel);
 
-        $cmsPages = CMSHelper::getQueryBuilder(['type' => 'page'])->get();
+        $cmsPages = CMSHelper::getQueryBuilder(['type' => 'page'])->whereNotNull('content')->get();
         foreach($cmsPages as $cmsPage) {
             // creates first page of feed with link and enabled turbo, description and other content, and appends this page to channel
             $item = new Item();
             $item
                 ->title($cmsPage->title)
                 ->link(url($cmsPage->url))
-                ->turboContent($cmsPage->content ?? '')
+                ->turboContent($cmsPage->content)
                 ->pubDate(strtotime($cmsPage->published_at))
                 ->appendTo($channel);
         }
