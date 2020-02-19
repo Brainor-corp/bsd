@@ -85,7 +85,7 @@ class TurboController extends Controller
             $itemModel = new Item();
             $itemModel
                 ->title($item->title)
-                ->link(url($item->url))
+                ->link(route('news-single-show', ['slug' => $item->slug]))
                 ->turboContent($item->content)
                 ->pubDate(strtotime($item->published_at))
                 ->appendTo($channel);
