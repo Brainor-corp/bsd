@@ -84,6 +84,10 @@
     white-space: normal;
 }
 
+.white-space-nowrap {
+    white-space: nowrap;
+}
+
 /*.prices-page-wrapper .point-select,*/
 .prices-page-wrapper .sbmt-btn {
     height: 38px !important;
