@@ -22,15 +22,15 @@ class TurboController extends Controller
         $channel = new Channel();
         $channel
             ->title('Балтийская служба доставки')
-            ->link('https://test9.brainor.ru')
+            ->link(url('/'))
             ->description('RSS лента сайта "Балтийская служба доставки"')
             ->language('ru')
-            ->adNetwork(Channel::AD_TYPE_YANDEX, 'RA-123456-7', 'first_ad_place')
+//            ->adNetwork(Channel::AD_TYPE_YANDEX, 'RA-123456-7', 'first_ad_place')
             ->appendTo($feed);
 
         // adds Yandex Metrika to feed
-        $yandexCounter = new Counter(Counter::TYPE_YANDEX, 12345678);
-        $yandexCounter->appendTo($channel);
+//        $yandexCounter = new Counter(Counter::TYPE_YANDEX, 12345678);
+//        $yandexCounter->appendTo($channel);
 
         $cmsPages = CMSHelper::getQueryBuilder(['type' => 'page'])->get();
         foreach($cmsPages as $cmsPage) {
