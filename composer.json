@@ -12,7 +12,7 @@
         "ext-json": "*",
         "alhimik1986/php-excel-templator": "^1.0",
         "barryvdh/laravel-dompdf": "^0.8.4",
-        "brainor-rus/zeus-admin": "dev-feature/CopyableSections",
+        "brainor-rus/zeus-admin": "^1.0",
         "cviebrock/eloquent-sluggable": "6.0.*",
         "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.0",

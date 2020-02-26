@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c3ede750b336c111dbb1d2373fa82dc0",
+    "content-hash": "84444883e43476e3bebbd229cbfcb299",
     "packages": [
         {
             "name": "alhimik1986/php-excel-templator",
@@ -174,16 +174,16 @@
         },
         {
             "name": "brainor-rus/zeus-admin",
-            "version": "dev-feature/CopyableSections",
+            "version": "1.0.72",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brainor-rus/zeus-admin.git",
-                "reference": "a43523e113dcc7573a9085a562923fd9a3437de4"
+                "reference": "9db6932a0975f983217fd69c3b859ebb0c3af4b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brainor-rus/zeus-admin/zipball/a43523e113dcc7573a9085a562923fd9a3437de4",
-                "reference": "a43523e113dcc7573a9085a562923fd9a3437de4",
+                "url": "https://api.github.com/repos/brainor-rus/zeus-admin/zipball/9db6932a0975f983217fd69c3b859ebb0c3af4b0",
+                "reference": "9db6932a0975f983217fd69c3b859ebb0c3af4b0",
                 "shasum": ""
             },
             "require": {
@@ -225,7 +225,7 @@
                 "laravel admin",
                 "zeus"
             ],
-            "time": "2020-02-21T12:04:24+00:00"
+            "time": "2020-02-26T12:47:53+00:00"
         },
         {
             "name": "cocur/slugify",
@@ -6834,9 +6834,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "brainor-rus/zeus-admin": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
