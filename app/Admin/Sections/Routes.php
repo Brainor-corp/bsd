@@ -34,6 +34,7 @@ class Routes extends Section
             Column::text('destinationCity.name', 'Город назначения'),
             Column::text('min_cost', 'Мин. стоимость'),
             Column::text('delivery_time', 'Срок доставки'),
+            Column::text('comprehensive_show_in_price', 'Показ. в общем прайсе'),
         ])
             ->setFilter([
                 null,
@@ -54,6 +55,11 @@ class Routes extends Section
                     ->setDisplay("name"),
                 null,
                 null,
+                FilterType::bselect('show_in_price')
+                    ->setOptions([
+                        '0' => 'Нет',
+                        '1' => 'Да'
+                    ]),
             ])
             ->setPagination(10);
 
@@ -67,6 +73,8 @@ class Routes extends Section
 
     public static function onEdit($id)
     {
+        $priceListUrl = \route('pricesPage');
+
         $form = Form::panel([
             FormColumn::column([
                 FormField::hidden('name', 'Название')->setValue('-'),
@@ -116,6 +124,10 @@ class Routes extends Section
                     ->setDisplay('name'),
                 FormField::bselect('fixed_tariffs', 'Фиксированные тарифы')
                     ->setHelpBlock("<small class='text-muted'>Например, для Гарант-Логистики</small>")
+                    ->setOptions([0 => 'Нет', 1 => 'Да'])
+                    ->setRequired(true),
+                FormField::bselect('show_in_price', 'Показывать в общем прайсе')
+                    ->setHelpBlock("<small class='text-muted'>Отображение маршрута на <a href='$priceListUrl' target='_blank'>странице прайс-листа</a></small>")
                     ->setOptions([0 => 'Нет', 1 => 'Да'])
                     ->setRequired(true),
                 FormField::related('route_tariffs', 'Тарифы', RouteTariff::class, [
