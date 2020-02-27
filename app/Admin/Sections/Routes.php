@@ -144,7 +144,7 @@ class Routes extends Section
                         ->setDisplay('name'),
                 ])
             ])
-        ]);
+        ])->setCopyable(true);
 
         return $form;
     }
