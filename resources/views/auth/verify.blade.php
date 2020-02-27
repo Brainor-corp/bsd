@@ -15,7 +15,14 @@
                     @endif
 
                     {{ __('Чтобы продолжить, перейдите по ссылке из письма, которое мы отправили на Ваш Email.') }}
-                    {{ __('Если Вы не получили Email') }}, <a href="{{ route('verification.resend') }}">{{ __('нажмите сюда для повторной отправки') }}</a>.
+                    {{ __('Если Вы не получили Email') }},
+                    <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
+                        @csrf
+
+                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">
+                            {{ __('нажмите сюда для повторной отправки') }}
+                        </button>.
+                    </form>
                 </div>
             </div>
         </div>
