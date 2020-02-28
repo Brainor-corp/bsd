@@ -7,7 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Route extends Model
 {
     protected $fillable = [
-        'name', 'ship_city_id', 'dest_city_id', 'min_cost', 'delivery_time', 'base_route', 'addition', 'oversizes_id', 'wrapper_tariff', 'fixed_tariffs', 'coefficient',
+        'name',
+        'ship_city_id',
+        'dest_city_id',
+        'min_cost',
+        'delivery_time',
+        'base_route',
+        'addition',
+        'oversizes_id',
+        'wrapper_tariff',
+        'fixed_tariffs',
+        'coefficient',
+        'show_in_price',
     ];
 
     public function shipCity()
@@ -34,4 +45,8 @@ class Route extends Model
         return $this->hasMany(RouteTariff::class);
     }
 
+    public function getComprehensiveShowInPriceAttribute()
+    {
+        return $this->show_in_price ? 'Да' : 'Нет';
+    }
 }
