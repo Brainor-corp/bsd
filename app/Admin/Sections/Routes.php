@@ -34,7 +34,7 @@ class Routes extends Section
             Column::text('destinationCity.name', 'Город назначения'),
             Column::text('min_cost', 'Мин. стоимость'),
             Column::text('delivery_time', 'Срок доставки'),
-            Column::text('comprehensive_show_in_price', 'Показ. в общем прайсе'),
+            Column::checkbox('show_in_price', 'Показ. в общем прайсе'),
         ])
             ->setFilter([
                 null,
@@ -55,11 +55,7 @@ class Routes extends Section
                     ->setDisplay("name"),
                 null,
                 null,
-                FilterType::bselect('show_in_price')
-                    ->setOptions([
-                        '0' => 'Нет',
-                        '1' => 'Да'
-                    ]),
+                null
             ])
             ->setPagination(10);
 
