@@ -1761,7 +1761,7 @@ ul.icons_list li:after {
 	font-weight:900;
 	color:#353c41;
 }
-.table tbody td{
+.reports-table.table tbody td{
 	font-size:11px;
 	color:#353c41;
 }

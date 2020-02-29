@@ -18,14 +18,41 @@
                     <header class="wrapper__header">
                         <h1>Тарифы</h1>
                     </header>
+                    <div class="row">
+                        <div class="col-12">
+                            @if($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                     <form action="{{ route('pricesPage') }}" method="get">
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="ship_city">Город(а) отправления:</label>
                                     <select id="ship_city" class="form-control point-select" name="ship_city[]" placeholder="Выберите город" data-height="100%" multiple required>
+                                        <option value="0"
+                                            @if(
+                                                !empty(app('request')->input('ship_city'))
+                                                && in_array(0, $userShipCityIds)
+                                            )
+                                                selected
+                                            @endif
+                                        >
+                                            Из всех
+                                        </option>
                                         @foreach($shipCities as $shipCity)
-                                            <option value="{{ $shipCity->id }}" @if(in_array($shipCity->id, $shipCityIds)) selected @endif>{{ $shipCity->name }}</option>
+                                            <option value="{{ $shipCity->id }}"
+                                                    @if(in_array($shipCity->id, $userShipCityIds)) selected @endif
+                                            >
+                                                {{ $shipCity->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -34,8 +61,24 @@
                                 <div class="form-group">
                                     <label for="dest_city">Город(а) назначения:</label>
                                     <select id="dest_city" class="form-control point-select" name="dest_city[]" placeholder="Выберите город" data-height="100%" multiple required>
+                                        @if($isToAllAvailable)
+                                            <option value="0"
+                                                @if(
+                                                    !empty(app('request')->input('dest_city'))
+                                                    && in_array(0, $userDestCityIds)
+                                                )
+                                                    selected
+                                                @endif
+                                            >
+                                                Во все
+                                            </option>
+                                        @endif
                                         @foreach($destCities as $destCity)
-                                            <option value="{{ $destCity->id }}" @if(in_array($destCity->id, $destCityIds)) selected @endif>{{ $destCity->name }}</option>
+                                            <option value="{{ $destCity->id }}"
+                                                    @if(in_array($destCity->id, $userDestCityIds)) selected @endif
+                                            >
+                                                {{ $destCity->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
