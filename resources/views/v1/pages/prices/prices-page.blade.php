@@ -20,10 +20,10 @@
                     </header>
                     <div class="row">
                         <div class="col-12">
-                            @if ($errors->any())
+                            @if($errors->any())
                                 <div class="alert alert-danger">
                                     <ul>
-                                        @foreach ($errors->all() as $error)
+                                        @foreach($errors->all() as $error)
                                             <li>{{ $error }}</li>
                                         @endforeach
                                     </ul>
@@ -40,7 +40,7 @@
                                         <option value="0"
                                             @if(
                                                 !empty(app('request')->input('ship_city'))
-                                                && in_array(0, app('request')->input('ship_city'))
+                                                && in_array(0, $userShipCityIds)
                                             )
                                                 selected
                                             @endif
@@ -49,7 +49,7 @@
                                         </option>
                                         @foreach($shipCities as $shipCity)
                                             <option value="{{ $shipCity->id }}"
-                                                    @if(in_array($shipCity->id, app('request')->input('ship_city') ?? [53])) selected @endif
+                                                    @if(in_array($shipCity->id, $userShipCityIds)) selected @endif
                                             >
                                                 {{ $shipCity->name }}
                                             </option>
@@ -65,7 +65,7 @@
                                             <option value="0"
                                                 @if(
                                                     !empty(app('request')->input('dest_city'))
-                                                    && in_array(0, app('request')->input('dest_city'))
+                                                    && in_array(0, $userDestCityIds)
                                                 )
                                                     selected
                                                 @endif
@@ -75,7 +75,7 @@
                                         @endif
                                         @foreach($destCities as $destCity)
                                             <option value="{{ $destCity->id }}"
-                                                    @if(in_array($destCity->id, app('request')->input('dest_city') ?? [78])) selected @endif
+                                                    @if(in_array($destCity->id, $userDestCityIds)) selected @endif
                                             >
                                                 {{ $destCity->name }}
                                             </option>

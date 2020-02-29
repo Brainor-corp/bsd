@@ -21,8 +21,12 @@ class PricesController extends Controller {
         $isShowInPriceOnly = false; // Флаг ограничения выборку маршрутов по полю show_in_price
         $isToAllAvailable = true; // Флаг доступности пункта "Во всех" для городов назначения
 
-        $shipCityIds = $request->get('ship_city') ?? [53]; // По умолчанию город отправления -- Москва
-        $destCityIds = $request->get('dest_city') ?? [78]; // По умолчанию город Назначения -- Санкт-Петербург
+        $shipCityIds = $userShipCityIds = $request->get('ship_city') ?? [53]; // По умолчанию город отправления -- Москва
+        $destCityIds = $userDestCityIds = $request->get('dest_city') ?? [78]; // По умолчанию город Назначения -- Санкт-Петербург
+
+        if($shipCityIds[0] == 0 || $destCityIds[0] == 0) {
+            return redirect()->back()->withErrors(['Выберите хотя бы 1 город отправления или город назначения']);
+        }
 
         // Если в городе отправления выбрано "Из всех"
         if($shipCityIds[0] == 0) {
@@ -87,18 +91,15 @@ class PricesController extends Controller {
         $insideForwardings = null;
         $perKmTariffs = null;
 
-        // Если маршруты найдены
-        if(isset($routes)) {
-            // Найдём тарифы внутренней экспедиции для городов из найденных маршрутов
-            $insideForwardings = InsideForwarding::with('forwardThreshold', 'city')
-                ->has('forwardThreshold')
-                ->whereIn('city_id', array_merge($routes->pluck('ship_city_id')->toArray(), $routes->pluck('dest_city_id')->toArray()))
-                ->get();
+        // Найдём тарифы внутренней экспедиции для городов из найденных маршрутов
+        $insideForwardings = InsideForwarding::with('forwardThreshold', 'city')
+            ->has('forwardThreshold')
+            ->whereIn('city_id', array_merge($userShipCityIds, $userDestCityIds))
+            ->get();
 
-            // Найдём покилометровые тарифы
-            $perKmTariffs = PerKmTariff::whereIn('tariff_zone_id', $insideForwardings->pluck('city.tariff_zone_id')->unique()->toArray())
-                ->get();
-        }
+        // Найдём покилометровые тарифы
+        $perKmTariffs = PerKmTariff::whereIn('tariff_zone_id', $insideForwardings->pluck('city.tariff_zone_id')->unique()->toArray())
+            ->get();
 
         // Просмотр или скачивание
         $action = $request->get('action') ?? 'show';
@@ -124,6 +125,8 @@ class PricesController extends Controller {
                     'destCities',
                     'shipCityIds',
                     'destCityIds',
+                    'userShipCityIds',
+                    'userDestCityIds',
                     'perKmTariffs',
                     'isToAllAvailable'
                 ));
@@ -149,7 +152,7 @@ class PricesController extends Controller {
                 ->orderBy('name')
                 ->get();
 
-            $isToAllAvailable = 0;
+            $isToAllAvailable = false;
         } else {
             $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->whereIn('ship_city_id', $request->get('ship_city')))
                 ->orderBy('name')
