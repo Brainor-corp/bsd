@@ -79,10 +79,12 @@
         </div>
     @endforeach
 @else
-    <span>Информация по маршрутам выбранных городов отсутствует</span>
+    <div class="py-4 text-center">
+        <strong>Информация по маршрутам выбранных городов отсутствует</strong>
+    </div>
 @endif
 
-@if(!empty($insideForwardings->groupBy('city_id')))
+@if(isset($insideForwardings) && !empty($insideForwardings->groupBy('city_id')))
     @foreach($insideForwardings->groupBy('city_id') as $insideForwardingsCities)
         <h4 style="text-align: center;">Стоимость экспедирования в черте города {{ $insideForwardingsCities->first()->city->name }}</h4>
         <div class="table-responsive mb-3">
@@ -192,7 +194,9 @@
         </div>
     @endforeach
 @else
-    <span>Информация по стоимости экспедирования в выбранных городах отсутствует</span>
+    <div class="py-4 text-center">
+        <strong>Информация по стоимости экспедирования в выбранных городах отсутствует</strong>
+    </div>
 @endif
 
 <br>

@@ -185,3 +185,7 @@ ol li {
 .badge.calc_badge .fa {
     color: #ef402f !important;
 }
+.selectize-control.multi .selectize-input > div.active {
+    background: #efefef !important;
+    color: unset !important;
+}
