@@ -137,7 +137,7 @@
                                 @if(isset($insideForwarding->forwardThreshold->name_dimensions))
                                     <span class="text-nowrap">{{ $insideForwarding->forwardThreshold->length ?? '-' }}-дл.,</span> <br>
                                     <span class="text-nowrap">{{ $insideForwarding->forwardThreshold->width ?? '-' }}-шир.,</span> <br>
-                                    <span class="text-nowrap">{{ $insideForwarding->forwardThreshold->height ?? '-' }}-выс.,</span>
+                                    <span class="text-nowrap">{{ $insideForwarding->forwardThreshold->height ?? '-' }}-выс.</span>
                                 @else
                                     <span>-</span>
                                 @endif
