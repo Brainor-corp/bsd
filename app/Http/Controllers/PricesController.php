@@ -24,7 +24,7 @@ class PricesController extends Controller {
         $shipCityIds = $userShipCityIds = $request->get('ship_city') ?? [53]; // По умолчанию город отправления -- Москва
         $destCityIds = $userDestCityIds = $request->get('dest_city') ?? [78]; // По умолчанию город Назначения -- Санкт-Петербург
 
-        if($shipCityIds[0] == 0 || $destCityIds[0] == 0) {
+        if($shipCityIds[0] == 0 && $destCityIds[0] == 0) {
             return redirect()->back()->withErrors(['Выберите хотя бы 1 город отправления или город назначения']);
         }
 
