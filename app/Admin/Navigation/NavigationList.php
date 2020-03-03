@@ -83,6 +83,11 @@ class NavigationList
                         'text' => 'Покилометровые тарифы'
                     ],
                     [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/TariffZones',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Тарифные зоны'
+                    ],
+                    [
                         'url' => '/' . config('zeusAdmin.admin_url') . '/Orders',
                         'icon' => 'fas fa-address-book',
                         'text' => 'Заявки'
