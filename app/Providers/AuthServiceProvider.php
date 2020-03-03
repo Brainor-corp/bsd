@@ -31,6 +31,7 @@ use App\Admin\Sections\Routes;
 use App\Admin\Sections\RouteTariffs;
 use App\Admin\Sections\Services;
 use App\Admin\Sections\Supports;
+use App\Admin\Sections\TariffZones;
 use App\Admin\Sections\Terminals;
 use App\Admin\Sections\Thresholds;
 use App\Admin\Sections\Types;
@@ -86,6 +87,7 @@ class AuthServiceProvider extends ServiceProvider
         Thresholds::class => DefaultSectionPolicy::class,
         Types::class => DefaultSectionPolicy::class,
         Users::class => DefaultSectionPolicy::class,
+        TariffZones::class => DefaultSectionPolicy::class,
 
         // CMS
         ZeusAdminComments::class =>DefaultSectionPolicy::class,

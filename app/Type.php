@@ -22,4 +22,8 @@ class Type extends Model
         ];
     }
 
+    public function scopeTariffZones($query)
+    {
+        return $query->where('class', 'tariff_zones');
+    }
 }
