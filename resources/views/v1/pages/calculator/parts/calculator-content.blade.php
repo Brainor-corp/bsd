@@ -262,7 +262,7 @@
                 <div id="take-file-info" class="d-inline-block">
                     @if(!empty(old('take_driving_directions_file')) || !empty($order->take_driving_directions_file))
                         <a href="{{ url(old('take_driving_directions_file') ?? ($order->take_driving_directions_file ?? '')) }}" target='_blank'>Файл</a>
-                        <a href='#' class='remove-file text-muted ml-2' data-type='delivery'><small>(Удалить)</small></a>
+                        <a href='#' class='remove-file text-muted ml-2' data-type='take'><small>(Удалить)</small></a>
                     @endif
                 </div>
                 <input type="hidden" name="take_driving_directions_file" value="{{ old('take_driving_directions_file') ?? ($order->take_driving_directions_file ?? '') }}">

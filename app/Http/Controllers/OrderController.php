@@ -15,6 +15,7 @@ use App\Route;
 use App\Rules\Discount1c;
 use App\Rules\GoogleReCaptchaV2;
 use App\Rules\INN;
+use App\Rules\OrderFileRule;
 use App\Type;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -40,6 +41,7 @@ class OrderController extends Controller
         $rules = [
             'g-recaptcha-response' => ['required', new GoogleReCaptchaV2()],
             "ship_city" => ['required', 'string', 'max:255'],                                   // Город_отправления (название)
+            'take_driving_directions_file' => ['nullable', 'string', 'max:255', new OrderFileRule()],   // Схема проезда до города отправления
             "take_city_name" => ['nullable', 'string', 'max:255'],                              // Название_города_экспедиции (забор)
             "take_distance" => ['nullable', 'numeric'],                                         // Дистанция_экспедиции (забор)
             "ship_point" => ['nullable', 'string', 'max:150'],                                  // Адрес_экспедиции (забор)
@@ -55,12 +57,12 @@ class OrderController extends Controller
             "cargo.packages.*.quantity" => ['nullable', 'integer', 'min:0'],                    // Кол-во пакета
 
             "dest_city" => ['required', 'string', 'max:255'],                                   // Город_назначения (название)
+            'delivery_driving_directions_file' => ['nullable', 'string', 'max:255', new OrderFileRule()],   // Схема проезда до города назначения
             "bring_city_name" => ['nullable', 'string', 'max:255'],                             // Название_города_экспедиции (доставка)
             "bring_distance" => ['nullable', 'numeric'],                                        // Дистанция_экспедиции (доставка)
             "dest_point" => ['nullable', 'string', 'max:150'],                                  // Адрес_экспедиции (доставка)
             "bring_polygon" => ['nullable'],                                                    // Полигон экспедиции (доставка)
 
-//            "insurance_amount" => ['required', 'numeric', 'min:50000'],                         // Страховка (Цена_страхования)
             "discount" => ['nullable', 'numeric', new Discount1c()],                            // Скидка (Процент_скидки)
 
             "sender_type_id" => ['required', 'numeric'],                                        // Отправитель (Тип_контрагента)
