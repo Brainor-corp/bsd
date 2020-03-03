@@ -2,8 +2,7 @@
 
 namespace App\Console;
 
-use App\Jobs\OrdersSyncTo1c;
-use App\Jobs\SendOrdersPaymentStatusTo1c;
+use App\Jobs\ClearPendingFiles;
 use App\Jobs\UsersOrdersSyncFrom1c;
 use App\Jobs\UsersSyncTo1c;
 use Illuminate\Console\Scheduling\Schedule;
@@ -32,6 +31,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->job(new UsersSyncTo1c())->everyFiveMinutes();
         $schedule->job(new UsersOrdersSyncFrom1c())->everyFiveMinutes();
+
+        $schedule->job(new ClearPendingFiles())->daily();
     }
 
     /**

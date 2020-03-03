@@ -10,6 +10,7 @@ use App\Http\Helpers\EventHelper;
 use App\Http\Requests\OrderFileUpload;
 use App\Order;
 use App\OrderItem;
+use App\PendingFile;
 use App\Polygon;
 use App\Route;
 use App\Rules\Discount1c;
@@ -710,6 +711,11 @@ class OrderController extends Controller
             event(new OrderCreated($order));
         }
 
+        PendingFile::whereIn('path', [
+            $request->get('take_driving_directions_file'),
+            $request->get('delivery_driving_directions_file')
+        ])->delete();
+
         return $order->status->slug === "chernovik" ?
             redirect(route('calculator-show', [
                 'id' => $order->id,
@@ -729,6 +735,10 @@ class OrderController extends Controller
         $uploadFile = $request->file('file');
         $storagePath = Storage::disk('available_public')
             ->put('files/order-files', $uploadFile);
+
+        $pendingFile = new PendingFile();
+        $pendingFile->path = public_path($storagePath);
+        $pendingFile->save();
 
         return response()->json([
             'data' => [
