@@ -7,6 +7,7 @@ use App\Counterparty;
 use App\Events\OrderCreated;
 use App\Http\Helpers\CalculatorHelper;
 use App\Http\Helpers\EventHelper;
+use App\Http\Requests\OrderFileUpload;
 use App\Order;
 use App\OrderItem;
 use App\Polygon;
@@ -19,6 +20,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 
@@ -164,9 +166,6 @@ class OrderController extends Controller
                 'weight' => $package['weight'] ?? 0,
                 'quantity' => $package['quantity'] ?? 0,
             ]);
-
-//            $totalWeight += $package['weight'] * $package['quantity'];
-//            $totalVolume += $package['volume'] * $package['quantity'];
         }
 
         $calculatedData = CalculatorHelper::getAllCalculatedData(
@@ -323,9 +322,11 @@ class OrderController extends Controller
         $order->total_volume = $totalVolume;
         $order->total_quantity = $totalQuantity;
         $order->ship_city_id = $shipCity->id;
+        $order->take_driving_directions_file = $request->get('take_driving_directions_file');
         $order->ship_city_name = $shipCity->name;
         $order->take_polygon_id = $takePolygon->id ?? null;
         $order->dest_city_id = $destCity->id;
+        $order->delivery_driving_directions_file = $request->get('delivery_driving_directions_file');
         $order->bring_polygon_id = $bringPolygon->id ?? null;
         $order->estimated_delivery_date = Carbon::now()->addDays($route->delivery_time)->toDateString();
         $order->dest_city_name = $destCity->name;
@@ -717,6 +718,22 @@ class OrderController extends Controller
                     redirect(route('orders-list'))->with('message', "Заявка №$order->id успешно сохранена.") :
                     redirect()->back()->with('message', "Заявка №$order->id успешно сохранена.")
             );
+    }
+
+    public function saveFile(OrderFileUpload $request)
+    {
+        $request->validated();
+
+        $uploadFile = $request->file('file');
+        $storagePath = Storage::disk('available_public')
+            ->put('files/order-files', $uploadFile);
+
+        return response()->json([
+            'data' => [
+                'path' => $storagePath,
+                'url' => url($storagePath)
+            ]
+        ]);
     }
 
     public function shipmentSearch(Request $request) {
