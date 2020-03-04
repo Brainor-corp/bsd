@@ -712,8 +712,8 @@ class OrderController extends Controller
         }
 
         PendingFile::whereIn('path', [
-            $request->get('take_driving_directions_file'),
-            $request->get('delivery_driving_directions_file')
+            public_path($request->get('take_driving_directions_file')),
+            public_path($request->get('delivery_driving_directions_file'))
         ])->delete();
 
         return $order->status->slug === "chernovik" ?
