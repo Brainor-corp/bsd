@@ -256,6 +256,17 @@
                     @endif
                 </select>
             </div>
+            <div class="form-item">
+                <a href="#" class="ajax-file-upload btn-sm btn-secondary mr-2">Загрузить схему проезда</a>
+                <input type="file" id="take-file-input" class="d-none" accept="image/*"/>
+                <div id="take-file-info" class="d-inline-block">
+                    @if(!empty(old('take_driving_directions_file')) || !empty($order->take_driving_directions_file))
+                        <a href="{{ url(old('take_driving_directions_file') ?? ($order->take_driving_directions_file ?? '')) }}" target='_blank'>Файл</a>
+                        <a href='#' class='remove-file text-muted ml-2' data-type='take'><small>(Удалить)</small></a>
+                    @endif
+                </div>
+                <input type="hidden" name="take_driving_directions_file" value="{{ old('take_driving_directions_file') ?? ($order->take_driving_directions_file ?? '') }}">
+            </div>
             <div class="custom-control custom-checkbox">
                 <input type="checkbox"
                        class="custom-control-input delivery-checkbox"
@@ -331,6 +342,17 @@
                         @endforeach
                     @endif
                 </select>
+            </div>
+            <div class="form-item">
+                <a href="#" class="ajax-file-upload btn-sm btn-secondary mr-2">Загрузить схему проезда</a>
+                <input type="file" id="delivery-file-input" class="d-none" accept="image/*"/>
+                <div id="delivery-file-info" class="d-inline-block">
+                    @if(!empty(old('delivery_driving_directions_file')) || !empty($order->delivery_driving_directions_file))
+                        <a href="{{ url(old('delivery_driving_directions_file') ?? ($order->delivery_driving_directions_file ?? '')) }}" target='_blank'>Файл</a>
+                        <a href='#' class='remove-file text-muted ml-2' data-type='delivery'><small>(Удалить)</small></a>
+                    @endif
+                </div>
+                <input type="hidden" name="delivery_driving_directions_file" value="{{ old('delivery_driving_directions_file') ?? ($order->delivery_driving_directions_file ?? '') }}">
             </div>
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input delivery-checkbox" id="need-to-bring" name="need-to-bring"

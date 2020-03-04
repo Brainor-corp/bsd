@@ -44,7 +44,7 @@ class OrderCreated extends Mailable
             $this->recipient
         );
 
-        return $this
+        $mail = $this
             ->subject("Заявка №$order->id от $order->created_at")
             ->view('emails.order-created')
             ->attach($file['tempFile'], [
@@ -55,5 +55,17 @@ class OrderCreated extends Mailable
                 'order' => $this->order,
                 'tempFile' => $file['tempFile']
             ]);
+
+        if(!empty($order->take_driving_directions_file) && file_exists(public_path($order->take_driving_directions_file))) {
+            $ext = pathinfo($order->take_driving_directions_file, PATHINFO_EXTENSION);
+            $mail->attach(public_path($order->take_driving_directions_file), ['as' => "Схема проезда для забора груза.$ext"]);
+        }
+
+        if(!empty($order->delivery_driving_directions_file && file_exists(public_path($order->delivery_driving_directions_file)))) {
+            $ext = pathinfo($order->delivery_driving_directions_file, PATHINFO_EXTENSION);
+            $mail->attach(public_path($order->delivery_driving_directions_file), ['as' => "Схема проезда для доставки груза.$ext"]);
+        }
+
+        return $mail;
     }
 }
