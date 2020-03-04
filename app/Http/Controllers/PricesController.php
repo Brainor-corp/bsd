@@ -82,8 +82,11 @@ class PricesController extends Controller {
             ->when($isShowInPriceOnly, function ($routesQuery) {
                 return $routesQuery->where('show_in_price', true);
             })
-            ->with('route_tariffs.rate', 'route_tariffs.threshold')
-            ->get();
+            ->with('route_tariffs.rate', 'route_tariffs.threshold', 'shipCity', 'destinationCity')
+            ->get()
+            ->sortBy(function ($item) {
+                return $item->shipCity->name . '-' . $item->destinationCity->name;
+            });
         } else {
             $routes = null;
         }
@@ -95,7 +98,8 @@ class PricesController extends Controller {
         $insideForwardings = InsideForwarding::with('forwardThreshold', 'city')
             ->has('forwardThreshold')
             ->whereIn('city_id', array_merge($userShipCityIds, $userDestCityIds))
-            ->get();
+            ->get()
+            ->sortBy('city.name');
 
         // Найдём покилометровые тарифы
         $perKmTariffs = PerKmTariff::whereIn('tariff_zone_id', $insideForwardings->pluck('city.tariff_zone_id')->unique()->toArray())
