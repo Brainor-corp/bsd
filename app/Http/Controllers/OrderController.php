@@ -7,18 +7,22 @@ use App\Counterparty;
 use App\Events\OrderCreated;
 use App\Http\Helpers\CalculatorHelper;
 use App\Http\Helpers\EventHelper;
+use App\Http\Requests\OrderFileUpload;
 use App\Order;
 use App\OrderItem;
+use App\PendingFile;
 use App\Polygon;
 use App\Route;
 use App\Rules\Discount1c;
 use App\Rules\GoogleReCaptchaV2;
 use App\Rules\INN;
+use App\Rules\OrderFileRule;
 use App\Type;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 
@@ -38,6 +42,7 @@ class OrderController extends Controller
         $rules = [
             'g-recaptcha-response' => ['required', new GoogleReCaptchaV2()],
             "ship_city" => ['required', 'string', 'max:255'],                                   // Город_отправления (название)
+            'take_driving_directions_file' => ['nullable', 'string', 'max:255', new OrderFileRule()],   // Схема проезда до города отправления
             "take_city_name" => ['nullable', 'string', 'max:255'],                              // Название_города_экспедиции (забор)
             "take_distance" => ['nullable', 'numeric'],                                         // Дистанция_экспедиции (забор)
             "ship_point" => ['nullable', 'string', 'max:150'],                                  // Адрес_экспедиции (забор)
@@ -53,12 +58,12 @@ class OrderController extends Controller
             "cargo.packages.*.quantity" => ['nullable', 'integer', 'min:0'],                    // Кол-во пакета
 
             "dest_city" => ['required', 'string', 'max:255'],                                   // Город_назначения (название)
+            'delivery_driving_directions_file' => ['nullable', 'string', 'max:255', new OrderFileRule()],   // Схема проезда до города назначения
             "bring_city_name" => ['nullable', 'string', 'max:255'],                             // Название_города_экспедиции (доставка)
             "bring_distance" => ['nullable', 'numeric'],                                        // Дистанция_экспедиции (доставка)
             "dest_point" => ['nullable', 'string', 'max:150'],                                  // Адрес_экспедиции (доставка)
             "bring_polygon" => ['nullable'],                                                    // Полигон экспедиции (доставка)
 
-//            "insurance_amount" => ['required', 'numeric', 'min:50000'],                         // Страховка (Цена_страхования)
             "discount" => ['nullable', 'numeric', new Discount1c()],                            // Скидка (Процент_скидки)
 
             "sender_type_id" => ['required', 'numeric'],                                        // Отправитель (Тип_контрагента)
@@ -164,9 +169,6 @@ class OrderController extends Controller
                 'weight' => $package['weight'] ?? 0,
                 'quantity' => $package['quantity'] ?? 0,
             ]);
-
-//            $totalWeight += $package['weight'] * $package['quantity'];
-//            $totalVolume += $package['volume'] * $package['quantity'];
         }
 
         $calculatedData = CalculatorHelper::getAllCalculatedData(
@@ -323,9 +325,11 @@ class OrderController extends Controller
         $order->total_volume = $totalVolume;
         $order->total_quantity = $totalQuantity;
         $order->ship_city_id = $shipCity->id;
+        $order->take_driving_directions_file = $request->get('take_driving_directions_file');
         $order->ship_city_name = $shipCity->name;
         $order->take_polygon_id = $takePolygon->id ?? null;
         $order->dest_city_id = $destCity->id;
+        $order->delivery_driving_directions_file = $request->get('delivery_driving_directions_file');
         $order->bring_polygon_id = $bringPolygon->id ?? null;
         $order->estimated_delivery_date = Carbon::now()->addDays($route->delivery_time)->toDateString();
         $order->dest_city_name = $destCity->name;
@@ -707,6 +711,11 @@ class OrderController extends Controller
             event(new OrderCreated($order));
         }
 
+        PendingFile::whereIn('path', [
+            public_path($request->get('take_driving_directions_file')),
+            public_path($request->get('delivery_driving_directions_file'))
+        ])->delete();
+
         return $order->status->slug === "chernovik" ?
             redirect(route('calculator-show', [
                 'id' => $order->id,
@@ -717,6 +726,26 @@ class OrderController extends Controller
                     redirect(route('orders-list'))->with('message', "Заявка №$order->id успешно сохранена.") :
                     redirect()->back()->with('message', "Заявка №$order->id успешно сохранена.")
             );
+    }
+
+    public function saveFile(OrderFileUpload $request)
+    {
+        $request->validated();
+
+        $uploadFile = $request->file('file');
+        $storagePath = Storage::disk('available_public')
+            ->put('files/order-files', $uploadFile);
+
+        $pendingFile = new PendingFile();
+        $pendingFile->path = public_path($storagePath);
+        $pendingFile->save();
+
+        return response()->json([
+            'data' => [
+                'path' => $storagePath,
+                'url' => url($storagePath)
+            ]
+        ]);
     }
 
     public function shipmentSearch(Request $request) {

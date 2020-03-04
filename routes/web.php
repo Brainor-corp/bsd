@@ -59,6 +59,8 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::any('/calculator-show/{id?}', 'CalculatorController@calculatorShow')->name('calculator-show');
     Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
 
+    Route::post('/order-file-upload', 'OrderController@saveFile')->name('order-file-upload');
+
     Route::group(['middleware' => 'sms-confirm'], function () {
         Route::post('/order-save', 'OrderController@orderSave')
             ->middleware('order.save')

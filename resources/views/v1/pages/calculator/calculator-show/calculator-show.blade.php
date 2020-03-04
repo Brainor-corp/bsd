@@ -30,6 +30,7 @@
     {{--<script src="{{ asset('v1/js/calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>--}}
     <script src="{{ asset('packages/jquery-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('v1/js/calculator-page.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script src="{{ asset('v1/js/order-files.js') }}@include('v1.partials.versions.jsVersion')"></script>
 @endsection
 
 @section('content')
