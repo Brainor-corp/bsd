@@ -24,14 +24,13 @@ class OrderFileUpload extends FormRequest
     public function rules()
     {
         return [
-            'file' => 'required|image|max:' . strval(1024 * 10)
+            'file' => 'required|max:' . strval(1024 * 10)
         ];
     }
 
     public function messages()
     {
         return [
-            'file.image' => "Файл должен быть изображением",
             'file.max' => "Размер файла не должен превышать 10 МБ",
         ];
     }
