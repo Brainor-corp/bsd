@@ -20,7 +20,12 @@ class CurrentCityViewComposer
         $city = null;
 
         if(isset($sessionCity->id)) {
-            $city = City::where('id', $sessionCity->id)->with('closestTerminal')->first();
+            $city = City::where([
+                ['id', $sessionCity->id],
+                ['is_filial', true]
+            ])
+                ->with('closestTerminal')
+                ->first();
         }
 
         if(!isset($city)) {

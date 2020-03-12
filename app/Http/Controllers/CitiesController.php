@@ -11,7 +11,10 @@ class CitiesController extends Controller
         $term = $request->get('term');
         $limit = $request->get('maxresults');
 
-        return City::where('name', 'like', "%$term%")
+        return City::where([
+            ['name', 'like', "%$term%"],
+            ['is_filial', true]
+        ])
             ->limit($limit)
             ->get();
     }

@@ -25,7 +25,10 @@ class GeoIpCheck
             } else {//если кука не задана - получаем город по ip, ищем в базе - задаем куку и сессию.
                 $ip = geoip()->getLocation($request->ip());
 
-                $city = City::where('name', $ip->city)
+                $city = City::where([
+                    ['name', $ip->city],
+                    ['is_filial', true]
+                ])
                     ->orWhere('slug', 'sankt-peterburg')
                     ->select('id', 'slug', 'name')
                     ->first();
