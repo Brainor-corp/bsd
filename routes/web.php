@@ -74,7 +74,9 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::post('/partners-action', 'PartnersController@sendPartnersFeedback')->name('partners-page-action');
 
     // Статус груза по номеру заказа
-    Route::any('/shipment-search', 'OrderController@shipmentSearch')->name('shipment-search');
+    Route::get('/shipment-search', 'OrderController@shipmentSearch')->name('shipment-search');
+    Route::post('/shipment-search/result', 'OrderController@shipmentSearchWrapper')->name('shipment-search-wrapper');
+    Route::post('/shipment-search/ajax', 'OrderController@shipmentSearchAjax')->name('shipment-search-ajax');
 
     Route::group(['middleware' => ['auth']], function () {
         Route::group(['middleware' => ['admin']], function () {
