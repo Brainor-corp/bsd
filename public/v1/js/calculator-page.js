@@ -27,6 +27,17 @@ function getDiscount() {
     });
 }
 
+function doorstepChange(type) {
+    let selectId = type === 'take' ? 'ship_city' : 'dest_city';
+
+    if(
+        $('#' + selectId).data().selectize.options[$('#' + selectId).data().selectize.getValue()]
+        && $('#' + selectId).data().selectize.options[$('#' + selectId).data().selectize.getValue()].doorstep === "1"
+    ) {
+        clearDeliveryData(type, true)
+    }
+}
+
 $(document).ready(function () {
     getDiscount();
     // totalWeigthRecount();
@@ -65,6 +76,7 @@ $(document).ready(function () {
             }
         },
         onChange: function(value) {// при изменении города отправления
+            doorstepChange('take');
             getAllCalculatedData();
             if (!value.length) return;
             $.ajaxSetup({
@@ -108,6 +120,7 @@ $(document).ready(function () {
                             }
                         },
                         onChange: function(value) {// при изменении города назначения
+                            doorstepChange('bring');
                             getAllCalculatedData();
                             kladrInitialize();
                         },
@@ -148,6 +161,7 @@ $(document).ready(function () {
         },
         onChange: function(value) {// при изменении города назначения
             // Вызываем тригер изменения пункта самовывоза, чтобы пересчитать дистанцию
+            doorstepChange('bring');
             $('#dest_point').trigger('change');
             getAllCalculatedData();
             kladrInitialize();
