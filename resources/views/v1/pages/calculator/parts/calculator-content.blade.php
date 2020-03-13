@@ -252,7 +252,12 @@
                     @if($shipCities->count() > 0)
                         @foreach($shipCities as $shipCity)
                             <option value="{{ $shipCity->name }}"
-                                    data-data='{"terminal": "{{ $shipCity->coordinates_or_address }}", "kladrId": "{{ $shipCity->kladr->code ?? 'null' }}", "doorstep": "{{ $shipCity->doorstep }}"}'
+                                    data-data='{
+                                        "terminal": "{{ $shipCity->coordinates_or_address }}",
+                                        "kladrId": "{{ $shipCity->kladr->code ?? 'null' }}",
+                                        "doorstep": "{{ $shipCity->doorstep }}",
+                                        "doorstep_message": "{{ addcslashes($shipCity->doorstep_message->name ?? '', '"') }}"
+                                    }'
                                     @if($selectedShipCity == $shipCity->id) selected @endif
                             >
                                 {{ $shipCity->name }}
@@ -344,7 +349,12 @@
                     @if(isset($destinationCities))
                         @foreach($destinationCities as $destinationCity)
                             <option value="{{ $destinationCity->name }}"
-                                    data-data='{"terminal": "{{ $destinationCity->coordinates_or_address }}", "kladrId": "{{ $destinationCity->kladr->code ?? 'null' }}", "doorstep": "{{ $destinationCity->doorstep }}"}'
+                                    data-data='{
+                                        "terminal": "{{ $destinationCity->coordinates_or_address }}",
+                                        "kladrId": "{{ $destinationCity->kladr->code ?? 'null' }}",
+                                        "doorstep": "{{ $destinationCity->doorstep }}",
+                                        "doorstep_message": "{{ addcslashes($destinationCity->doorstep_message->name ?? '', '"') }}"
+                                    }'
                                     @if($selectedDestCity == $destinationCity->id) selected @endif
                             >
                                 {{ $destinationCity->name }}

@@ -87,16 +87,14 @@
                                             <span class="rouble">p</span>
                                         </span>
                                     </div>
-                                    {{--<div class="block__itogo_item d-flex">--}}
-                                        {{--<div class="d-flex flex-wrap">--}}
-                                            {{--<span class="block__itogo_label">Доставка груза:</span>--}}
-                                            {{--<span class="block__itogo_value">Терминал</span>--}}
-                                        {{--</div>--}}
-                                        {{--<span class="block__itogo_price d-flex flex-nowrap">--}}
-                                            {{--<span class="block__itogo_amount">155</span>--}}
-                                            {{--<span class="rouble">p</span>--}}
-                                        {{--</span>--}}
-                                    {{--</div>--}}
+                                    <div id="custom-delivery">
+                                        <div>
+                                            <span class="block__itogo_value" id="take-delivery-message"></span>
+                                        </div>
+                                        <div>
+                                            <span class="block__itogo_value" id="bring-delivery-message"></span>
+                                        </div>
+                                    </div>
                                     <div id="delivery-total-wrapper" style="display: none"
                                     >
                                         <div class="block__itogo_item d-flex">

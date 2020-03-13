@@ -29,12 +29,16 @@ function getDiscount() {
 
 function doorstepChange(type) {
     let selectId = type === 'take' ? 'ship_city' : 'dest_city';
+    let messageBlockId = type === 'take' ? 'take-delivery-message' : 'bring-delivery-message';
 
     if(
         $('#' + selectId).data().selectize.options[$('#' + selectId).data().selectize.getValue()]
         && $('#' + selectId).data().selectize.options[$('#' + selectId).data().selectize.getValue()].doorstep === "1"
     ) {
-        clearDeliveryData(type, true)
+        clearDeliveryData(type, true);
+        $('#' + messageBlockId).text($('#' + selectId).data().selectize.options[$('#' + selectId).data().selectize.getValue()].doorstep_message);
+    } else {
+        $('#' + messageBlockId).text('');
     }
 }
 
@@ -72,7 +76,10 @@ $(document).ready(function () {
         },
         render: {
             option: function (data, escape) {
-                return "<div data-terminal='" + data.terminal + "' data-doorstep='" + data.doorstep + "'>" + data.text + "</div>"
+                return "<div data-terminal='" + data.terminal
+                    + "' data-doorstep='" + data.doorstep
+                    + "' data-message='" + data.doorstep_message
+                    + "'>" + data.text + "</div>"
             }
         },
         onChange: function(value) {// при изменении города отправления
@@ -116,7 +123,10 @@ $(document).ready(function () {
                         },
                         render: {
                             option: function (data, escape) {
-                                return "<div data-terminal='" + data.terminal + "' data-doorstep='" + data.doorstep + "'>" + data.text + "</div>"
+                                return "<div data-terminal='" + data.terminal
+                                    + "' data-doorstep='" + data.doorstep
+                                    + "' data-message='" + data.doorstep_message
+                                    + "'>" + data.text + "</div>"
                             }
                         },
                         onChange: function(value) {// при изменении города назначения
@@ -156,7 +166,10 @@ $(document).ready(function () {
         },
         render: {
             option: function (data, escape) {
-                return "<div data-terminal='" + data.terminal + "' data-doorstep='" + data.doorstep + "'>" + data.text + "</div>"
+                return "<div data-terminal='" + data.terminal
+                    + "' data-doorstep='" + data.doorstep
+                    + "' data-message='" + data.doorstep_message
+                    + "'>" + data.text + "</div>"
             }
         },
         onChange: function(value) {// при изменении города назначения

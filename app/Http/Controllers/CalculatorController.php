@@ -38,7 +38,7 @@ class CalculatorController extends Controller
             ]))->withInput($continueOrder);
         }
 
-        $shipCities = City::where('is_ship', true)->with('terminal', 'kladr')->get();
+        $shipCities = City::where('is_ship', true)->with('terminal', 'kladr', 'doorstep_message')->get();
 
         $citiesIdsToFindRoute = [];
         $order = null;
@@ -205,7 +205,7 @@ class CalculatorController extends Controller
         }
 
         $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity))
-            ->with('terminal')
+            ->with('terminal', 'doorstep_message')
             ->orderBy('name')
             ->get();
 
@@ -340,7 +340,7 @@ class CalculatorController extends Controller
         }
 
         $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $ship_city))
-            ->with('terminal','kladr')
+            ->with('terminal', 'kladr', 'doorstep_message')
             ->orderBy('name')
             ->get();
 
