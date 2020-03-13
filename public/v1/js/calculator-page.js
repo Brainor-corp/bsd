@@ -51,19 +51,17 @@ $(document).ready(function () {
 
             this.$control.on("click", function (event) {
                 $('#ship_city').selectize()[0].selectize.clear();
-                $('#need-to-take').prop("checked", false);
                 clearDeliveryData('take');
                 $('#need-to-take').trigger('change');
 
                 $('#dest_city').selectize()[0].selectize.clear();
-                $('#need-to-bring').prop("checked", false);
                 clearDeliveryData('bring');
                 $('#need-to-bring').trigger('change');
             });
         },
         render: {
             option: function (data, escape) {
-                return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
+                return "<div data-terminal='" + data.terminal + "' data-doorstep='" + data.doorstep + "'>" + data.text + "</div>"
             }
         },
         onChange: function(value) {// при изменении города отправления
@@ -100,14 +98,13 @@ $(document).ready(function () {
 
                             this.$control.on("click", function (event) {
                                 $('#dest_city').selectize()[0].selectize.clear();
-                                $('#need-to-bring').prop("checked", false);
                                 clearDeliveryData('bring');
                                 $('#need-to-bring').trigger('change');
                             });
                         },
                         render: {
                             option: function (data, escape) {
-                                return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
+                                return "<div data-terminal='" + data.terminal + "' data-doorstep='" + data.doorstep + "'>" + data.text + "</div>"
                             }
                         },
                         onChange: function(value) {// при изменении города назначения
@@ -140,14 +137,13 @@ $(document).ready(function () {
 
             this.$control.on("click", function (event) {
                 $('#dest_city').selectize()[0].selectize.clear();
-                $('#need-to-bring').prop("checked", false);
                 clearDeliveryData('bring');
                 $('#need-to-bring').trigger('change');
             });
         },
         render: {
             option: function (data, escape) {
-                return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
+                return "<div data-terminal='" + data.terminal + "' data-doorstep='" + data.doorstep + "'>" + data.text + "</div>"
             }
         },
         onChange: function(value) {// при изменении города назначения
@@ -1343,7 +1339,7 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName, forceDeliveryT
     });
 }
 
-function clearDeliveryData(type) {
+function clearDeliveryData(type, disable = false) {
     let pointType = type === 'take' ? 'ship': 'dest';
 
     $('#' + pointType + '_point').val('');
@@ -1352,4 +1348,7 @@ function clearDeliveryData(type) {
     $('input[name="' + type + '_city_name"]').val('');
     $('input[name="' + type + '_distance"]').val('');
     $('input[name="' + type + '_polygon"]').val('');
+
+    $('#need-to-' + type).prop("checked", false);
+    $('#need-to-' + type).prop("disabled", disable);
 }
