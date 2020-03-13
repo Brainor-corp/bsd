@@ -42,11 +42,13 @@ function initSortable() {
 $(document).ready(function () {
     initSortable();
 
+    $(document).off('.click-listener');
+
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
-    })
+    });
 
-    $(document).on('click', '.add_tree_element', function (e) {
+    $(document).on('click.click-listener', '.add_tree_element', function (e) {
         e.preventDefault();
         let treeType = $(this).data('treeType'),
             treeNeighbor = $(this).data('treeNeighbor'),
@@ -61,7 +63,7 @@ $(document).ready(function () {
         $('#add_tree_element_modal').modal('show');
     });
 
-    $(document).on('click', '.delete_tree_element', function (e) {
+    $(document).on('click.click-listener', '.delete_tree_element', function (e) {
         console.log('.delete_tree_element');
 
         e.preventDefault();
@@ -72,7 +74,7 @@ $(document).ready(function () {
         $('#delete_tree_element_modal').modal('show');
     });
 
-    $(document).on('click', '.tree-element-delete-btn', function (e) {
+    $(document).on('click.click-listener', '.tree-element-delete-btn', function (e) {
         e.preventDefault();
         button = $(this);
         button.attr('disabled', true);
@@ -110,12 +112,28 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on('click', '.new-tree-element-save-btn', function (e) {
+    $(document).on('click.click-listener', '.new-tree-element-save-btn', function (e) {
         e.preventDefault();
+        let form = $(this).parent().parent();
+
+        form.find(':input[required]').removeClass('border-danger');
+
+        let validation = true;
+        form.find(':input[required]').each(function () {
+            let el = $(this);
+            if(!$.trim(el.val())) {
+                el.addClass('border-danger');
+                validation = false;
+            }
+        });
+
+        if(!validation) {
+            return;
+        }
+
         button = $(this);
         button.attr('disabled', true);
-        let form = $(this).parent().parent(),
-            method = form.attr('method'),
+        let method = form.attr('method'),
             action = form.attr('action'),
             formData = form.serialize();
 
@@ -147,14 +165,13 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on('click', '.edit_tree_element', function (e) {
+    $(document).on('click.click-listener', '.edit_tree_element', function (e) {
         e.preventDefault();
         let title = $(this).data('elementTitle'),
             slug = $(this).data('elementSlug'),
             url = $(this).data('elementUrl'),
             description = $(this).data('elementDescription'),
-            id = $(this).data('elementId')
-        ;
+            id = $(this).data('elementId');
 
         $('#tree-element-id-edit').attr('value', id).val(id);
         $('#tree-element-title-edit').attr('value', title).val(title);
@@ -165,13 +182,25 @@ $(document).ready(function () {
         $('#edit_tree_element_modal').modal('show');
     });
 
-    $(document).on('click', '.tree-element-edit-btn', function (e) {
+    $(document).on('click.click-listener', '.tree-element-edit-btn', function (e) {
         e.preventDefault();
         let form = $(this).parent().parent(),
             method = form.attr('method'),
             action = form.attr('action'),
-            formData = form.serialize()
-        ;
+            formData = form.serialize();
+
+        let validation = true;
+        form.find(':input[required]').each(function () {
+            let el = $(this);
+            if(!$.trim(el.val())) {
+                el.addClass('border-danger');
+                validation = false;
+            }
+        });
+
+        if(!validation) {
+            return;
+        }
 
         $.ajaxSetup({
             headers: {
