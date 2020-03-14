@@ -24,7 +24,7 @@ class CurrentCityViewComposer
                 ['id', $sessionCity->id],
                 ['is_filial', true]
             ])
-                ->with('closestTerminal')
+                ->with('closestTerminal', 'terminals')
                 ->first();
         }
 
@@ -33,7 +33,8 @@ class CurrentCityViewComposer
         }
 
         $closestTerminal = $city->closestTerminal;
+        $terminals = $city->terminals;
 
-        $view->with(compact('city', 'closestTerminal'));
+        $view->with(compact('city', 'closestTerminal', 'terminals'));
     }
 }
