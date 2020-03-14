@@ -6,21 +6,26 @@
             @endphp
             @include('v1.partials.footer.footer-menu', ['nodeTree' => $footerMenu])
             <div class="col-12 col-xl footer-item text-lg-right footer-contacts">
-                <h4 class="whiteTxtColor mb-10"><i class="fa fa-phone"></i>
-                    @if(isset($closestTerminal->phone))
-                        @php
-                            $phones = preg_split("/(;|,)/", str_replace(' ', '', $closestTerminal->phone));
-                        @endphp
-                        @if(!empty($phones[0]))
-                            {{ $phones[0] }}
-                        @endif
-                    @endif
-                </h4>
-                <p class="darkTxtColor">
-                    @if(isset($closestTerminal->address))
-                        {{ $closestTerminal->address }}
-                    @endif
-                </p>
+                @foreach($terminals as $terminal)
+                    <div class="terminal">
+                        <div class="footer_title">
+                            <i class="fa fa-phone"></i>
+                            @if(isset($terminal->phone))
+                                @php
+                                    $phones = preg_split("/(;|,)/", str_replace(' ', '', $terminal->phone));
+                                @endphp
+                                @if(!empty($phones[0]))
+                                    {{ $phones[0] }}
+                                @endif
+                            @endif
+                        </div>
+                        <p class="darkTxtColor">
+                            @if(isset($terminal->address))
+                                {{ $terminal->address }}
+                            @endif
+                        </p>
+                    </div>
+                @endforeach
                 <div class="d-flex justify-content-lg-end">
                     <a href="https://vk.com/bsdtrans" class="social-link margin-item d-flex justify-content-center align-items-center"><i class="fa fa-vk"></i></a>
                     <a href="https://www.instagram.com/tk_bsd_russia" class="social-link margin-item d-flex justify-content-center align-items-center"><i class="fa fa-instagram"></i></a>
