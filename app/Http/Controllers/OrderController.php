@@ -777,7 +777,7 @@ class OrderController extends Controller
     public function shipmentSearchAjax(Request $request) {
         $data = null;
         $send = [
-            'type' => $request->get('type'),
+            'type' => $request->get('type') == 'id' ? 3 : 2,
             'number' => $request->get('number')
         ];
 
@@ -793,6 +793,7 @@ class OrderController extends Controller
                 $response1c['status'] == 200
                 && !empty($response1c['response']['status'])
                 && $response1c['response']['status'] === 'success'
+                && isset($response1c['response']['data'])
             ) {
                 $data = $response1c['response']['data'];
             }
