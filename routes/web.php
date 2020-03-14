@@ -151,6 +151,7 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
 //Route::get('/1c/test/new-client', 'Api1cTestController@newClient');
 //Route::get('/1c/test/client-by-id', 'Api1cTestController@clientById');
 //Route::get('/1c/test/update-order-payment-status', 'Api1cTestController@updateOrderPaymentStatus');
+//Route::get('/1c/test/cargo-status', 'Api1cTestController@cargoStatus');
 //
 //Route::get('/auth-user/{id}', function ($id) {
 //    $user = \App\User::where('id', $id)->firstOrfail();
