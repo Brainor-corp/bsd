@@ -262,7 +262,7 @@ class Api1cTestController extends Controller
     public function cargoStatus(Request $request)
     {
         $send = [
-            'type' => $request->get('type'),
+            'type' => intval($request->get('type')),
             'number' => $request->get('number')
         ];
 
@@ -272,7 +272,7 @@ class Api1cTestController extends Controller
         );
 
         dd([
-            'send' => [],
+            'send' => $send,
             'response' => $response1c
         ]);
     }

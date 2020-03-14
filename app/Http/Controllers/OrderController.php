@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\City;
 use App\Counterparty;
 use App\Events\OrderCreated;
+use App\Http\Helpers\Api1CHelper;
 use App\Http\Helpers\CalculatorHelper;
 use App\Http\Helpers\EventHelper;
 use App\Http\Requests\OrderFileUpload;
@@ -749,31 +750,56 @@ class OrderController extends Controller
     }
 
     public function shipmentSearch(Request $request) {
+        return View::make('v1.pages.shipment-status.status-page');
+    }
+
+    public function shipmentSearchWrapper(Request $request) {
+        $messages = [
+            'g-recaptcha-response.required'  => 'Подтвердите, что Вы не робот.',
+        ];
+
         $validator = Validator::make($request->all(), [
+            'g-recaptcha-response' => ['required', new GoogleReCaptchaV2()],
             'type' => 'string|in:id,cargo_number',
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $orders = null;
+        $type = $request->get('type');
+        $number = $request->get('query');
 
-        if(!empty($request->get('type')) && !empty($request->get('query'))) {
-            $orders = Order::with('status', 'cargo_status')
-                ->whereDoesntHave('status', function ($statusQuery) {
-                    return $statusQuery->where('slug', "chernovik");
-                })
-                ->when($request->get('type') === "id", function ($orderQ) use ($request) {
-                    return $orderQ->where('id', $request->get('query'));
-                })
-                ->when($request->get('type') === "cargo_number", function ($orderQ) use ($request) {
-                    return $orderQ->where('cargo_number', $request->get('query'));
-                })
-                ->get();
-        }
+        return View::make('v1.pages.shipment-status.status-page-result-wrapper')
+            ->with(compact('type', 'number'));
+    }
 
-        return View::make('v1.pages.shipment-status.status-page')->with(compact('orders'));
+    public function shipmentSearchAjax(Request $request) {
+        $data = null;
+        $send = [
+            'type' => $request->get('type') == 'id' ? 3 : 2,
+            'number' => $request->get('number')
+        ];
+
+        try {
+            $response1c = Api1CHelper::post(
+                'cargo_status',
+                $send,
+                false,
+                15
+            );
+
+            if(
+                $response1c['status'] == 200
+                && !empty($response1c['response']['status'])
+                && $response1c['response']['status'] === 'success'
+                && isset($response1c['response']['data'])
+            ) {
+                $data = $response1c['response']['data'];
+            }
+        } catch (\Exception $e) {}
+
+        return view('v1.pages.shipment-status.result')->with(compact('data'))->render();
     }
 
     public function actionGetOrderItems(Request $request) {
