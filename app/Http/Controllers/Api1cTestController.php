@@ -258,4 +258,22 @@ class Api1cTestController extends Controller
             ]);
         }
     }
+
+    public function cargoStatus(Request $request)
+    {
+        $send = [
+            'type' => $request->get('type'),
+            'number' => $request->get('number')
+        ];
+
+        $response1c = \App\Http\Helpers\Api1CHelper::post(
+            'cargo_status',
+            $send
+        );
+
+        dd([
+            'send' => [],
+            'response' => $response1c
+        ]);
+    }
 }
