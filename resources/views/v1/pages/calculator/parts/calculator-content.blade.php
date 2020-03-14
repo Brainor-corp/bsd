@@ -484,7 +484,9 @@
                    id="discount"
                    name="discount"
                    value="{{ $order->discount ?? 0 }}"
-                   readonly
+                   min="0"
+                   max="100"
+                   @if(\Illuminate\Support\Facades\Auth::check()) readonly @endif
                    required>
         </div>
 
