@@ -132,6 +132,11 @@ class OrderController extends Controller
             "type" => ['required', 'in:order,calculator'],                                      // Тип заявки (Заявка|Калькулятор)
         ];
 
+        // Для неавторизованных пользователей скидка всегда нулевая
+        if(Auth::guest()) {
+            $request->merge(['discount' => 0]);
+        }
+
         $messages = [
             'g-recaptcha-response.required'  => 'Подтвердите, что Вы не робот.',
         ];
