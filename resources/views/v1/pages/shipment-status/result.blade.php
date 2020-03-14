@@ -12,14 +12,14 @@
             </thead>
             <tbody>
             <tr>
-                <td>{{ $data['order_number'] ?? '-' }}</td>
-                <td>{{ $data['forwarding_receipt_number'] ?? '-' }}</td>
+                <td>{{ isset($data['order_number']) && !empty(trim($data['order_number'])) ? $data['order_number'] : '-' }}</td>
+                <td>{{ isset($data['forwarding_receipt_number']) && !empty(trim($data['forwarding_receipt_number'])) ? $data['forwarding_receipt_number'] : '-' }}</td>
                 <td>
-                    {{ $data['delivery_date'] ?? 'Уточняется' }}
+                    {{ isset($data['delivery_date']) && !empty(trim($data['delivery_date'])) ? $data['delivery_date'] : '-' }}
                     <br><span class="annotation-text">Плановая дата доставки</span>
                 </td>
-                <td>{{ $data['order_status'] ?? '-' }}</td>
-                <td>{{ $data['cargo_status'] ?? '-' }}</td>
+                <td>{{ isset($data['order_status']) && !empty(trim($data['order_status'])) ? $data['order_status'] : '-' }}</td>
+                <td>{{ isset($data['cargo_status']) && !empty(trim($data['cargo_status'])) ? $data['cargo_status'] : '-' }}</td>
             </tr>
             </tbody>
         </table>
