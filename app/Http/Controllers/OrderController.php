@@ -756,11 +756,13 @@ class OrderController extends Controller
     public function shipmentSearchWrapper(Request $request) {
         $messages = [
             'g-recaptcha-response.required'  => 'Подтвердите, что Вы не робот.',
+            'query.max'  => 'Длина номера не должна превышать 100 символов',
         ];
 
         $validator = Validator::make($request->all(), [
             'g-recaptcha-response' => ['required', new GoogleReCaptchaV2()],
-            'type' => 'string|in:id,cargo_number',
+            'type' => 'string|in:id,cargo_number|max:50',
+            'query' => 'string|max:100'
         ], $messages);
 
         if ($validator->fails()) {

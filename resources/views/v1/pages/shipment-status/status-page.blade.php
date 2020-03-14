@@ -37,6 +37,7 @@
                                                placeholder="{{ $currentType === 'id' ? 'Введите номер (напр.: 123)' : 'Введите номер (напр.: СП-00000)' }}"
                                                value="{{ old('query') }}"
                                                data-source="{{ route('get-cargo-numbers') }}"
+                                               maxlength="100"
                                                required
                                         >
                                     </div>
