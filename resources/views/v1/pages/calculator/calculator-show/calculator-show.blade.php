@@ -88,10 +88,10 @@
                                         </span>
                                     </div>
                                     <div id="custom-delivery">
-                                        <div>
+                                        <div class="block__itogo_item">
                                             <span class="block__itogo_value" id="take-delivery-message"></span>
                                         </div>
-                                        <div>
+                                        <div class="block__itogo_item">
                                             <span class="block__itogo_value" id="bring-delivery-message"></span>
                                         </div>
                                     </div>

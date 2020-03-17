@@ -36,7 +36,10 @@ function doorstepChange(type) {
         && $('#' + selectId).data().selectize.options[$('#' + selectId).data().selectize.getValue()].doorstep === "1"
     ) {
         clearDeliveryData(type, true);
-        $('#' + messageBlockId).text($('#' + selectId).data().selectize.options[$('#' + selectId).data().selectize.getValue()].doorstep_message);
+        $('#' + messageBlockId).text(
+            $('#' + selectId).data().selectize.getValue() + ": " +
+            $('#' + selectId).data().selectize.options[$('#' + selectId).data().selectize.getValue()].doorstep_message
+        );
     } else {
         $('#' + messageBlockId).text('');
     }
@@ -55,6 +58,7 @@ $(document).ready(function () {
         openOnFocus:false,
         onInitialize: function () {
             var that = this;
+            doorstepChange('take');
 
             this.$control.on("keyup", function (event) {
                 if(event.target.value.length > 2){
@@ -106,6 +110,7 @@ $(document).ready(function () {
                         openOnFocus:false,
                         onInitialize: function () {
                             var that = this;
+                            doorstepChange('bring');
 
                             this.$control.on("keyup", function (event) {
                                 if(event.target.value.length > 2){
@@ -149,6 +154,7 @@ $(document).ready(function () {
         openOnFocus:false,
         onInitialize: function () {
             var that = this;
+            doorstepChange('bring');
 
             this.$control.on("keyup", function (event) {
                 if(event.target.value.length > 2){
