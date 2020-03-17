@@ -137,8 +137,9 @@ a:hover {
 	margin-bottom:10px;
 }
 .map__contacts-title:hover,
-.terminal-block:hover{
+.terminal-block .map__contacts-item:hover{
     cursor: pointer;
+    color: #ef402f;
 }
 .map__contacts-title,
 .map__contacts-list{
