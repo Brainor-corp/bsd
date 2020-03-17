@@ -124,22 +124,26 @@ a:hover {
 }
 .map__contacts{
 	/*width:300px;*/
-	background: white;
+	background: rgba(255, 255, 255, 0.9);
 	border-radius:5px;
-	/*position: absolute;*/
-	/*top:60px;*/
-	/*left:60px;*/
+	position: relative;
+    z-index: 1;
 	padding-bottom:20px;
+    transition: 0.5s;
 }
 .map__contacts-title{
 	font-weight:900;
-	margin-top:20px;
+	padding-top:20px;
 	margin-bottom:10px;
+}
+.map__contacts-title:hover,
+.terminal-block:hover{
+    cursor: pointer;
 }
 .map__contacts-title,
 .map__contacts-list{
-	margin-left:30px;
-	margin-right:30px;
+	margin-left:20px;
+	margin-right:20px;
 }
 .map__contacts-item a{
 	color:#5a666e;
@@ -149,7 +153,7 @@ a:hover {
 }
 .map__contacts-item .fa{
 	flex:0 0 14px;
-	margin-right:10px;
+	margin-right:5px;
 }
 .map__contacts a.more-link{
 	margin-top:15px;
@@ -526,7 +530,7 @@ font-weight:900;
 	height:1px;
 	width:100%;
 	margin-top:24px;
-	margin-bottom:12px;
+	/*margin-bottom:12px;*/
 }
 /* Header */
 .bgvideo{
@@ -2718,9 +2722,14 @@ label.calc__label_max {
 	}
 	.map__contacts{
 		width:300px;
-		position: absolute;
-		top:60px;
-		left:60px;
+        margin-top: 20px;
+	}
+}
+
+@media (max-width: 1200px) {
+	.map__contacts{
+		width:300px;
+        margin-top: 60px;
 	}
 }
 

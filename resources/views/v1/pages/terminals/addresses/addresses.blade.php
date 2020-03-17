@@ -32,8 +32,7 @@
             </div>
         </div>
     </section>
-    <div class="map-b">
-        <div id="map"></div>
+    <div class="map-b position-relative">
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -42,7 +41,7 @@
                             <div class="map__contacts-title">{{ $terminal->name }}</div>
                             <div class="map__contacts-list d-flex flex-column terminal-block" data-point="{{ $terminal->geo_point }}">
                                 @if(!empty($terminal->address))
-                                    <span class="map__contacts-item d-flex">
+                                    <span class="map__contacts-item align-items-baseline d-flex">
                                         <i class="fa fa-map-marker"></i>
                                         <span>
                                             {{ $terminal->address ?? '-' }}
@@ -50,10 +49,16 @@
                                     </span>
                                 @endif
                                 @if(!empty($terminal->phone))
-                                    <span class="map__contacts-item d-flex">
+                                    @php
+                                        $phones = preg_split("/(;|,)/", str_replace(' ', '', $terminal->phone));
+                                    @endphp
+                                    <div class="map__contacts-item align-items-baseline d-flex">
                                         <i class="fa fa-phone"></i>
-                                        <a href="tel:{{ $terminal->phone }}">{{ $terminal->phone }}</a>
-                                    </span>
+                                        @foreach($phones as $phone)
+                                            <a href="tel:{{ $phone }}">{{ $phone }}</a>
+                                            {!! $loop->last ? '' : ",&nbsp;" !!}
+                                        @endforeach
+                                    </div>
                                 @endif
                             </div>
                             @if(!$loop->last)
@@ -64,6 +69,7 @@
                 </div>
             </div>
         </div>
+        <div id="map" class="position-absolute" style="z-index: 0"></div>
     </div>
     <div class="container">
         @foreach($currentCity->requisites->sortBy('sort') as $requisite)
