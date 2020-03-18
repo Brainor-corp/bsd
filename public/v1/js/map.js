@@ -18,8 +18,8 @@ ymaps.ready(function () {
 
         myMap.geoObjects.add(
             new ymaps.Placemark([point[1], point[0]], {
-                hintContent: 'Безымянный',
-                balloonContent: 'А эта — новогодняя',
+                hintContent: 'БСД',
+                // balloonContent: 'А эта — новогодняя',
             }, {
                 // Опции.
                 // Необходимо указать данный тип макета.
@@ -37,4 +37,23 @@ ymaps.ready(function () {
 
     myMap.behaviors.disable('scrollZoom');
     myMap.setBounds(myMap.geoObjects.getBounds());
+
+    let panToOptions = {
+        flying: false
+    };
+
+    $(document).on('click', '.map__contacts-title', function () {
+        let titleBlock = $(this);
+        let terminalBlock = titleBlock.next();
+        let point = terminalBlock.data('point').split(', ');
+
+        myMap.panTo([point.reverse()], panToOptions);
+    });
+
+    $(document).on('click', '.terminal-block', function () {
+        let terminalBlock = $(this);
+        let point = terminalBlock.data('point').split(', ');
+
+        myMap.panTo([point.reverse()], panToOptions);
+    })
 });
