@@ -57,6 +57,7 @@ Route::group(['middleware' => ['ipcheck']], function () {
     Route::post('/1c/user/create', 'Api\UsersController@createUser');
     Route::post('/1c/client/update', 'Api\CounterpartiesController@updateCounterparty');
     Route::post('/1c/tariff/get', 'Api\CalculatorController@getRouteTariff');
+    Route::post('/1c/intracity/get', 'Api\CalculatorController@getInsideForwardingTariff');
 });
 
 // Эквайринг
