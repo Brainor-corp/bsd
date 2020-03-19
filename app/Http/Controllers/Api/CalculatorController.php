@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\City;
 use App\Http\Controllers\Controller;
 use App\Route;
 use App\RouteTariff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CalculatorController extends Controller
@@ -128,7 +130,7 @@ class CalculatorController extends Controller
     public function getRouteTariff(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'route' => 'required|numeric',
+            'route' => 'required|integer',
             'volume' => 'required|numeric',
             'weight' => 'required|numeric'
         ]);
@@ -162,5 +164,64 @@ class CalculatorController extends Controller
         }
 
         return response($routeTariffData);
+    }
+
+    public function getInsideForwardingTariff(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'point' => 'required|integer',
+            'volume' => 'required|numeric',
+            'weight' => 'required|numeric',
+            'units' => 'required|integer'
+        ]);
+
+        if ($validator->fails()) {
+            return response(
+                [
+                    "status" => "error",
+                    "text" => $validator->errors()->first()
+                ],
+                400
+            );
+        }
+
+        $city = City::where('kladr_id', $request->get('point'))->first();
+
+        $volume = $request->get('volume');
+        $weight = $request->get('weight');
+        $packagesCount = $request->get('units');
+
+        if(!isset($city)) {
+            return response([
+                "status" => "not found"
+            ]);
+        }
+
+        $fixed_tariff = DB::table('inside_forwarding')
+            ->join('forward_thresholds', function($join)
+            {
+                $join->on('inside_forwarding.forward_threshold_id', '=', 'forward_thresholds.id');
+            })
+            ->where([
+                ['city_id', $city->id],
+                ['forward_thresholds.weight', '>=', floatval($weight)],
+                ['forward_thresholds.volume', '>=', floatval($volume)],
+                ['forward_thresholds.units', '>=', intval($packagesCount)],
+            ])
+            ->orderBy('forward_thresholds.weight', 'ASC')
+            ->orderBy('forward_thresholds.volume', 'ASC')
+            ->orderBy('forward_thresholds.units', 'ASC')
+            ->first();
+
+        if(!isset($fixed_tariff)) {
+            return response([
+                "status" => "not found"
+            ]);
+        }
+
+        return response([
+            'status' => 'success',
+            'tariff' => floatval($fixed_tariff->tariff)
+        ]);
     }
 }
