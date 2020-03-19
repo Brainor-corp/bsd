@@ -36,12 +36,12 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <div class="map__contacts">
+                    <div class="map__contacts d-inline-block">
                         @foreach($terminals as $terminal)
                             <div class="map__contacts-title">{{ $terminal->name }}</div>
                             <div class="map__contacts-list d-flex flex-column terminal-block" data-point="{{ $terminal->geo_point }}">
                                 @if(!empty($terminal->address))
-                                    <span class="map__contacts-item align-items-baseline d-flex">
+                                    <span class="map__contacts-item align-items-baseline">
                                         <i class="fa fa-map-marker"></i>
                                         <span>
                                             {{ $terminal->address ?? '-' }}
@@ -52,7 +52,7 @@
                                     @php
                                         $phones = preg_split("/(;|,)/", str_replace(' ', '', $terminal->phone));
                                     @endphp
-                                    <div class="map__contacts-item align-items-baseline d-flex">
+                                    <div class="map__contacts-item align-items-baseline">
                                         <i class="fa fa-phone"></i>
                                         @foreach($phones as $phone)
                                             <a href="tel:{{ $phone }}">{{ $phone }}</a>

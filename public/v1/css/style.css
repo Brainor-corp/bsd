@@ -149,6 +149,11 @@ a:hover {
 .map__contacts-list {
     font-size: 0.8rem;
 }
+@media (min-width: 768px) {
+    .map__contacts-list span {
+        white-space: nowrap;
+    }
+}
 .map__contacts-item a{
 	color:#5a666e;
 }
@@ -2725,14 +2730,14 @@ label.calc__label_max {
 		padding: 17px 0 0 40px;
 	}
 	.map__contacts{
-		width:300px;
+		/*width:300px;*/
         margin-top: 20px;
 	}
 }
 
 @media (max-width: 1200px) {
 	.map__contacts{
-		width:300px;
+		/*width:300px;*/
         margin-top: 60px;
 	}
 }
