@@ -27,6 +27,10 @@ function getDiscount() {
     });
 }
 
+let rounded = function(number){
+    return +number.toFixed(3);
+};
+
 function doorstepChange(type) {
     let selectId = type === 'take' ? 'ship_city' : 'dest_city';
     let messageBlockId = type === 'take' ? 'take-delivery-message' : 'bring-delivery-message';
@@ -216,9 +220,9 @@ $(document).ready(function () {
             '</label>' +
             '<div class="col-sm col-12 calc__inpgrp relative row__inf"  style="padding-right: 0;">' +
             '<div class="input-group">' +
-            '<input type="number" step="any" min="0" max="12" id="packages__length"'+ nextId +' class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
-            '<input type="number" step="any" min="0" max="2.5" id="packages__width"'+ nextId +' class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][width]" data-package-id="'+ nextId +'"  data-dimension-type="width" placeholder="Ширина" value="0.1">' +
-            '<input type="number" step="any" min="0" max="2.5" id="packages__height"'+ nextId +' class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][height]" data-package-id="'+ nextId +'"  data-dimension-type="height" placeholder="Высота" value="0.1">' +
+            '<input type="number" step="any" min="0" max="12" id="packages_'+ nextId +'_length" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][length]" data-package-id="'+ nextId +'" data-dimension-type="length" placeholder="Длина" value="0.1">' +
+            '<input type="number" step="any" min="0" max="2.5" id="packages_'+ nextId +'_width" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][width]" data-package-id="'+ nextId +'"  data-dimension-type="width" placeholder="Ширина" value="0.1">' +
+            '<input type="number" step="any" min="0" max="2.5" id="packages_'+ nextId +'_height" class="form-control text-center package-params package-dimensions" name="cargo[packages]['+ nextId +'][height]" data-package-id="'+ nextId +'"  data-dimension-type="height" placeholder="Высота" value="0.1">' +
             '<input type="number" step="any" min="0" id="packages_'+ nextId +'_weight" class="form-control text-center package-params package-weight" name="cargo[packages]['+ nextId +'][weight]" data-package-id="'+ nextId +'"  data-dimension-type="weight" placeholder="Вес" value="1">' +
             '<input type="number" step="any" min="0" id="packages_'+ nextId +'_quantity" class="form-control text-center package-params package-quantity" name="cargo[packages]['+ nextId +'][quantity]" data-package-id="'+ nextId +'"  data-dimension-type="quantity" placeholder="Места" value="1">' +
             '</div>' +
@@ -325,15 +329,23 @@ $(document).ready(function () {
         if(length === ''){
             length = 0.1;
             $('#packages_'+ id +'_length').attr('value', length).val(length);
-        }else{length = parseFloat(length.replace(',', '.'))}
+        } else {
+            length = parseFloat(length.replace(',', '.'))
+        }
+
         if(width === ''){
             width = 0.1;
             $('#packages_'+ id +'_width').attr('value', width).val(width);
-        }else{width = parseFloat(width.replace(',', '.'))}
-        if(height === ''){
+        } else {
+            width = parseFloat(width.replace(',', '.'))
+        }
+
+        if(height === '') {
             height = 0.1;
             $('#packages_'+ id +'_height').attr('value', height).val(height);
-        }else{height = parseFloat(height.replace(',', '.'))}
+        } else {
+            height = parseFloat(height.replace(',', '.'));
+        }
 
         volume = parseFloat((length * width * height).toFixed(3));
 
@@ -920,7 +932,7 @@ function totalVolumeRecount() {
         totalVolume += curVolume;
     });
 
-    $("#total-volume").attr('value', totalVolume).val(totalVolume);
+    $("#total-volume").attr('value', totalVolume).val(rounded(totalVolume));
     $("#total-volume").trigger('change');
 };
 
