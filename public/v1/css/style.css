@@ -146,6 +146,9 @@ a:hover {
 	margin-left:18px;
 	margin-right:18px;
 }
+.map__contacts-list {
+    font-size: 0.8rem;
+}
 .map__contacts-item a{
 	color:#5a666e;
 }
