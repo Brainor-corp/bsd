@@ -56,7 +56,7 @@ function doorstepChange() {
 
     if(
         $('#' + takeSelectId).data().selectize.options[$('#' + takeSelectId).data().selectize.getValue()]
-        && $('#' + takeSelectId).data().selectize.options[$('#' + takeSelectId).data().selectize.getValue()].takeSelectId === "1"
+        && $('#' + takeSelectId).data().selectize.options[$('#' + takeSelectId).data().selectize.getValue()].doorstep === "1"
     ) {
         clearDeliveryData('take', true);
     }
