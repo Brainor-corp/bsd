@@ -31,6 +31,56 @@ let rounded = function(number){
     return +number.toFixed(3);
 };
 
+function doorstepChange() {
+    let takeSelectId = 'ship_city';
+    let takeMessageBlock = 'take-delivery-message';
+    let takeMessage = '';
+
+    if(
+        $('#' + takeSelectId).data().selectize.getValue()
+        && $('#' + takeSelectId).data().selectize.options[$('#' + takeSelectId).data().selectize.getValue()].doorstep === "1"
+    ) {
+        takeMessage = $('#' + takeSelectId).data().selectize.options[$('#' + takeSelectId).data().selectize.getValue()].doorstep_message;
+    }
+
+    let bringSelectId = 'dest_city';
+    let bringMessageBlock = 'bring-delivery-message';
+    let bringMessage = '';
+
+    if(
+        $('#' + bringSelectId).data().selectize.getValue()
+        && $('#' + bringSelectId).data().selectize.options[$('#' + bringSelectId).data().selectize.getValue()].doorstep === "1"
+    ) {
+        bringMessage =  $('#' + bringSelectId).data().selectize.options[$('#' + bringSelectId).data().selectize.getValue()].doorstep_message;
+    }
+
+    if(
+        $('#' + takeSelectId).data().selectize.options[$('#' + takeSelectId).data().selectize.getValue()]
+        && $('#' + takeSelectId).data().selectize.options[$('#' + takeSelectId).data().selectize.getValue()].takeSelectId === "1"
+    ) {
+        clearDeliveryData('take', true);
+    }
+
+    if(
+        $('#' + bringSelectId).data().selectize.options[$('#' + bringSelectId).data().selectize.getValue()]
+        && $('#' + bringSelectId).data().selectize.options[$('#' + bringSelectId).data().selectize.getValue()].doorstep === "1"
+    ) {
+        clearDeliveryData('bring', true);
+    }
+
+    if(takeMessage === bringMessage) {
+        bringMessage = '';
+    }
+
+    if(takeMessage !== null && takeMessage !== undefined) {
+        $('#' + takeMessageBlock).text(takeMessage);
+    }
+
+    if(bringMessage !== null && bringMessage !== undefined) {
+        $('#' + bringMessageBlock).text(bringMessage);
+    }
+}
+
 $(document).ready(function () {
     getDiscount();
     // totalWeigthRecount();
@@ -44,7 +94,6 @@ $(document).ready(function () {
         openOnFocus:false,
         onInitialize: function () {
             var that = this;
-
             this.$control.on("keyup", function (event) {
                 if(event.target.value.length > 2){
                     that.open();
@@ -55,22 +104,24 @@ $(document).ready(function () {
 
             this.$control.on("click", function (event) {
                 $('#ship_city').selectize()[0].selectize.clear();
-                $('#need-to-take').prop("checked", false);
                 clearDeliveryData('take');
                 $('#need-to-take').trigger('change');
 
                 $('#dest_city').selectize()[0].selectize.clear();
-                $('#need-to-bring').prop("checked", false);
                 clearDeliveryData('bring');
                 $('#need-to-bring').trigger('change');
             });
         },
         render: {
             option: function (data, escape) {
-                return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
+                return "<div data-terminal='" + data.terminal
+                    + "' data-doorstep='" + data.doorstep
+                    + "' data-message='" + data.doorstep_message
+                    + "'>" + data.text + "</div>"
             }
         },
         onChange: function(value) {// при изменении города отправления
+            doorstepChange();
             getAllCalculatedData();
             if (!value.length) return;
             $.ajaxSetup({
@@ -93,7 +144,6 @@ $(document).ready(function () {
                         openOnFocus:false,
                         onInitialize: function () {
                             var that = this;
-
                             this.$control.on("keyup", function (event) {
                                 if(event.target.value.length > 2){
                                     that.open();
@@ -104,17 +154,20 @@ $(document).ready(function () {
 
                             this.$control.on("click", function (event) {
                                 $('#dest_city').selectize()[0].selectize.clear();
-                                $('#need-to-bring').prop("checked", false);
                                 clearDeliveryData('bring');
                                 $('#need-to-bring').trigger('change');
                             });
                         },
                         render: {
                             option: function (data, escape) {
-                                return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
+                                return "<div data-terminal='" + data.terminal
+                                    + "' data-doorstep='" + data.doorstep
+                                    + "' data-message='" + data.doorstep_message
+                                    + "'>" + data.text + "</div>"
                             }
                         },
                         onChange: function(value) {// при изменении города назначения
+                            doorstepChange();
                             getAllCalculatedData();
                             kladrInitialize();
                         },
@@ -133,7 +186,6 @@ $(document).ready(function () {
         openOnFocus:false,
         onInitialize: function () {
             var that = this;
-
             this.$control.on("keyup", function (event) {
                 if(event.target.value.length > 2){
                     that.open();
@@ -144,18 +196,21 @@ $(document).ready(function () {
 
             this.$control.on("click", function (event) {
                 $('#dest_city').selectize()[0].selectize.clear();
-                $('#need-to-bring').prop("checked", false);
                 clearDeliveryData('bring');
                 $('#need-to-bring').trigger('change');
             });
         },
         render: {
             option: function (data, escape) {
-                return "<div data-terminal='" + data.terminal + "'>" + data.text + "</div>"
+                return "<div data-terminal='" + data.terminal
+                    + "' data-doorstep='" + data.doorstep
+                    + "' data-message='" + data.doorstep_message
+                    + "'>" + data.text + "</div>"
             }
         },
         onChange: function(value) {// при изменении города назначения
             // Вызываем тригер изменения пункта самовывоза, чтобы пересчитать дистанцию
+            doorstepChange();
             $('#dest_point').trigger('change');
             getAllCalculatedData();
             kladrInitialize();
@@ -163,6 +218,7 @@ $(document).ready(function () {
     });
 
     kladrInitialize();
+    doorstepChange();
 
     getAllCalculatedData();
 
@@ -1355,7 +1411,7 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName, forceDeliveryT
     });
 }
 
-function clearDeliveryData(type) {
+function clearDeliveryData(type, disable = false) {
     let pointType = type === 'take' ? 'ship': 'dest';
 
     $('#' + pointType + '_point').val('');
@@ -1364,4 +1420,7 @@ function clearDeliveryData(type) {
     $('input[name="' + type + '_city_name"]').val('');
     $('input[name="' + type + '_distance"]').val('');
     $('input[name="' + type + '_polygon"]').val('');
+
+    $('#need-to-' + type).prop("checked", false);
+    $('#need-to-' + type).prop("disabled", disable);
 }

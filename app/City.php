@@ -40,51 +40,63 @@ class City extends Model
 //        return $this->hasMany(City::class, 'dest_city_id','id');
 //    }
 
-    public function thresholdGroup() {
+    public function thresholdGroup()
+    {
         return $this->hasOne(Type::class, 'id', 'threshold_group_id');
     }
 
-    public function insideForwarding() {
+    public function insideForwarding()
+    {
         return $this->hasMany(InsideForwarding::class);
     }
 
-    public function tariffZone(){
+    public function tariffZone()
+    {
         return $this->hasOne(Type::class, 'id', 'tariff_zone_id');
     }
 
-    public function terminal() {
+    public function terminal()
+    {
         return $this->hasOne(Terminal::class, 'city_id', 'id');
     }
 
-    public function terminals() {
+    public function terminals()
+    {
         return $this->hasMany(Terminal::class);
     }
 
-    public function closestTerminal() {
+    public function closestTerminal()
+    {
         return $this->hasOne(Terminal::class, 'id', 'closest_terminal_id');
     }
 
-    public function polygons() {
+    public function polygons()
+    {
         return $this->hasMany(Polygon::class);
     }
 
-    public function kladr() {
+    public function kladr()
+    {
         return $this->hasOne(Kladr::class, 'id', 'kladr_id');
     }
 
-    public function getComprehensiveIsShipAttribute(){
+    public function getComprehensiveIsShipAttribute()
+    {
         return $this->is_ship ? 'Да' : 'Нет' ;
     }
 
-    public function getComprehensiveIsFilialAttribute(){
+    public function getComprehensiveIsFilialAttribute()
+    {
         return $this->is_filial ? 'Да' : 'Нет' ;
     }
 
-    public function getComprehensiveDoorstepAttribute(){
+    public function getComprehensiveDoorstepAttribute()
+    {
         return $this->doorstep ? 'Да' : 'Нет' ;
     }
 
-    public function getCoordinatesOrAddressAttribute() {
+    public function getCoordinatesOrAddressAttribute()
+    {
         $result = '';
 
         if(isset($this->terminal)) {
@@ -99,7 +111,13 @@ class City extends Model
         return $result;
     }
 
-    public function requisites() {
+    public function requisites()
+    {
         return $this->hasMany(Requisite::class, 'city_id', 'id');
+    }
+
+    public function doorstep_message()
+    {
+        return $this->hasOne(Type::class, 'id', 'message');
     }
 }
