@@ -566,12 +566,12 @@ class CalculatorHelper
             ];
         }
 
-        $cityForwardThresholds = [];
-        foreach($city instanceOf City ? $city->insideForwarding : $city->outsideForwarding as $forwardingItem) {
-            $cityForwardThresholds[] = $forwardingItem->forwardThreshold->id;
-        }
+//        $cityForwardThresholds = [];
+//        foreach($city instanceOf City ? $city->insideForwarding : $city->outsideForwarding as $forwardingItem) {
+//            $cityForwardThresholds[] = $forwardingItem->forwardThreshold->id;
+//        }
 
-        $cityForwardThresholds = array_unique($cityForwardThresholds);
+//        $cityForwardThresholds = array_unique($cityForwardThresholds);
 
         // Если за пределами города, то ищем покилометровый тариф с учетом тарифной зоны города
         $per_km_tariff = DB::table('per_km_tariffs')
@@ -587,7 +587,7 @@ class CalculatorHelper
                 ['forward_thresholds.volume', '>=', floatval($volume)],
                 ['forward_thresholds.units', '>=', $packagesCount],
             ])
-            ->whereIn('forward_thresholds.id', $cityForwardThresholds)
+//            ->whereIn('forward_thresholds.id', $cityForwardThresholds)
             // Если длина/ширина/высота известны, то пробуем найти с ними
             ->when($maxSizesPackage, function ($q) use ($maxSizesPackage) {
                 return self::sizesTariffScope($q, $maxSizesPackage);
@@ -615,7 +615,7 @@ class CalculatorHelper
                     ['forward_thresholds.volume', '>=', floatval($volume)],
                     ['forward_thresholds.units', '>=', $packagesCount],
                 ])
-                ->whereIn('forward_thresholds.id', $cityForwardThresholds)
+//                ->whereIn('forward_thresholds.id', $cityForwardThresholds)
                 ->orderBy('forward_thresholds.weight', 'ASC')
                 ->orderBy('forward_thresholds.volume', 'ASC')
                 ->orderBy('forward_thresholds.units', 'ASC')
