@@ -566,12 +566,12 @@ class CalculatorHelper
             ];
         }
 
-        $cityForwardThresholds = [];
-        foreach($city instanceOf City ? $city->insideForwarding : $city->outsideForwarding as $forwardingItem) {
-            $cityForwardThresholds[] = $forwardingItem->forwardThreshold->id;
-        }
+//        $cityForwardThresholds = [];
+//        foreach($city instanceOf City ? $city->insideForwarding : $city->outsideForwarding as $forwardingItem) {
+//            $cityForwardThresholds[] = $forwardingItem->forwardThreshold->id;
+//        }
 
-        $cityForwardThresholds = array_unique($cityForwardThresholds);
+//        $cityForwardThresholds = array_unique($cityForwardThresholds);
 
         // Если за пределами города, то ищем покилометровый тариф с учетом тарифной зоны города
         $per_km_tariff = DB::table('per_km_tariffs')
