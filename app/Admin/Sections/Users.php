@@ -124,6 +124,7 @@ class Users extends Section
         $user = User::where('id', $id)
             ->with([
                 'orders',
+                'forwarding_receipts',
                 'events'
             ])
             ->first();
@@ -132,6 +133,10 @@ class Users extends Section
 
         foreach($user->orders as $order) {
             $order->delete();
+        }
+
+        foreach($user->forwarding_receipts as $forwarding_receipt) {
+            $forwarding_receipt->delete();
         }
 
         foreach($user->events as $event) {
