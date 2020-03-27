@@ -14,6 +14,30 @@ use Illuminate\Support\Facades\DB;
 
 class CalculatorHelper
 {
+    /**
+     * Проверяет заполненность всех полей пакетов
+     *
+     * @param $packages
+     * @return bool
+     */
+    public static function isPackagesComplete($packages)
+    {
+        foreach($packages as $package) {
+            if(
+                !isset($package['length']) || $package['length'] <= 0
+                || !isset($package['width']) || $package['width'] <= 0
+                || !isset($package['height']) || $package['height'] <= 0
+                || !isset($package['volume']) || $package['volume'] <= 0
+                || !isset($package['weight']) || $package['weight'] <= 0
+                || !isset($package['quantity']) || $package['quantity'] <= 0
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static function getRouteData(
         $shipCity = null,
         $destCity = null,
@@ -114,7 +138,7 @@ class CalculatorHelper
                             $total = "договорная";
                         }
                     } else {
-                        if (count($oversizes) > 0) {
+                        if (count($oversizes) > 0 && self::isPackagesComplete($packages)) {
                             $costs = array('min_cost' => $route->min_cost, 'weight' => $tariff->weight * $weight, 'volume' => $tariff->volume * $volume);
                             arsort($costs);
                             $key = key($costs);
