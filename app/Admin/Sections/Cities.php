@@ -163,6 +163,11 @@ class Cities extends Section
                         ->setDisplay('name'),
                     FormField::input('geo_point', 'Геокоординаты  (x.xxx, y.yyy)')
                         ->setPattern("(\d+\.\d+|\d+),\s(\d+\.\d+|\d+)"),
+                    FormField::bselect('is_bsd', 'БСД')
+                        ->setOptions([
+                            '0' => 'Нет',
+                            '1' => 'Да'
+                        ])
                 ])
             ])
         ]);
