@@ -105,4 +105,26 @@ class News extends ZeusAdminPosts
     {
         return self::onEdit($request, $id);
     }
+
+    public function afterSave(Request $request, $model = null)
+    {
+        parent::afterSave($request, $model);
+
+        $companyNewsCategory = ZeusAdminTerm::where([
+            ['type', 'category'],
+            ['slug', 'novosti-kompanii']
+        ])->first();
+
+        // Если для новости выбрана категория "Новости компании",
+        // то ей назначаются терминалы с флагом БСД.
+        if(in_array($companyNewsCategory->id, $model->categories->pluck('id')->toArray())) {
+            $bsdTerminals = Terminal::where('is_bsd', true)->get();
+
+            if(!isset($bsdTerminals)) {
+                return;
+            }
+
+            $model->terminals()->sync($bsdTerminals->pluck('id')->toArray(), false);
+        }
+    }
 }

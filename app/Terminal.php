@@ -91,7 +91,7 @@ class Terminal extends Model
     }
 
     public function getNameWithCityAttribute() {
-        return $this->name . ' (г. ' . ($this->city->name ?? '') . ')';
+        return $this->name . ' (г. ' . ($this->city->name ?? '') . ($this->is_bsd ? ', БСД' : '') . ')';
     }
 
     public function scopeRegionalManager($query) {
