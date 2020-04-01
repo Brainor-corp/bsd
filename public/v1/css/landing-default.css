@@ -1,3 +1,21 @@
 body {
     font-weight: unset;
 }
+
+.services .round {
+    height: 100px;
+    width: 100px;
+    border: 2px solid #485259;
+    border-radius: 50%;
+}
+
+.services .round img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    max-width: 50px;
+    height: auto;
+}

@@ -5,7 +5,7 @@
                 <div class="col-md-auto col-12">
                     <div class="row">
                         <div class="col-auto">
-                            <img src="{{ asset('/images/time.png') }}" alt="" class="img-fluid">
+                            <img src="{{ asset('/images/landing_icons/time.png') }}" alt="" class="img-fluid">
                         </div>
                         <div class="col text-white">
                             <p class="mb-0">От <strong>{{ $route->delivery_time }}</strong> дня</p>
@@ -16,7 +16,7 @@
                 <div class="col-md-auto col-12">
                     <div class="row">
                         <div class="col-auto">
-                            <img src="{{ asset('/images/wallet.png') }}" alt="" class="img-fluid">
+                            <img src="{{ asset('/images/landing_icons/wallet.png') }}" alt="" class="img-fluid">
                         </div>
                         <div class="col text-white">
                             <p class="mb-0">От <strong>{{ $route->min_cost }}</strong> руб.</p>
@@ -26,7 +26,7 @@
                 </div>
                 <div class="col-md-auto col-12">
                     <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-danger px-5" data-toggle="modal" data-target="#contactModal">
+                    <button type="button" class="btn btn-danger px-md-5" data-toggle="modal" data-target="#contactModal">
                         Получить детальный просчет
                     </button>
 
