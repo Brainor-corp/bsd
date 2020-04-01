@@ -78,6 +78,9 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::post('/shipment-search/result', 'OrderController@shipmentSearchWrapper')->name('shipment-search-wrapper');
     Route::post('/shipment-search/ajax', 'OrderController@shipmentSearchAjax')->name('shipment-search-ajax');
 
+    // Landings
+    Route::get('/promo', 'LandingPagesController@show')->name('landing-index');
+
     Route::group(['middleware' => ['auth']], function () {
         Route::group(['middleware' => ['admin']], function () {
             Route::post('/admin/orders/resend/admin-email', 'Admin\OrdersController@resendAdminEmail')->name('admin-resend-admin-email');
