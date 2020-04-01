@@ -1,4 +1,4 @@
-<h1 style="text-align: center;"><span style="color:#5a666e;"><strong><span style="font-size:24px;">Доставка грузов по маршруту {{ $route->name }}</span></strong></span></h1>
+<p style="text-align: center;"><span style="font-size:24px;"><strong>Доставка грузов по маршруту {{ $route->name }}</strong></span></p>
 
 <p>&nbsp;</p>
 

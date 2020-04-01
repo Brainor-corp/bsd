@@ -1,4 +1,4 @@
-<h1 style="text-align: center;"><span style="line-height:1;"><span style="color:#5a666e;"><strong><span style="font-size:24px;">ООО &laquo;Балтийская Служба Доставки&raquo; с гордостью заявляет о своих преимуществах и возможностях при перевозках грузов между Столицами России:</span></strong></span></span></h1>
+<p style="text-align: center;"><span style="font-size:24px;"><strong>ООО &quot;Балтийская Служба Доставки&quot; с гордостью заявляет о своих преимуществах и возможностях при перевозках грузов между Столицами России:</strong></span></p>
 
 <p>&nbsp;</p>
 
