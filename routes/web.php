@@ -80,6 +80,7 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
 
     // Landings
     Route::get('/promo', 'LandingPagesController@show')->name('landing-index');
+    Route::post('/promo-send-mail', 'LandingPagesController@sendMail')->name('landing-send-mail');
 
     Route::group(['middleware' => ['auth']], function () {
         Route::group(['middleware' => ['admin']], function () {

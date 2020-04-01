@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\Mail\SendLandingMail;
 use App\Point;
 use App\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Zeus\Admin\Cms\Helpers\CMSHelper;
 
 class LandingPagesController extends Controller
@@ -78,5 +80,12 @@ class LandingPagesController extends Controller
             'aboutPage',
             'textBlock'
         ));
+    }
+
+    public function sendMail(Request $request)
+    {
+        Mail::to("zakaz@123789.ru")->send(new SendLandingMail($request->get('phone')));
+
+        return redirect()->back();
     }
 }
