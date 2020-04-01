@@ -19,3 +19,17 @@
     @include('v1.pages.landings.default.sections.services')
     @include('v1.pages.landings.default.sections.about')
 @endsection
+
+@section('footerScripts')
+    <script>
+        var parameters={
+            max_length: 3,
+            max_width: 3,
+            max_height: 1.8,
+            max_weight: 1000,
+            max_volume: 999,
+        };
+    </script>
+
+    <script src="{{ asset('v1/js/short-calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>
+@endsection
