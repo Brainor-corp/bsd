@@ -7,17 +7,12 @@
 
 @extends('v1.layouts.defaultLandingLayout')
 
-@section('content')
-    <section class="mt-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    @include('v1.pages.landings.default.sections.text_1')
-                </div>
-            </div>
-        </div>
-    </section>
+@section('headerStyles')
+    <link rel="stylesheet" href="{{ asset('v1/css/landing-default.css') }}">
+@endsection
 
+@section('content')
+    @include('v1.pages.landings.default.sections.text_1')
     @include('v1.pages.landings.default.sections.tariffs')
     @include('v1.pages.landings.default.sections.calc_banner')
     @include('v1.pages.landings.default.sections.text_2')

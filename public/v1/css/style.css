@@ -103,6 +103,9 @@ a:hover {
 .bg-dark .link-with-dotted:hover {
 	border-color:#ef402f;
 }
+.bg-dart-gray {
+    background-color: #353c41;
+}
 .navbar-toggle{
 	display:none;
 }
