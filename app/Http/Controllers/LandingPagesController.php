@@ -6,6 +6,7 @@ use App\City;
 use App\Point;
 use App\Route;
 use Illuminate\Http\Request;
+use Zeus\Admin\Cms\Helpers\CMSHelper;
 
 class LandingPagesController extends Controller
 {
@@ -61,13 +62,21 @@ class LandingPagesController extends Controller
         $currentShipCity = City::where('id', $selectedShipCity)->firstOrFail();
         $currentDestCity = City::where('id', $selectedDestCity)->firstOrFail();
 
+        $args = ['type' => 'page', 'slug' => 'glavnaya-o-kompanii'];
+        $aboutPage = CMSHelper::getQueryBuilder($args)->first();
+
+        $args = ['type' => 'page', 'slug' => 'glavnaya-tekstovyy-blok'];
+        $textBlock = CMSHelper::getQueryBuilder($args)->first();
+
         return view('v1.pages.landings.default.index')
             ->with(compact(
             'currentShipCity',
             'currentDestCity',
             'shipCities',
             'destinationCities',
-                'route'
+            'route',
+            'aboutPage',
+            'textBlock'
         ));
     }
 }
