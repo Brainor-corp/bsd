@@ -22,7 +22,7 @@ $(document).ready(function () {
             success: function() {
                 form.find('.modal-body').html(
                 "<div class='alert alert-success'>Заявка принята. Оператор свяжется с Вами в ближайшее время.</div>" +
-                "")
+                "");
                 form.find('.modal-footer').remove();
             },
             error: function (response) {
@@ -41,6 +41,11 @@ $(document).ready(function () {
                             .text(response.responseJSON.data['phone'][0])
                             .show();
                     }
+                } else {
+                    form.find('.modal-body').html(
+                    "<div class='alert alert-danger'>Произошла ошибка. Пожалуйста, обновите страницу и попробуйте снова.</div>" +
+                    "");
+                    form.find('.modal-footer').remove();
                 }
             }
         });
