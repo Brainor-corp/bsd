@@ -104,7 +104,7 @@ class LandingPagesController extends Controller
 
         foreach($routes as $route) {
             $landingPage = new LandingPage();
-            $landingPage->title = $route->name;
+            $landingPage->title = "Грузоперевозки $route->name";
             $landingPage->route_id = $route->id;
             $landingPage->template = 'default';
             $landingPage->url = '.';
