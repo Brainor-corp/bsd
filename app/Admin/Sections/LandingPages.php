@@ -92,6 +92,7 @@ class LandingPages extends Section
                     ->setOptions(LandingPagesHelper::getTemplates()),
                 FormField::input('description', 'SEO описание'),
                 FormField::input('key_words', 'SEO ключевые слова'),
+                FormField::custom(view('admin.landing-pages.cache-clear')->with(compact('landingPage'))->render()),
             ])
         ]);
 

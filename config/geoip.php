@@ -72,7 +72,7 @@ return [
             'continent_path' => storage_path('app/continents.json'),
             'lang' => 'ru',
         ],
-        
+
         'ipgeolocation' => [
             'class' => \Torann\GeoIP\Services\IPGeoLocation::class,
             'secure' => true,
@@ -117,7 +117,7 @@ return [
     |
     */
 
-    'cache_tags' => ['torann-geoip-location'],
+    'cache_tags' => env('CACHE_DRIVER', 'array') === "file" ? [] : ['torann-geoip-location'],
 
     /*
     |--------------------------------------------------------------------------
