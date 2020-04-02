@@ -52,7 +52,7 @@ class LandingPages extends Section
                         'data-live-search="true"'
                     ])
                     ->setRequired(true)
-                    ->setDisplay('name'),
+                    ->setDisplay('dash_name_with_id'),
                 FormField::select('template', 'Шаблон страницы')
                     ->setRequired(true)
                     ->setDefaultSelected('default')
@@ -85,7 +85,8 @@ class LandingPages extends Section
                         'data-live-search="true"'
                     ])
                     ->setRequired(true)
-                    ->setDisplay('name'),
+                    ->setReadonly(true)
+                    ->setDisplay('dash_name_with_id'),
                 FormField::select('template', 'Шаблон страницы')
                     ->setRequired(true)
                     ->setDefaultSelected('default')
@@ -103,7 +104,7 @@ class LandingPages extends Section
     {
         if($request->get('title') === '.') {
             $route = Route::find($request->get('route_id'));
-            $request->merge(['title' => "Грузоперевозки " . $route->name]);
+            $request->merge(['title' => "Грузоперевозки " . $route->dash_name]);
         }
     }
 

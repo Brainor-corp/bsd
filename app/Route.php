@@ -41,12 +41,23 @@ class Route extends Model
         return $this->hasOne(Oversize::class, 'id','oversizes_id');
     }
 
-    public function route_tariffs() {
+    public function route_tariffs()
+    {
         return $this->hasMany(RouteTariff::class);
     }
 
     public function getComprehensiveShowInPriceAttribute()
     {
         return $this->show_in_price ? 'Да' : 'Нет';
+    }
+
+    public function getDashNameAttribute()
+    {
+        return str_replace(' → ', '-', $this->name);
+    }
+
+    public function getDashNameWithIdAttribute()
+    {
+        return "$this->id. $this->dash_name";
     }
 }
