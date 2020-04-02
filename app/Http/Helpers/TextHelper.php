@@ -15,7 +15,7 @@ class TextHelper {
 
     public static function terminalsTitleByCount($count)
     {
-        $titles = ['комплекс', 'комплекса', 'комплексов'];
+        $titles = ['складской комплекс', 'складских комплекса', 'складских комплексов'];
 
         $cases = [2, 0, 1, 1, 1, 2];
         $format = $titles[($count % 100 > 4 && $count % 100 < 20) ? 2 : $cases[min($count % 10, 5)]];

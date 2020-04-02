@@ -49,9 +49,9 @@
         <span style="color:#5a666e;">
             Посмотреть, скачать схему расположения терминальных комплексов в городах
             {{ $route->shipCity->name }} ({{ $route->shipCity->terminals->count() }}
-            складских {{ \App\Http\Helpers\TextHelper::terminalsTitleByCount($route->shipCity->terminals->count()) }})
+            {{ \App\Http\Helpers\TextHelper::terminalsTitleByCount($route->shipCity->terminals->count()) }})
             и {{ $route->destinationCity->name }} ({{ $route->destinationCity->terminals->count() }}
-            складских {{ \App\Http\Helpers\TextHelper::terminalsTitleByCount($route->destinationCity->terminals->count()) }})
+            {{ \App\Http\Helpers\TextHelper::terminalsTitleByCount($route->destinationCity->terminals->count()) }})
             вы можете в разделе <a href="{{ route('terminals-addresses-show') }}">КОНТАКТЫ</a>.
         </span>
         <span style="color:#5a666e;"></span>

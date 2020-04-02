@@ -36,6 +36,12 @@ class AppServiceProvider extends ServiceProvider
             return in_array($item['text'], $removeNavs) ? null : $item;
         }, $modifiedPluginData['PluginsNavigation'][0]['nodes']);
 
+        $modifiedPluginData['PluginsNavigation'][0]['nodes'][] = [
+            'url' => '/' . config('zeusAdmin.admin_url') . '/LandingPages',
+            'icon' => 'fas fa-address-book',
+            'text' => 'Посадочные'
+        ];
+
         $this->app['PluginsData'] = $modifiedPluginData;
         //
 
