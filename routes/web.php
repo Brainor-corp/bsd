@@ -91,6 +91,8 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
             // Cache
             Route::any('/cache/clear/{key}', 'CacheController@clear')->name('cache-clear');
 
+            Route::any('/landing-pages-generate', 'LandingPagesController@generateAll')->name('landing-pages-generate');
+
             Route::get('/find-doubles', function () {
                 $forwardingReceipts = \App\Order::all()->pluck('code_1c')->toArray();
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\Http\Helpers\LandingPagesHelper;
 use App\LandingPage;
 use App\Mail\SendLandingMail;
 use App\Point;
@@ -95,5 +96,26 @@ class LandingPagesController extends Controller
         Mail::to("zakaz@123789.ru")->send(new SendLandingMail($request->get('phone')));
 
         return redirect()->back();
+    }
+
+    public function generateAll()
+    {
+        $routes = Route::where('show_in_price', true)->get();
+
+        foreach($routes as $route) {
+            $landingPage = new LandingPage();
+            $landingPage->title = $route->name;
+            $landingPage->route_id = $route->id;
+            $landingPage->template = 'default';
+            $landingPage->url = '.';
+            $landingPage->save();
+
+            $landingPage->url = $landingPage->slug;
+            $landingPage->text_1 = LandingPagesHelper::generateText($landingPage, 1);
+            $landingPage->text_2 = LandingPagesHelper::generateText($landingPage, 2);
+            $landingPage->save();
+        }
+
+        return 'ok';
     }
 }
