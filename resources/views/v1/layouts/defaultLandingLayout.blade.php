@@ -3,7 +3,7 @@
 
 <head>
 
-    @include('v1.partials.header.meta')
+    @include('v1.partials.landings.default.header.meta')
 
     @include('v1.partials.header.style')
 
