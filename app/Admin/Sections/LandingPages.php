@@ -20,6 +20,8 @@ class LandingPages extends Section
 {
     protected $title = 'Посадочные страницы';
 
+    protected $model = 'App\LandingPage';
+
     protected $checkAccess = true;
 
     public static function onDisplay(Request $request){
