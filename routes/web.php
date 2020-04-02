@@ -79,7 +79,7 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::post('/shipment-search/ajax', 'OrderController@shipmentSearchAjax')->name('shipment-search-ajax');
 
     // Landings
-    Route::get('/promo', 'LandingPagesController@show')->name('landing-index');
+    Route::get('/promo/{url}', 'LandingPagesController@show')->name('landing-index');
     Route::post('/promo-send-mail', 'LandingPagesController@sendMail')->name('landing-send-mail');
 
     Route::group(['middleware' => ['auth']], function () {

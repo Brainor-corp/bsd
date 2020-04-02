@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\LandingPage;
 use App\Mail\SendLandingMail;
 use App\Point;
 use App\Route;
@@ -12,9 +13,10 @@ use Zeus\Admin\Cms\Helpers\CMSHelper;
 
 class LandingPagesController extends Controller
 {
-    public function show()
+    public function show($url)
     {
-        $route = Route::find(190); // todo
+        $landingPage = LandingPage::where('url', $url)->firstOrFail();
+        $route = $landingPage->route;
 
         $shipCities = City::where('is_ship', true)->get();      // Города отправления
         $shipPoints = Point::has('city')->with('city')->get();  // Особые пункты отправления
@@ -70,12 +72,13 @@ class LandingPagesController extends Controller
         $args = ['type' => 'page', 'slug' => 'glavnaya-tekstovyy-blok'];
         $textBlock = CMSHelper::getQueryBuilder($args)->first();
 
-        return view('v1.pages.landings.default.index')
+        return view("v1.pages.landings.$landingPage->template.index")
             ->with(compact(
             'currentShipCity',
             'currentDestCity',
             'shipCities',
             'destinationCities',
+            'landingPage',
             'route',
             'aboutPage',
             'textBlock'
