@@ -33,7 +33,7 @@
                     <!-- Modal -->
                     <div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
-                            <form action="{{ route('landing-send-mail') }}" method="post">
+                            <form action="{{ route('landing-send-mail') }}" method="post" id="calcUserForm">
                                 @csrf
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -46,16 +46,21 @@
                                         <div class="form-group">
                                             <label for="phone">Ваш телефон</label>
                                             <input type="text" class="form-control" name="phone" id="phone" aria-describedby="phoneHelp" placeholder="Введите телефон" required>
+                                            <span class="invalid-feedback error phone" role="alert" style="display: none"></span>
                                         </div>
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" id="check" required>
                                             <label class="form-check-label" for="check">
-                                                Даю <a href="/politika-konfidencialnosti">согласие на обработку персональных данных</a>.
+                                                Даю согласие на обработку <a href="/politika-konfidencialnosti">персональных данных</a>.
                                             </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="g-recaptcha my-3" data-sitekey="{{ env('V2_GOOGLE_CAPTCHA_KEY') }}"></div>
+                                            <span class="invalid-feedback error g-recaptcha-response" role="alert" style="display: none"></span>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary">Отправить</button>
+                                        <button type="submit" class="btn btn-success">Отправить</button>
                                     </div>
                                 </div>
                             </form>

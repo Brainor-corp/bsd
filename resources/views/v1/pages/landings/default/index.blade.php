@@ -32,4 +32,6 @@
     </script>
 
     <script src="{{ asset('v1/js/short-calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script src="{{ asset('v1/js/landing-page.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endsection

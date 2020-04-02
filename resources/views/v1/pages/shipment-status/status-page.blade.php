@@ -46,7 +46,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="g-recaptcha mb-3" data-sitekey="{{ env('V2_GOOGLE_CAPTCHA_KEY') }}"></div>
-                                    @if ($errors->has('g-recaptcha-response'))
+                                    @if($errors->has('g-recaptcha-response'))
                                         <div class="mb-3">
                                             <span class="invalid-feedback" role="alert" style="display: block">
                                                 <strong>{{ $errors->first('g-recaptcha-response') }}</strong>

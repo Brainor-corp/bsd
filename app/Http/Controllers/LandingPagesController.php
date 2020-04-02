@@ -8,9 +8,11 @@ use App\LandingPage;
 use App\Mail\SendLandingMail;
 use App\Point;
 use App\Route;
+use App\Rules\GoogleReCaptchaV2;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Zeus\Admin\Cms\Helpers\CMSHelper;
 
@@ -93,6 +95,21 @@ class LandingPagesController extends Controller
 
     public function sendMail(Request $request)
     {
+        $messages = [
+            'g-recaptcha-response.required'  => 'Подтвердите, что Вы не робот.',
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'g-recaptcha-response' => ['required', new GoogleReCaptchaV2()],
+            'phone' => ['required'],
+        ], $messages);
+
+        if($validator->fails()) {
+            return response([
+                'data' => $validator->errors()
+            ], 400);
+        }
+
         Mail::to("zakaz@123789.ru")->send(new SendLandingMail($request->get('phone')));
 
         return redirect()->back();
