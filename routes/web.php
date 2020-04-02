@@ -88,9 +88,8 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
             Route::post('/admin/orders/resend/order-to-1c', 'Admin\OrdersController@resendTo1c')->name('admin-resend-order-to-1c');
             Route::post('/admin/orders/resend/order-to-email', 'Admin\OrdersController@resendToEmail')->name('admin-resend-order-to-email');
 
-            // Cache
-            Route::any('/cache/clear/{key}', 'CacheController@clear')->name('cache-clear');
-
+            // Landings
+            Route::any('/landing/cache-clear/{url}', 'LandingPagesController@cacheClear')->name('landing-cache-clear');
             Route::any('/landing-pages-generate', 'LandingPagesController@generateAll')->name('landing-pages-generate');
 
             Route::get('/find-doubles', function () {

@@ -21,76 +21,122 @@ class LandingPagesController extends Controller
     public function show($url)
     {
         // Кеширование на 30 дней
-        return Cache::remember($url, 60 * 60 * 24 * 30, function() use ($url) {
-            $landingPage = LandingPage::where('url', $url)->firstOrFail();
-            $route = $landingPage->route;
+        $cacheTime = 60 * 60 * 24 * 30;
 
-            $shipCities = City::where('is_ship', true)->get();      // Города отправления
-            $shipPoints = Point::has('city')->with('city')->get();  // Особые пункты отправления
+        $landingPage = Cache::remember("$url.landingPage", $cacheTime, function() use ($url) {
+            return LandingPage::where('url', $url)->firstOrFail();
+        });
 
-            // Объединим города и пункты в одну коллекцию
-            $shipCities = Collect($shipCities->pluck('name'))->merge($shipPoints->pluck('name'));
-            $shipCities = $shipCities->map(function ($item, $key) {
-                $city = new \stdClass();
-                $city->name = trim($item);
+        $route = $landingPage->route;
 
-                return $city;
-            })->unique()->sortBy('name');
+        $shipCities = Cache::remember("$url.shipCities", $cacheTime, function() {
+            return City::where('is_ship', true)->get();      // Города отправления
+        });
 
-            // Города/пункты отправления/назначения по умолчанию
-            $selectedShipCity = null;
-            $selectedDestCity = null;
+        $shipPoints = Cache::remember("$url.shipPoints", $cacheTime, function() {
+            return Point::has('city')->with('city')->get();  // Особые пункты отправления
+        });
 
-            $selectedShipCity = City::where('id', $route->ship_city_id)->first(); // Пробуем найти его в таблице городов по конкретному id (53 -- Москва)
+        // Объединим города и пункты в одну коллекцию
+        $shipCities = Collect($shipCities->pluck('name'))->merge($shipPoints->pluck('name'));
+        $shipCities = $shipCities->map(function ($item, $key) {
+            $city = new \stdClass();
+            $city->name = trim($item);
 
-            // Получим id города/пункта отправления в зависимости от того, в какой таблице он нашёлся
-            $selectedShipCity = $selectedShipCity instanceof City ? $selectedShipCity->id : $selectedShipCity->city_id;
+            return $city;
+        })->unique()->sortBy('name');
 
+        // Города/пункты отправления/назначения по умолчанию
+        $selectedShipCity = null;
+        $selectedDestCity = null;
+
+        $selectedShipCity = Cache::remember("$url.selectedShipCity", $cacheTime, function() use ($route) {
+            return City::where('id', $route->ship_city_id)->first(); // Пробуем найти его в таблице городов по конкретному id (53 -- Москва)
+        });
+
+        // Получим id города/пункта отправления в зависимости от того, в какой таблице он нашёлся
+        $selectedShipCity = $selectedShipCity instanceof City ? $selectedShipCity->id : $selectedShipCity->city_id;
+
+        $destinationCities = Cache::remember("$url.destinationCities", $cacheTime, function() use ($selectedShipCity) {
             // Выбираем города назначения
-            $destinationCities = City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity))
+            return City::whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity))
                 ->orderBy('name')
                 ->get();
+        });
 
+        $destinationPoints = Cache::remember("$url.destinationPoints", $cacheTime, function() use ($selectedShipCity) {
             // Выбираем пункты назначения
-            $destinationPoints = Point::whereHas('city', function ($cityQ) use ($selectedShipCity) {
+            return Point::whereHas('city', function ($cityQ) use ($selectedShipCity) {
                 return $cityQ->whereIn('id', Route::select(['dest_city_id'])->where('ship_city_id', $selectedShipCity));
             })->with('city')->get();
-
-            // Объединим города и пункты назначения в одну коллекцию
-            $destinationCities = Collect($destinationCities->pluck('name'))->merge($destinationPoints->pluck('name'));
-            $destinationCities = $destinationCities->unique()->map(function ($item, $key) {
-                $city = new \stdClass();
-                $city->name = $item;
-
-                return $city;
-            })->sortBy('name');
-
-            $selectedDestCity = City::where('id', $route->dest_city_id)->first(); // Пробуем найти город назначения по его id (78 -- Санкт-Петербург) в таблице городов
-
-            // Получим id города/пункта назначения в зависимости от того, в какой таблице он нашёлся
-            $selectedDestCity = $selectedDestCity instanceof City ? $selectedDestCity->id : $selectedDestCity->city_id;
-
-            $currentShipCity = City::where('id', $selectedShipCity)->firstOrFail();
-            $currentDestCity = City::where('id', $selectedDestCity)->firstOrFail();
-
-            $args = ['type' => 'page', 'slug' => 'glavnaya-o-kompanii'];
-            $aboutPage = CMSHelper::getQueryBuilder($args)->first();
-
-            $args = ['type' => 'page', 'slug' => 'glavnaya-tekstovyy-blok'];
-            $textBlock = CMSHelper::getQueryBuilder($args)->first();
-
-            return View::make("v1.pages.landings.$landingPage->template.index")
-                ->with(compact(
-                    'currentShipCity',
-                    'currentDestCity',
-                    'shipCities',
-                    'destinationCities',
-                    'landingPage',
-                    'route',
-                    'aboutPage',
-                    'textBlock'
-                ))->render();
         });
+
+        $destinationCities = Cache::remember("$url.destinationCitiesMerged", $cacheTime, function() use ($destinationCities, $destinationPoints) {
+            // Объединим города и пункты назначения в одну коллекцию
+            return Collect($destinationCities->pluck('name'))->merge($destinationPoints->pluck('name'));
+        });
+
+        $destinationCities = $destinationCities->unique()->map(function ($item, $key) {
+            $city = new \stdClass();
+            $city->name = $item;
+
+            return $city;
+        })->sortBy('name');
+
+        $selectedDestCity = Cache::remember("$url.selectedDestCity", $cacheTime, function() use ($route) {
+            return City::where('id', $route->dest_city_id)->first(); // Пробуем найти город назначения по его id (78 -- Санкт-Петербург) в таблице городов
+        });
+
+        // Получим id города/пункта назначения в зависимости от того, в какой таблице он нашёлся
+        $selectedDestCity = $selectedDestCity instanceof City ? $selectedDestCity->id : $selectedDestCity->city_id;
+
+        $currentShipCity = Cache::remember("$url.currentShipCity", $cacheTime, function() use ($selectedShipCity) {
+            return City::where('id', $selectedShipCity)->firstOrFail();
+        });
+
+        $currentDestCity = Cache::remember("$url.currentDestCity", $cacheTime, function() use ($selectedDestCity) {
+            return City::where('id', $selectedDestCity)->firstOrFail();
+        });
+
+        $aboutPage = Cache::remember("$url.aboutPage", $cacheTime, function() {
+            $args = ['type' => 'page', 'slug' => 'glavnaya-o-kompanii'];
+            return CMSHelper::getQueryBuilder($args)->first();
+        });
+
+        $textBlock = Cache::remember("$url.textBlock", $cacheTime, function() {
+            $args = ['type' => 'page', 'slug' => 'glavnaya-tekstovyy-blok'];
+            return CMSHelper::getQueryBuilder($args)->first();
+        });
+
+        return View::make("v1.pages.landings.$landingPage->template.index")
+            ->with(compact(
+                'currentShipCity',
+                'currentDestCity',
+                'shipCities',
+                'destinationCities',
+                'landingPage',
+                'route',
+                'aboutPage',
+                'textBlock'
+            ))->render();
+    }
+
+    public function cacheClear($url)
+    {
+        Cache::forget("$url.landingPage");
+        Cache::forget("$url.shipCities");
+        Cache::forget("$url.shipPoints");
+        Cache::forget("$url.selectedShipCity");
+        Cache::forget("$url.destinationCities");
+        Cache::forget("$url.destinationPoints");
+        Cache::forget("$url.destinationCitiesMerged");
+        Cache::forget("$url.selectedDestCity");
+        Cache::forget("$url.currentShipCity");
+        Cache::forget("$url.currentDestCity");
+        Cache::forget("$url.aboutPage");
+        Cache::forget("$url.textBlock");
+
+        return redirect()->back();
     }
 
     public function sendMail(Request $request)
