@@ -32,10 +32,11 @@ class InsertLandingServicesToZeusAdminPostsTable extends Migration
             $post->title = $servicesTitle;
             $post->type = 'post';
             $post->status = 'published';
+            $post->content = "<p>$servicesTitle</p>";
             $post->published_at = \Carbon\Carbon::now();
             $post->save();
 
-            $post->url = $post->slug;
+            $post->url = $post->default_url;
             $post->save();
 
             $post->categories()->attach($category);

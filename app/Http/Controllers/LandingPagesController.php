@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Zeus\Admin\Cms\Helpers\CMSHelper;
+use Zeus\Admin\Cms\Models\ZeusAdminPost;
 
 class LandingPagesController extends Controller
 {
@@ -108,6 +109,16 @@ class LandingPagesController extends Controller
             return CMSHelper::getQueryBuilder($args)->first();
         });
 
+        // Получение услуг не кешируется, т.к. услуги одинаковые на всех посадочных.
+        // Если их кешировать, то при изменении нужно будет очищать кеш сразу у всех посадочных.
+        $servicesPosts = ZeusAdminPost::whereHas('categories', function ($categoryQ) {
+            return $categoryQ->where([
+                ['type', 'category'],
+                ['slug', 'posadochnaya-usluga'],
+                ['status', 'published']
+            ]);
+        })->get();
+
         return View::make("v1.pages.landings.$landingPage->template.index")
             ->with(compact(
                 'currentShipCity',
@@ -117,7 +128,8 @@ class LandingPagesController extends Controller
                 'landingPage',
                 'route',
                 'aboutPage',
-                'textBlock'
+                'textBlock',
+                'servicesPosts'
             ))->render();
     }
 

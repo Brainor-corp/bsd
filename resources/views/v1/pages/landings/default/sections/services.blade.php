@@ -12,6 +12,10 @@
                 </div>
                 <br>
                 <span class="font-weight-bold">Оформление <br> документов</span>
+                @include(
+                    'v1.pages.landings.default.partials.service_modal',
+                    ['service' => $servicesPosts->where('slug', 'oformlenie-dokumentov')->first()]
+                )
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
                 <div class="round position-relative d-inline-block">
@@ -19,6 +23,10 @@
                 </div>
                 <br>
                 <span class="font-weight-bold">Страхование <br> грузов</span>
+                @include(
+                    'v1.pages.landings.default.partials.service_modal',
+                    ['service' => $servicesPosts->where('slug', 'strahovanie-gruzov')->first()]
+                )
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
                 <div class="round position-relative d-inline-block">
@@ -26,6 +34,10 @@
                 </div>
                 <br>
                 <span class="font-weight-bold">Упаковка <br> грузов</span>
+                @include(
+                    'v1.pages.landings.default.partials.service_modal',
+                    ['service' => $servicesPosts->where('slug', 'upakovka-gruzov')->first()]
+                )
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
                 <div class="round position-relative d-inline-block">
@@ -33,6 +45,10 @@
                 </div>
                 <br>
                 <span class="font-weight-bold">Сборные <br> грузы</span>
+                @include(
+                    'v1.pages.landings.default.partials.service_modal',
+                    ['service' => $servicesPosts->where('slug', 'sbornye-gruzy')->first()]
+                )
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
                 <div class="round position-relative d-inline-block">
@@ -40,6 +56,10 @@
                 </div>
                 <br>
                 <span class="font-weight-bold">Опытные <br> грузчики</span>
+                @include(
+                    'v1.pages.landings.default.partials.service_modal',
+                    ['service' => $servicesPosts->where('slug', 'opytnye-gruzchiki')->first()]
+                )
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
                 <div class="round position-relative d-inline-block">
@@ -47,6 +67,10 @@
                 </div>
                 <br>
                 <span class="font-weight-bold">Срочная <br> доставка</span>
+                @include(
+                    'v1.pages.landings.default.partials.service_modal',
+                    ['service' => $servicesPosts->where('slug', 'srochnaya-dostavka')->first()]
+                )
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
                 <div class="round position-relative d-inline-block">
@@ -54,6 +78,10 @@
                 </div>
                 <br>
                 <span class="font-weight-bold">Отслеживание <br> груза</span>
+                @include(
+                    'v1.pages.landings.default.partials.service_modal',
+                    ['service' => $servicesPosts->where('slug', 'otslezhivanie-gruza')->first()]
+                )
             </div>
         </div>
     </div>
