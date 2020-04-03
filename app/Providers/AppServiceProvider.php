@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         // Убираем лишние ЦМС пункты из админки
-        $removeNavs = ["Записи", "Комментарии", "Метки"];
+        $removeNavs = ["Комментарии", "Метки"];
         $modifiedPluginData = $this->app['PluginsData'];
 
         $modifiedPluginData['PluginsNavigation'][0]['nodes'] = array_map(function ($item) use ($removeNavs) {
