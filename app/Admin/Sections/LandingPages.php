@@ -27,7 +27,7 @@ class LandingPages extends Section
     public static function onDisplay(Request $request){
         $display = Display::table([
             Column::text('id', '#'),
-            Column::link('title', 'Заголовок'),
+            Column::link('strip_tags_title', 'Заголовок'),
             Column::text('route.name', 'Маршрут'),
         ])
             ->setFilter([

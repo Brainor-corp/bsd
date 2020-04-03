@@ -17,7 +17,7 @@ class LandingPage extends Model
     {
         return [
             'slug' => [
-                'source' => 'title'
+                'source' => 'strip_tags_title'
             ]
         ];
     }
@@ -25,5 +25,10 @@ class LandingPage extends Model
     public function route()
     {
         return $this->belongsTo(Route::class);
+    }
+
+    public function getStripTagsTitleAttribute()
+    {
+        return strip_tags($this->title);
     }
 }

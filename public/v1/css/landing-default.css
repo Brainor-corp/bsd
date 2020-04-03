@@ -24,3 +24,12 @@ body {
 .services .service-block:hover .round {
     background-color: #485259;
 }
+
+.main-header h1 {
+    width: unset;
+    line-height: unset;
+}
+
+.main-header .icons_list  {
+    margin-top: 10px;
+}
