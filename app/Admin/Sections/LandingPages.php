@@ -73,9 +73,7 @@ class LandingPages extends Section
 
         $form = Form::panel([
             FormColumn::column([
-                FormField::input('title', 'Заголовок ("." для автогенерации)')
-                    ->setValue('.')
-                    ->setRequired(true),
+                FormField::wysiwyg('title', 'Заголовок ("." в режиме "Источник" для автогенерации)')->setRequired(true),
                 FormField::wysiwyg('text_1', 'Текст 1'),
                 FormField::wysiwyg('text_2', 'Текст 2'),
             ]),

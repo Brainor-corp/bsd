@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-12 col-xl-7 d-flex flex-column header__main_left whiteTxtColor">
         <div class="logo_inner mb-5"></div>
-        <h1 class="w-100 mb-5">{{ $landingPage->title }}</h1>
+        <h1 class="w-100 mb-5">{!! $landingPage->title !!}</h1>
         <ul class="icons_list clearfix text-center text-md-left">
             <li data-toggle="tooltip" data-placement="bottom" title="Морские перевозки">
                 <a href="/uslugi/morskie-perevozki" class="service__mini-block mezhter"></a>
