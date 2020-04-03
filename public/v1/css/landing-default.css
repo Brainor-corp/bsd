@@ -7,6 +7,7 @@ body {
     width: 100px;
     border: 2px solid #485259;
     border-radius: 50%;
+    transition: 0.5s;
 }
 
 .services .round img {
@@ -18,4 +19,8 @@ body {
     margin: auto;
     max-width: 50px;
     height: auto;
+}
+
+.services .service-block:hover .round {
+    background-color: #485259;
 }
