@@ -5,7 +5,7 @@
                 <p style="text-align: center;"><span style="font-size:24px;"><strong>Дополнительные услуги</strong></span></p>
             </div>
         </div>
-        <div class="row align-items-center justify-content-md-between justify-content-center my-5">
+        <div class="row align-items-center justify-content-xl-between justify-content-center my-5">
             <div class="col-md-auto col-6 text-center mb-3">
                 <div class="service-block">
                     <div class="round position-relative d-inline-block">

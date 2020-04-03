@@ -1,8 +1,8 @@
 <section>
     <div class="container-fluid bg-dart-gray">
         <div class="container px-lg-5">
-            <div class="row align-items-center justify-content-md-between justify-content-center py-5">
-                <div class="col-auto mb-md-0 mb-4">
+            <div class="row align-items-center justify-content-xl-between justify-content-center py-5">
+                <div class="col-auto mb-xl-0 mb-4">
                     <div class="row">
                         <div class="col-auto">
                             <img src="{{ asset('/images/landing_icons/time.png') }}" alt="" class="img-fluid">
@@ -13,7 +13,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-auto mb-md-0 mb-4">
+                <div class="col-auto mb-xl-0 mb-4">
                     <div class="row">
                         <div class="col-auto">
                             <img src="{{ asset('/images/landing_icons/wallet.png') }}" alt="" class="img-fluid">
@@ -24,7 +24,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-auto mb-md-0 mb-4">
+                <div class="col-auto mb-xl-0 mb-4">
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-danger px-md-5" data-toggle="modal" data-target="#contactModal">
                         Получить детальный просчет
