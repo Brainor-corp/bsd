@@ -1,4 +1,11 @@
-<p style="text-align: center;"><span style="font-size:24px;"><strong>ООО &quot;Балтийская Служба Доставки&quot; с гордостью заявляет о своих преимуществах и возможностях при перевозках грузов между Столицами России:</strong></span></p>
+<p style="text-align: center;">
+    <span style="font-size:24px;">
+        <strong>
+            ООО &quot;Балтийская Служба Доставки&quot; с гордостью заявляет
+            о своих преимуществах и возможностях при перевозках грузов по маршруту {{ $route->name }}:
+        </strong>
+    </span>
+</p>
 
 <p>&nbsp;</p>
 
