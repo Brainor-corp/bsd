@@ -8,8 +8,8 @@
                             <img src="{{ asset('/images/landing_icons/time.png') }}" alt="" class="img-fluid">
                         </div>
                         <div class="col text-white">
-                            <p class="mb-0 h5">От <strong>{{ $route->delivery_time }}</strong> {{ \App\Http\Helpers\TextHelper::daysTitleByCount($route->delivery_time) }}</p>
-                            <p class="h6">Срок доставки</p>
+                            <p class="mb-0 h5 text-nowrap">От <strong>{{ $route->delivery_time }}</strong> {{ \App\Http\Helpers\TextHelper::daysTitleByCount($route->delivery_time) }}</p>
+                            <p class="h6 text-nowrap">Срок доставки</p>
                         </div>
                     </div>
                 </div>
@@ -19,8 +19,8 @@
                             <img src="{{ asset('/images/landing_icons/wallet.png') }}" alt="" class="img-fluid">
                         </div>
                         <div class="col text-white">
-                            <p class="mb-0 h5">От <strong>{{ $route->min_cost }}</strong> руб.</p>
-                            <p class="h6">Стоимость доставки</p>
+                            <p class="mb-0 h5 text-nowrap">От <strong>{{ $route->min_cost }}</strong> руб.</p>
+                            <p class="h6 text-nowrap">Стоимость доставки</p>
                         </div>
                     </div>
                 </div>
