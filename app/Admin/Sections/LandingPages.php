@@ -104,7 +104,7 @@ class LandingPages extends Section
     {
         if($request->get('title') === '.') {
             $route = Route::find($request->get('route_id'));
-            $request->merge(['title' => "Грузоперевозки " . $route->dash_name]);
+            $request->merge(['title' => "<h1>Грузоперевозки $route->dash_name</h1>"]);
         }
     }
 
