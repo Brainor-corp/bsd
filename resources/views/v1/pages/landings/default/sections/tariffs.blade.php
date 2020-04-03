@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="w-100 border p-3 mb-3 bg-light">
-                    <h4 style="text-align: center;">Тарифы на грузоперевозки маршрута <strong>{{ $route->name }}</strong></h4>
+                    <h4 style="text-align: center;">Тарифы на грузоперевозки маршрута <strong>{{ $route->real_arrow_name }}</strong></h4>
 
                     <div class="table-responsive mt-3 mb-3">
                         <table class="table table-bordered text-center">

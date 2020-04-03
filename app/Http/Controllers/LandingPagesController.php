@@ -25,7 +25,7 @@ class LandingPagesController extends Controller
         $cacheTime = 60 * 60 * 24 * 30;
 
         $landingPage = Cache::remember("$url.landingPage", $cacheTime, function() use ($url) {
-            return LandingPage::where('url', $url)->firstOrFail();
+            return LandingPage::where('url', $url)->with('route.shipCity', 'route.destinationCity')->firstOrFail();
         });
 
         $route = $landingPage->route;

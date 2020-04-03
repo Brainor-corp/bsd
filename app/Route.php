@@ -60,4 +60,13 @@ class Route extends Model
     {
         return "$this->id. $this->dash_name";
     }
+
+    public function getRealArrowNameAttribute()
+    {
+        if($this->destinationCity->is_ship) {
+            return str_replace('→', '↔', $this->name);
+        }
+
+        return $this->name;
+    }
 }
