@@ -3,6 +3,7 @@
 namespace App\Admin\Sections;
 
 use App\Http\Helpers\LandingPagesHelper;
+use App\Http\Helpers\TextHelper;
 use App\LandingPage;
 use App\Route;
 use Cviebrock\EloquentSluggable\Services\SlugService;
@@ -66,6 +67,9 @@ class LandingPages extends Section
                     ->setOptions(LandingPagesHelper::getTemplates()),
                 FormField::hidden('text_1')->setValue('.'),
                 FormField::hidden('text_2')->setValue('.'),
+                FormField::hidden('seo_title')->setValue('.'),
+                FormField::hidden('description')->setValue('.'),
+                FormField::hidden('key_words')->setValue('.'),
             ])
         ]);
 
@@ -96,6 +100,7 @@ class LandingPages extends Section
                     ->setRequired(true)
                     ->setDefaultSelected('default')
                     ->setOptions(LandingPagesHelper::getTemplates()),
+                FormField::input('seo_title', 'SEO заголовок'),
                 FormField::input('description', 'SEO описание'),
                 FormField::input('key_words', 'SEO ключевые слова'),
                 FormField::custom(view('admin.landing-pages.cache-clear')->with(compact('landingPage'))->render()),
@@ -115,6 +120,8 @@ class LandingPages extends Section
 
     public function afterSave(Request $request, $model = null)
     {
+        $route = $model->route;
+
         if($request->get('url') === '.') {
             $model->url = $model->slug;
         }
@@ -125,6 +132,19 @@ class LandingPages extends Section
 
         if($request->get('text_2') === '.') {
             $model->text_2 = LandingPagesHelper::generateText($model, 2);
+        }
+
+        if($request->get('seo_title') === '.') {
+            $model->seo_title = "Грузоперевозки $route->dash_name";
+        }
+
+        if($request->get('key_words') === '.') {
+            $model->key_words = "Грузоперевозки $route->dash_name, Доставка документов $route->dash_name, Контейнерные перевозки $route->dash_name";
+        }
+
+        if($request->get('description') === '.') {
+            $daysTitle = TextHelper::daysTitleByCount($route->delivery_time);
+            $model->description = "Балтийская Служба Доставки осуществляет грузоперевозки по маршруту $route->dash_name. От $route->min_cost руб. От $route->delivery_time $daysTitle. Онлайн калькулятор доставки.";
         }
 
         $model->save();
