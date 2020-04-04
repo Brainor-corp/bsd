@@ -70,8 +70,8 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     });
 
     // Партнёры
-    Route::get('/partners', 'PartnersController@showPartnersPage')->name('partners-page');
-    Route::post('/partners-action', 'PartnersController@sendPartnersFeedback')->name('partners-page-action');
+//    Route::get('/partners', 'PartnersController@showPartnersPage')->name('partners-page');
+//    Route::post('/partners-action', 'PartnersController@sendPartnersFeedback')->name('partners-page-action');
 
     // Статус груза по номеру заказа
     Route::get('/shipment-search', 'OrderController@shipmentSearch')->name('shipment-search');
