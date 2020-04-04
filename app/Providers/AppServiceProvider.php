@@ -29,12 +29,18 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         // Убираем лишние ЦМС пункты из админки
-        $removeNavs = ["Записи", "Комментарии", "Метки"];
+        $removeNavs = ["Комментарии", "Метки"];
         $modifiedPluginData = $this->app['PluginsData'];
 
         $modifiedPluginData['PluginsNavigation'][0]['nodes'] = array_map(function ($item) use ($removeNavs) {
             return in_array($item['text'], $removeNavs) ? null : $item;
         }, $modifiedPluginData['PluginsNavigation'][0]['nodes']);
+
+        $modifiedPluginData['PluginsNavigation'][0]['nodes'][] = [
+            'url' => '/' . config('zeusAdmin.admin_url') . '/LandingPages',
+            'icon' => 'fas fa-address-book',
+            'text' => 'Посадочные'
+        ];
 
         $this->app['PluginsData'] = $modifiedPluginData;
         //

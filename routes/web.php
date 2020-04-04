@@ -78,11 +78,19 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     Route::post('/shipment-search/result', 'OrderController@shipmentSearchWrapper')->name('shipment-search-wrapper');
     Route::post('/shipment-search/ajax', 'OrderController@shipmentSearchAjax')->name('shipment-search-ajax');
 
+    // Landings
+    Route::get('/promo/{url}', 'LandingPagesController@show')->name('landing-index');
+    Route::post('/promo-send-mail', 'LandingPagesController@sendMail')->name('landing-send-mail');
+
     Route::group(['middleware' => ['auth']], function () {
         Route::group(['middleware' => ['admin']], function () {
             Route::post('/admin/orders/resend/admin-email', 'Admin\OrdersController@resendAdminEmail')->name('admin-resend-admin-email');
             Route::post('/admin/orders/resend/order-to-1c', 'Admin\OrdersController@resendTo1c')->name('admin-resend-order-to-1c');
             Route::post('/admin/orders/resend/order-to-email', 'Admin\OrdersController@resendToEmail')->name('admin-resend-order-to-email');
+
+            // Landings
+            Route::any('/landing/cache-clear/{url}', 'LandingPagesController@cacheClear')->name('landing-cache-clear');
+            Route::any('/landing-pages-generate', 'LandingPagesController@generateAll')->name('landing-pages-generate');
 
             Route::get('/find-doubles', function () {
                 $forwardingReceipts = \App\Order::all()->pluck('code_1c')->toArray();
