@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\City;
 use App\Http\Helpers\LandingPagesHelper;
+use App\Http\Helpers\TextHelper;
 use App\LandingPage;
 use App\Mail\SendLandingMail;
 use App\Point;
@@ -183,6 +184,13 @@ class LandingPagesController extends Controller
             $landingPage->route_id = $route->id;
             $landingPage->template = 'default';
             $landingPage->url = '.';
+
+            $daysTitle = TextHelper::daysTitleByCount($route->delivery_time);
+
+            $landingPage->seo_title = "Грузоперевозки $route->dash_name";
+            $landingPage->key_words = "Грузоперевозки $route->dash_name, Доставка документов $route->dash_name, Контейнерные перевозки $route->dash_name";
+            $landingPage->description = "Балтийская Служба Доставки осуществляет грузоперевозки по маршруту $route->dash_name. От $route->min_cost руб. От $route->delivery_time $daysTitle. Онлайн калькулятор доставки.";
+
             $landingPage->save();
 
             $landingPage->url = $landingPage->slug;
