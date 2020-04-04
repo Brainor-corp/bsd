@@ -12,6 +12,7 @@ public/storage
 public/hot
 public/uploads
 public/files
+public/sitemap.xml
 storage/*.key
 .env
 Homestead.yaml
