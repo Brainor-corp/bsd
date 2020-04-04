@@ -33,6 +33,8 @@ class Kernel extends ConsoleKernel
         $schedule->job(new UsersOrdersSyncFrom1c())->everyFiveMinutes();
 
         $schedule->job(new ClearPendingFiles())->daily();
+
+        $schedule->command('sitemap:generate')->daily();
     }
 
     /**
