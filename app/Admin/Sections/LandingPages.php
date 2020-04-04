@@ -33,7 +33,12 @@ class LandingPages extends Section
             ->setFilter([
                 null,
                 FilterType::text('title', 'Заголовок'),
-                null,
+                FilterType::bselect('route_id')
+                    ->setModelForOptions(Route::class)
+                    ->setDataAttributes([
+                        'data-live-search="true"'
+                    ])
+                    ->setDisplay("dash_name_with_id")
             ])
             ->setPagination(10);
 
