@@ -78,7 +78,7 @@ class MainPageController extends Controller
         $selectedDestCity = $selectedDestCity instanceof City ? $selectedDestCity->id : $selectedDestCity->city_id;
 
         $shipCity = City::where('id', $selectedShipCity)->firstOrFail();
-        $destCity = City::where('id', $selectedDestCity)->firstOrFail();;
+        $destCity = City::where('id', $selectedDestCity)->firstOrFail();
 
         $packages = [];
         $weight = 1;

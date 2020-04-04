@@ -1,0 +1,35 @@
+body {
+    font-weight: unset;
+}
+
+.services .round {
+    height: 100px;
+    width: 100px;
+    border: 2px solid #485259;
+    border-radius: 50%;
+    transition: 0.5s;
+}
+
+.services .round img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    max-width: 50px;
+    height: auto;
+}
+
+.services .service-block:hover .round {
+    background-color: #485259;
+}
+
+.main-header h1 {
+    width: unset;
+    line-height: unset;
+}
+
+.main-header .icons_list  {
+    margin-top: 10px;
+}

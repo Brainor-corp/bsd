@@ -11,6 +11,7 @@ use App\Admin\Sections\Contacts;
 use App\Admin\Sections\Counterparties;
 use App\Admin\Sections\ForwardThresholds;
 use App\Admin\Sections\InsideForwarding;
+use App\Admin\Sections\LandingPages;
 use App\Admin\Sections\MaxPackageDimensions;
 use App\Admin\Sections\News;
 use App\Admin\Sections\Notes;
@@ -90,13 +91,14 @@ class AuthServiceProvider extends ServiceProvider
         TariffZones::class => DefaultSectionPolicy::class,
 
         // CMS
-        ZeusAdminComments::class =>DefaultSectionPolicy::class,
-        ZeusAdminFiles::class =>DefaultSectionPolicy::class,
-        ZeusAdminMenus::class =>DefaultSectionPolicy::class,
-        ZeusAdminPages::class =>DefaultSectionPolicy::class,
-        ZeusAdminPosts::class =>DefaultSectionPolicy::class,
-        ZeusAdminTags::class =>DefaultSectionPolicy::class,
-        ZeusAdminTerms::class =>DefaultSectionPolicy::class,
+        ZeusAdminComments::class => DefaultSectionPolicy::class,
+        ZeusAdminFiles::class => DefaultSectionPolicy::class,
+        ZeusAdminMenus::class => DefaultSectionPolicy::class,
+        ZeusAdminPages::class => DefaultSectionPolicy::class,
+        ZeusAdminPosts::class => DefaultSectionPolicy::class,
+        ZeusAdminTags::class => DefaultSectionPolicy::class,
+        ZeusAdminTerms::class => DefaultSectionPolicy::class,
+        LandingPages::class => DefaultSectionPolicy::class
     ];
 
     /**
