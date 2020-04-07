@@ -34,11 +34,12 @@ class UsersController extends Controller
 
         if ($validator->fails()) {
             return response(
-                [
+                json_encode([
                     "status" => "error",
                     "text" => $validator->errors()->first()
-                ],
-                400
+                ], JSON_UNESCAPED_UNICODE),
+                400,
+                ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']
             );
         }
 
@@ -62,8 +63,12 @@ class UsersController extends Controller
             Mail::to($user->email)->send(new User1CRegister($user, $password));
         } catch (\Exception $e) {}
 
-        return [
-            'status' => 'success'
-        ];
+        return response(
+            json_encode([
+                "status" => "success"
+            ], JSON_UNESCAPED_UNICODE),
+            200,
+            ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']
+        );
     }
 }
