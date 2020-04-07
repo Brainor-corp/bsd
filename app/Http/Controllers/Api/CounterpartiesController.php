@@ -21,11 +21,12 @@ class CounterpartiesController extends Controller
 
         if ($validator->fails()) {
             return response(
-                [
+                json_encode([
                     "status" => "error",
                     "text" => $validator->errors()->first()
-                ],
-                400
+                ], JSON_UNESCAPED_UNICODE),
+                400,
+                ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']
             );
         }
 
@@ -109,8 +110,12 @@ class CounterpartiesController extends Controller
             Counterparty::create($fields);
         }
 
-        return [
-            "status" => "success"
-        ];
+        return response(
+            json_encode([
+                "status" => "success"
+            ], JSON_UNESCAPED_UNICODE),
+            200,
+            ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']
+        );
     }
 }
