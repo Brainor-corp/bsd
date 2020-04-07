@@ -28,11 +28,12 @@ class ForwardingReceiptsController extends Controller
 
         if ($validator->fails()) {
             return response(
-                [
+                json_encode([
                     "status" => "error",
                     "text" => $validator->errors()->first()
-                ],
-                400
+                ], JSON_UNESCAPED_UNICODE),
+                400,
+                ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']
             );
         }
 
@@ -40,11 +41,12 @@ class ForwardingReceiptsController extends Controller
 
         if(!isset($forwardingReceipt)) {
             return response(
-                [
+                json_encode([
                     "status" => "error",
                     "text" => "ЭР с указанным номером (" . $request->get('id') . ") не найдена"
-                ],
-                400
+                ], JSON_UNESCAPED_UNICODE),
+                400,
+                ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']
             );
         }
 
@@ -78,8 +80,12 @@ class ForwardingReceiptsController extends Controller
         $forwardingReceipt->payment_status_id = $paymentStatus->id ?? null;
         $forwardingReceipt->save();
 
-        return [
-            "status" => "success"
-        ];
+        return response(
+            json_encode([
+                "status" => "success"
+            ], JSON_UNESCAPED_UNICODE),
+            200,
+            ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']
+        );
     }
 }
