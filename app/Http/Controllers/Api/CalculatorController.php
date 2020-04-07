@@ -137,11 +137,12 @@ class CalculatorController extends Controller
 
         if ($validator->fails()) {
             return response(
-                [
+                json_encode([
                     "status" => "error",
                     "text" => $validator->errors()->first()
-                ],
-                400
+                ], JSON_UNESCAPED_UNICODE),
+                400,
+                ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']
             );
         }
 
@@ -150,20 +151,28 @@ class CalculatorController extends Controller
         $weight = $request->get('weight');
 
         if(!isset($route)) {
-            return response([
-                "status" => "not found"
-            ]);
+            return response(
+                json_encode(["status" => "not found"], JSON_UNESCAPED_UNICODE),
+                200,
+                ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']
+            );
         }
 
         $routeTariffData = self::getRouteTariffData($route, $volume, $weight);
 
         if(!isset($routeTariffData['tariff']) || !is_numeric($routeTariffData['tariff'])) {
-            return response([
-                "status" => "not found"
-            ], 404);
+            return response(
+                json_encode(["status" => "not found"], JSON_UNESCAPED_UNICODE),
+                404,
+                ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']
+            );
         }
 
-        return response($routeTariffData);
+        return response(
+            json_encode($routeTariffData, JSON_UNESCAPED_UNICODE),
+            200,
+            ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8']
+        );
     }
 
     public function getInsideForwardingTariff(Request $request)
