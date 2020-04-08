@@ -5,7 +5,7 @@
                 data-data='{
                     "terminal": "{{ $destinationCity->coordinates_or_address }}",
                     "kladrId": "{{ $destinationCity->kladr->code ?? 'null' }}",
-                    "doorstep": "{{ $destinationCity->doorstep }}",
+                    "doorstep": "{{ $destinationCity->doorstep ?? 0 }}",
                     "doorstep_message": "{{ addcslashes($destinationCity->doorstep_message->name ?? '', '"') }}"
                 }'
         >
