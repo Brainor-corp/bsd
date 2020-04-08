@@ -71,11 +71,12 @@
                     <div class="header__top_userpick d-inline-block">Л</div>
                     <div class="dropdown d-inline-block">
                         <a
-                                class="dropdown-toggle header__myaccount_link {{ (\Illuminate\Support\Facades\Auth::check() && !\Illuminate\Support\Facades\Auth::user()->verified) ? 'cn' : '' }}"
-                                href="#" role="button"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false">
+                            class="dropdown-toggle header__myaccount_link {{ (\Illuminate\Support\Facades\Auth::check() && !\Illuminate\Support\Facades\Auth::user()->verified) ? 'cn' : '' }}"
+                            href="#" role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
                             @if(\Illuminate\Support\Facades\Auth::check())
                                 Кабинет {{ \Illuminate\Support\Facades\Auth::user()->surname_initials }}
                             @else
@@ -109,9 +110,9 @@
                                             <span class="dropdown-menu__title">Подтверждение регистрации</span>
                                         </div>
                                         <div class="d-flex dropdown-menu__row">
-                                            <input name="code" class="form-control sms-code-mask {{ $errors->has('code') ? ' is-invalid' : '' }}" placeholder="Код подтверждения" required>
+                                            <input name="code" class="form-control sms-code-mask {{ isset($errors) && $errors->has('code') ? ' is-invalid' : '' }}" placeholder="Код подтверждения" required>
                                         </div>
-                                        @if ($errors->has('code'))
+                                        @if (isset($errors) && $errors->has('code'))
                                             <div class="d-flex dropdown-menu__row">
                                             <span class="invalid-feedback d-block" role="alert">
                                                 <strong class="white-space-normal">{{ $errors->first('code') }}</strong>
