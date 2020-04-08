@@ -12,11 +12,8 @@
                         <img src="{{ asset('images/landing_icons/contract.png') }}" alt="" class="img-fluid">
                     </div>
                     <br>
-                    <span class="font-weight-bold">Оформление <br> документов</span>
-                    @include(
-                        'v1.pages.landings.default.partials.service_modal',
-                        ['service' => $servicesPosts->where('slug', 'oformlenie-dokumentov')->first()]
-                    )
+                    <span class="font-weight-bold">Доставка <br>документов</span>
+                    <a href="{{ url('/uslugi/dostavka-dokumentov') }}" class="stretched-link"></a>
                 </div>
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
@@ -26,10 +23,7 @@
                     </div>
                     <br>
                     <span class="font-weight-bold">Страхование <br> грузов</span>
-                    @include(
-                        'v1.pages.landings.default.partials.service_modal',
-                        ['service' => $servicesPosts->where('slug', 'strahovanie-gruzov')->first()]
-                    )
+                    <a href="{{ url('/klientam/dopolnitelnye-uslugi#insurance') }}" class="stretched-link"></a>
                 </div>
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
@@ -39,10 +33,7 @@
                     </div>
                     <br>
                     <span class="font-weight-bold">Упаковка <br> грузов</span>
-                    @include(
-                        'v1.pages.landings.default.partials.service_modal',
-                        ['service' => $servicesPosts->where('slug', 'upakovka-gruzov')->first()]
-                    )
+                    <a href="{{ url('/klientam/dopolnitelnye-uslugi#packaging') }}" class="stretched-link"></a>
                 </div>
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
@@ -51,11 +42,8 @@
                         <img src="{{ asset('images/landing_icons/boxes.png') }}" alt="" class="img-fluid">
                     </div>
                     <br>
-                    <span class="font-weight-bold">Сборные <br> грузы</span>
-                    @include(
-                        'v1.pages.landings.default.partials.service_modal',
-                        ['service' => $servicesPosts->where('slug', 'sbornye-gruzy')->first()]
-                    )
+                    <span class="font-weight-bold">Адресная доставка <br> и забор груза</span>
+                    <a href="{{ url('/uslugi/adresnaya-dostavka-i-zabor-gruza') }}" class="stretched-link"></a>
                 </div>
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
@@ -64,11 +52,8 @@
                         <img src="{{ asset('images/landing_icons/movers.png') }}" alt="" class="img-fluid">
                     </div>
                     <br>
-                    <span class="font-weight-bold">Опытные <br> грузчики</span>
-                    @include(
-                        'v1.pages.landings.default.partials.service_modal',
-                        ['service' => $servicesPosts->where('slug', 'opytnye-gruzchiki')->first()]
-                    )
+                    <span class="font-weight-bold">Адресная <br> доставка груза</span>
+                    <a href="{{ url('/uslugi/adresnaya-dostavka-i-zabor-gruza') }}" class="stretched-link"></a>
                 </div>
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
@@ -77,11 +62,8 @@
                         <img src="{{ asset('images/landing_icons/truck.png') }}" alt="" class="img-fluid">
                     </div>
                     <br>
-                    <span class="font-weight-bold">Срочная <br> доставка</span>
-                    @include(
-                        'v1.pages.landings.default.partials.service_modal',
-                        ['service' => $servicesPosts->where('slug', 'srochnaya-dostavka')->first()]
-                    )
+                    <span class="font-weight-bold">Доставка в <br> гипермаркеты</span>
+                    <a href="{{ url('/uslugi/dostavka-v-gipermarkety') }}" class="stretched-link"></a>
                 </div>
             </div>
             <div class="col-md-auto col-6 text-center mb-3">
