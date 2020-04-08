@@ -39,20 +39,10 @@
             <div class="col-md-auto col-6 text-center mb-3">
                 <div class="service-block">
                     <div class="round position-relative d-inline-block">
-                        <img src="{{ asset('images/landing_icons/boxes.png') }}" alt="" class="img-fluid">
-                    </div>
-                    <br>
-                    <span class="font-weight-bold">Адресная доставка <br> и забор груза</span>
-                    <a href="{{ url('/uslugi/adresnaya-dostavka-i-zabor-gruza') }}" class="stretched-link"></a>
-                </div>
-            </div>
-            <div class="col-md-auto col-6 text-center mb-3">
-                <div class="service-block">
-                    <div class="round position-relative d-inline-block">
                         <img src="{{ asset('images/landing_icons/movers.png') }}" alt="" class="img-fluid">
                     </div>
                     <br>
-                    <span class="font-weight-bold">Адресная <br> доставка груза</span>
+                    <span class="font-weight-bold">Адресная доставка <br> и забор груза</span>
                     <a href="{{ url('/uslugi/adresnaya-dostavka-i-zabor-gruza') }}" class="stretched-link"></a>
                 </div>
             </div>
@@ -73,10 +63,7 @@
                     </div>
                     <br>
                     <span class="font-weight-bold">Отслеживание <br> груза</span>
-                    @include(
-                        'v1.pages.landings.default.partials.service_modal',
-                        ['service' => $servicesPosts->where('slug', 'otslezhivanie-gruza')->first()]
-                    )
+                    <a href="{{ route('shipment-search') }}" class="stretched-link"></a>
                 </div>
             </div>
         </div>
