@@ -28,7 +28,6 @@ function getBalance(){
             $('#update-balance-btn .loading-svg').addClass('d-none');
         },
         error: function (data) {
-            console.log(data.responseJSON.message);
             $('.alert.alert-danger').removeClass('d-none');
             $('.alert.alert-danger ul').html('<li>' + data.responseJSON.message + '</li>');
             $('#update-balance-btn .update').removeClass('d-none');

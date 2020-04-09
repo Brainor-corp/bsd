@@ -170,12 +170,13 @@ class ProfileController extends Controller {
                     "user_id" => $user->guid,
                 ]
             );
+
             if($response1c['response']['status'] == 'success') {
                 return $response1c['response']['result'];
             }
         }
 
-        throw new \Exception('Произошла ошибка. Обновите страницу или попробуйте позднее.');
+        return response(['message' => 'Баланс недоступен. Обновите страницу или попробуйте позднее.'], 500);
     }
 
     public function contractPageShow()
