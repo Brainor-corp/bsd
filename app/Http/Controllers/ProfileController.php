@@ -260,6 +260,7 @@ class ProfileController extends Controller {
                 return redirect()->back()->withErrors(['В данный момент генерация договора недоступна.']);
             }
         }
-        return redirect()->back()->withErrors(['Произошла ошибка. Обновите страницу или попробуйте позднее.']);
+
+        return redirect()->back()->withErrors(['В данный момент генерация договора недоступна.']);
     }
 }
