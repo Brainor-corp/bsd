@@ -146,7 +146,10 @@ class CalculatorController extends Controller
             );
         }
 
-        $route = Route::with('oversize')->find($request->get('route'));
+        $route = Route::where('old_id', $request->get('route'))
+            ->with('oversize')
+            ->first();
+
         $volume = $request->get('volume');
         $weight = $request->get('weight');
 
