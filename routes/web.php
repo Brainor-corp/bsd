@@ -57,7 +57,6 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
     // Первично калькулятор доступен всем. Если в калькулятор передан id,
     // калькулятор подцепит по id черновик и проставит все его значения
     Route::any('/calculator-show/{id?}', 'CalculatorController@calculatorShow')->name('calculator-show');
-    Route::any('/calc', 'CalculatorController@calcAjax')->name('home');
 
     Route::post('/order-file-upload', 'OrderController@saveFile')->name('order-file-upload');
 

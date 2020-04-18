@@ -809,8 +809,8 @@ class CalculatorHelper
                 floatval($bringData['price'] ?? 0);
         }
 
-        if(is_numeric($totalPrice)) {
-            $discount = round($totalPrice * ($discount / 100), 2);
+        if(is_numeric($discount) && is_numeric($totalPrice) && is_numeric($routeData['price'])) {
+            $discount = round($routeData['price'] * ($discount / 100), 2);
             $totalPrice -= $discount;
         } else {
             $discount = "договорная";
