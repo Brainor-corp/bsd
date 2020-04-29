@@ -657,17 +657,6 @@
     </div>
 
     <div class="calc__title">Данные плательщика</div>
-    <div id="payer-email-wrapper">
-        <label class="" for="payer-email">E-Mail плательщика</label>
-        <input type="email"
-               class="form-control"
-               id="payer-email"
-               name="payer-email"
-               placeholder="Введите E-Mail плательщика"
-               value="{{ old('payer-email') ?? ($order->payer_email ?? '') }}"
-               required
-        >
-    </div>
     <div class="custom-control custom-radio">
         <input type="radio"
                @if(!empty(old('payer_type')))
@@ -809,15 +798,27 @@
     </div>
     <div class="calc__title">Заявку заполнил</div>
     <div id="order-creator-wrapper">
-        <label class="" for="order-creator">ФИО</label>
-        <input type="text"
-               class="form-control"
-               id="order-creator"
-               name="order-creator"
-               placeholder="ФИО"
-               value="{{ old('order-creator') ?? ($order->order_creator ?? (\Illuminate\Support\Facades\Auth::check() ? \Illuminate\Support\Facades\Auth::user()->full_name : '')) }}"
-               required>
-        <br>
+        <div class="mb-3">
+            <label class="" for="order-creator">ФИО</label>
+            <input type="text"
+                   class="form-control"
+                   id="order-creator"
+                   name="order-creator"
+                   placeholder="ФИО"
+                   value="{{ old('order-creator') ?? ($order->order_creator ?? (\Illuminate\Support\Facades\Auth::check() ? \Illuminate\Support\Facades\Auth::user()->full_name : '')) }}"
+                   required>
+        </div>
+        <div class="mb-3" id="payer-email-wrapper">
+            <label class="" for="payer-email">E-Mail</label>
+            <input type="email"
+                   class="form-control"
+                   id="payer-email"
+                   name="payer-email"
+                   placeholder="Введите E-Mail"
+                   value="{{ old('payer-email') ?? ($order->payer_email ?? '') }}"
+                   required
+            >
+        </div>
     </div>
     <div>
         <label class="mb-0" for="">Тип</label>
