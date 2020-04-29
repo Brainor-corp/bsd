@@ -377,16 +377,6 @@
                                 </div>
 
                                 <div class="calc__title">Данные плательщика</div>
-                                <div id="payer-email-wrapper">
-                                    <label class="" for="payer-email">E-Mail плательщика</label>
-                                    <input type="email"
-                                           class="form-control"
-                                           id="payer-email"
-                                           name="payer-email"
-                                           value="{{ $order->payer_email }}"
-                                           disabled
-                                    >
-                                </div>
                                 <div class="custom-control custom-radio">
                                     <input type="radio" @if(isset($order->payer) && $order->payer->slug === 'otpravitel') checked @endif class="custom-control-input" id="sender" name="payer_type" value="otpravitel" disabled />
                                     <label class="custom-control-label" for="sender">Отправитель</label>
@@ -431,14 +421,25 @@
                                 <div class="calc__title">Заявку заполнил</div>
                                 <div id="order-creator-wrapper">
                                     <label class="" for="order-creator">ФИО</label>
-                                    <input type="text"
-                                           class="form-control"
-                                           id="order-creator"
-                                           name="order-creator"
-                                           placeholder="ФИО"
-                                           value="{{ old('order-creator') ?? ($order->order_creator ?? (\Illuminate\Support\Facades\Auth::check() ? \Illuminate\Support\Facades\Auth::user()->full_name : '')) }}"
-                                           disabled>
-                                    <br>
+                                    <div class="mb-3">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="order-creator"
+                                               name="order-creator"
+                                               placeholder="ФИО"
+                                               value="{{ old('order-creator') ?? ($order->order_creator ?? (\Illuminate\Support\Facades\Auth::check() ? \Illuminate\Support\Facades\Auth::user()->full_name : '')) }}"
+                                               disabled>
+                                    </div>
+                                    <div class="mb-3" id="payer-email-wrapper">
+                                        <label class="" for="payer-email">E-Mail</label>
+                                        <input type="email"
+                                               class="form-control"
+                                               id="payer-email"
+                                               name="payer-email"
+                                               value="{{ $order->payer_email }}"
+                                               disabled
+                                        >
+                                    </div>
                                 </div>
                                 <div>
                                     <label class="mb-0" for="">Тип</label>
