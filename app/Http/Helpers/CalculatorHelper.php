@@ -553,7 +553,10 @@ class CalculatorHelper
 
                 if(isset($polygon)) {
                     return [
-                        'price' => $x2 ? ($polygon->price * floatval($fixed_tariff)) * 2 : ($polygon->price * floatval($fixed_tariff)),
+                        'price' => round(
+                            $x2 ? ($polygon->price * floatval($fixed_tariff)) * 2 : ($polygon->price * floatval($fixed_tariff)),
+                            2
+                        ),
                         'city_name' => "$displayCityName",
                         'polygon_name' => $polygon->name
                     ];
@@ -575,7 +578,10 @@ class CalculatorHelper
 
             if(isset($polygon)) {
                 return [
-                    'price' => $x2 ? ($polygon->price * floatval($fixed_tariff)) * 2 : ($polygon->price * floatval($fixed_tariff)),
+                    'price' => round(
+                        $x2 ? ($polygon->price * floatval($fixed_tariff)) * 2 : ($polygon->price * floatval($fixed_tariff)),
+                        2
+                    ),
                     'city_name' => "$displayCityName",
                     'polygon_name' => $polygon->name
                 ];
