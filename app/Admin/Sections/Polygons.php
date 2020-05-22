@@ -55,7 +55,7 @@ class Polygons extends Section
             FormColumn::column([
                 FormField::input('name', 'Наименование')
                     ->setRequired(true),
-                FormField::input('price', 'Цена')
+                FormField::input('price', 'Тариф')
                     ->setType('number')
                     ->setDataAttributes([
                         'step="any"', 'min=0'
