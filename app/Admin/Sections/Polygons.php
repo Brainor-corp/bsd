@@ -33,10 +33,11 @@ class Polygons extends Section
                 FilterType::text('name', 'Название'),
                 FilterType::bselect('city_id')
                     ->setDataAttributes([
-                        'data-live_search="true"'
+                        'data-live-search="true"'
                     ])
                     ->setModelForOptions(City::class)
                     ->setDisplay('name'),
+                null,
                 null
             ])
             ->setPagination(10);
