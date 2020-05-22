@@ -25,7 +25,7 @@ class Polygons extends Section
             Column::text('id', '#'),
             Column::link('name', 'Название'),
             Column::text('city.name', 'Город'),
-            Column::text('price', 'Тариф'),
+            Column::text('price', 'Множитель тарифа'),
             Column::text('priority', 'Приоритет'),
         ])
             ->setFilter([
@@ -56,10 +56,10 @@ class Polygons extends Section
             FormColumn::column([
                 FormField::input('name', 'Наименование')
                     ->setRequired(true),
-                FormField::input('price', 'Тариф')
+                FormField::input('price', 'Множитель тарифа')
                     ->setType('number')
                     ->setDataAttributes([
-                        'step="any"', 'min=0'
+                        'step=any', 'min=0'
                     ])
                     ->setRequired(true),
                 FormField::input('priority', 'Приоритет')
