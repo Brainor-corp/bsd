@@ -434,12 +434,20 @@ a:hover {
 	position: relative;
 }
 .group-input__icon {
-	position: absolute;
-	z-index: 9;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	top: 50%;
 	background: #fff;
+    transition: 0.5s;
+}
+@media (min-width: 769px) {
+    .group-input__icon {
+        position: absolute;
+        z-index: 9;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        top: 50%;
+    }
+}
+.group-input__icon:hover i {
+    color: black !important;
 }
 .relative {
 	position:relative;
