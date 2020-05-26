@@ -173,8 +173,13 @@ class CalculatorHelper
             }
         }
 
+        $isReversRouteExists = Route::where([
+            ['ship_city_id', $route->dest_city_id], ['dest_city_id', $route->ship_city_id]
+        ])->exists();
+
         return [
             'model' => $route,
+            'reversExists' => $isReversRouteExists,
             'totalVolume' => $totalVolume,
             'totalWeight' => $totalWeight,
             'price' => $basePrice

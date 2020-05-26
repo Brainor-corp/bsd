@@ -20,7 +20,8 @@
     </div>
     <div class="col-xl-5 col-lg-12">
         <form class="short_calculator-form" action="/calculator-show" method="get">
-            <div class="calc__block mr-auto mr-md-0 ml-lg-auto">
+            <div class="calc__block mr-auto mr-md-0 ml-lg-auto position-relative">
+                <div class="position-absolute w-100 h-100 short-calc-preload"></div>
                 <div class="calc__block_title">Быстрый расчет стоимости</div>
                 <div class="input-group calc__block_inpg">
                     {{--<input type="text" id="ship_city" class="form-control" placeholder="Москва">--}}
@@ -32,7 +33,13 @@
                             @endforeach
                         @endif
                     </select>
-{{--                    <a href="#" class="group-input__icon"><i class="fa fa-refresh" aria-hidden="true"></i></a>--}}
+                    <div class="text-center mb-2 mb-sm-0">
+                        <button type="button"
+                                class="group-input__icon button border-0 swap-button outline-0 cursor-pointer"
+                        >
+                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                        </button>
+                    </div>
                     {{--<input type="text" id="dest_city" class="form-control" placeholder="Санкт-Петербург">--}}
                     <select id="short_dest_city" class="form-control"  name="dest_city" placeholder="Выбрать город">
                         <option value=""></option>
