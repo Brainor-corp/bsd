@@ -14,6 +14,7 @@ use App\Service;
 use App\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CalculatorController extends Controller
 {
@@ -587,6 +588,7 @@ class CalculatorController extends Controller
             'total_weight' => $weight,
             'total_volume' => $volume,
             'route' => $routeData['model'],
+            'reverse_route_exists' => $routeData['reversExists'],
             'total_data' => $totalData,
             'delivery_to_point' => $deliveryData,
             'bring_to_point' => $bringData,

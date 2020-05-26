@@ -1,4 +1,7 @@
 ﻿$(document).ready(function () {
+    let swapCityTo = null;
+    let swapCityFrom = null;
+
     $('#short_ship_city').selectize({
         openOnFocus:false,
         onInitialize: function () {
@@ -21,10 +24,6 @@
 
             if (!value.length) return;
 
-            // var $select = $('#ship_city').selectize();
-            // var selectize = $select.selectize;
-            // selectize.setValue(value, false);
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -39,7 +38,7 @@
                 },//здесь мы передаем стандартным пост методом без сериализации. В конечном скрипте данные будут лежать в $_POST['ajax_data']
                 cache: false,
                 beforeSend: function() {
-
+                    $('.short-calc-preload').fadeIn(100);
                 },
                 success: function(html){
                     $('#short_dest_city').selectize()[0].selectize.destroy();
@@ -57,30 +56,26 @@
                                 }
                             });
 
+                            if(swapCityTo !== null) {
+                                $('#short_dest_city').selectize()[0].selectize.setValue(swapCityFrom);
+                                swapCityTo = null;
+                            }
+
                             this.$control.on("click", function (event) {
                                 $('#short_dest_city').selectize()[0].selectize.clear()
                             });
                         },
                         onChange: function(value) {// при изменении города назначения
-                            // var $select = $('#dest_city').selectize();
-                            // var selectize = $select[0].selectize;
-                            // selectize.setValue(value, false);
-                            getShortRoute();
+                            getShortBaseTariff();
                         }
                     });
 
-                    // $('#dest_city').selectize()[0].selectize.destroy();
-                    // $('#dest_city').html(html);
-                    // $('#dest_city').selectize({
-                    //     onChange: function(value) {// при изменении города назначения
-                    //         getShortRoute();
-                    //     }
-                    // });
+                    $('.short-calc-preload').fadeOut(100);
 
-                    getShortRoute();
+                    // getShortBaseTariff();
                 },
                 error: function (data) {
-                    console.log(data);
+                    $('.short-calc-preload').fadeOut(100);
                 }
             });
         }
@@ -109,39 +104,9 @@
             // var selectize = $select[0].selectize;
             // selectize.setValue(value, false);
 
-            getShortRoute();
+            getShortBaseTariff();
         }
     });
-
-// получение маршрута
-    var getShortRoute = function () {
-        let shipCityID = $("#short_ship_city").val(),
-            destCityID = $("#short_dest_city").val(),
-            formData  = $('.short_calculator-form').serialize();
-        if (shipCityID && destCityID) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                type: 'post',
-                url: '/api/calculator/get-route',
-                data: {ship_city:shipCityID, dest_city:destCityID, formData},
-                cache: false,
-                beforeSend: function() {
-
-                },
-                success: function(data){
-                    getShortBaseTariff();
-                },
-                error: function (err) {
-                    console.log(err);
-                }
-            });
-        }
-
-    };
 
     var getShortBaseTariff = function () {
         let shipCityID = $("#short_ship_city").val(),
@@ -164,10 +129,17 @@
                 data: {ship_city:shipCityID, dest_city:destCityID, formData},
                 cache: false,
                 beforeSend: function() {
-
+                    $('.short-calc-preload').fadeIn(100);
                 },
                 success: function(data){
-                    // console.log(data);
+                    if(data.reverse_route_exists) {
+                        $('.swap-button').removeAttr('disabled');
+                        $('.swap-button').fadeIn();
+                    } else {
+                        $('.swap-button').attr('disabled', 'disabled');
+                        $('.swap-button').fadeOut();
+                    }
+
                     totalPrice = data.total_data.total;
                     $('#short_base-price').html(data.base_price);
                     $('#short_base-price').attr('data-base-price', data.base_price);
@@ -198,9 +170,11 @@
                         $('#bringPrice').html(data.bring_to_point.price);
                         $('#bringPriceBlock').show();
                     }
+
+                    $('.short-calc-preload').fadeOut(100);
                 },
                 error: function (err) {
-                    console.log(err);
+                    $('.short-calc-preload').fadeOut(100);
                 }
             });
         }
@@ -222,6 +196,17 @@
         $('.package-volume').attr('value' , $(this).val());
 
         getShortBaseTariff();
+    });
+
+    $(document).on('click', '.swap-button', (e) => {
+        let cityFromSelect = $('#short_ship_city').selectize()[0].selectize;
+        let cityToSelect = $('#short_dest_city').selectize()[0].selectize;
+
+        swapCityFrom = cityFromSelect.getValue();
+        swapCityTo = cityToSelect.getValue();
+
+        cityToSelect.setValue(swapCityFrom, true);
+        cityFromSelect.setValue(swapCityTo);
     });
 
     getShortBaseTariff();
