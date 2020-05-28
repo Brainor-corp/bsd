@@ -3,6 +3,7 @@
 namespace App\Admin\Sections;
 
 use App\City;
+use App\LandingPage;
 use App\Oversize;
 use App\Route;
 use App\RouteTariff;
@@ -160,6 +161,7 @@ class Routes extends Section
     public function beforeDelete(Request $request, $id = null)
     {
         RouteTariff::where('route_id', $id)->delete();
+        LandingPage::where('route_id', $id)->delete();
     }
 
     public function afterSave(Request $request, $model = null)
