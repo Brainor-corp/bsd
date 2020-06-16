@@ -29,7 +29,11 @@
     {{--<script src="{{ asset('v1/js/jquery.kladr.js') }}@include('v1.partials.versions.jsVersion')"></script>--}}
     {{--<script src="{{ asset('v1/js/calculator.js') }}@include('v1.partials.versions.jsVersion')"></script>--}}
     <script src="{{ asset('packages/jquery-ui/jquery-ui.js') }}"></script>
-    <script src="{{ asset('v1/js/calculator-page.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script type="module" src="{{ asset('v1/js/calculator/map.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script type="module" src="{{ asset('v1/js/calculator/ckeck-address-in-polygon.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script type="module" src="{{ asset('v1/js/calculator/get-all-data.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script type="module" src="{{ asset('v1/js/calculator/calc-tariff-price.js') }}@include('v1.partials.versions.jsVersion')"></script>
+    <script type="module" src="{{ asset('v1/js/calculator/calculator-page.js') }}@include('v1.partials.versions.jsVersion')"></script>
     <script src="{{ asset('v1/js/order-files.js') }}@include('v1.partials.versions.jsVersion')"></script>
 @endsection
 
