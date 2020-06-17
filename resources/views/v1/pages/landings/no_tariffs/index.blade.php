@@ -16,6 +16,7 @@
     @include('v1.pages.landings.no_tariffs.sections.text_2')
     @include('v1.pages.landings.no_tariffs.sections.services')
     @include('v1.pages.landings.no_tariffs.sections.about')
+    @include('v1.pages.landings.no_tariffs.partials.service_modal')
 @endsection
 
 @section('footerScripts')
