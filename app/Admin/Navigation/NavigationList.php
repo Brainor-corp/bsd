@@ -92,6 +92,11 @@ class NavigationList
                         'icon' => 'fas fa-address-book',
                         'text' => 'Заявки'
                     ],
+                    [
+                        'url' => '/' . config('zeusAdmin.admin_url') . '/CalculatorMessages',
+                        'icon' => 'fas fa-address-book',
+                        'text' => 'Информационные блоки'
+                    ],
                 ]
             ],
 //            [

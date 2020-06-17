@@ -1227,6 +1227,7 @@ function renderCalendar(data) {
         drawDiscount(data.discount);
 
         $('#total-price').html(data.total);
+        $('#delivery-time').html(data.route.delivery_time);
     } else if(data.error === 'Cities not found') {
         let cityFrom = $('#ship_city option:selected').val() ? $('#ship_city option:selected').val() : '<span title="Выберите город отправления">?</span>';
         let cityTo = $('#dest_city option:selected').val() ? $('#dest_city option:selected').val() : '<span title="Выберите город назначения">?</span>';
@@ -1235,6 +1236,7 @@ function renderCalendar(data) {
 
         $('#route-name').html(routeName);
         $('#base-price').html('договорная');
+        $('#delivery-time').html('-');
 
         drawDelivery({'take': null, 'bring': null});
         drawServices([]);
