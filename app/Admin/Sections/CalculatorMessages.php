@@ -17,7 +17,7 @@ class CalculatorMessages extends Section
 
     protected $checkAccess = true;
 
-    protected $model = "CalculatorMessage";
+    protected $model = "App\CalculatorMessage";
 
     public static function onDisplay(){
         $display = Display::table([
