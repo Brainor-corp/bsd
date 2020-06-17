@@ -1,7 +1,7 @@
 <?php
 /**
  * class: LandingTemplate
- * title: Шаблон без блока с тарифами
+ * title: Шаблон без блока с тарифами и баннера со временем/стоимостью доставки
  */
 ?>
 
@@ -13,7 +13,6 @@
 
 @section('content')
     @include('v1.pages.landings.no_tariffs.sections.text_1')
-    @include('v1.pages.landings.no_tariffs.sections.calc_banner')
     @include('v1.pages.landings.no_tariffs.sections.text_2')
     @include('v1.pages.landings.no_tariffs.sections.services')
     @include('v1.pages.landings.no_tariffs.sections.about')
