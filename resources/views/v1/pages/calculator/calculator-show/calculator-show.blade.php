@@ -179,6 +179,11 @@
                                             <span>суток</span>
                                         </span>
                                     </footer>
+                                    @foreach($calculatorMessages as $message)
+                                        <div class="pt-4">
+                                            {!! $message->text !!}
+                                        </div>
+                                    @endforeach
                                 </div>
                                 <div class="annotation-text">* - Предварительный расчет. Точная стоимость доставки будет определена после обмера груза специалистами компании БСД на складе.</div>
                                 <div class="annotation-text">** - Указанный срок является ориентировочным.</div>

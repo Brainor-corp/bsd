@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Admin\Sections\CalculatorMessages;
 use App\Admin\Sections\Cities;
 use App\Admin\Sections\CitiesClosestTerminalUpdater;
 use App\Admin\Sections\Comments;
@@ -89,6 +90,7 @@ class AuthServiceProvider extends ServiceProvider
         Types::class => DefaultSectionPolicy::class,
         Users::class => DefaultSectionPolicy::class,
         TariffZones::class => DefaultSectionPolicy::class,
+        CalculatorMessages::class => DefaultSectionPolicy::class,
 
         // CMS
         ZeusAdminComments::class => DefaultSectionPolicy::class,
@@ -98,7 +100,7 @@ class AuthServiceProvider extends ServiceProvider
         ZeusAdminPosts::class => DefaultSectionPolicy::class,
         ZeusAdminTags::class => DefaultSectionPolicy::class,
         ZeusAdminTerms::class => DefaultSectionPolicy::class,
-        LandingPages::class => DefaultSectionPolicy::class
+        LandingPages::class => DefaultSectionPolicy::class,
     ];
 
     /**
