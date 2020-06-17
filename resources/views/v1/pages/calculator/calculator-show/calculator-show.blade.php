@@ -172,8 +172,21 @@
                                             <span id="total-volume" data-total-volume="{{ $tariff->total_volume ?? 0.01}}" style="display: none"></span>
                                         </span>
                                     </footer>
+                                    <footer class="block__itogo_footer d-flex">
+                                        <span>Срок доставки груза**</span>
+                                        <span class="block__itogo_price d-flex flex-nowrap">
+                                            <span class="block__itogo_amount"><span id="delivery-time"> {{ $route->delivery_time ?? '-'}}</span></span>
+                                            <span>суток</span>
+                                        </span>
+                                    </footer>
+                                    @foreach($calculatorMessages as $message)
+                                        <div class="pt-4">
+                                            {!! $message->text !!}
+                                        </div>
+                                    @endforeach
                                 </div>
                                 <div class="annotation-text">* - Предварительный расчет. Точная стоимость доставки будет определена после обмера груза специалистами компании БСД на складе.</div>
+                                <div class="annotation-text">** - Указанный срок является ориентировочным.</div>
                             </section>
                         </div>
                     </div>

@@ -830,7 +830,8 @@ class CalculatorHelper
         return [
             'route' => [ // Базовый маршрут доставки
                 'name' => $routeData['model']->name, // Название маршрута
-                'price' => $routeData['price'] // Цена доставки
+                'price' => $routeData['price'], // Цена доставки,
+                'delivery_time' => $routeData['model']->delivery_time // Срок доставки
             ],
             'delivery' => [ // Забор/доставка груза
                 'take' => $takeData, // Забор

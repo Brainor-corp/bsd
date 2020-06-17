@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CalculatorMessage;
 use App\City;
 use App\Http\Helpers\CalculatorHelper;
 use App\Http\Helpers\OrderHelper;
@@ -223,6 +224,8 @@ class CalculatorController extends Controller
 
         $counterpartyForms = OrderHelper::getCounterpartyForms();
 
+        $calculatorMessages = CalculatorMessage::all();
+
         return view('v1.pages.calculator.calculator-show.calculator-show')
             ->with(compact(
                 'packages',
@@ -242,7 +245,8 @@ class CalculatorController extends Controller
                 'deliveryPoint',
                 'bringPoint',
                 'counterpartyForms',
-                'orderType'
+                'orderType',
+                'calculatorMessages'
             ));
 
     }
