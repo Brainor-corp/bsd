@@ -1354,63 +1354,15 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName, forceDeliveryT
     }
 
     let type = 'from';
-
     if(cityFrom !== cityTo) {
         $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
         return;
     }
 
-    // Пробуем получить полигоны для выбранного города
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'post',
-        url: '/api/calculator/get-city-polygons',
-        data: {
-            city: cityFrom
-        },
-        dataType: "json",
-        cache: false,
-        success: async function(data) {
-            if(data.length) {
-                let isInPolygon;
+    type = 'in';
+    $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
 
-                for (const el of data) {
-                    let findCoordinates = [];
-                    let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
-                    $(polygonCoordinates).each(function (pairKey, pairVal) {
-                        pairVal = pairVal.replace(' ', '');
-                        pairVal = pairVal.replace('[', '');
-                        pairVal = pairVal.replace(']', '');
-                        let parts = pairVal.split(',');
-                        findCoordinates.push([
-                            parseFloat(parts[0]),
-                            parseFloat(parts[1])
-                        ]);
-                    });
-
-                    let polygon =  new ymaps.Polygon([findCoordinates]);
-                    isInPolygon = await checkAddressInPolygon(address, polygon);
-                    if(isInPolygon) {
-                        type = 'in';
-                        break;
-                    }
-                }
-            } else {
-                type = 'in';
-            }
-
-            $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
-
-            return type;
-        },
-        error: function(data){
-            // console.log(data);
-        }
-    });
+    return;
 }
 
 function clearDeliveryData(type, disable = false) {
