@@ -602,38 +602,44 @@ $(document).ready(function () {
                 parentType: $.kladr.type.city,
                 parentId: cityKladrId,
                 source: async function (query, callback) {
-                    let points = [];
-                    let yandexSuggests = [];
+                    clearTimeout( $(this).data('timer') );
 
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
+                    var timer = setTimeout(async function() {
+                        let points = [];
+                        let yandexSuggests = [];
 
-                    await $.ajax({
-                        type: 'get',
-                        url: '/api/points-by-term',
-                        data: {
-                            'term': query.name,
-                            'city_name': point.attr('id') === "ship_point" ?
-                                $('#ship_city').data().selectize.getValue() :
-                                $('#dest_city').data().selectize.getValue()
-                        },
-                        dataType: "json",
-                        cache: false,
-                        success: function (response) {
-                            points = response.data;
-                        }
-                    });
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
 
-                    await ymaps.suggest(query.name, {results: 10}).then(function (items) {
-                        yandexSuggests = items;
-                    });
+                        await $.ajax({
+                            type: 'get',
+                            url: '/api/points-by-term',
+                            data: {
+                                'term': query.name,
+                                'city_name': point.attr('id') === "ship_point" ?
+                                    $('#ship_city').data().selectize.getValue() :
+                                    $('#dest_city').data().selectize.getValue()
+                            },
+                            dataType: "json",
+                            cache: false,
+                            success: function (response) {
+                                points = response.data;
+                            }
+                        });
 
-                    let result = [...points, ...yandexSuggests];
+                        await ymaps.suggest(query.name, {results: 10}).then(function (items) {
+                            yandexSuggests = items;
+                        });
 
-                    callback(result);
+                        let result = [...points, ...yandexSuggests];
+
+                        callback(result);
+                    }, 500);
+
+                    $(this).data('timer', timer);
                 },
                 labelFormat: function (obj, query) {
                     return obj.displayName;
