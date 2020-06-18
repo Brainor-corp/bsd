@@ -602,38 +602,44 @@ $(document).ready(function () {
                 parentType: $.kladr.type.city,
                 parentId: cityKladrId,
                 source: async function (query, callback) {
-                    let points = [];
-                    let yandexSuggests = [];
+                    clearTimeout( $(this).data('timer') );
 
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
+                    var timer = setTimeout(async function() {
+                        let points = [];
+                        let yandexSuggests = [];
 
-                    await $.ajax({
-                        type: 'get',
-                        url: '/api/points-by-term',
-                        data: {
-                            'term': query.name,
-                            'city_name': point.attr('id') === "ship_point" ?
-                                $('#ship_city').data().selectize.getValue() :
-                                $('#dest_city').data().selectize.getValue()
-                        },
-                        dataType: "json",
-                        cache: false,
-                        success: function (response) {
-                            points = response.data;
-                        }
-                    });
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
 
-                    await ymaps.suggest(query.name, {results: 10}).then(function (items) {
-                        yandexSuggests = items;
-                    });
+                        await $.ajax({
+                            type: 'get',
+                            url: '/api/points-by-term',
+                            data: {
+                                'term': query.name,
+                                'city_name': point.attr('id') === "ship_point" ?
+                                    $('#ship_city').data().selectize.getValue() :
+                                    $('#dest_city').data().selectize.getValue()
+                            },
+                            dataType: "json",
+                            cache: false,
+                            success: function (response) {
+                                points = response.data;
+                            }
+                        });
 
-                    let result = [...points, ...yandexSuggests];
+                        await ymaps.suggest(query.name, {results: 10}).then(function (items) {
+                            yandexSuggests = items;
+                        });
 
-                    callback(result);
+                        let result = [...points, ...yandexSuggests];
+
+                        callback(result);
+                    }, 500);
+
+                    $(this).data('timer', timer);
                 },
                 labelFormat: function (obj, query) {
                     return obj.displayName;
@@ -1354,63 +1360,13 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName, forceDeliveryT
     }
 
     let type = 'from';
-
     if(cityFrom !== cityTo) {
         $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
         return;
     }
 
-    // Пробуем получить полигоны для выбранного города
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'post',
-        url: '/api/calculator/get-city-polygons',
-        data: {
-            city: cityFrom
-        },
-        dataType: "json",
-        cache: false,
-        success: async function(data) {
-            if(data.length) {
-                let isInPolygon;
-
-                for (const el of data) {
-                    let findCoordinates = [];
-                    let polygonCoordinates = el.coordinates.match(/\[\d+\.\d+\,\s*\d+\.\d+\]/g);
-                    $(polygonCoordinates).each(function (pairKey, pairVal) {
-                        pairVal = pairVal.replace(' ', '');
-                        pairVal = pairVal.replace('[', '');
-                        pairVal = pairVal.replace(']', '');
-                        let parts = pairVal.split(',');
-                        findCoordinates.push([
-                            parseFloat(parts[0]),
-                            parseFloat(parts[1])
-                        ]);
-                    });
-
-                    let polygon =  new ymaps.Polygon([findCoordinates]);
-                    isInPolygon = await checkAddressInPolygon(address, polygon);
-                    if(isInPolygon) {
-                        type = 'in';
-                        break;
-                    }
-                }
-            } else {
-                type = 'in';
-            }
-
-            $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
-
-            return type;
-        },
-        error: function(data){
-            // console.log(data);
-        }
-    });
+    type = 'in';
+    $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
 }
 
 function clearDeliveryData(type, disable = false) {
