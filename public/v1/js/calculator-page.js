@@ -1367,8 +1367,6 @@ function changeDeliveryType(cityFrom, cityTo, address, inputName, forceDeliveryT
 
     type = 'in';
     $('input:radio[name="' + inputName + '"]').filter('[value="' + type + '"]').prop('checked', true);
-
-    return;
 }
 
 function clearDeliveryData(type, disable = false) {
