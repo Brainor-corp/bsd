@@ -169,7 +169,14 @@ class LandingPagesController extends Controller
             ], 400);
         }
 
-        Mail::to("zakaz@123789.ru")->send(new SendLandingMail($request->get('phone')));
+        $emails = [
+            "zakaz@123789.ru",
+            "director@123789.ru"
+        ];
+
+        foreach($emails as $email) {
+            Mail::to($email)->send(new SendLandingMail($request->get('phone')));
+        }
 
         return redirect()->back();
     }
