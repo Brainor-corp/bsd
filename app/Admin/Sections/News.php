@@ -6,6 +6,7 @@ use App\CmsBoosterPost;
 use App\Terminal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Zeus\Admin\Cms\Models\ZeusAdminPost;
 use Zeus\Admin\Cms\Models\ZeusAdminTerm;
 use Zeus\Admin\Cms\Sections\ZeusAdminPosts;
 use Zeus\Admin\SectionBuilder\Form\Panel\Fields\BaseField\FormField;
@@ -57,6 +58,8 @@ class News extends ZeusAdminPosts
         $leftColumnFields = $leftColumn->getFields();
         unset($leftColumnFields['0.05']);
 
+        $leftColumnFields['0.04']->setPrevText(url('news/'));
+
         $newsRootTerm = ZeusAdminTerm::where([['type', 'category'], ['slug', 'novosti']])->first();
 
         $leftColumnFields['0.06'] = $leftColumnFields['0.06']->setQueryFunctionForModel(function ($q) use ($newsRootTerm) {
@@ -88,8 +91,12 @@ class News extends ZeusAdminPosts
 
         $leftColumn->setFields($leftColumnFields);
 
+        $newsPost = $id ? ZeusAdminPost::with('ancestors','categories')->where('id', $id)->first() : null;
+        $url = $newsPost ? route('news-single-show', ['slug' => $newsPost->slug]) : null;
+
         $rightColumn = $form->getColumns()[1];
         $rightColumnFields = $rightColumn->getFields();
+        $rightColumnFields['0.001'] = FormField::custom(view('admin.news.showPostLink')->with(compact('url')));
         $rightColumnFields['99.99'] = FormField::hidden('type')->setValue('news');
         $rightColumn->setFields($rightColumnFields);
 
