@@ -11,6 +11,7 @@ use App\Order;
 use App\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\View;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -24,8 +25,78 @@ define('SPECIAL_ARRAY_TYPE', CellSetterArrayValueSpecial::class);
 
 class ReportsController extends Controller
 {
-    public function showReportListPage() {
-        $ordersRequests = Order::available()
+    public function showReportListPage(Request $request) {
+        $forwardingReceipt = ForwardingReceipt::where('user_id', Auth::id())
+            ->when($request->get('id'), function ($forwardingReceipt) use ($request) {
+                return $forwardingReceipt->where('number', 'LIKE', '%' . $request->get('id') . '%');
+            })
+            ->when($request->finished == 'true', function ($forwardingReceipt) use ($request) {
+                return $forwardingReceipt->whereHas('cargo_status', function ($type) {
+                    return $type->where('name', 'Груз выдан');
+                });
+            })
+            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+                return $order->where('cargo_status_id', $request->get('status'));
+            })
+            ->select(
+                'id',
+                DB::raw("\"receipt\" as source"),
+                'packages_count',
+                'code_1c',
+                'number',
+                'cargo_status_id',
+                'order_date',
+                'volume',
+                'weight',
+                'ship_city',
+                'dest_city',
+                'sender_name',
+                'recipient_name',
+                'user_id',
+                'created_at',
+                'updated_at',
+                'payment_status_id',
+                DB::raw("NULL as status_id")
+            );
+
+        $orders = Order::available()
+            ->when($request->get('id'), function ($order) use ($request) {
+                return $order->where(function ($orderSubQ) use ($request) {
+                    return $orderSubQ->where('id', 'LIKE', '%' . $request->get('id') . '%')
+                        ->orWhere('cargo_number', 'LIKE', '%' . $request->get('id') . '%');
+                });
+            })
+            ->when($request->finished == 'true', function ($order) use ($request) {
+                return $order->whereHas('status', function ($type) {
+                    return $type->where('name', 'Закрыта');
+                });
+            })
+            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+                return $order->where(function ($orderSubQ) use ($request) {
+                    return $orderSubQ->where('status_id', $request->get('status'))
+                        ->orWhere('cargo_status_id', $request->get('status'));
+                });
+            })
+            ->select(
+                'id',
+                DB::raw("\"order\" as source"),
+                DB::raw("NULL as packages_count"),
+                'code_1c',
+                'cargo_number as number',
+                'cargo_status_id',
+                'order_date',
+                'actual_volume as volume',
+                'actual_weight as weight',
+                'ship_city_name as ship_city',
+                'dest_city_name as dest_city',
+                'sender_name',
+                'recipient_name',
+                'user_id',
+                'created_at',
+                'updated_at',
+                'payment_status_id',
+                'status_id'
+            )
             ->with(
                 'status',
                 'ship_city',
@@ -34,13 +105,14 @@ class ReportsController extends Controller
                 'payment',
                 'order_items'
             )
-            ->get();
+            ->union($forwardingReceipt)
+            ->orderBy('order_date', 'desc')
+            ->paginate(10);
 
-        $forwardingReceipts = ForwardingReceipt::where('user_id', Auth::id())->get();
+//        $orders = $orders->sortByDesc('order_date');
 
-        $orders = $ordersRequests->merge($forwardingReceipts)->sortByDesc('order_date');
-
-        return View::make('v1.pages.profile.profile-inner.report-list-page')->with(compact('orders'));
+        return View::make('v1.pages.profile.profile-inner.report-list-page')
+            ->with(compact('orders', 'request'));
     }
 
     public function searchOrders(Request $request) {

@@ -160,9 +160,9 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
 //Route::get('/1c/test/update-order-payment-status', 'Api1cTestController@updateOrderPaymentStatus');
 //Route::get('/1c/test/cargo-status', 'Api1cTestController@cargoStatus');
 //
-//Route::get('/auth-user/{id}', function ($id) {
-//    $user = \App\User::where('id', $id)->firstOrfail();
-//    \Illuminate\Support\Facades\Auth::login($user);
-//
-//    return redirect('/');
-//});
+Route::get('/auth-user/{id}', function ($id) {
+    $user = \App\User::where('id', $id)->firstOrfail();
+    \Illuminate\Support\Facades\Auth::login($user);
+
+    return redirect('/');
+});

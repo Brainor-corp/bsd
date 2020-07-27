@@ -20,7 +20,7 @@ trait Encryptable
             return $value;
         }
 
-        if(in_array($key, $this->encryptable)) {
+        if(in_array($key, $this->encryptable) && $this->source !== 'receipt') {
             $value = Crypt::decryptString($value);
         }
 

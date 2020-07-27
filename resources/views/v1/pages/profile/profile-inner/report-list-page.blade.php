@@ -22,9 +22,8 @@
                                     {{ session()->get('message') }}
                                 </div>
                             @endif
-                            <form action="{{ route('download-reports') }}" method="post" class="reports__header row align-items-center">
+                            <form action="{{ route('orders-list') }}" method="get" class="reports__header row align-items-center">
                                 <div class="col-12">
-                                    @csrf
                                     <span class="reports__header-label">Поиск:</span>
                                     <div id="search-wrapper" class="d-flex flex-wrap control-group mr-0">
                                         <select id="search-type-select" class="custom-select">
@@ -72,6 +71,11 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    {{ $orders->appends($request->input())->links('v1.partials.pagination.pagination') }}
                                 </div>
                             </div>
                         </div>
