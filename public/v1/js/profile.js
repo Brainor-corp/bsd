@@ -85,71 +85,71 @@ $(document).ready(function () {
         });
     });
 
-    $('#search-type-select').change(function () {
-        let select = $(this);
-        if (select.val() === 'id') {
-            $('#search-input').remove();
-            $('#search-select').remove();
-            $('#search-type-select').after('<input name="id" id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">');
-        } else if (select.val() === 'status') {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                type: 'post',
-                url: '/get-order-search-input',
-                cache: false,
-                success: function (html) {
-                    $('#search-input').remove();
-                    $('#search-select').remove();
+    // $('#search-type-select').change(function () {
+    //     let select = $(this);
+    //     if (select.val() === 'id') {
+    //         $('#search-input').remove();
+    //         $('#search-select').remove();
+    //         $('#search-type-select').after('<input name="id" id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">');
+    //     } else if (select.val() === 'status') {
+    //         $.ajaxSetup({
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             }
+    //         });
+    //         $.ajax({
+    //             type: 'post',
+    //             url: '/get-order-search-input',
+    //             cache: false,
+    //             success: function (html) {
+    //                 $('#search-input').remove();
+    //                 $('#search-select').remove();
+    //
+    //                 $('#search-type-select').after(html);
+    //             },
+    //             error: function (err) {
+    //                 // console.log(err);
+    //             }
+    //         });
+    //     }
+    // });
 
-                    $('#search-type-select').after(html);
-                },
-                error: function (err) {
-                    // console.log(err);
-                }
-            });
-        }
-    });
-
-    $(document).on('keyup', '#search-input', function () {
-        orderSearch()
-    });
-
-    $(document).on('change', '#search-select', function () {
-        orderSearch()
-    });
-    $(document).on('change', '#finished-cb', function () {
-        orderSearch()
-    });
+    // $(document).on('keyup', '#search-input', function () {
+    //     orderSearch()
+    // });
+    //
+    // $(document).on('change', '#search-select', function () {
+    //     orderSearch()
+    // });
+    // $(document).on('change', '#finished-cb', function () {
+    //     orderSearch()
+    // });
 });
 
-function orderSearch() {
-    let data;
-    if ($('#search-type-select').val() === 'id') {
-        data = {id: $('#search-input').val(), finished: $('#finished-cb').is(':checked')};
-    }
-    else if ($('#search-type-select').val() === 'status') {
-        data = {status: $('#search-select').val(), finished: $('#finished-cb').is(':checked')};
-    }
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $.ajax({
-        type: 'post',
-        url: '/search-orders',
-        data: data,
-        cache: false,
-        success: function (html) {
-            $('#orders-table-body').html(html);
-            $('[data-toggle="tooltip"]').tooltip();
-        },
-        error: function (err) {
-            // console.log(err);
-        }
-    });
-}
+// function orderSearch() {
+//     let data;
+//     if ($('#search-type-select').val() === 'id') {
+//         data = {id: $('#search-input').val(), finished: $('#finished-cb').is(':checked')};
+//     }
+//     else if ($('#search-type-select').val() === 'status') {
+//         data = {status: $('#search-select').val(), finished: $('#finished-cb').is(':checked')};
+//     }
+//     $.ajaxSetup({
+//         headers: {
+//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//         }
+//     });
+//     $.ajax({
+//         type: 'post',
+//         url: '/search-orders',
+//         data: data,
+//         cache: false,
+//         success: function (html) {
+//             $('#orders-table-body').html(html);
+//             $('[data-toggle="tooltip"]').tooltip();
+//         },
+//         error: function (err) {
+//             // console.log(err);
+//         }
+//     });
+// }

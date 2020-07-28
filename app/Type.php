@@ -26,4 +26,9 @@ class Type extends Model
     {
         return $query->where('class', 'tariff_zones');
     }
+
+    public function ordersByStatus()
+    {
+        return $this->hasMany(Order::class, 'status_id');
+    }
 }

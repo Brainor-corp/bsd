@@ -27,15 +27,21 @@ class ReportsController extends Controller
 {
     public function showReportListPage(Request $request) {
         $forwardingReceipt = ForwardingReceipt::where('user_id', Auth::id())
-            ->when($request->get('id'), function ($forwardingReceipt) use ($request) {
-                return $forwardingReceipt->where('number', 'LIKE', '%' . $request->get('id') . '%');
+            ->when(!empty($request->get('number')), function ($forwardingReceipt) use ($request) {
+                return $forwardingReceipt->where('number', 'LIKE', '%' . $request->get('number') . '%');
+            })
+            ->when(!empty($request->get('sender')), function ($forwardingReceipt) use ($request) {
+                return $forwardingReceipt->where('sender_name', 'LIKE', '%' . $request->get('sender') . '%');
+            })
+            ->when(!empty($request->get('recipient')), function ($forwardingReceipt) use ($request) {
+                return $forwardingReceipt->where('recipient_name', 'LIKE', '%' . $request->get('recipient') . '%');
             })
             ->when($request->finished == 'true', function ($forwardingReceipt) use ($request) {
                 return $forwardingReceipt->whereHas('cargo_status', function ($type) {
                     return $type->where('name', 'Груз выдан');
                 });
             })
-            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+            ->when($request->finished != 'true' && !empty($request->get('status')), function ($order) use ($request) {
                 return $order->where('cargo_status_id', $request->get('status'));
             })
             ->select(
@@ -62,10 +68,22 @@ class ReportsController extends Controller
             );
 
         $orders = Order::available()
-            ->when($request->get('id'), function ($order) use ($request) {
+            ->when($request->get('number'), function ($order) use ($request) {
                 return $order->where(function ($orderSubQ) use ($request) {
-                    return $orderSubQ->where('id', 'LIKE', '%' . $request->get('id') . '%')
-                        ->orWhere('cargo_number', 'LIKE', '%' . $request->get('id') . '%');
+                    return $orderSubQ->where('id', 'LIKE', '%' . $request->get('number') . '%')
+                        ->orWhere('cargo_number', 'LIKE', '%' . $request->get('number') . '%');
+                });
+            })
+            ->when(!empty($request->get('sender')), function ($forwardingReceipt) use ($request) {
+                return $forwardingReceipt->where(function ($forwardingReceiptSubQ) use ($request) {
+                    return $forwardingReceiptSubQ->where('sender_name', 'LIKE', '%' . $request->get('sender') . '%')
+                        ->orWhere('sender_company_name', 'LIKE', '%' . $request->get('sender') . '%');
+                });
+            })
+            ->when(!empty($request->get('recipient')), function ($forwardingReceipt) use ($request) {
+                return $forwardingReceipt->where(function ($forwardingReceiptSubQ) use ($request) {
+                    return $forwardingReceiptSubQ->where('recipient_name', 'LIKE', '%' . $request->get('recipient') . '%')
+                        ->orWhere('recipient_company_name', 'LIKE', '%' . $request->get('recipient') . '%');
                 });
             })
             ->when($request->finished == 'true', function ($order) use ($request) {
@@ -115,57 +133,64 @@ class ReportsController extends Controller
 
 //        $orders = $orders->sortByDesc('order_date');
 
+        $user = Auth::user();
+        $types = Type::where('class', 'order_status')
+            ->whereHas('ordersByStatus', function ($ordersQuery) use ($user) {
+                return $ordersQuery->where('user_id', $user->id);
+            })
+            ->get();
+
         return View::make('v1.pages.profile.profile-inner.report-list-page')
-            ->with(compact('orders', 'request'));
+            ->with(compact('orders', 'request', 'types'));
     }
 
-    public function searchOrders(Request $request) {
-        $ordersRequests = Order::available()
-            ->with(
-                'status',
-                'ship_city',
-                'dest_city',
-                'payment_status',
-                'payment',
-                'order_items'
-            )
-            ->when($request->get('id'), function ($order) use ($request) {
-                return $order->where(function ($orderSubQ) use ($request) {
-                    return $orderSubQ->where('id', 'LIKE', '%' . $request->get('id') . '%')
-                        ->orWhere('cargo_number', 'LIKE', '%' . $request->get('id') . '%');
-                });
-            })
-            ->when($request->finished == 'true', function ($order) use ($request) {
-                return $order->whereHas('status', function ($type) {
-                    return $type->where('name', 'Закрыта');
-                });
-            })
-            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
-                return $order->where(function ($orderSubQ) use ($request) {
-                    return $orderSubQ->where('status_id', $request->get('status'))
-                        ->orWhere('cargo_status_id', $request->get('status'));
-                });
-            })
-            ->get();
-
-        $forwardingReceipts = ForwardingReceipt::where('user_id', Auth::id())
-            ->when($request->get('id'), function ($forwardingReceipt) use ($request) {
-                return $forwardingReceipt->where('number', 'LIKE', '%' . $request->get('id') . '%');
-            })
-            ->when($request->finished == 'true', function ($forwardingReceipt) use ($request) {
-                return $forwardingReceipt->whereHas('cargo_status', function ($type) {
-                    return $type->where('name', 'Груз выдан');
-                });
-            })
-            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
-                return $order->where('cargo_status_id', $request->get('status'));
-            })
-            ->get();
-
-        $orders = $ordersRequests->merge($forwardingReceipts)->sortByDesc('order_date');
-
-        return View::make('v1.partials.profile.orders')->with(compact('orders'))->render();
-    }
+//    public function searchOrders(Request $request) {
+//        $ordersRequests = Order::available()
+//            ->with(
+//                'status',
+//                'ship_city',
+//                'dest_city',
+//                'payment_status',
+//                'payment',
+//                'order_items'
+//            )
+//            ->when($request->get('id'), function ($order) use ($request) {
+//                return $order->where(function ($orderSubQ) use ($request) {
+//                    return $orderSubQ->where('id', 'LIKE', '%' . $request->get('id') . '%')
+//                        ->orWhere('cargo_number', 'LIKE', '%' . $request->get('id') . '%');
+//                });
+//            })
+//            ->when($request->finished == 'true', function ($order) use ($request) {
+//                return $order->whereHas('status', function ($type) {
+//                    return $type->where('name', 'Закрыта');
+//                });
+//            })
+//            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+//                return $order->where(function ($orderSubQ) use ($request) {
+//                    return $orderSubQ->where('status_id', $request->get('status'))
+//                        ->orWhere('cargo_status_id', $request->get('status'));
+//                });
+//            })
+//            ->get();
+//
+//        $forwardingReceipts = ForwardingReceipt::where('user_id', Auth::id())
+//            ->when($request->get('id'), function ($forwardingReceipt) use ($request) {
+//                return $forwardingReceipt->where('number', 'LIKE', '%' . $request->get('id') . '%');
+//            })
+//            ->when($request->finished == 'true', function ($forwardingReceipt) use ($request) {
+//                return $forwardingReceipt->whereHas('cargo_status', function ($type) {
+//                    return $type->where('name', 'Груз выдан');
+//                });
+//            })
+//            ->when($request->finished != 'true' && $request->get('status'), function ($order) use ($request) {
+//                return $order->where('cargo_status_id', $request->get('status'));
+//            })
+//            ->get();
+//
+//        $orders = $ordersRequests->merge($forwardingReceipts)->sortByDesc('order_date');
+//
+//        return View::make('v1.partials.profile.orders')->with(compact('orders'))->render();
+//    }
 
     public function showReportPage($id) {
         $order = Order::available()

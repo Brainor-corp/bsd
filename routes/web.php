@@ -130,7 +130,7 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
         Route::get('/klientam/report-list', 'ReportsController@showReportListPage')->name('report-list');
         Route::get('/cabinet/orders', 'ReportsController@showReportListPage')->name('orders-list');
         Route::get('/klientam/report/{id}', 'ReportsController@showReportPage')->name('report-show');
-        Route::post('/download-reports', 'ReportsController@actionDownloadReports')->name('download-reports');
+//        Route::post('/download-reports', 'ReportsController@actionDownloadReports')->name('download-reports');
         Route::post('/search-orders', 'ReportsController@searchOrders')->name('search-orders');
         Route::post('/get-order-items', 'OrderController@actionGetOrderItems')->name('get-order-items');
         Route::post('/get-order-search-input', 'OrderController@actionGetOrderSearchInput')->name('get-order-search-input');
