@@ -440,7 +440,7 @@ a:hover {
 @media (min-width: 769px) {
     .group-input__icon {
         position: absolute;
-        z-index: 9;
+        z-index: 2;
         left: 50%;
         transform: translate(-50%, -50%);
         top: 50%;

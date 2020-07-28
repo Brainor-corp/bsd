@@ -149,6 +149,10 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
 //Route::get('/1c/test/cargo-status', 'Api1cTestController@cargoStatus');
 //
 //Route::get('/auth-user/{id}', function ($id) {
+//    if(\Illuminate\Support\Facades\Auth::check()) {
+//        \Illuminate\Support\Facades\Auth::logout();
+//    }
+//
 //    $user = \App\User::where('id', $id)->firstOrfail();
 //    \Illuminate\Support\Facades\Auth::login($user);
 //

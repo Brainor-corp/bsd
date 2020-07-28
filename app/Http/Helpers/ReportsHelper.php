@@ -122,12 +122,19 @@ class ReportsHelper {
             ->orderBy('order_date', 'desc')
             ->paginate(10);
 
-//        $orders = $orders->sortByDesc('order_date');
 
         $user = Auth::user();
-        $types = Type::where('class', 'order_status')
-            ->whereHas('ordersByStatus', function ($ordersQuery) use ($user) {
-                return $ordersQuery->where('user_id', $user->id);
+        $types = Type::whereIn('class', ['order_status', 'cargo_status'])
+            ->where(function ($typesSubQ) use ($user) {
+                return $typesSubQ->whereHas('ordersByStatus', function ($ordersQuery) use ($user) {
+                        return $ordersQuery->where('user_id', $user->id);
+                    })
+                    ->orWhereHas('ordersByCargoStatus', function ($ordersQuery) use ($user) {
+                        return $ordersQuery->where('user_id', $user->id);
+                    })
+                    ->orWhereHas('forwardingReceiptsByCargoStatus', function ($ordersQuery) use ($user) {
+                        return $ordersQuery->where('user_id', $user->id);
+                    });
             })
             ->get();
 
