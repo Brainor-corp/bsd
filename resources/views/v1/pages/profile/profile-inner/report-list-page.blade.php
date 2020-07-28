@@ -49,7 +49,7 @@
                                                         <div class="form-group">
                                                             <label for="status">Статус:</label>
                                                             <select name="status" id="status" class="custom-select">
-                                                                <option value="" selected="">Выберите статус</option>
+                                                                <option value="" selected="">Любой статус</option>
                                                                 @foreach($types as $type)
                                                                     <option value="{{ $type->id }}"
                                                                         {{ app('request')->get('status') == $type->id ? 'selected' : '' }}
