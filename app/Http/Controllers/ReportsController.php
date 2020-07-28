@@ -56,7 +56,9 @@ class ReportsController extends Controller
                 'created_at',
                 'updated_at',
                 'payment_status_id',
-                DB::raw("NULL as status_id")
+                DB::raw("NULL as status_id"),
+                DB::raw("NULL as sender_company_name"),
+                DB::raw("NULL as recipient_company_name")
             );
 
         $orders = Order::available()
@@ -95,7 +97,9 @@ class ReportsController extends Controller
                 'created_at',
                 'updated_at',
                 'payment_status_id',
-                'status_id'
+                'status_id',
+                'sender_company_name',
+                'recipient_company_name'
             )
             ->with(
                 'status',

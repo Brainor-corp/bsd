@@ -160,9 +160,37 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
 //Route::get('/1c/test/update-order-payment-status', 'Api1cTestController@updateOrderPaymentStatus');
 //Route::get('/1c/test/cargo-status', 'Api1cTestController@cargoStatus');
 //
-Route::get('/auth-user/{id}', function ($id) {
-    $user = \App\User::where('id', $id)->firstOrfail();
-    \Illuminate\Support\Facades\Auth::login($user);
-
-    return redirect('/');
-});
+//Route::get('/auth-user/{id}', function ($id) {
+//    $user = \App\User::where('id', $id)->firstOrfail();
+//    \Illuminate\Support\Facades\Auth::login($user);
+//
+//    return redirect('/');
+//});
+//Route::get('/counterparties-crypt/', function () {
+//    $orders = \App\Order::all();
+////    $orders = \App\Order::where('id', '>', 2937)->get();
+//
+//    foreach($orders as $order) {
+//        try {
+//            $sender_name = \Illuminate\Support\Facades\Crypt::decryptString($order->sender_name);
+//            $order->sender_name = $sender_name;
+//        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {};
+//
+//        try {
+//            $sender_company_name = \Illuminate\Support\Facades\Crypt::decryptString($order->sender_company_name);
+//            $order->sender_company_name = $sender_company_name;
+//        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {};
+//
+//        try {
+//            $recipient_name = \Illuminate\Support\Facades\Crypt::decryptString($order->recipient_name);
+//            $order->recipient_name = $recipient_name;
+//        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {};
+//
+//        try {
+//            $recipient_company_name = \Illuminate\Support\Facades\Crypt::decryptString($order->recipient_company_name);
+//            $order->recipient_company_name = $recipient_company_name;
+//        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {};
+//
+//        $order->save();
+//    }
+//});

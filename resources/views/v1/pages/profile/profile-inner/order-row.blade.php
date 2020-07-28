@@ -36,8 +36,8 @@
     </td>
     <td>{{ $order->ship_city }}</td>
     <td>{{ $order->dest_city }}</td>
-    <td>{{ $order->sender_name }}</td>
-    <td>{{ $order->recipient_name }}</td>
+    <td>{{ $order->sender_name ?? $order->sender_company_name }}</td>
+    <td>{{ $order->recipient_name ?? $order->recipient_company_name }}</td>
     <td>
         {{ $order->payment_status->name ?? '' }}
     </td>
