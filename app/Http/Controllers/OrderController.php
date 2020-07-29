@@ -821,22 +821,6 @@ class OrderController extends Controller
         return View::make('v1.partials.profile.order-items-modal-body')->with(compact('order'))->render();
     }
 
-    public function actionGetOrderSearchInput() {
-        $user = Auth::user();
-        $orders = $user->orders;
-
-        $types = $orders->pluck('status');
-        $types = $types->merge($orders->pluck('cargo_status'));
-        $types = $types->merge($user->forwarding_receipts->pluck('cargo_status'));
-
-        $types = $types->unique('id');
-        $types = $types->filter(function($value, $key) {
-            return  $value != null;
-        });
-
-        return View::make('v1.partials.profile.order-search-select')->with(compact('types'))->render();
-    }
-
     public function getCargoNumbers(Request $request) {
         $cargoNumbers = DB::table('orders')
             ->where('cargo_number', 'like', "%$request->term%")

@@ -91,17 +91,6 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
             Route::any('/landing/cache-clear/{url}', 'LandingPagesController@cacheClear')->name('landing-cache-clear');
             Route::any('/landing-pages-generate', 'LandingPagesController@generateAll')->name('landing-pages-generate');
 
-            Route::get('/find-doubles', function () {
-                $forwardingReceipts = \App\Order::all()->pluck('code_1c')->toArray();
-
-                $result = [];
-                foreach($forwardingReceipts as $forwardingReceipt) {
-                    $result[$forwardingReceipt] = \App\Order::where('code_1c', $forwardingReceipt)->count();
-                }
-
-                dd($result);
-            });
-
             Route::get('/rename-forward-thresholds', function () {
                 $forwardThresholds = \App\ForwardThreshold::get();
 
@@ -130,7 +119,6 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
         Route::get('/klientam/report-list', 'ReportsController@showReportListPage')->name('report-list');
         Route::get('/cabinet/orders', 'ReportsController@showReportListPage')->name('orders-list');
         Route::get('/klientam/report/{id}', 'ReportsController@showReportPage')->name('report-show');
-        Route::post('/download-reports', 'ReportsController@actionDownloadReports')->name('download-reports');
         Route::post('/search-orders', 'ReportsController@searchOrders')->name('search-orders');
         Route::post('/get-order-items', 'OrderController@actionGetOrderItems')->name('get-order-items');
         Route::post('/get-order-search-input', 'OrderController@actionGetOrderSearchInput')->name('get-order-search-input');
@@ -161,8 +149,40 @@ Route::group(['middleware' => ['geoIpCheck']], function () {
 //Route::get('/1c/test/cargo-status', 'Api1cTestController@cargoStatus');
 //
 //Route::get('/auth-user/{id}', function ($id) {
+//    if(\Illuminate\Support\Facades\Auth::check()) {
+//        \Illuminate\Support\Facades\Auth::logout();
+//    }
+//
 //    $user = \App\User::where('id', $id)->firstOrfail();
 //    \Illuminate\Support\Facades\Auth::login($user);
 //
 //    return redirect('/');
+//});
+//Route::get('/counterparties-crypt/', function () {
+//    $orders = \App\Order::all();
+////    $orders = \App\Order::where('id', '>', 2937)->get();
+//
+//    foreach($orders as $order) {
+//        try {
+//            $sender_name = \Illuminate\Support\Facades\Crypt::decryptString($order->sender_name);
+//            $order->sender_name = $sender_name;
+//        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {};
+//
+//        try {
+//            $sender_company_name = \Illuminate\Support\Facades\Crypt::decryptString($order->sender_company_name);
+//            $order->sender_company_name = $sender_company_name;
+//        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {};
+//
+//        try {
+//            $recipient_name = \Illuminate\Support\Facades\Crypt::decryptString($order->recipient_name);
+//            $order->recipient_name = $recipient_name;
+//        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {};
+//
+//        try {
+//            $recipient_company_name = \Illuminate\Support\Facades\Crypt::decryptString($order->recipient_company_name);
+//            $order->recipient_company_name = $recipient_company_name;
+//        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {};
+//
+//        $order->save();
+//    }
 //});

@@ -12,7 +12,7 @@
         </span>
     </td>
     <td>{{ $order->id }}</td>
-    <td>{{ $order->cargo_number }}</td>
+    <td>{{ $order->number }}</td>
     <td>
         {{ $order->cargo_status->name ?? '' }}
     </td>
@@ -24,20 +24,20 @@
                 <span class="label">Кол-во мест:</span>
                 <span>{{ count($order->order_items) }}</span>
             </div>
-            <div style="min-width: 100px;">
-                <span class="label">Объем:</span>
-                <span>{{ $order->actual_volume ?? $order->total_volume }} м<sup>3</sup></span>
-            </div>
         @endif
+        <div style="min-width: 100px;">
+            <span class="label">Объем:</span>
+            <span>{{ $order->volume }} м<sup>3</sup></span>
+        </div>
         <div>
             <span class="label">Вес:</span>
-            <span>{{ $order->actual_weight ?? $order->total_weight }} кг</span>
+            <span>{{ $order->weight }} кг</span>
         </div>
     </td>
-    <td>{{ $order->ship_city_name ?? $order->ship_city->name ?? '' }}</td>
-    <td>{{ $order->dest_city_name ?? $order->dest_city->name ?? '' }}</td>
-    <td>{{ $order->sender_name ?? ($order->sender_company_name ?? '') }}</td>
-    <td>{{ $order->recipient_name ?? ($order->recipient_company_name ?? '') }}</td>
+    <td>{{ $order->ship_city }}</td>
+    <td>{{ $order->dest_city }}</td>
+    <td>{{ $order->sender_name ?? $order->sender_company_name }}</td>
+    <td>{{ $order->recipient_name ?? $order->recipient_company_name }}</td>
     <td>
         {{ $order->payment_status->name ?? '' }}
     </td>

@@ -13,7 +13,15 @@
             <div class="row">
                 <div class="col-12">
                     <header class="wrapper__header">
-                        <h1>Мои грузы</h1>
+                        <div class="row align-items-center">
+                            <div class="col-sm col-12">
+                                <h1 class="d-inline-block">Мои грузы</h1>
+                            </div>
+                            <div class="col-sm col-12 text-sm-right">
+                                <a href="{{ route('calculator-show', ['id' => null, 'type' => 'order']) }}">Добавить
+                                    заявку</a>
+                            </div>
+                        </div>
                     </header>
                     <div class="row">
                         <div class="col-12">
@@ -22,33 +30,98 @@
                                     {{ session()->get('message') }}
                                 </div>
                             @endif
-                            <form action="{{ route('download-reports') }}" method="post" class="reports__header row align-items-center">
+                            <div class="row mb-2">
                                 <div class="col-12">
-                                    @csrf
-                                    <span class="reports__header-label">Поиск:</span>
-                                    <div id="search-wrapper" class="d-flex flex-wrap control-group mr-0">
-                                        <select id="search-type-select" class="custom-select">
-                                            <option disabled value="" selected>Выберите из списка</option>
-                                            <option selected value="id">По номеру</option>
-                                            <option value="status">По статусу</option>
-                                        </select>
-                                        <input name="id" id="search-input" type="text" class="form-control search-input" placeholder="Введите номер">
-                                        <a href="{{ route('calculator-show', ['id' => null, 'type' => 'order']) }}" class="ml-auto pt-3">Добавить заявку</a>
-                                    </div>
-                                    <div id="cb-input" class="custom-control custom-checkbox">
-                                        <input name="finished" value="true" type="checkbox" class="custom-control-input" id="finished-cb">
-                                        <label class="custom-control-label" for="finished-cb">Только завершенные</label>
-                                    </div>
-                                    <button type="submit" class="btn btn-dotted ml-auto d-flex align-items-center">
-                                        <i class="icons excel-icon margin-item"></i>
-                                        <span class="btn-label margin-item">Выгрузить в excel</span>
-                                    </button>
+                                    <form action="{{ route('orders-list') }}" method="get">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="row align-items-end">
+                                                    <div class="col-md col-12">
+                                                        <div class="form-group mb-md-0 mb-2">
+                                                            <label for="number">Номер:</label>
+                                                            <input name="number" id="number" type="text"
+                                                                   class="form-control search-input"
+                                                                   value="{{ app('request')->get('number') }}"
+                                                                   placeholder="Введите номер">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md col-12">
+                                                        <div class="form-group mb-md-0 mb-2">
+                                                            <label for="status">Статус:</label>
+                                                            <select name="status" id="status" class="custom-select">
+                                                                <option value="" selected="">Любой статус</option>
+                                                                @foreach($types as $type)
+                                                                    <option value="{{ $type->id }}"
+                                                                        {{ app('request')->get('status') == $type->id ? 'selected' : '' }}
+                                                                    >
+                                                                        {{ $type->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md col-12">
+                                                        <div class="form-group mb-md-0 mb-2">
+                                                            <label for="sender">Отправитель:</label>
+                                                            <input name="sender" id="sender" type="text"
+                                                                   class="form-control search-input"
+                                                                   value="{{ app('request')->get('sender') }}"
+                                                                   placeholder="Введите наименование отправителя">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md col-12">
+                                                        <div class="form-group mb-md-0 mb-2">
+                                                            <label for="recipient">Получатель:</label>
+                                                            <input name="recipient" id="recipient" type="text"
+                                                                   value="{{ app('request')->get('recipient') }}"
+                                                                   class="form-control search-input"
+                                                                   placeholder="Введите наименование получателя">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-auto col-12 d-md-block d-none">
+                                                        <button type="submit" name="action" value="show"
+                                                                class="btn btn-dotted align-items-center mb-2">
+                                                            <i class="fa fa-search fa-2x" aria-hidden="true"></i>
+                                                            <span class="btn-label margin-item">Найти</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row align-items-center my-2">
+                                            <div class="col-md-6 col-12">
+                                                <div id="cb-input" class="custom-control custom-checkbox">
+                                                    <input name="finished" value="true" type="checkbox"
+                                                           {{ app('request')->get('finished') ? 'checked' : '' }}
+                                                           class="custom-control-input" id="finished-cb">
+
+                                                    <label class="custom-control-label" for="finished-cb">Только
+                                                        завершенные</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto d-md-none d-block">
+                                                <button type="submit" name="action" value="show"
+                                                        class="btn btn-dotted align-items-center mb-2">
+                                                    <i class="fa fa-search fa-2x" aria-hidden="true"></i>
+                                                    <span class="btn-label margin-item">Найти</span>
+                                                </button>
+                                            </div>
+                                            <div class="col-md-6 col-auto">
+                                                <button type="submit" name="action" value="download"
+                                                        class="btn btn-dotted ml-sm-auto d-flex align-items-center">
+                                                    <i class="icons excel-icon margin-item"></i>
+                                                    <span class="btn-label margin-item">Выгрузить в excel</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
-                            </form>
+                            </div>
                             <div class="row">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered reports-table" data-documents-modal-url="{{ route('get-download-documents-modal') }}">
+                                        <table class="table table-bordered reports-table"
+                                               data-documents-modal-url="{{ route('get-download-documents-modal') }}">
                                             <thead>
                                             <tr>
                                                 <th>Тип</th>
@@ -74,13 +147,19 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    {{ $orders->appends($request->input())->links('v1.partials.pagination.pagination') }}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <div class="modal fade" id="orderItemsModal" tabindex="-1" role="dialog" aria-labelledby="orderItemsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="orderItemsModal" tabindex="-1" role="dialog" aria-labelledby="orderItemsModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -97,7 +176,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="orderDocumentsModal" tabindex="-1" role="dialog" aria-labelledby="orderDocumentsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="orderDocumentsModal" tabindex="-1" role="dialog"
+         aria-labelledby="orderDocumentsModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">

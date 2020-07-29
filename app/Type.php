@@ -26,4 +26,19 @@ class Type extends Model
     {
         return $query->where('class', 'tariff_zones');
     }
+
+    public function ordersByStatus()
+    {
+        return $this->hasMany(Order::class, 'status_id');
+    }
+
+    public function ordersByCargoStatus()
+    {
+        return $this->hasMany(Order::class, 'cargo_status_id');
+    }
+
+    public function forwardingReceiptsByCargoStatus()
+    {
+        return $this->hasMany(ForwardingReceipt::class, 'cargo_status_id');
+    }
 }
