@@ -30,6 +30,8 @@ class LandingPages extends Section
             Column::text('id', '#'),
             Column::link('strip_tags_title', 'Заголовок'),
             Column::text('route.name', 'Маршрут'),
+            Column::text('url', 'URL'),
+            Column::text('updated_at', 'Дата изменения'),
         ])
             ->setFilter([
                 null,
@@ -39,9 +41,14 @@ class LandingPages extends Section
                     ->setDataAttributes([
                         'data-live-search="true"'
                     ])
-                    ->setDisplay("dash_name_with_id")
+                    ->setDisplay("dash_name_with_id"),
+                FilterType::text('url', 'URL'),
+                null,
             ])
-            ->setPagination(10);
+            ->setPagination(10)
+            ->setScopes([
+                'orderByUpdated'
+            ]);;
 
         return $display;
     }
