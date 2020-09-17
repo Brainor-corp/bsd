@@ -31,4 +31,9 @@ class LandingPage extends Model
     {
         return strip_tags($this->title);
     }
+
+    public function scopeOrderByUpdated($query)
+    {
+        return $query->orderBy('updated_at', 'DESC');
+    }
 }
