@@ -175,8 +175,11 @@ class ReportsController extends Controller
         if(!empty($user->guid)) {
             $send["user_id"] = $user->guid;
         }
-
-        switch ($document_type_id_1c) {
+        $document_type_id_1c_check = $document_type_id_1c;
+        if($document_type_id_1c_check !== 'site_request') {
+            $document_type_id_1c_check = intval($document_type_id_1c);
+        }
+        switch ($document_type_id_1c_check) {
             case 3:
                     // Заявка на экспедирование
                     if(!isset($send['user_id'])) {
